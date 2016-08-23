@@ -3,7 +3,10 @@ RDI, RSP, and then R8 to R15.
 
 syscall accepts syscall number in %rax
 
+List of syscall numbers http://blog.rchapman.org/post/36801038863/linux-system-call-table-for-x86-64
+
 gcc assembler, `as`, has destination on right.
+gdb will use gcc convention: destination on right.
 
 `nasm`, per platform convention, has destination on left.
 
