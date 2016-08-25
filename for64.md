@@ -1,5 +1,15 @@
 # For64
 
+## Register Conventions
+
+R8 for data stack.
+Growing upwards (TOS at numerically higher address).
+Empty (so word at TOS has address R8-8).
+
+R9 for CODEPOINTER?
+
+## Callable code
+
 What might a callable fragment look like?
 
 Typically we expect a standard Forth block to look something like
@@ -21,19 +31,19 @@ the address of the current block is TOS.
 
 - push CODEPOINTER to continuation stack
 - pop TOS to CODEPOINTER
-fetch:
+next:
 - fetch word at CODEPOINTER onto new TOS
 - increment CODEPOINTER
 - keeping TOS, fetch word from TOS into TARGET
 - jump to TARGET
 
-What does RETURN do? I'm assuming there is a word compiled onto
+What does NEXT do? I'm assuming there is a word compiled onto
 the end of every block that does effectively a function return.
 It should:
 
-- drop TOS
+- drop TOS (it's the address of NEXT, which we're not going to use)
 - pop Top Of Continuation Stack to CODEPOINTER
-goto fetch (in standard cycle)
+goto next (in standard cycle)
 
 A standard Forth block will have an executable code address
 followed by a sequence of dictionary words;
