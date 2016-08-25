@@ -13,22 +13,40 @@ section .text
 global _start
 _start:
 
-again:
-mov rdi, 0 ; stdin
-mov rsi, buf
-mov rdx, buflen
-mov rax, sys_read
-syscall
-cmp rax, 0
-jle done
+; This program prints rax.
+mov rax, 314592
 
-; write out the same number of bytes as read
-mov rdx, rax
-mov rdi, 1 ; stdout
+; Iteratively divide RAX by 10, until it becomes zero.
+; Pushing each remainder as we go,
+; counting the number of pushes in RBX.
+mov rbx, 0
+mov rcx, 10     ; radix
+div10:
+mov rdx, 0
+idiv rcx
+push rdx
+inc rbx
+test rax, rax
+jnz div10
+
+; pop all the residues into buf
+mov rdx, buf
+popit:
+pop rax
+add rax, 48
+mov [rdx], rax
+inc rdx
+dec rbx
+jnz popit
+
+; write out buf
+mov byte [rdx], 10
+sub rdx, buf    ; the buffer length
+inc rdx
+mov rdi, 1      ; stdout
 mov rsi, buf
 mov rax, sys_write
 syscall
-jmp again
 
 done:
 mov rdi, 0
