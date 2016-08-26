@@ -34,7 +34,7 @@ div10:
 popit:
         pop rax
         add rax, 48
-        mov [rdx], rax
+        mov [rdx], al
         inc rdx
         dec rbx
         jnz popit
