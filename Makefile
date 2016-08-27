@@ -1,8 +1,8 @@
 f: f.o
-	ld -s -o $@ $<
+	ld -g -o $@ $<
 
 f.o: f.asm
-	nasm -f elf64 -o $@ $<
+	nasm -g -f elf64 -o $@ $<
 
 clean:
 	rm *.o f
