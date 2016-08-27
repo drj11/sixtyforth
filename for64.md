@@ -8,6 +8,11 @@ Empty (so word at TOS has address R8-8).
 
 R9 for CODEPOINTER?
 
+R10 for continuation stack?
+
+RDX for THIS
+
+
 ## Callable code
 
 What might a callable fragment look like?
@@ -27,21 +32,21 @@ where `EXECODE` is the address of the machine code to call, and
 What does the core interpreter cycle do?
 
 In the general case, at entry to cycle,
-the address of the current block is TOS.
+the address of the current block is in a register;
+let's call it THIS.
 
 - push CODEPOINTER to continuation stack
-- pop TOS to CODEPOINTER
+- copy THIS to CODEPOINTER
 next:
-- fetch word at CODEPOINTER onto new TOS
+- fetch word at CODEPOINTER into THIS
 - increment CODEPOINTER
-- keeping TOS, fetch word from TOS into TARGET
+- fetch word from THIS into TARGET
 - jump to TARGET
 
 What does NEXT do? I'm assuming there is a word compiled onto
 the end of every block that does effectively a function return.
 It should:
 
-- drop TOS (it's the address of NEXT, which we're not going to use)
 - pop Top Of Continuation Stack to CODEPOINTER
 goto next (in standard cycle)
 
