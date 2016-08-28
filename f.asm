@@ -29,13 +29,16 @@ DOT:
 EXIT:
         DQ impexit
 NEXTWORD:
-        DQ impnext
+        DQ impnextword
 
 SECTION .text
 GLOBAL _start
 _start:
+        ; Initialise the model registers.
         mov r8, stack
         mov r10, continuationstack
+        ; Initialising RDX and R9, so as to fake
+        ; executing the Forth word IPL.
         mov rdx, program
         mov r9, ipl+16
 
@@ -49,10 +52,24 @@ next:
         mov rbp, [rdx]
         jmp rbp
 
-impnext:
+;;; Machine code implementations of various Forth words.
+
+impnextword:
         sub r10, 8
         mov r9, [r10]
         jmp next
+
+implit:
+        mov rax, [r9]
+        add r9, 8
+        mov [r8], rax
+        add r8, 8
+        jmp next
+
+impexit:
+        mov rdi, 0
+        mov rax, 60
+        syscall
 
 impdot:
 ; Iteratively divide TOS by 10, until it becomes zero.
@@ -105,16 +122,4 @@ popit:
         mov rsi, buf
         mov rax, sys_write
         syscall
-        jmp next
-
-impexit:
-        mov rdi, 0
-        mov rax, 60
-        syscall
-
-implit:
-        mov rax, [r9]
-        add r9, 8
-        mov [r8], rax
-        add r8, 8
         jmp next
