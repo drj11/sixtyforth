@@ -6,22 +6,55 @@ sys_write EQU 1
 SECTION .bss
         buf RESB 8192
         buflen EQU $-buf
+
         stack RESB 100000
+        continuationstack RESB 100000
 
 SECTION .data
+program:
+        DQ stdexe
+        DQ LIT
+        DQ 314592
+        DQ DOT
+        DQ NEXTWORD
+
+ipl:    DQ stdexe
+        DQ program
+        DQ EXIT
+
+LIT:
+        DQ implit
+DOT:
+        DQ impdot
+EXIT:
+        DQ impexit
+NEXTWORD:
+        DQ impnext
 
 SECTION .text
 GLOBAL _start
 _start:
         mov r8, stack
+        mov r10, continuationstack
+        mov rdx, program
+        mov r9, ipl+16
 
-; This program prints rax.
+stdexe:
+        mov [r10], r9
+        add r10, 8
+        lea r9, [rdx+8]
+next:
+        mov rdx, [r9]
+        add r9, 8
+        mov rbp, [rdx]
+        jmp rbp
 
-; LIT 314592
-        mov rax, 314592
-        mov [r8], rax
-        add r8, 8
+impnext:
+        sub r10, 8
+        mov r9, [r10]
+        jmp next
 
+impdot:
 ; Iteratively divide TOS by 10, until it becomes zero.
 ; Pushing each remainder as we go,
 ; counting the number of pushes in RBX.
@@ -72,8 +105,16 @@ popit:
         mov rsi, buf
         mov rax, sys_write
         syscall
+        jmp next
 
-done:
+impexit:
         mov rdi, 0
         mov rax, 60
         syscall
+
+implit:
+        mov rax, [r9]
+        add r9, 8
+        mov [r8], rax
+        add r8, 8
+        jmp next
