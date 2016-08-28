@@ -76,7 +76,6 @@ impdot:
 ; Pushing each remainder as we go,
 ; counting the number of pushes in RBX.
         mov rbx, 0
-        mov rcx, 10     ; radix
 div10:
         ; LIT 10
         mov qword [r8], 10
