@@ -46,14 +46,14 @@ DOT:
         DQ LIT
         DQ 99
         DQ SWAP
-l1:     DQ LIT
+.10div: DQ LIT
         DQ 10
         DQ DIVMOD       ; -- Q R
         DQ SWAP         ; -- R Q
         DQ DUP          ; -- R Q Q
         DQ NEQ0         ; -- R Q B
         DQ ZEROBRANCH   ; -- R Q
-        DQ -8
+        DQ (-($-.10div)/8) - 1
         DQ DROP
         DQ restofDOT
         DQ NEXTWORD
