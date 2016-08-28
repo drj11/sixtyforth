@@ -24,10 +24,13 @@ ipl:    DQ stdexe
 
 LIT:
         DQ implit
+SWAP:
+        DQ impswap
 DOT:
         DQ stdexe
         DQ LIT
         DQ 99
+        DQ SWAP
         DQ restofDOT
         DQ NEXTWORD
 restofDOT:
@@ -72,6 +75,14 @@ implit:
         add r8, 8
         jmp next
 
+impswap:
+        ; SWAP (A B -- B A)
+        mov rbp, [r8-16]
+        mov rdx, [r8-8]
+        mov [r8-16], rdx
+        mov [r8-8], rbp
+        jmp next
+
 impexit:
         mov rdi, 0
         mov rax, 60
@@ -85,12 +96,6 @@ imprestofdot: ; ( N 99 -- )
 ; This creates a stack of digits of variable length;
 ; we mark the beginning of the stack of digits with
 ; a sentinel value, which is 99 (which can't possible be a digit).
-
-        ; SWAP (DVD 99 -- 99 DVD)
-        mov rbp, [r8-16]
-        mov rdx, [r8-8]
-        mov [r8-16], rdx
-        mov [r8-8], rbp
 
 div10:
         ; LIT 10
