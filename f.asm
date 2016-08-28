@@ -78,16 +78,29 @@ impdot:
         mov rbx, 0
         mov rcx, 10     ; radix
 div10:
-        ; 10DIV (DIVIDEND -- QUOTIENT)
+        ; LIT 10
+        mov qword [r8], 10
+        add r8, 8
+
+        ; /MOD (dividend divisor -- quotient remainder)
+        ; > RCX
+        sub r8, 8
+        mov rcx, [r8]
+        ; > RAX
+        sub r8, 8
+        mov rax, [r8]
+
         mov rdx, 0
-        mov rax, [r8-8]
         idiv rcx
         inc rbx
-        mov [r8-8], rax
 
-        ; ( -- RDX)
+        ; RAX >
+        mov [r8], rax
+        add r8, 8
+        ; RDX >
         mov [r8], rdx
         add r8, 8
+        ; end /MOD
 
         ; SWAP (A B -- B A)
         mov rbp, [r8-16]
