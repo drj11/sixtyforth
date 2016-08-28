@@ -25,7 +25,13 @@ ipl:    DQ stdexe
 LIT:
         DQ implit
 DOT:
-        DQ impdot
+        DQ stdexe
+        DQ LIT
+        DQ 99
+        DQ restofDOT
+        DQ NEXTWORD
+restofDOT:
+        DQ imprestofdot
 EXIT:
         DQ impexit
 NEXTWORD:
@@ -71,7 +77,7 @@ impexit:
         mov rax, 60
         syscall
 
-impdot: ; ( N -- )
+imprestofdot: ; ( N 99 -- )
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
 ; We proceed by pushing the digits onto the stack,
@@ -79,9 +85,6 @@ impdot: ; ( N -- )
 ; This creates a stack of digits of variable length;
 ; we mark the beginning of the stack of digits with
 ; a sentinel value, which is 99 (which can't possible be a digit).
-        ; LIT 99
-        mov qword [r8], 99
-        add r8, 8
 
         ; SWAP (DVD 99 -- 99 DVD)
         mov rbp, [r8-16]
