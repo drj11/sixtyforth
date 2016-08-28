@@ -35,8 +35,10 @@ In the general case, at entry to cycle,
 the address of the current block is in a register;
 let's call it THIS.
 
+stdexe:
 - push CODEPOINTER to continuation stack
 - copy THIS to CODEPOINTER
+- increment CODEPOINTER
 next:
 - fetch word at CODEPOINTER into THIS
 - increment CODEPOINTER
