@@ -173,8 +173,8 @@ imprestofdot: ; ( 99 dN ... d1 -- )
 popit:
         sub r8, 8
         mov rax, [r8]
-        cmp rax, 99
-        jz writebuf     ; break
+        cmp rax, 10
+        jnc writebuf    ; break
         add rax, 48
         mov [rdx], al
         inc rdx
