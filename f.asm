@@ -205,17 +205,11 @@ popit:
         mov [r8], rax
         add r8, 8
 
-        ; SWAP
-        mov rbp, [r8-16]
-        mov rdx, [r8-8]
-        mov [r8-16], rdx
-        mov [r8-8], rbp
-
         ; C!
         sub r8, 8
-        mov rax, [r8]
-        sub r8, 8
         mov rdx, [r8]
+        sub r8, 8
+        mov rax, [r8]
         mov [rdx], al
 
         ; +1 (BUF -- BUF+1)
