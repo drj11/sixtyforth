@@ -188,10 +188,16 @@ popit:
         add r8, 8
 
         ; check for sentinel
-        sub r8, 8
-        mov rax, [r8]
-        cmp rax, 10
-        jnc writebuf    ; break
+        ; LIT 9
+        mov qword [r8], 9
+        add r8, 8
+        ; >
+        mov rax, [r8-16]
+        mov rbx, [r8-8]
+        sub r8, 16
+
+        cmp rax, rbx
+        ja writebuf     ; break
 
         ; buf d
 
