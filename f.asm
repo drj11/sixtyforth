@@ -55,6 +55,8 @@ DOT:
         DQ ZEROBRANCH   ; -- R Q
         DQ (-($-.10div)/8) - 1
         DQ DROP
+        ; stack now contains the digits
+        DQ BUF
         DQ restofDOT
         DQ NEXTWORD
 restofDOT:
@@ -65,6 +67,10 @@ EXIT:
         DQ impexit
 NEXTWORD:
         DQ impnextword
+
+BUF:
+        DQ impbuf
+
 
 SECTION .text
 GLOBAL _start
@@ -166,22 +172,66 @@ impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
         add r8, 8
         jmp next
 
-imprestofdot: ; ( 99 dN ... d1 -- )
+imprestofdot: ; ( 99 dN ... d1 BUF -- )
 
 ; pop all the residues into buf
-        mov rdx, buf
 popit:
+        ; SWAP (A B -- B A)
+        mov rbp, [r8-16]
+        mov rdx, [r8-8]
+        mov [r8-16], rdx
+        mov [r8-8], rbp
+
+        ; DUP (buf d -- buf d d)
+        mov rax, [r8-8]
+        mov [r8], rax
+        add r8, 8
+
+        ; check for sentinel
         sub r8, 8
         mov rax, [r8]
         cmp rax, 10
         jnc writebuf    ; break
+
+        ; buf d
+
+        ; 48+
+        mov rax, [r8-8]
         add rax, 48
+        mov [r8-8], rax
+
+        ; OVER
+        mov rax, [r8-16]
+        mov [r8], rax
+        add r8, 8
+
+        ; SWAP
+        mov rbp, [r8-16]
+        mov rdx, [r8-8]
+        mov [r8-16], rdx
+        mov [r8-8], rbp
+
+        ; C!
+        sub r8, 8
+        mov rax, [r8]
+        sub r8, 8
+        mov rdx, [r8]
         mov [rdx], al
-        inc rdx
+
+        ; +1 (BUF -- BUF+1)
+        mov rax, [r8-8]
+        inc rax
+        mov [r8-8], rax
+
         jmp popit
 
 writebuf:
 ; write out buf
+
+        ; DROP
+        sub r8, 8
+
+        mov rdx, [r8-8]
         mov byte [rdx], 10      ; Add LF to buffer
         inc rdx
         sub rdx, buf    ; the buffer length
@@ -189,4 +239,10 @@ writebuf:
         mov rsi, buf
         mov rax, sys_write
         syscall
+        jmp next
+
+impbuf:
+        mov rdx, buf
+        mov [r8], rdx
+        add r8, 8
         jmp next
