@@ -4,7 +4,8 @@ RDI, RSP, and then R8 to R15.
 `syscall` accepts system call number in %rax.
 Return value is also in %rax.
 The registers used to pass arguments for a syscall are:
-RDI, RSI, RDX, R10, R8, R9
+RDI, RSI, RDX, R10, R8, R9.
+`syscall` destroys RCX and R11.
 
 List of syscall numbers http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
 
