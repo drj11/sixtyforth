@@ -116,15 +116,15 @@ _start:
         ; Initialising RDX and R9, so as to fake
         ; executing the Forth word IPL.
         mov rdx, program
-        mov r9, ipl+16
+        mov rbx, ipl+16
 
 stdexe:
-        mov [r12], r9
+        mov [r12], rbx
         add r12, 8
-        lea r9, [rdx+8]
+        lea rbx, [rdx+8]
 next:
-        mov rdx, [r9]
-        add r9, 8
+        mov rdx, [rbx]
+        add rbx, 8
         mov rax, [rdx]
         jmp rax
 
@@ -132,12 +132,12 @@ next:
 
 impnextword:
         sub r12, 8
-        mov r9, [r12]
+        mov rbx, [r12]
         jmp next
 
 implit:
-        mov rax, [r9]
-        add r9, 8
+        mov rax, [rbx]
+        add rbx, 8
         mov [rbp], rax
         add rbp, 8
         jmp next
@@ -147,20 +147,20 @@ impzerobranch:
         ; pop the TOS and test it;
         ; if it is 0 then branch by adding the offset
         ; to CODEPOINTER.
-        mov rcx, [r9]
-        add r9, 8
+        mov rcx, [rbx]
+        add rbx, 8
         sub rbp, 8
         mov rax, [rbp]
         test rax, rax
         jnz next
-        lea r9, [r9 + 8*rcx]
+        lea rbx, [rbx + 8*rcx]
         jmp next
 impbranch:
         ; read the next word as a relative offset;
         ; branch by adding offset to CODEPOINTER.
-        mov rcx, [r9]
-        add r9, 8
-        lea r9, [r9 + 8*rcx]
+        mov rcx, [rbx]
+        add rbx, 8
+        lea rbx, [rbx + 8*rcx]
         jmp next
 
 impswap:
