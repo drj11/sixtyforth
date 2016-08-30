@@ -228,15 +228,15 @@ impexit:
         syscall
 
 impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
-        ; > RCX
+        ; > r15
         sub r8, 8
-        mov rcx, [r8]
+        mov r15, [r8]
         ; > RAX
         sub r8, 8
         mov rax, [r8]
 
         mov rdx, 0
-        idiv rcx
+        idiv r15
 
         ; RAX >
         mov [r8], rax
