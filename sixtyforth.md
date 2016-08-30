@@ -2,14 +2,14 @@
 
 ## Register Conventions
 
-R8 for data stack.
-Growing upwards (TOS at numerically higher address).
-Empty (so word at TOS has address R8-8).
+Two stacks.
+Data stack, and continuation stack.
+Stacks grow upwards (TOS at numerically higher address).
+Stacks are empty (so word at TOS has address REG-8).
 
-R9 for CODEPOINTER?
-
-R10 for continuation stack?
-
+RBP stack
+RBX codepointer
+R12 continuation stack
 RDX for THIS
 
 
