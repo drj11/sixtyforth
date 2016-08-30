@@ -112,15 +112,15 @@ GLOBAL _start
 _start:
         ; Initialise the model registers.
         mov r8, stack
-        mov r10, continuationstack
+        mov r12, continuationstack
         ; Initialising RDX and R9, so as to fake
         ; executing the Forth word IPL.
         mov rdx, program
         mov r9, ipl+16
 
 stdexe:
-        mov [r10], r9
-        add r10, 8
+        mov [r12], r9
+        add r12, 8
         lea r9, [rdx+8]
 next:
         mov rdx, [r9]
@@ -131,8 +131,8 @@ next:
 ;;; Machine code implementations of various Forth words.
 
 impnextword:
-        sub r10, 8
-        mov r9, [r10]
+        sub r12, 8
+        mov r9, [r12]
         jmp next
 
 implit:
