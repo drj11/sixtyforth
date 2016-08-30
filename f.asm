@@ -111,7 +111,7 @@ SECTION .text
 GLOBAL _start
 _start:
         ; Initialise the model registers.
-        mov r8, stack
+        mov rbp, stack
         mov r12, continuationstack
         ; Initialising RDX and R9, so as to fake
         ; executing the Forth word IPL.
@@ -138,8 +138,8 @@ impnextword:
 implit:
         mov rax, [r9]
         add r9, 8
-        mov [r8], rax
-        add r8, 8
+        mov [rbp], rax
+        add rbp, 8
         jmp next
 
 impzerobranch:
@@ -149,8 +149,8 @@ impzerobranch:
         ; to CODEPOINTER.
         mov rbx, [r9]
         add r9, 8
-        sub r8, 8
-        mov rax, [r8]
+        sub rbp, 8
+        mov rax, [rbp]
         test rax, rax
         jnz next
         lea r9, [r9 + 8*rbx]
@@ -165,60 +165,60 @@ impbranch:
 
 impswap:
         ; SWAP (A B -- B A)
-        mov rax, [r8-16]
-        mov rdx, [r8-8]
-        mov [r8-16], rdx
-        mov [r8-8], rax
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
         jmp next
 impdup:
         ; DUP (A -- A A)
-        mov rdx, [r8-8]
-        mov [r8], rdx
-        add r8, 8
+        mov rdx, [rbp-8]
+        mov [rbp], rdx
+        add rbp, 8
         jmp next
 impover:
         ; OVER (A B -- A B A)
-        mov rax, [r8-16]
-        mov [r8], rax
-        add r8, 8
+        mov rax, [rbp-16]
+        mov [rbp], rax
+        add rbp, 8
         jmp next
 impdrop:
         ; DROP (A -- )
-        sub r8, 8
+        sub rbp, 8
         jmp next
 impeq0:        ; this needs inverting (and stack is all wrong)
         ; EQ0 (A -- Bool)
         ; Result is -1 (TRUE) if A = 0;
         ; Result is 0 (FALSE) otherwise.
-        mov rax, [r8-8]
+        mov rax, [rbp-8]
         sub rax, 1      ; is-zero now in Carry flag
         sbb rax, rax    ; C=0 -> 0; C=1 -> -1
-        mov [r8-8], rax
+        mov [rbp-8], rax
         jmp next
 implt:
         ; < (A B -- flag)
         ; flag is -1 (TRUE) if A < B;
-        mov rax, [r8-16]
-        mov rbx, [r8-8]
-        sub r8, 16
+        mov rax, [rbp-16]
+        mov rbx, [rbp-8]
+        sub rbp, 16
         cmp rax, rbx    ; C iff B > A
         sbb rax, rax    ; -1 iff B > A
-        mov [r8], rax
-        add r8, 8
+        mov [rbp], rax
+        add rbp, 8
         jmp next
 impadd:
         ; + (A B -- sum)
-        mov rax, [r8-16]
-        mov rbx, [r8-8]
+        mov rax, [rbp-16]
+        mov rbx, [rbp-8]
         add rax, rbx
-        sub r8, 8
-        mov [r8-8], rax
+        sub rbp, 8
+        mov [rbp-8], rax
         jmp next
 impcstore:
         ; C! (ch buf -- )
-        mov rax, [r8-16]
-        mov rdx, [r8-8]
-        sub r8, 16
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        sub rbp, 16
         mov [rdx], al
         jmp next
 
@@ -229,26 +229,26 @@ impexit:
 
 impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
         ; > r15
-        sub r8, 8
-        mov r15, [r8]
+        sub rbp, 8
+        mov r15, [rbp]
         ; > RAX
-        sub r8, 8
-        mov rax, [r8]
+        sub rbp, 8
+        mov rax, [rbp]
 
         mov rdx, 0
         idiv r15
 
         ; RAX >
-        mov [r8], rax
-        add r8, 8
+        mov [rbp], rax
+        add rbp, 8
         ; RDX >
-        mov [r8], rdx
-        add r8, 8
+        mov [rbp], rdx
+        add rbp, 8
         jmp next
 
 imprestofdot: ; ( PTR -- )
         ; write contents of buffer to stdout
-        mov rdx, [r8-8]
+        mov rdx, [rbp-8]
         sub rdx, buf    ; the buffer length
         mov rdi, 1      ; stdout
         mov rsi, buf
@@ -258,6 +258,6 @@ imprestofdot: ; ( PTR -- )
 
 impbuf:
         mov rdx, buf
-        mov [r8], rdx
-        add r8, 8
+        mov [rbp], rdx
+        add rbp, 8
         jmp next
