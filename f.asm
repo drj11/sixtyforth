@@ -125,8 +125,8 @@ stdexe:
 next:
         mov rdx, [r9]
         add r9, 8
-        mov rbp, [rdx]
-        jmp rbp
+        mov rax, [rdx]
+        jmp rax
 
 ;;; Machine code implementations of various Forth words.
 
@@ -165,10 +165,10 @@ impbranch:
 
 impswap:
         ; SWAP (A B -- B A)
-        mov rbp, [r8-16]
+        mov rax, [r8-16]
         mov rdx, [r8-8]
         mov [r8-16], rdx
-        mov [r8-8], rbp
+        mov [r8-8], rax
         jmp next
 impdup:
         ; DUP (A -- A A)
