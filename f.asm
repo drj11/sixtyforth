@@ -22,28 +22,6 @@ ipl:    DQ stdexe
         DQ program
         DQ EXIT
 
-LIT:
-        DQ implit
-ZEROBRANCH:
-        DQ impzerobranch
-BRANCH:
-        DQ impbranch
-SWAP:
-        DQ impswap
-DUP:
-        DQ impdup
-OVER:
-        DQ impover
-DROP:
-        DQ impdrop
-EQ0:
-        DQ impeq0
-LT:
-        DQ implt
-ADD:
-        DQ impadd
-CSTORE:
-        DQ impcstore
 DOT:
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
@@ -94,17 +72,6 @@ DOT:
         DQ ADD          ; buf+1
         DQ restofDOT
         DQ NEXTWORD
-restofDOT:
-        DQ imprestofdot
-DIVMOD:
-        DQ impdivmod
-EXIT:
-        DQ impexit
-NEXTWORD:
-        DQ impnextword
-
-BUF:
-        DQ impbuf
 
 
 SECTION .text
@@ -130,19 +97,19 @@ next:
 
 ;;; Machine code implementations of various Forth words.
 
-impnextword:
+NEXTWORD:       DQ $+8
         sub r12, 8
         mov rbx, [r12]
         jmp next
 
-implit:
+LIT:    DQ $+8
         mov rax, [rbx]
         add rbx, 8
         mov [rbp], rax
         add rbp, 8
         jmp next
 
-impzerobranch:
+ZEROBRANCH:     DQ $+8
         ; read the next word as a relative offset;
         ; pop the TOS and test it;
         ; if it is 0 then branch by adding the offset
@@ -155,7 +122,8 @@ impzerobranch:
         jnz next
         lea rbx, [rbx + 8*rcx]
         jmp next
-impbranch:
+
+BRANCH: DQ $+8
         ; read the next word as a relative offset;
         ; branch by adding offset to CODEPOINTER.
         mov rcx, [rbx]
@@ -163,30 +131,34 @@ impbranch:
         lea rbx, [rbx + 8*rcx]
         jmp next
 
-impswap:
+SWAP:   DQ $+8
         ; SWAP (A B -- B A)
         mov rax, [rbp-16]
         mov rdx, [rbp-8]
         mov [rbp-16], rdx
         mov [rbp-8], rax
         jmp next
-impdup:
+
+DUP:    DQ $+8
         ; DUP (A -- A A)
         mov rdx, [rbp-8]
         mov [rbp], rdx
         add rbp, 8
         jmp next
-impover:
+
+OVER:   DQ $+8
         ; OVER (A B -- A B A)
         mov rax, [rbp-16]
         mov [rbp], rax
         add rbp, 8
         jmp next
-impdrop:
+
+DROP:   DQ $+8
         ; DROP (A -- )
         sub rbp, 8
         jmp next
-impeq0:        ; this needs inverting (and stack is all wrong)
+
+EQ0:    DQ $+8
         ; EQ0 (A -- Bool)
         ; Result is -1 (TRUE) if A = 0;
         ; Result is 0 (FALSE) otherwise.
@@ -195,7 +167,8 @@ impeq0:        ; this needs inverting (and stack is all wrong)
         sbb rax, rax    ; C=0 -> 0; C=1 -> -1
         mov [rbp-8], rax
         jmp next
-implt:
+
+LT:     DQ $+8
         ; < (A B -- flag)
         ; flag is -1 (TRUE) if A < B;
         mov rax, [rbp-16]
@@ -206,7 +179,8 @@ implt:
         mov [rbp], rax
         add rbp, 8
         jmp next
-impadd:
+
+ADD:    DQ $+8
         ; + (A B -- sum)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -214,7 +188,8 @@ impadd:
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
-impcstore:
+
+CSTORE: DQ $+8
         ; C! (ch buf -- )
         mov rax, [rbp-16]
         mov rdx, [rbp-8]
@@ -222,12 +197,13 @@ impcstore:
         mov [rdx], al
         jmp next
 
-impexit:
+EXIT:   DQ $+8
         mov rdi, 0
         mov rax, 60
         syscall
 
-impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
+DIVMOD: DQ $+8
+        ; /MOD (dividend divisor -- quotient remainder)
         ; > r15
         sub rbp, 8
         mov r15, [rbp]
@@ -246,7 +222,8 @@ impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
         add rbp, 8
         jmp next
 
-imprestofdot: ; ( PTR -- )
+restofDOT:      DQ $+8
+        ; ( PTR -- )
         ; write contents of buffer to stdout
         mov rdx, [rbp-8]
         sub rdx, buf    ; the buffer length
@@ -256,7 +233,7 @@ imprestofdot: ; ( PTR -- )
         syscall
         jmp next
 
-impbuf:
+BUF:    DQ $+8
         mov rdx, buf
         mov [rbp], rdx
         add rbp, 8
