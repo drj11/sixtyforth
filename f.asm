@@ -147,20 +147,20 @@ impzerobranch:
         ; pop the TOS and test it;
         ; if it is 0 then branch by adding the offset
         ; to CODEPOINTER.
-        mov rbx, [r9]
+        mov rcx, [r9]
         add r9, 8
         sub rbp, 8
         mov rax, [rbp]
         test rax, rax
         jnz next
-        lea r9, [r9 + 8*rbx]
+        lea r9, [r9 + 8*rcx]
         jmp next
 impbranch:
         ; read the next word as a relative offset;
         ; branch by adding offset to CODEPOINTER.
-        mov rbx, [r9]
+        mov rcx, [r9]
         add r9, 8
-        lea r9, [r9 + 8*rbx]
+        lea r9, [r9 + 8*rcx]
         jmp next
 
 impswap:
@@ -199,9 +199,9 @@ implt:
         ; < (A B -- flag)
         ; flag is -1 (TRUE) if A < B;
         mov rax, [rbp-16]
-        mov rbx, [rbp-8]
+        mov rcx, [rbp-8]
         sub rbp, 16
-        cmp rax, rbx    ; C iff B > A
+        cmp rax, rcx    ; C iff B > A
         sbb rax, rax    ; -1 iff B > A
         mov [rbp], rax
         add rbp, 8
@@ -209,8 +209,8 @@ implt:
 impadd:
         ; + (A B -- sum)
         mov rax, [rbp-16]
-        mov rbx, [rbp-8]
-        add rax, rbx
+        mov rcx, [rbp-8]
+        add rax, rcx
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
