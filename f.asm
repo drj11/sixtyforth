@@ -26,14 +26,24 @@ LIT:
         DQ implit
 ZEROBRANCH:
         DQ impzerobranch
+BRANCH:
+        DQ impbranch
 SWAP:
         DQ impswap
 DUP:
         DQ impdup
+OVER:
+        DQ impover
 DROP:
         DQ impdrop
-NEQ0:
-        DQ impneq0
+EQ0:
+        DQ impeq0
+LT:
+        DQ implt
+ADD:
+        DQ impadd
+CSTORE:
+        DQ impcstore
 DOT:
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
@@ -51,12 +61,37 @@ DOT:
         DQ DIVMOD       ; -- Q R
         DQ SWAP         ; -- R Q
         DQ DUP          ; -- R Q Q
-        DQ NEQ0         ; -- R Q B
+        DQ EQ0          ; -- R Q flag
         DQ ZEROBRANCH   ; -- R Q
-        DQ (-($-.10div)/8) - 1
+        DQ -(($-.10div)/8) - 1
         DQ DROP
         ; stack now contains the digits
         DQ BUF
+.pop:   DQ SWAP         ; buf d
+        DQ DUP          ; buf d d
+        DQ LIT
+        DQ 10           ; buf d d 10
+        DQ LT           ; buf d flag
+        DQ ZEROBRANCH   ; buf d
+        DQ (.write-$)/8 - 1
+        DQ LIT
+        DQ 48           ; buf d 48
+        DQ ADD          ; buf ch
+        DQ OVER         ; buf ch buf
+        DQ CSTORE       ; buf
+        DQ LIT
+        DQ 1            ; buf 1
+        DQ ADD          ; buf+1
+        DQ BRANCH
+        DQ -(($-.pop)/8) - 1
+.write: DQ DROP         ; buf
+        DQ LIT
+        DQ 10           ; buf 10
+        DQ OVER         ; buf 10 buf
+        DQ CSTORE       ; buf
+        DQ LIT
+        DQ 1            ; buf 1
+        DQ ADD          ; buf+1
         DQ restofDOT
         DQ NEXTWORD
 restofDOT:
@@ -114,10 +149,17 @@ impzerobranch:
         ; to CODEPOINTER.
         mov rbx, [r9]
         add r9, 8
-        mov rax, [r8]
         sub r8, 8
+        mov rax, [r8]
         test rax, rax
         jnz next
+        lea r9, [r9 + 8*rbx]
+        jmp next
+impbranch:
+        ; read the next word as a relative offset;
+        ; branch by adding offset to CODEPOINTER.
+        mov rbx, [r9]
+        add r9, 8
         lea r9, [r9 + 8*rbx]
         jmp next
 
@@ -134,18 +176,50 @@ impdup:
         mov [r8], rdx
         add r8, 8
         jmp next
+impover:
+        ; OVER (A B -- A B A)
+        mov rax, [r8-16]
+        mov [r8], rax
+        add r8, 8
+        jmp next
 impdrop:
         ; DROP (A -- )
         sub r8, 8
         jmp next
-impneq0:
-        ; NEQ0 (A -- Bool)
-        ; Result is 0 (TRUE) if A != 0;
-        ; Result is -1 (FALSE) otherwise.
+impeq0:        ; this needs inverting (and stack is all wrong)
+        ; EQ0 (A -- Bool)
+        ; Result is -1 (TRUE) if A = 0;
+        ; Result is 0 (FALSE) otherwise.
         mov rax, [r8-8]
         sub rax, 1      ; is-zero now in Carry flag
-        sbb rax, rax
+        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
+        mov [r8-8], rax
+        jmp next
+implt:
+        ; < (A B -- flag)
+        ; flag is -1 (TRUE) if A < B;
+        mov rax, [r8-16]
+        mov rbx, [r8-8]
+        sub r8, 16
+        cmp rax, rbx    ; C iff B > A
+        sbb rax, rax    ; -1 iff B > A
         mov [r8], rax
+        add r8, 8
+        jmp next
+impadd:
+        ; + (A B -- sum)
+        mov rax, [r8-16]
+        mov rbx, [r8-8]
+        add rax, rbx
+        sub r8, 8
+        mov [r8-8], rax
+        jmp next
+impcstore:
+        ; C! (ch buf -- )
+        mov rax, [r8-16]
+        mov rdx, [r8-8]
+        sub r8, 16
+        mov [rdx], al
         jmp next
 
 impexit:
@@ -172,68 +246,9 @@ impdivmod:      ; /MOD (dividend divisor -- quotient remainder)
         add r8, 8
         jmp next
 
-imprestofdot: ; ( 99 dN ... d1 BUF -- )
-
-; pop all the residues into buf
-popit:
-        ; SWAP (A B -- B A)
-        mov rbp, [r8-16]
+imprestofdot: ; ( PTR -- )
+        ; write contents of buffer to stdout
         mov rdx, [r8-8]
-        mov [r8-16], rdx
-        mov [r8-8], rbp
-
-        ; DUP (buf d -- buf d d)
-        mov rax, [r8-8]
-        mov [r8], rax
-        add r8, 8
-
-        ; check for sentinel
-        ; LIT 9
-        mov qword [r8], 9
-        add r8, 8
-        ; >
-        mov rax, [r8-16]
-        mov rbx, [r8-8]
-        sub r8, 16
-
-        cmp rax, rbx
-        ja writebuf     ; break
-
-        ; buf d
-
-        ; 48+
-        mov rax, [r8-8]
-        add rax, 48
-        mov [r8-8], rax
-
-        ; OVER
-        mov rax, [r8-16]
-        mov [r8], rax
-        add r8, 8
-
-        ; C!
-        sub r8, 8
-        mov rdx, [r8]
-        sub r8, 8
-        mov rax, [r8]
-        mov [rdx], al
-
-        ; +1 (BUF -- BUF+1)
-        mov rax, [r8-8]
-        inc rax
-        mov [r8-8], rax
-
-        jmp popit
-
-writebuf:
-; write out buf
-
-        ; DROP
-        sub r8, 8
-
-        mov rdx, [r8-8]
-        mov byte [rdx], 10      ; Add LF to buffer
-        inc rdx
         sub rdx, buf    ; the buffer length
         mov rdi, 1      ; stdout
         mov rsi, buf
