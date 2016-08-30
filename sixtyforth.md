@@ -56,18 +56,8 @@ Other prototypical blocks might be useful.
 For executing machine code, we might have a block
 that starts with an executable code address and
 is followed by machine code.
-
-Such a Direct Block would look like this:
-
-    DIRECTEXE
-    machine code
-    ...
-
-the DIRECTEXE address would be the same for all such blocks.
-It is a machine code routine that (jumps to the location 8+TOS):
-
-    - increments TARGET (by 8)
-    - jump to TARGET
+The executable code address should be the address of the
+subsequent word.
 
 ## Calling between
 
