@@ -7,12 +7,37 @@ SECTION .bss
         buf RESB 8192
         buflen EQU $-buf
 
+        lexbuf RESB 8192        ; buffer for lexing
+                                ; (see lexptr and lexend)
+        lexbufend EQU $
+
+        wordbuf RESB 8192
+
         stack RESB 100000
         continuationstack RESB 100000
 
 SECTION .data
+lexptr DQ lexbuf        ; pointer to next valid byte in lexbuf
+lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
+
+; Start of Dictionary
+        DQ 0
+.dot    DB 'dot'
+        DQ .dot
+.add    DB 'add'
+        DQ .add
+DICT:   DQ $-8
+
+; read loop should be something like:
+; LEX1: lex single word from input: creates a string.
+; FIND: search for string in dictionary.
+; if found, deposit Forth block on TOS
+; if not found, deposit NOTINDICT on TOS
+; EXECUTE
+
 program:
         DQ stdexe
+        DQ LEX1
         DQ LIT
         DQ 314592
         DQ DOT
@@ -195,6 +220,69 @@ CSTORE: DQ $+8
         mov rdx, [rbp-8]
         sub rbp, 16
         mov [rdx], al
+        jmp next
+
+rdbyte:
+        ; read a byte from the lexing buffer
+        ; using the pointers lexptr and lexend.
+        ; Result is returned in RAX.
+        ; If there is a byte, it is returned in the
+        ; lower 8 bits of RAX;
+        ; otherwise, End Of File condition, -1 is returned.
+        mov rdi, [lexptr]
+        mov rcx, [lexend]
+        sub rcx, rdi
+        jnz .nofill
+        call fill
+.nofill mov rdi, [lexptr]
+        mov rcx, [lexend]
+        sub rcx, rdi
+        jnz .ch
+        mov rax, -1
+        ret
+.ch     mov rax, 0
+        mov al, [rdi]
+        inc rdi
+        mov [lexptr], rdi
+        ret
+fill:
+        ; fill the lexing buffer by
+        ; reading some bytes from stdin.
+        ; Use a count equal to the size of the buffer
+        mov rdi, 0      ; sys_read
+        mov rsi, lexbuf
+        mov [lexptr], rsi
+        mov [lexend], rsi
+        mov rdx, lexbufend - lexbuf
+        mov rax, 0
+        syscall
+        test rax, rax
+        jle .ret
+        mov rdi, lexbuf
+        add rdi, rax
+        mov [lexend], rdi
+.ret:   ret
+
+LEX1:   DQ $+8
+        mov r13, wordbuf
+.skip:  call rdbyte
+        test rax, rax
+        js .end
+        cmp rax, 32
+        jc .skip
+.l:     mov [r13], al
+        inc r13
+        call rdbyte
+        test rax, rax
+        js .end
+        cmp rax, 32
+        ja .l
+.end:   ; push pointer and length
+        sub r13, wordbuf
+        mov qword [rbp], wordbuf
+        add rbp, 8
+        mov [rbp], r13
+        add rbp, 8
         jmp next
 
 EXIT:   DQ $+8
