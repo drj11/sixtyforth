@@ -1,4 +1,4 @@
-# SizxtyForth
+# SixtyForth
 
 ## Register Conventions
 
