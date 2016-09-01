@@ -20,11 +20,24 @@ SECTION .data
 lexptr DQ lexbuf        ; pointer to next valid byte in lexbuf
 lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
 
+; strings for dictionary
+strdot: DB 'dot'
+stradd: DB 'add'
+strnine:        DB 'nine'
+
 ; Start of Dictionary
         DQ 0
-.dot    DB 'dot'
+.nine   DQ strnine
+        DQ 4
+        DQ NINE
+        DQ .nine
+.dot    DQ strdot
+        DQ 3
+        DQ DOT
         DQ .dot
-.add    DB 'add'
+.add    DQ stradd
+        DQ 3
+        DQ ADD
         DQ .add
 DICT:   DQ $-8
 
@@ -38,6 +51,9 @@ DICT:   DQ $-8
 program:
         DQ stdexe
         DQ LEX1
+        DQ FIND
+        DQ EXECUTE
+        DQ DOT
         DQ LIT
         DQ 314592
         DQ DOT
@@ -46,6 +62,11 @@ program:
 ipl:    DQ stdexe
         DQ program
         DQ EXIT
+
+NINE:   DQ stdexe
+        DQ LIT
+        DQ 9
+        DQ NEXTWORD
 
 DOT:
 ; Observation: It is easy to calculate the least significant digit,
@@ -126,6 +147,13 @@ NEXTWORD:       DQ $+8
         sub r12, 8
         mov rbx, [r12]
         jmp next
+
+EXECUTE:        DQ $+8
+        ; execute the Forth word at TOS
+        sub rbp, 8
+        mov rdx, [rbp]
+        mov rax, [rdx]
+        jmp rax
 
 LIT:    DQ $+8
         mov rax, [rbx]
@@ -263,7 +291,10 @@ fill:
         mov [lexend], rdi
 .ret:   ret
 
-LEX1:   DQ $+8
+LEX1:   ; lexes a single word,
+        ; using the space available in wordbuf.
+        ; ( -- pointer length )
+        DQ $+8
         mov r13, wordbuf
 .skip:  call rdbyte
         test rax, rax
@@ -283,6 +314,52 @@ LEX1:   DQ $+8
         add rbp, 8
         mov [rbp], r13
         add rbp, 8
+        jmp next
+
+FIND:   DQ $+8
+        ; locate string in dictionary
+        ; ( pointer length -- word ) when found
+        ; ( pointer length -- pointer length NOTINDICT ) when not found
+        mov rax, [DICT]
+        ; rax locates the link pointer
+        ; (that points to the next word in the dictionary).
+.loop:  mov rax, [rax]
+        test rax, rax
+        jz .empty
+        mov r13, [rbp-8]
+        mov rcx, [rbp-16]
+        ; target string in (rcx, r13)
+        mov rdx, [rax]
+        mov r14, [rax+8]
+        sub rax, 8      ; address of link pointer
+        ; dict string in (rdx, r14)
+        cmp r13, r14
+        jnz .loop       ; lengths don't match, try next
+.ch:    test r13, r13
+        jz .matched
+        mov r8, 0
+        mov r9, 0
+        mov r8b, [rcx]
+        mov r9b, [rdx]
+        cmp r8, r9
+        jnz .loop
+        inc rcx
+        inc rdx
+        dec r13
+        jmp .ch
+.matched:
+        mov rax, [rax+24]
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+.empty:
+        mov rax, -1
+        mov [rbp], rax
+        add rbp, 8
+        jmp next
+
+NOTINDICT:
+        DQ $+8
         jmp next
 
 EXIT:   DQ $+8
