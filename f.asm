@@ -43,9 +43,7 @@ DICT:   DQ $-8
 
 ; read loop should be something like:
 ; LEX1: lex single word from input: creates a string.
-; FIND: search for string in dictionary.
-; if found, deposit Forth block on TOS
-; if not found, deposit NOTINDICT on TOS
+; FIND: To convert from string to DICT entry.
 ; EXECUTE
 
 program:
@@ -353,13 +351,31 @@ FIND:   DQ $+8
         mov [rbp-8], rax
         jmp next
 .empty:
-        mov rax, -1
+        mov rax, NOTINDICT
         mov [rbp], rax
         add rbp, 8
         jmp next
 
-NOTINDICT:
-        DQ $+8
+NOTINDICT:      DQ $+8
+        ; ( pointer length -- N )
+        ; convert to number N.
+        sub rbp, 8
+        mov rdi, [rbp]
+        sub rbp, 8
+        mov rsi, [rbp]
+        mov rax, 0
+.dig:   mov rcx, 10
+        mul rcx
+        mov rcx, 0
+        mov cl, [rsi]
+        sub rcx, 48
+        jc .end
+        add rax, rcx
+        inc rsi
+        dec rdi
+        jnz .dig
+.end:   mov [rbp], rax
+        add rbp, 8
         jmp next
 
 EXIT:   DQ $+8
