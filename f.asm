@@ -57,11 +57,7 @@ program:
         DQ EXECUTE
         DQ BRANCH
         DQ -(($-.l)/8)-1
-        DQ DOT
-        DQ LIT
-        DQ 314592
-        DQ DOT
-        DQ NEXTWORD
+        DQ NEXTWORD     ; Never executed
 
 ipl:    DQ stdexe
         DQ program
