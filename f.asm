@@ -20,6 +20,9 @@ SECTION .data
 lexptr DQ lexbuf        ; pointer to next valid byte in lexbuf
 lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
 
+prompt DB '> '
+promptlen EQU $-prompt
+
 ; strings for dictionary
 strdot: DB 'dot'
 stradd: DB 'add'
@@ -48,9 +51,12 @@ DICT:   DQ $-8
 
 program:
         DQ stdexe
+.l:     DQ PROMPT
         DQ LEX1
         DQ FIND
         DQ EXECUTE
+        DQ BRANCH
+        DQ -(($-.l)/8)-1
         DQ DOT
         DQ LIT
         DQ 314592
@@ -418,4 +424,12 @@ BUF:    DQ $+8
         mov rdx, buf
         mov [rbp], rdx
         add rbp, 8
+        jmp next
+
+PROMPT: DQ $+8
+        mov rdi, 1
+        mov rsi, prompt
+        mov rdx, promptlen
+        mov rax, sys_write
+        syscall
         jmp next
