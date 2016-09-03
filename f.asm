@@ -51,7 +51,7 @@ DICT:   DQ $-8
 
 program:
         DQ stdexe
-.l:     DQ PROMPT
+.l:     DQ QPROMPT
         DQ LEX1
         DQ FIND
         DQ EXECUTE
@@ -422,7 +422,15 @@ BUF:    DQ $+8
         add rbp, 8
         jmp next
 
-PROMPT: DQ $+8
+QPROMPT: DQ $+8
+        ; If interactive and the input buffer is empty,
+        ; issue a prompt.
+        ; Currently, always assumed interactive.
+        mov rdi, [lexptr]
+        mov rcx, [lexend]
+        cmp rcx, rdi
+        jnz next
+        ; do syscall
         mov rdi, 1
         mov rsi, prompt
         mov rdx, promptlen
