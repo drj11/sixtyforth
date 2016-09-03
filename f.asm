@@ -25,7 +25,7 @@ promptlen EQU $-prompt
 
 ; strings for dictionary
 strdot: DB '.'
-stradd: DB 'add'
+strplus: DB '+'
 
 ; Start of Dictionary
         DQ 0
@@ -33,10 +33,10 @@ stradd: DB 'add'
         DQ 1
         DQ DOT
         DQ .dot
-.add    DQ stradd
-        DQ 3
-        DQ ADD
-        DQ .add
+.plus   DQ strplus
+        DQ 1
+        DQ PLUS
+        DQ .plus
 DICT:   DQ $-8
 
 ; read loop should be something like:
@@ -90,12 +90,12 @@ DOT:
         DQ (.write-$)/8 - 1
         DQ LIT
         DQ 48           ; buf d 48
-        DQ ADD          ; buf ch
+        DQ PLUS         ; buf ch
         DQ OVER         ; buf ch buf
         DQ CSTORE       ; buf
         DQ LIT
         DQ 1            ; buf 1
-        DQ ADD          ; buf+1
+        DQ PLUS         ; buf+1
         DQ BRANCH
         DQ -(($-.pop)/8) - 1
 .write: DQ DROP         ; buf
@@ -105,7 +105,7 @@ DOT:
         DQ CSTORE       ; buf
         DQ LIT
         DQ 1            ; buf 1
-        DQ ADD          ; buf+1
+        DQ PLUS         ; buf+1
         DQ restofDOT
         DQ NEXTWORD
 
@@ -223,7 +223,7 @@ LT:     DQ $+8
         add rbp, 8
         jmp next
 
-ADD:    DQ $+8
+PLUS:   DQ $+8
         ; + (A B -- sum)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
