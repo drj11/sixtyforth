@@ -48,11 +48,14 @@ program:
         DQ stdexe
 .l:     DQ QPROMPT
         DQ LEX1
+        DQ QDUP
+        DQ ZEROBRANCH
+        DQ ((.x-$)/8)-1
         DQ FIND
         DQ EXECUTE
         DQ BRANCH
         DQ -(($-.l)/8)-1
-        DQ NEXTWORD     ; Never executed
+.x:     DQ NEXTWORD
 
 ipl:    DQ stdexe
         DQ program
@@ -184,10 +187,18 @@ SWAP:   DQ $+8
 
 DUP:    DQ $+8
         ; DUP (A -- A A)
-        mov rdx, [rbp-8]
-        mov [rbp], rdx
+        mov rax, [rbp-8]
+duprax: mov [rbp], rax
         add rbp, 8
         jmp next
+
+QDUP:   DQ $+8
+        ; ?DUP (NZ -- NZ NZ)    when not zero
+        ;      (0 -- 0)         when zero
+        mov rax, [rbp-8]
+        test rax, rax
+        jz next
+        jmp duprax
 
 OVER:   DQ $+8
         ; OVER (A B -- A B A)
