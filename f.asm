@@ -24,13 +24,13 @@ prompt DB '> '
 promptlen EQU $-prompt
 
 ; strings for dictionary
-strdot: DB 'dot'
+strdot: DB '.'
 stradd: DB 'add'
 
 ; Start of Dictionary
         DQ 0
 .dot    DQ strdot
-        DQ 3
+        DQ 1
         DQ DOT
         DQ .dot
 .add    DQ stradd
