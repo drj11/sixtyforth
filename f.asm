@@ -26,14 +26,9 @@ promptlen EQU $-prompt
 ; strings for dictionary
 strdot: DB 'dot'
 stradd: DB 'add'
-strnine:        DB 'nine'
 
 ; Start of Dictionary
         DQ 0
-.nine   DQ strnine
-        DQ 4
-        DQ NINE
-        DQ .nine
 .dot    DQ strdot
         DQ 3
         DQ DOT
@@ -62,11 +57,6 @@ program:
 ipl:    DQ stdexe
         DQ program
         DQ EXIT
-
-NINE:   DQ stdexe
-        DQ LIT
-        DQ 9
-        DQ NEXTWORD
 
 DOT:
 ; Observation: It is easy to calculate the least significant digit,
