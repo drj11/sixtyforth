@@ -404,7 +404,8 @@ DIVMOD: DQ $+8
 restofDOT:      DQ $+8
         ; ( PTR -- )
         ; write contents of buffer to stdout
-        mov rdx, [rbp-8]
+        sub rbp, 8
+        mov rdx, [rbp]
         sub rdx, buf    ; the buffer length
         mov rdi, 1      ; stdout
         mov rsi, buf
