@@ -24,6 +24,24 @@ prompt DB '> '
 promptlen EQU $-prompt
 
 ; Start of Dictionary
+; The Dictionary is a key Forth datastructure.
+; It is a linked list, with each element having the structure:
+; - Link Field          1 QWord
+; - Name Field: Length  1 QWord
+; - Name Field: String  N Bytes
+; - Code Field          1 QWord
+; - Parameter Field     N Qwords
+;
+; The Link Field holds the address of the Name Field.
+; Thus to read the next Link Field, 8 must be subtracted from this.
+; Generally the Link Field points to a numerically lower address.
+; A Link Field with contents of 0 marks the end of the dictionary.
+;
+; This (slightly unusual) organisation means that
+; the following dictionary definitions in the assembler file
+; are modular, in the sense that
+; they can be moved and reordered with editor block operations.
+
 STARTOFDICT:
         DQ 0    ; Link Field
 ddot:
