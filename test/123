@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../f}
+out=$(echo 1 2 3 . . . | $FORTH)
+echo $out
+case "$out" in
+    ("3 2 1 ") exit 0;;
+esac
+exit 2
