@@ -427,7 +427,7 @@ QPROMPT: DQ $+8
         cmp rcx, rdi
         jnz next
         ; do syscall
-        mov rdi, 1
+        mov rdi, 2      ; stderr
         mov rsi, prompt
         mov rdx, promptlen
         mov rax, sys_write
