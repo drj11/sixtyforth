@@ -25,8 +25,8 @@ promptlen EQU $-prompt
 
 ; Start of Dictionary
 STARTOFDICT:
-ddot:
         DQ 0    ; Link Field
+ddot:
         DQ 1    ; Name length
         DB '.'  ; Name
 DOT:
@@ -79,8 +79,9 @@ DOT:
         DQ PLUS         ; buf+1
         DQ restofDOT
         DQ NEXTWORD
+        DQ ddot         ; Link Field
 
-dplus   DQ ddot
+dplus:
         DQ 1
         DB '+'
 
@@ -92,14 +93,16 @@ PLUS:   DQ $+8
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
+        DQ dplus
 
-dhere:  DQ dplus
+dhere:
         DQ 4
         DB 'here'
 HERE:   DQ stdvar
         DQ dictfree
+        DQ dhere
 
-dstore: DQ dhere
+dstore:
         DQ 1
         DB '!'
 
@@ -110,8 +113,9 @@ store0: ; ! ( w addr -- )
         sub rbp, 16
         mov [rcx], rax
         jmp next
+        DQ dstore
 
-dfetch: DQ dstore
+dfetch:
         DQ 1
         DB '@'
 FETCH:  DQ $+8          ; std1983
@@ -120,9 +124,9 @@ FETCH:  DQ $+8          ; std1983
         mov rax, [rax]
         mov [rbp-8], rax
         jmp next
+        DQ dfetch
 
 dplusstore:
-        DQ dfetch
         DQ 2
         DB '+!'
 PLUSSTORE:
@@ -135,8 +139,9 @@ PLUSSTORE:
         DQ SWAP         ; (s a)
         DQ STORE
         DQ NEXTWORD
+        DQ dplusstore
 
-dallot: DQ dplusstore
+dallot:
         DQ 5
         DB 'allot'
 
@@ -145,8 +150,9 @@ ALLOT:  DQ stdexe       ; std1983
         DQ HERE
         DQ PLUSSTORE
         DQ NEXTWORD
+        DQ dallot
 
-dcomma: DQ dallot
+dcomma:
         DQ 1
         DB ','
 COMMA:  DQ stdexe       ; std1983
@@ -390,17 +396,18 @@ FIND:   DQ $+8
         ; locate string in dictionary
         ; ( pointer length -- word ) when found
         ; ( pointer length -- pointer length NOTINDICT ) when not found
-        mov rax, DICT
-        ; rax locates the link pointer
+        mov rax, DICT+8
+        ; rax holds address of (length, pointer) name pair.
+        ; Immediately before that is the Link Field
         ; (that points to the next word in the dictionary).
-.loop:  mov rax, [rax]
+.loop:  mov rax, [rax-8]
         test rax, rax
         jz .empty
         mov r13, [rbp-8]        ; length
         mov rcx, [rbp-16]       ; pointer
         ; target string in (rcx, r13)
-        lea rdx, [rax+16]       ; pointer to dict name
-        mov r14, [rax+8]        ; length of dict name
+        lea rdx, [rax+8]        ; pointer to dict name
+        mov r14, [rax]          ; length of dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
         jnz .loop       ; lengths don't match, try next
@@ -417,7 +424,9 @@ FIND:   DQ $+8
         dec r13
         jmp .ch
 .matched:
-        lea rax, [rax + 16 + r14]
+        ; skip over length and name bytes, storing
+        ; Code Field Address in RAX (and then deposit on stack)
+        lea rax, [rax + 8 + r14]
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
