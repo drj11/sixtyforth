@@ -215,8 +215,8 @@ _start:
         ; Initialise the model registers.
         mov rbp, stack
         mov r12, continuationstack
-        ; Initialising RDX and R9, so as to fake
-        ; executing the Forth word IPL.
+        ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
+        ; so as to fake executing the Forth word IPL.
         mov rdx, program
         mov rbx, ipl+16
 
