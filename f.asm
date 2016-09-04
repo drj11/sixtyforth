@@ -182,7 +182,7 @@ COMMA:  DQ stdexe       ; std1983
         DQ STORE
         DQ NEXTWORD
 
-dictfree RESB 50000
+dictfree TIMES 8000 DQ 0
 
 DICT:   DQ dcomma
 
