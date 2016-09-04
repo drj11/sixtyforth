@@ -71,8 +71,8 @@ DOT:
         DQ -(($-.pop)/8) - 1
 .write: DQ DROP         ; buf
         DQ LIT
-        DQ 10           ; buf 10
-        DQ OVER         ; buf 10 buf
+        DQ ' '          ; buf _
+        DQ OVER         ; buf _ buf
         DQ CSTORE       ; buf
         DQ LIT
         DQ 1            ; buf 1

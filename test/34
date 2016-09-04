@@ -1,6 +1,6 @@
 #!/bin/sh
 FORTH=${FORTH:-../f}
-out=$(echo 3 4 + . | $FORTH)
+out=$(echo 3 4 + . | $FORTH | sed 's/ *$//')
 echo $out
 case $out in
     (7) exit 0;;
