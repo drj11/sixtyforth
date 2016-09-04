@@ -24,7 +24,7 @@ prompt DB '> '
 promptlen EQU $-prompt
 
 ; Start of Dictionary
-        DQ 0
+STARTOFDICT:
 ddot:
         DQ 0    ; Link Field
         DQ 1    ; Name length
@@ -93,7 +93,74 @@ PLUS:   DQ $+8
         mov [rbp-8], rax
         jmp next
 
-DICT:   DQ dplus
+dhere:  DQ dplus
+        DQ 4
+        DB 'here'
+HERE:   DQ stdvar
+        DQ dictfree
+
+dstore: DQ dhere
+        DQ 1
+        DB '!'
+
+STORE:  DQ $+8          ; std1983
+store0: ; ! ( w addr -- )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 16
+        mov [rcx], rax
+        jmp next
+
+dfetch: DQ dstore
+        DQ 1
+        DB '@'
+FETCH:  DQ $+8          ; std1983
+        ; @ (addr -- w)
+        mov rax, [rbp-8]
+        mov rax, [rax]
+        mov [rbp-8], rax
+        jmp next
+
+dplusstore:
+        DQ dfetch
+        DQ 2
+        DB '+!'
+PLUSSTORE:
+        DQ stdexe       ; std1983
+        ; (w addr -- )
+        DQ SWAP         ; (a w)
+        DQ OVER         ; (a w a)
+        DQ FETCH        ; (a w b)
+        DQ PLUS         ; (a s)
+        DQ SWAP         ; (s a)
+        DQ STORE
+        DQ NEXTWORD
+
+dallot: DQ dplusstore
+        DQ 5
+        DB 'allot'
+
+ALLOT:  DQ stdexe       ; std1983
+        ; allot (w -- )
+        DQ HERE
+        DQ PLUSSTORE
+        DQ NEXTWORD
+
+dcomma: DQ dallot
+        DQ 1
+        DB ','
+COMMA:  DQ stdexe       ; std1983
+        ; , (w -- )
+        DQ HERE
+        DQ LIT
+        DQ 8
+        DQ ALLOT
+        DQ STORE
+        DQ NEXTWORD
+
+dictfree RESB 50000
+
+DICT:   DQ dcomma
 
 ; read loop should be something like:
 ; LEX1: lex single word from input: creates a string.
@@ -138,6 +205,12 @@ next:
         add rbx, 8
         mov rax, [rdx]
         jmp rax
+
+stdvar:
+        add rdx, 8
+        mov [rbp], rdx
+        add rbp, 8
+        jmp next
 
 ;;; Machine code implementations of various Forth words.
 

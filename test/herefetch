@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../f}
+out=$(echo here 808 , @ . | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    (808) exit 0;;
+esac
+exit 2
