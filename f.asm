@@ -113,11 +113,20 @@ PLUS:   DQ $+8
         jmp next
         DQ dplus
 
+dcp:
+        DQ 2
+        DB 'cp'
+CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
+        DQ dictfree
+        DQ dcp
+
 dhere:
         DQ 4
         DB 'here'
-HERE:   DQ stdvar
-        DQ dictfree
+HERE:   DQ stdexe       ; std1983
+        DQ CP
+        DQ FETCH
+        DQ NEXTWORD
         DQ dhere
 
 dstore:
@@ -165,7 +174,7 @@ dallot:
 
 ALLOT:  DQ stdexe       ; std1983
         ; allot (w -- )
-        DQ HERE
+        DQ CP
         DQ PLUSSTORE
         DQ NEXTWORD
         DQ dallot
@@ -181,6 +190,7 @@ COMMA:  DQ stdexe       ; std1983
         DQ ALLOT
         DQ STORE
         DQ NEXTWORD
+        DQ dcomma
 
 dictfree TIMES 8000 DQ 0
 
