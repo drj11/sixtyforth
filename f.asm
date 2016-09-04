@@ -23,44 +23,12 @@ lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
 prompt DB '> '
 promptlen EQU $-prompt
 
-; strings for dictionary
-strdot: DB '.'
-strplus: DB '+'
-
 ; Start of Dictionary
         DQ 0
-.dot    DQ strdot
-        DQ 1
-        DQ DOT
-        DQ .dot
-.plus   DQ strplus
-        DQ 1
-        DQ PLUS
-        DQ .plus
-DICT:   DQ $-8
-
-; read loop should be something like:
-; LEX1: lex single word from input: creates a string.
-; FIND: To convert from string to DICT entry.
-; EXECUTE
-
-program:
-        DQ stdexe
-.l:     DQ QPROMPT
-        DQ LEX1
-        DQ QDUP
-        DQ ZEROBRANCH
-        DQ ((.x-$)/8)-1
-        DQ FIND
-        DQ EXECUTE
-        DQ BRANCH
-        DQ -(($-.l)/8)-1
-.x:     DQ NEXTWORD
-
-ipl:    DQ stdexe
-        DQ program
-        DQ EXIT
-
+ddot:
+        DQ 0    ; Link Field
+        DQ 1    ; Name length
+        DB '.'  ; Name
 DOT:
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
@@ -111,6 +79,43 @@ DOT:
         DQ PLUS         ; buf+1
         DQ restofDOT
         DQ NEXTWORD
+
+dplus   DQ ddot
+        DQ 1
+        DB '+'
+
+PLUS:   DQ $+8
+        ; + (A B -- sum)
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+
+DICT:   DQ dplus
+
+; read loop should be something like:
+; LEX1: lex single word from input: creates a string.
+; FIND: To convert from string to DICT entry.
+; EXECUTE
+
+program:
+        DQ stdexe
+.l:     DQ QPROMPT
+        DQ LEX1
+        DQ QDUP
+        DQ ZEROBRANCH
+        DQ ((.x-$)/8)-1
+        DQ FIND
+        DQ EXECUTE
+        DQ BRANCH
+        DQ -(($-.l)/8)-1
+.x:     DQ NEXTWORD
+
+ipl:    DQ stdexe
+        DQ program
+        DQ EXIT
 
 
 SECTION .text
@@ -234,15 +239,6 @@ LT:     DQ $+8
         add rbp, 8
         jmp next
 
-PLUS:   DQ $+8
-        ; + (A B -- sum)
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        add rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-
 CSTORE: DQ $+8
         ; C! (ch buf -- )
         mov rax, [rbp-16]
@@ -321,18 +317,17 @@ FIND:   DQ $+8
         ; locate string in dictionary
         ; ( pointer length -- word ) when found
         ; ( pointer length -- pointer length NOTINDICT ) when not found
-        mov rax, [DICT]
+        mov rax, DICT
         ; rax locates the link pointer
         ; (that points to the next word in the dictionary).
 .loop:  mov rax, [rax]
         test rax, rax
         jz .empty
-        mov r13, [rbp-8]
-        mov rcx, [rbp-16]
+        mov r13, [rbp-8]        ; length
+        mov rcx, [rbp-16]       ; pointer
         ; target string in (rcx, r13)
-        mov rdx, [rax]
-        mov r14, [rax+8]
-        sub rax, 8      ; address of link pointer
+        lea rdx, [rax+16]       ; pointer to dict name
+        mov r14, [rax+8]        ; length of dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
         jnz .loop       ; lengths don't match, try next
@@ -343,13 +338,13 @@ FIND:   DQ $+8
         mov r8b, [rcx]
         mov r9b, [rdx]
         cmp r8, r9
-        jnz .loop
+        jnz .loop       ; byte doesn't match, try next
         inc rcx
         inc rdx
         dec r13
         jmp .ch
 .matched:
-        mov rax, [rax+24]
+        lea rax, [rax + 16 + r14]
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
