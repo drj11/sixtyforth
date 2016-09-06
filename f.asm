@@ -111,6 +111,18 @@ DOT:
         DQ NEXTWORD
         DQ ddot         ; Link Field
 
+dnegate:
+        DQ 6
+        DB 'negate'
+
+NEGATE:
+        DQ $+8
+        mov rax, [rbp-8]
+        neg rax
+        mov [rbp-8], rax
+        jmp next
+        DQ dnegate
+
 dplus:
         DQ 1
         DB '+'
