@@ -48,7 +48,7 @@ STARTOFDICT:
 ddup:
         DQ 3
         DB 'dup'
-DUP:    DQ $+8
+DUP:    DQ $+8          ; std1983
         ; DUP (A -- A A)
         mov rax, [rbp-8]
 duprax: mov [rbp], rax
@@ -115,7 +115,7 @@ dnegate:
         DQ 6
         DB 'negate'
 
-NEGATE:
+NEGATE:                 ; std1983
         DQ $+8
         mov rax, [rbp-8]
         neg rax
@@ -127,7 +127,7 @@ dplus:
         DQ 1
         DB '+'
 
-PLUS:   DQ $+8
+PLUS:   DQ $+8          ; std1983
         ; + (A B -- sum)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
