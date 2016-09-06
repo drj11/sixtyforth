@@ -44,6 +44,18 @@ promptlen EQU $-prompt
 
 STARTOFDICT:
         DQ 0    ; Link Field
+
+ddup:
+        DQ 3
+        DB 'dup'
+DUP:    DQ $+8
+        ; DUP (A -- A A)
+        mov rax, [rbp-8]
+duprax: mov [rbp], rax
+        add rbp, 8
+        jmp next
+        DQ ddup
+
 ddot:
         DQ 1    ; Name length
         DB '.'  ; Name
@@ -295,13 +307,6 @@ SWAP:   DQ $+8
         mov rdx, [rbp-8]
         mov [rbp-16], rdx
         mov [rbp-8], rax
-        jmp next
-
-DUP:    DQ $+8
-        ; DUP (A -- A A)
-        mov rax, [rbp-8]
-duprax: mov [rbp], rax
-        add rbp, 8
         jmp next
 
 QDUP:   DQ $+8
