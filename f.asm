@@ -204,9 +204,26 @@ COMMA:  DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dcomma
 
+dcmove:
+        DQ 5
+        DB 'cmove'
+CMOVE:  DQ $+8;         ; std1983
+cmove0: mov rcx, [rbp-8]
+        mov rdi, [rbp-16]
+        mov rsi, [rbp-24]
+        sub rbp, 24
+        mov rdx, 0
+.l:     cmp rcx, rdx
+        jz next
+        mov al, [rsi+rdx]
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        DQ dcmove
+
 dictfree TIMES 8000 DQ 0
 
-DICT:   DQ dcomma
+DICT:   DQ dcmove
 
 ; read loop should be something like:
 ; LEX1: lex single word from input: creates a string.
