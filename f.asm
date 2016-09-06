@@ -233,9 +233,43 @@ cmove0: mov rcx, [rbp-8]
         jmp .l
         DQ dcmove
 
+dcreate:
+        DQ 6
+        DB 'create'
+CREATE: DQ stdexe       ; std1983
+        ; Compile Link Field
+        DQ LIT
+        DQ DICT
+        DQ FETCH
+        DQ COMMA
+        ; Name Field Address, used much later
+        DQ HERE         ; (nfa)
+        ; Get Word
+        DQ LEX1         ; (nfa addr N)
+        ; Compile Name Field
+        DQ DUP          ; (nfa addr N N)
+        DQ COMMA        ; (nfa addr N)
+        DQ SWAP         ; (nfa N addr)
+        DQ OVER         ; (nfa N addr N)
+        DQ HERE         ; (nfa N addr N here)
+        DQ SWAP         ; (nfa N addr here N)
+        DQ CMOVE        ; (nfa N)
+        DQ CP           ; (nfa N cp)
+        DQ PLUSSTORE    ; (nfa)
+        ; Compile Code Field
+        DQ LIT
+        DQ stdvar
+        DQ COMMA
+        ; Update Dictionary pointer
+        DQ LIT
+        DQ DICT         ; (nfa &dict)
+        DQ STORE
+        DQ NEXTWORD
+        DQ dcreate
+
 dictfree TIMES 8000 DQ 0
 
-DICT:   DQ dcmove
+DICT:   DQ dcreate
 
 ; read loop should be something like:
 ; LEX1: lex single word from input: creates a string.
