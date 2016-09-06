@@ -56,10 +56,10 @@ duprax: mov [rbp], rax
         jmp next
         DQ ddup
 
-ddot:
-        DQ 1    ; Name length
-        DB '.'  ; Name
-DOT:
+dudot:
+        DQ 2    ; Name length
+        DB 'u.'  ; Name
+UDOT:                   ; std1983
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
 ; We proceed by pushing the digits onto the stack,
@@ -109,7 +109,16 @@ DOT:
         DQ PLUS         ; buf+1
         DQ restofDOT
         DQ NEXTWORD
-        DQ ddot         ; Link Field
+        DQ dudot         ; Link Field
+
+ddot:
+        DQ 1
+        DB '.'
+
+DOT:    DQ stdexe
+        DQ UDOT
+        DQ NEXTWORD
+        DQ ddot
 
 dnegate:
         DQ 6

@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../f}
+out=$(echo 18446744073709551615 u. | $FORTH)
+echo $out
+case "$out" in
+    ("18446744073709551615 ") exit 0;;
+esac
+exit 2
