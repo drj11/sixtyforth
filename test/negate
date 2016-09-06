@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../f}
+out=$(echo 7 2 negate 1 negate + + . | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    (4) exit 0;;
+esac
+exit 2
