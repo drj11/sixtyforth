@@ -3,20 +3,24 @@ BITS 64
 sys_read EQU 0
 sys_write EQU 1
 
+
 SECTION .bss
-        buf RESB 8192
-        buflen EQU $-buf
 
-        lexbuf RESB 8192        ; buffer for lexing
-                                ; (see lexptr and lexend)
-        lexbufend EQU $
+buf     RESB 8192
+buflen  EQU $-buf
 
-        wordbuf RESB 8192
+lexbuf  RESB 8192       ; buffer for lexing
+                        ; (see lexptr and lexend)
+lexbufend       EQU $
 
-        stack RESB 100000
-        continuationstack RESB 100000
+wordbuf RESB 8192
+
+stack   RESB 100000
+continuationstack       RESB 100000
+
 
 SECTION .data
+
 lexptr DQ lexbuf        ; pointer to next valid byte in lexbuf
 lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
 
