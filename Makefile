@@ -1,16 +1,16 @@
-f: f.o
+64th: 64th.o
 	ld -g -o $@ $<
 
-f.o: f.asm
+64th.o: 64th.asm
 	nasm -g -f elf64 -o $@ $<
 
 node_modules/urchin/urchin:
 	npm install urchin
 
-test: node_modules/urchin/urchin f .PHONY
+test: node_modules/urchin/urchin 64th .PHONY
 	$< test
 
 clean:
-	rm *.o f
+	rm *.o 64th
 
 .PHONY:

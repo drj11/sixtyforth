@@ -1,5 +1,5 @@
 #!/bin/sh
-FORTH=${FORTH:-../f}
+FORTH=${FORTH:-../64th}
 out=$(echo 3 4 + . | $FORTH | sed 's/ *$//')
 echo $out
 case $out in

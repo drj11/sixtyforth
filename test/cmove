@@ -1,5 +1,5 @@
 #!/bin/sh
-FORTH=${FORTH:-../f}
+FORTH=${FORTH:-../64th}
 out=$(echo here 808 , here 8 cmove here @ . | $FORTH | sed 's/ *$//')
 echo $out
 case $out in

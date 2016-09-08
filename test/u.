@@ -1,5 +1,5 @@
 #!/bin/sh
-FORTH=${FORTH:-../f}
+FORTH=${FORTH:-../64th}
 out=$(echo 18446744073709551615 u. | $FORTH)
 echo $out
 case "$out" in
