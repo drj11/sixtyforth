@@ -286,7 +286,7 @@ DICT:   DQ dcreate
 
 ; read loop should be something like:
 ; LEX1: lex single word from input: creates a string.
-; FIND: To convert from string to DICT entry.
+; SEARCH: To convert from string to DICT entry.
 ; EXECUTE
 
 program:
@@ -296,7 +296,7 @@ program:
         DQ QDUP
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
-        DQ FIND
+        DQ SEARCH
         DQ EXECUTE
         DQ BRANCH
         DQ -(($-.l)/8)-1
@@ -503,8 +503,9 @@ LEX1:   ; lexes a single word,
         add rbp, 8
         jmp next
 
-FIND:   DQ $+8
-        ; locate string in dictionary
+
+SEARCH: DQ $+8
+        ; search and locate string in dictionary
         ; ( pointer length -- word ) when found
         ; ( pointer length -- pointer length NOTINDICT ) when not found
         mov rax, DICT+8
