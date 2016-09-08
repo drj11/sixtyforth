@@ -1,9 +1,16 @@
 # SixtyForth
 
+## REFERENCES
+
+The Forth-83 Standard:
+http://forth.sourceforge.net/standard/fst83/
+
+
 ## Register Conventions
 
 Two stacks.
 Data stack, and continuation stack.
+
 Stacks grow upwards (TOS at numerically higher address).
 Stacks are empty (so word at TOS has address REG-8).
 
