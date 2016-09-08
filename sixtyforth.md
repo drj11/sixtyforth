@@ -32,6 +32,11 @@ A standard Forth block looks like this:
 
 where `EXECODE` is the address of the machine code to call, and
 `CODEADDR1` is the address of another executable block.
+The addresses that are compiled (CODEADDR1 and so on)
+are referred to in the Forth-83 standard as
+"compilation addresses".
+The compilation address of the above example word
+is `forthword`.
 
 What does the core interpreter cycle do?
 
