@@ -341,8 +341,10 @@ NEXTWORD:       DQ $+8
         mov rbx, [r12]
         jmp next
 
-EXECUTE:        DQ $+8
-        ; execute the Forth word at TOS
+EXECUTE:
+        DQ $+8          ; std-1983
+        ; addr --
+        ; execute the Forth word that has compilation address `addr`
         sub rbp, 8
         mov rdx, [rbp]
         mov rax, [rdx]
