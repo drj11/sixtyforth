@@ -494,8 +494,10 @@ LEX1:   ; lexes a single word,
         DQ SWAP         ; (addr+8 length)
         DQ NEXTWORD
 
+; Note: Can't be called "WORD" as that's a NASM keyword.
 FWORD:  ; Doesn't implement Forth standard (yet)
         DQ $+8
+fword0:
         sub rbp, 8
         mov r13, wordbuf+8
 .skip:  call rdbyte
