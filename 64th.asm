@@ -481,10 +481,25 @@ fill:
 LEX1:   ; lexes a single word,
         ; using the space available in wordbuf.
         ; ( -- pointer length )
+        DQ stdexe
+        DQ LIT
+        DQ ' '
+        DQ FWORD        ; (addr)
+        DQ DUP          ; (addr addr)
+        DQ FETCH        ; (addr length)
+        DQ SWAP         ; (length addr)
+        DQ LIT
+        DQ 8
+        DQ PLUS         ; (length adddr+8)
+        DQ SWAP         ; (addr+8 length)
+        DQ NEXTWORD
+
+FWORD:  ; Doesn't implement Forth standard (yet)
         DQ $+8
-        mov r13, wordbuf
+        sub rbp, 8
+        mov r13, wordbuf+8
 .skip:  call rdbyte
-        test rax, rax
+        test rax, rax   ; RAX < 0 ?
         js .end
         cmp rax, 32
         jc .skip
@@ -495,11 +510,12 @@ LEX1:   ; lexes a single word,
         js .end
         cmp rax, 32
         ja .l
-.end:   ; push pointer and length
-        sub r13, wordbuf
+.end:   ; Compute length.
+        sub r13, wordbuf+8
+        ; Store length to make a counted string.
+        mov [wordbuf], r13
+        ; Push address of counted string.
         mov qword [rbp], wordbuf
-        add rbp, 8
-        mov [rbp], r13
         add rbp, 8
         jmp next
 
