@@ -280,6 +280,17 @@ CREATE: DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dcreate
 
+dlexlen:
+        DQ 6
+        DB 'lexlen'
+LEXLEN: DQ $+8
+        mov rdi, [lexptr]
+        mov rcx, [lexend]
+        sub rcx, rdi
+        mov [rbp], rcx
+        add rbp, 8
+        jmp next
+
 dictfree TIMES 8000 DQ 0
 
 DICT:   DQ dcreate
@@ -291,20 +302,32 @@ DICT:   DQ dcreate
 
 program:
         DQ stdexe
-.l:     DQ QPROMPT
-        DQ LEX1
-        DQ QDUP
+        DQ LIT
+        DQ 'junk'
+.line:  DQ DROP
+        DQ QPROMPT
+        DQ filbuf
+        DQ LEXLEN
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
+.w:     DQ LEX1
+        DQ QDUP
+        DQ ZEROBRANCH
+        DQ -(($-.line)/8)-1
         DQ SEARCH
-        DQ EXECUTE
+        DQ qEXECUTE
         DQ BRANCH
-        DQ -(($-.l)/8)-1
+        DQ -(($-.w)/8)-1
 .x:     DQ NEXTWORD
 
 ipl:    DQ stdexe
         DQ program
         DQ EXIT
+
+qEXECUTE:
+        DQ stdexe
+        DQ EXECUTE
+        DQ NEXTWORD
 
 
 SECTION .text
@@ -441,15 +464,10 @@ rdbyte:
         ; read a byte from the lexing buffer
         ; using the pointers lexptr and lexend.
         ; Result is returned in RAX.
-        ; If there is a byte, it is returned in the
-        ; lower 8 bits of RAX;
+        ; If there is a byte, it is returned in RAX
+        ; (the byte is 0-extended to fill RAX);
         ; otherwise, End Of File condition, -1 is returned.
         mov rdi, [lexptr]
-        mov rcx, [lexend]
-        sub rcx, rdi
-        jnz .nofill
-        call fill
-.nofill mov rdi, [lexptr]
         mov rcx, [lexend]
         sub rcx, rdi
         jnz .ch
@@ -460,23 +478,25 @@ rdbyte:
         inc rdi
         mov [lexptr], rdi
         ret
-fill:
+
+filbuf:
+        DQ $+8
         ; fill the lexing buffer by
         ; reading some bytes from stdin.
         ; Use a count equal to the size of the buffer
         mov rdi, 0      ; sys_read
         mov rsi, lexbuf
-        mov [lexptr], rsi
+        mov [lexptr], rsi       ; reset pointers prior to syscall
         mov [lexend], rsi
         mov rdx, lexbufend - lexbuf
         mov rax, 0
         syscall
         test rax, rax
-        jle .ret
+        jle .x
         mov rdi, lexbuf
         add rdi, rax
         mov [lexend], rdi
-.ret:   ret
+.x:     jmp next
 
 LEX1:   ; lexes a single word,
         ; using the space available in wordbuf.
