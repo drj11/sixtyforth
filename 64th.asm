@@ -484,7 +484,7 @@ LEX1:   ; lexes a single word,
         DQ stdexe
         DQ LIT
         DQ ' '
-        DQ FWORD        ; (addr)
+        DQ fWORD        ; (addr)
         DQ DUP          ; (addr addr)
         DQ FETCH        ; (addr length)
         DQ SWAP         ; (length addr)
@@ -495,7 +495,7 @@ LEX1:   ; lexes a single word,
         DQ NEXTWORD
 
 ; Note: Can't be called "WORD" as that's a NASM keyword.
-FWORD:  ; Doesn't implement Forth standard (yet)
+fWORD:  ; Doesn't implement Forth standard (yet)
         DQ $+8
 fword0:
         sub rbp, 8
