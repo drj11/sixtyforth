@@ -295,10 +295,12 @@ dictfree TIMES 8000 DQ 0
 
 DICT:   DQ dcreate
 
-; read loop should be something like:
-; LEX1: lex single word from input: creates a string.
-; SEARCH: To convert from string to DICT entry.
-; EXECUTE
+; (outer) Interpreter loop:
+; Fill input bufffer (if cannot, exit);
+; Repeat, until the input buffer is empty:
+;   LEX1: lex single word from input: creates a string.
+;   SEARCH: To convert from string to DICT entry.
+;   qEXECUTE: execute / convert number / compile.
 
 program:
         DQ stdexe
