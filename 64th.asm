@@ -367,7 +367,7 @@ NEXTWORD:       DQ $+8
         jmp next
 
 EXECUTE:
-        DQ $+8          ; std-1983
+        DQ $+8          ; std1983
         ; addr --
         ; execute the Forth word that has compilation address `addr`
         sub rbp, 8
