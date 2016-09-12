@@ -62,7 +62,7 @@ duprax: mov [rbp], rax
 
 dudot:
         DQ 2    ; Name length
-        DB 'u.'  ; Name
+        DB 'u.' ; Name
 UDOT:                   ; std1983
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
