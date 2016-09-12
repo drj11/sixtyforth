@@ -507,13 +507,17 @@ LEX1:   ; lexes a single word,
         DQ LIT
         DQ ' '
         DQ fWORD        ; (addr)
+        DQ COUNT
+        DQ NEXTWORD
+
+COUNT:  DQ stdexe       ; std1983
+        ; (addr -- addr+8 +n)
         DQ DUP          ; (addr addr)
-        DQ FETCH        ; (addr length)
-        DQ SWAP         ; (length addr)
         DQ LIT
         DQ 8
-        DQ PLUS         ; (length adddr+8)
-        DQ SWAP         ; (addr+8 length)
+        DQ PLUS         ; (addr adddr+8)
+        DQ SWAP         ; (addr+8 addr)
+        DQ FETCH        ; (addr+8 length)
         DQ NEXTWORD
 
 ; Note: Can't be called "WORD" as that's a NASM keyword.
