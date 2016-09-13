@@ -561,7 +561,7 @@ fword0:
         add rbp, 8
         jmp next
 
-FIND: DQ $+8
+FIND:   DQ $+8          ; std1983
         ; search and locate string in dictionary
         ; ( addr1 -- addr2 trueish ) when found
         ; ( addr1 -- addr1 ff ) when not found
