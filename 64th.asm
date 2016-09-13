@@ -312,10 +312,15 @@ program:
         DQ LEXLEN
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
-.w:     DQ LEX1         ; :todo: use std WORD
-        DQ QDUP
+.w:
+        DQ LIT
+        DQ ' '
+        DQ fWORD        ; (addr)
+        DQ DUP
+        DQ FETCH
         DQ ZEROBRANCH
         DQ -(($-.line)/8)-1
+        DQ COUNT
         DQ SEARCH       ; :todo: use std FIND
         DQ qEXECUTE
         DQ BRANCH
