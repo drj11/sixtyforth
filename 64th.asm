@@ -320,8 +320,7 @@ program:
         DQ FETCH
         DQ ZEROBRANCH
         DQ -(($-.line)/8)-1
-        DQ COUNT
-        DQ SEARCH       ; :todo: use std FIND
+        DQ FIND
         DQ qEXECUTE
         DQ BRANCH
         DQ -(($-.w)/8)-1
@@ -332,8 +331,18 @@ ipl:    DQ stdexe
         DQ EXIT
 
 qEXECUTE:
+        ; (addr flag -- ...)
+        ; addr and flag are typically left by FIND.
+        ; if flag is non zero then EXECUTE addr;
+        ; otherwise try and handle number.
         DQ stdexe
+        DQ ZEROBRANCH
+        DQ ((.n-$)/8)-1
         DQ EXECUTE
+        DQ NEXTWORD
+.n:
+        DQ COUNT
+        DQ NOTINDICT
         DQ NEXTWORD
 
 
@@ -552,11 +561,11 @@ fword0:
         add rbp, 8
         jmp next
 
-
-SEARCH: DQ $+8
+FIND: DQ $+8
         ; search and locate string in dictionary
-        ; ( pointer length -- word ) when found
-        ; ( pointer length -- pointer length NOTINDICT ) when not found
+        ; ( addr1 -- addr2 trueish ) when found
+        ; ( addr1 -- addr1 ff ) when not found
+        mov rsi, [rbp-8]        ; RSI is addr of counted string.
         mov rax, DICT+8
         ; rax holds address of (length, pointer) name pair.
         ; Immediately before that is the Link Field
@@ -564,11 +573,11 @@ SEARCH: DQ $+8
 .loop:  mov rax, [rax-8]
         test rax, rax
         jz .empty
-        mov r13, [rbp-8]        ; length
-        mov rcx, [rbp-16]       ; pointer
+        mov r13, [rsi]          ; length
+        lea rcx, [rsi+8]        ; pointer
         ; target string in (rcx, r13)
-        lea rdx, [rax+8]        ; pointer to dict name
         mov r14, [rax]          ; length of dict name
+        lea rdx, [rax+8]        ; pointer to dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
         jnz .loop       ; lengths don't match, try next
@@ -585,15 +594,16 @@ SEARCH: DQ $+8
         dec r13
         jmp .ch
 .matched:
-        ; skip over length and name bytes, storing
-        ; Code Field Address in RAX (and then deposit on stack)
+        ; Skip over length and name bytes,
+        ; storing Code Field Address in RAX (and then replace TOS).
         lea rax, [rax + 8 + r14]
-        sub rbp, 8
         mov [rbp-8], rax
+        ; Push true (-1) for non-immediate word.
+        mov qword [rbp], -1
+        add rbp, 8
         jmp next
 .empty:
-        mov rax, NOTINDICT
-        mov [rbp], rax
+        mov qword [rbp], 0
         add rbp, 8
         jmp next
 
