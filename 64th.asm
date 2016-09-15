@@ -298,8 +298,8 @@ DICT:   DQ dcreate
 ; (outer) Interpreter loop:
 ; Fill input bufffer (if cannot, exit);
 ; Repeat, until the input buffer is empty:
-;   LEX1: lex single word from input: creates a string.
-;   SEARCH: To convert from string to DICT entry.
+;   WORD: lex single word from input: creates a string.
+;   FIND: To convert from string to DICT entry.
 ;   qEXECUTE: execute / convert number / compile.
 
 program:
