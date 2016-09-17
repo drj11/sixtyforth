@@ -309,7 +309,7 @@ DICT:   DQ dcreate
 ;   FIND: To convert from string to DICT entry.
 ;   qEXECUTE: execute / convert number / compile.
 
-program:
+INTERACTOR:
         DQ stdexe
         DQ LIT
         DQ 'junk'
@@ -334,7 +334,7 @@ program:
 .x:     DQ NEXTWORD
 
 ipl:    DQ stdexe
-        DQ program
+        DQ INTERACTOR
         DQ EXIT
 
 qEXECUTE:
@@ -361,7 +361,7 @@ _start:
         mov r12, continuationstack
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
         ; so as to fake executing the Forth word IPL.
-        mov rdx, program
+        mov rdx, INTERACTOR
         mov rbx, ipl+16
 
 stdexe:
