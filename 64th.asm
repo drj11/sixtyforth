@@ -521,16 +521,6 @@ filbuf:
         mov [lexend], rdi
 .x:     jmp next
 
-LEX1:   ; lexes a single word,
-        ; using the space available in wordbuf.
-        ; ( -- pointer length )
-        DQ stdexe
-        DQ LIT
-        DQ ' '
-        DQ fWORD        ; (addr)
-        DQ COUNT
-        DQ NEXTWORD
-
 COUNT:  DQ stdexe       ; std1983
         ; (addr -- addr+8 +n)
         DQ DUP          ; (addr addr)
