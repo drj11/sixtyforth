@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo create magic magic \' magic negate + . | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    (8) exit 0;;
+esac
+exit 2
