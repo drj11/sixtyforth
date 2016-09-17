@@ -9,9 +9,9 @@ SECTION .bss
 buf     RESB 8192
 buflen  EQU $-buf
 
-lexbuf  RESB 8192       ; buffer for lexing
-                        ; (see lexptr and lexend)
-lexbufend       EQU $
+tibaddr RESB 500        ; (address of) Terminal Input Buffer
+                        ; (see >IN and #TIB for pointer and size)
+tibend  EQU $
 
 wordbuf RESB 8192
 
@@ -20,9 +20,6 @@ continuationstack       RESB 100000
 
 
 SECTION .data
-
-lexptr DQ lexbuf        ; pointer to next valid byte in lexbuf
-lexend DQ lexbuf        ; pointer to limit of valid bytes in lexbuf
 
 prompt DB '> '
 promptlen EQU $-prompt
@@ -156,6 +153,22 @@ dcp:
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
         DQ dcp
+
+dnumbertib:
+        DQ 4
+        DB '#tib'
+numberTIB:              ; std1983
+        DQ stdvar
+anumberTIB:
+        DQ 0
+        DQ dnumbertib
+
+dtoin:
+        DQ 3
+        DB '>in'
+toIN:   DQ stdvar       ; std1983
+atoIN:  DQ 0
+        DQ dtoin
 
 dhere:
         DQ 4
@@ -304,21 +317,25 @@ TICK:   DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dtick
 
-dlexlen:
-        DQ 6
-        DB 'lexlen'
-LEXLEN: DQ $+8
-        mov rdi, [lexptr]
-        mov rcx, [lexend]
-        sub rcx, rdi
-        mov [rbp], rcx
+dtib:
+        DQ 3
+        DB 'tib'
+TIB:    DQ $+8          ; std1983
+        mov qword [rbp], tibaddr
         add rbp, 8
         jmp next
-        DQ dlexlen
+        DQ dtib
+
+duseless:
+        DQ 7
+        DB 'useless'
+USELESS:
+        DQ stdvar
+        DQ duseless
 
 dictfree TIMES 8000 DQ 0
 
-DICT:   DQ dlexlen
+DICT:   DQ duseless
 
 ; (outer) Interpreter loop:
 ; Fill input bufffer (if cannot, exit);
@@ -333,8 +350,9 @@ INTERACTOR:
         DQ 'junk'
 .line:  DQ DROP
         DQ QPROMPT
-        DQ filbuf
-        DQ LEXLEN
+        DQ filbuf       ; basically QUERY from std
+        DQ numberTIB
+        DQ FETCH
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
 .w:
@@ -502,22 +520,23 @@ CSTORE: DQ $+8
         jmp next
 
 rdbyte:
-        ; read a byte from the lexing buffer
-        ; using the pointers lexptr and lexend.
+        ; read a byte from the TIB
+        ; using #TIB and >IN.
         ; Result is returned in RAX.
         ; If there is a byte, it is returned in RAX
         ; (the byte is 0-extended to fill RAX);
         ; otherwise, End Of File condition, -1 is returned.
-        mov rdi, [lexptr]
-        mov rcx, [lexend]
+        mov rdi, [atoIN]
+        mov rcx, [anumberTIB]
         sub rcx, rdi
         jnz .ch
         mov rax, -1
         ret
 .ch     mov rax, 0
-        mov al, [rdi]
+        lea rcx, [rdi +  tibaddr]
+        mov al, [rcx]
         inc rdi
-        mov [lexptr], rdi
+        mov [atoIN], rdi
         ret
 
 filbuf:
@@ -526,17 +545,16 @@ filbuf:
         ; reading some bytes from stdin.
         ; Use a count equal to the size of the buffer
         mov rdi, 0      ; sys_read
-        mov rsi, lexbuf
-        mov [lexptr], rsi       ; reset pointers prior to syscall
-        mov [lexend], rsi
-        mov rdx, lexbufend - lexbuf
+        mov rsi, tibaddr
+        mov qword [atoIN], 0    ; reset pointers prior to syscall
+        mov qword [anumberTIB], 0
+        mov rdx, tibend - tibaddr
         mov rax, 0
         syscall
         test rax, rax
-        jle .x
-        mov rdi, lexbuf
+        jle .x          ; :todo: check for errors
         add rdi, rax
-        mov [lexend], rdi
+        mov [anumberTIB], rax
 .x:     jmp next
 
 COUNT:  DQ stdexe       ; std1983
@@ -691,8 +709,8 @@ QPROMPT: DQ $+8
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
         ; Currently, always assumed interactive.
-        mov rdi, [lexptr]
-        mov rcx, [lexend]
+        mov rdi, [atoIN]
+        mov rcx, [anumberTIB]
         cmp rcx, rdi
         jnz next
         ; do syscall
