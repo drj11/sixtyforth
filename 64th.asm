@@ -287,6 +287,23 @@ CREATE: DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dcreate
 
+dtick:
+        DQ 1
+        DB "'"
+TICK:   DQ stdexe       ; std1983
+        DQ LIT
+        DQ ' '
+        DQ fWORD        ; (addr)
+        DQ FIND         ; (addr n)
+        DQ ZEROBRANCH
+        DQ ((.z-$)/8)-1
+        DQ NEXTWORD
+.z:     DQ DROP
+        DQ LIT
+        DQ 0
+        DQ NEXTWORD
+        DQ dtick
+
 dlexlen:
         DQ 6
         DB 'lexlen'
@@ -297,10 +314,11 @@ LEXLEN: DQ $+8
         mov [rbp], rcx
         add rbp, 8
         jmp next
+        DQ dlexlen
 
 dictfree TIMES 8000 DQ 0
 
-DICT:   DQ dcreate
+DICT:   DQ dlexlen
 
 ; (outer) Interpreter loop:
 ; Fill input bufffer (if cannot, exit);
