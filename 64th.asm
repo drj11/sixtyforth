@@ -317,6 +317,16 @@ TICK:   DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dtick
 
+dtobody:
+        DQ 5
+        DB '>body'
+toBODY: DQ stdexe       ; std1983
+.body:  DQ LIT
+        DQ .body - toBODY       ; 8, basically
+        DQ PLUS
+        DQ NEXTWORD
+        DQ dtobody
+
 dtib:
         DQ 3
         DB 'tib'
