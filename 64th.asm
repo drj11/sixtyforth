@@ -258,17 +258,24 @@ CREATE: DQ stdexe       ; std1983
         ; Name Field Address, used much later
         DQ HERE         ; (nfa)
         ; Get Word
-        DQ LEX1         ; (nfa addr N)
+        DQ LIT
+        DQ ' '
+        DQ fWORD        ; (nfa addr)
+
         ; Compile Name Field
-        DQ DUP          ; (nfa addr N N)
-        DQ COMMA        ; (nfa addr N)
-        DQ SWAP         ; (nfa N addr)
-        DQ OVER         ; (nfa N addr N)
-        DQ HERE         ; (nfa N addr N here)
-        DQ SWAP         ; (nfa N addr here N)
-        DQ CMOVE        ; (nfa N)
-        DQ CP           ; (nfa N cp)
+        DQ DUP          ; (nfa addr addr)
+        DQ FETCH        ; (nfa addr N)
+        DQ LIT
+        DQ 8
+        DQ PLUS         ; (nfa addr N+8)
+        DQ SWAP         ; (nfa N+8 addr)
+        DQ OVER         ; (nfa N+8 addr N+8)
+        DQ HERE         ; (nfa N+8 addr N+8 here)
+        DQ SWAP         ; (nfa N+8 addr here N+8)
+        DQ CMOVE        ; (nfa N+8)
+        DQ CP           ; (nfa N+8 cp)
         DQ PLUSSTORE    ; (nfa)
+
         ; Compile Code Field
         DQ LIT
         DQ stdvar
