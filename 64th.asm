@@ -327,6 +327,14 @@ toBODY: DQ stdexe       ; std1983
         DQ NEXTWORD
         DQ dtobody
 
+dstate:
+        DQ 5
+        DB 'state'
+STATE:  DQ stdvar       ; std1983
+stateaddr:
+        DQ 0
+        DQ dstate
+
 dtib:
         DQ 3
         DB 'tib'
