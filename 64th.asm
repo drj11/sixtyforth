@@ -335,7 +335,7 @@ stateaddr:
         DQ 0
         DQ dstate
 
-dsemicolon
+dsemicolon:
         DQ 1    ; :todo: immediate
         DB ';'
 SEMICOLON:
