@@ -57,8 +57,9 @@ next:
 - fetch word from THIS into TARGET
 - jump to TARGET
 
-At the end of a typical Forth block, there is the word NEXTWORD.
-NEXTWORD, when executed,
+At the end of a typical Forth block,
+there is the word EXIT (defined by [FORTH1983].
+EXIT, when executed,
 effectively does a function return.
 It:
 
