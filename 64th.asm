@@ -283,6 +283,13 @@ CREATE: DQ stdexe       ; std1983
         DQ fWORD        ; (nfa addr)
 
         ; Compile Name Field
+        ; Note: this copies the entire name string
+        ; into the dictionary, even though
+        ; only 8 bytes of the string are used.
+        ; The Code Field will overwrite bytes 9 to 16 of a name
+        ; if it is that long.
+        ; This works as long as you don't run out of dictionary space.
+        ; But is not very tidy.
         DQ DUP          ; (nfa addr addr)
         DQ FETCH        ; (nfa addr N)
         DQ LIT
