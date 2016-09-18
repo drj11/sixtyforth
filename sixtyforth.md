@@ -69,11 +69,21 @@ goto next (in standard cycle)
 A standard Forth block has an executable code address
 followed by a sequence of dictionary words (see above).
 Other prototypical blocks might be useful.
+
 For executing machine code, we might have a block
 that starts with an executable code address and
 is followed by machine code.
 The executable code address should be the address of the
 subsequent word.
+
+Variables are words that place an address on the stack.
+In this implementation they have a code field of `stdvar`.
+They deposit their parameter field address
+(see `>BODY` and so on in [FORTH1983])
+on the stack.
+
+The word `CREATE` creates dictionary words
+that have `stdvar` in their code field.
 
 ## Calling between
 
