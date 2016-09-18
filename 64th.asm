@@ -29,7 +29,7 @@ promptlen EQU $-prompt
 ; It is a linked list, with each element having the structure:
 ; - Link Field          1 QWord
 ; - Name Field: Length  1 QWord
-; - Name Field: String  N Bytes
+; - Name Field: String  8 Bytes
 ; - Code Field          1 QWord
 ; - Parameter Field     N Qwords
 ;
@@ -42,13 +42,20 @@ promptlen EQU $-prompt
 ; the following dictionary definitions in the assembler file
 ; are modular, in the sense that
 ; they can be moved and reordered with editor block operations.
+;
+; (an idea borrowed from [LOELIGER1981]) Note that in the
+; Name Field only the first 8 bytes of a name are stored,
+; even though the length of the whole name is stored.
+; This means that the Name Field is fixed size,
+; but can still distinguish between
+; names of different lengths that share a prefix.
 
 STARTOFDICT:
         DQ 0    ; Link Field
 
 ddup:
         DQ 3
-        DB 'dup'
+        DQ 'dup'
 DUP:    DQ $+8          ; std1983
         ; DUP (A -- A A)
         mov rax, [rbp-8]
@@ -59,7 +66,7 @@ duprax: mov [rbp], rax
 
 dudot:
         DQ 2    ; Name length
-        DB 'u.' ; Name
+        DQ 'u.' ; Name
 UDOT:                   ; std1983
 ; Observation: It is easy to calculate the least significant digit,
 ; by dividing by 10 and taking the remainder.
@@ -114,7 +121,7 @@ UDOT:                   ; std1983
 
 ddot:
         DQ 1
-        DB '.'
+        DQ '.'
 
 DOT:    DQ stdexe
         DQ UDOT
@@ -123,7 +130,7 @@ DOT:    DQ stdexe
 
 dnegate:
         DQ 6
-        DB 'negate'
+        DQ 'negate'
 
 NEGATE:                 ; std1983
         DQ $+8
@@ -135,7 +142,7 @@ NEGATE:                 ; std1983
 
 dplus:
         DQ 1
-        DB '+'
+        DQ '+'
 
 PLUS:   DQ $+8          ; std1983
         ; + (A B -- sum)
@@ -149,14 +156,14 @@ PLUS:   DQ $+8          ; std1983
 
 dcp:
         DQ 2
-        DB 'cp'
+        DQ 'cp'
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
         DQ dcp
 
 dnumbertib:
         DQ 4
-        DB '#tib'
+        DQ '#tib'
 numberTIB:              ; std1983
         DQ stdvar
 anumberTIB:
@@ -165,14 +172,14 @@ anumberTIB:
 
 dtoin:
         DQ 3
-        DB '>in'
+        DQ '>in'
 toIN:   DQ stdvar       ; std1983
 atoIN:  DQ 0
         DQ dtoin
 
 dhere:
         DQ 4
-        DB 'here'
+        DQ 'here'
 HERE:   DQ stdexe       ; std1983
         DQ CP
         DQ FETCH
@@ -181,7 +188,7 @@ HERE:   DQ stdexe       ; std1983
 
 dstore:
         DQ 1
-        DB '!'
+        DQ '!'
 
 STORE:  DQ $+8          ; std1983
 store0: ; ! ( w addr -- )
@@ -194,7 +201,7 @@ store0: ; ! ( w addr -- )
 
 dfetch:
         DQ 1
-        DB '@'
+        DQ '@'
 FETCH:  DQ $+8          ; std1983
         ; @ (addr -- w)
         mov rax, [rbp-8]
@@ -205,7 +212,7 @@ FETCH:  DQ $+8          ; std1983
 
 dplusstore:
         DQ 2
-        DB '+!'
+        DQ '+!'
 PLUSSTORE:
         DQ stdexe       ; std1983
         ; (w addr -- )
@@ -220,7 +227,7 @@ PLUSSTORE:
 
 dallot:
         DQ 5
-        DB 'allot'
+        DQ 'allot'
 
 ALLOT:  DQ stdexe       ; std1983
         ; allot (w -- )
@@ -231,7 +238,7 @@ ALLOT:  DQ stdexe       ; std1983
 
 dcomma:
         DQ 1
-        DB ','
+        DQ ','
 COMMA:  DQ stdexe       ; std1983
         ; , (w -- )
         DQ HERE
@@ -244,7 +251,7 @@ COMMA:  DQ stdexe       ; std1983
 
 dcmove:
         DQ 5
-        DB 'cmove'
+        DQ 'cmove'
 CMOVE:  DQ $+8;         ; std1983
 cmove0: mov rcx, [rbp-8]
         mov rdi, [rbp-16]
@@ -261,7 +268,7 @@ cmove0: mov rcx, [rbp-8]
 
 dcreate:
         DQ 6
-        DB 'create'
+        DQ 'create'
 CREATE: DQ stdexe       ; std1983
         ; Compile Link Field
         DQ LIT
@@ -286,7 +293,10 @@ CREATE: DQ stdexe       ; std1983
         DQ HERE         ; (nfa N+8 addr N+8 here)
         DQ SWAP         ; (nfa N+8 addr here N+8)
         DQ CMOVE        ; (nfa N+8)
-        DQ CP           ; (nfa N+8 cp)
+        DQ DROP
+        DQ LIT
+        DQ 16
+        DQ CP           ; (nfa 16 cp)
         DQ PLUSSTORE    ; (nfa)
 
         ; Compile Code Field
@@ -302,7 +312,7 @@ CREATE: DQ stdexe       ; std1983
 
 dtick:
         DQ 1
-        DB "'"
+        DQ "'"
 TICK:   DQ stdexe       ; std1983
         DQ LIT
         DQ ' '
@@ -319,7 +329,7 @@ TICK:   DQ stdexe       ; std1983
 
 dtobody:
         DQ 5
-        DB '>body'
+        DQ '>body'
 toBODY: DQ stdexe       ; std1983
 .body:  DQ LIT
         DQ .body - toBODY       ; 8, basically
@@ -329,7 +339,7 @@ toBODY: DQ stdexe       ; std1983
 
 dstate:
         DQ 5
-        DB 'state'
+        DQ 'state'
 STATE:  DQ stdvar       ; std1983
 stateaddr:
         DQ 0
@@ -337,7 +347,7 @@ stateaddr:
 
 dsemicolon:
         DQ 1    ; :todo: immediate
-        DB ';'
+        DQ ';'
 SEMICOLON:
         DQ stdexe       ; std1983
         DQ LIT
@@ -353,7 +363,7 @@ SEMICOLON:
 
 dexit:
         DQ 4
-        DB 'exit'
+        DQ 'exit'
 EXIT:   DQ $+8          ; std1983
         sub r12, 8
         mov rbx, [r12]
@@ -362,7 +372,7 @@ EXIT:   DQ $+8          ; std1983
 
 dtib:
         DQ 3
-        DB 'tib'
+        DQ 'tib'
 TIB:    DQ $+8          ; std1983
         mov qword [rbp], tibaddr
         add rbp, 8
@@ -371,7 +381,7 @@ TIB:    DQ $+8          ; std1983
 
 duseless:
         DQ 7
-        DB 'useless'
+        DQ 'useless'
 USELESS:
         DQ stdvar
         DQ duseless
@@ -637,8 +647,8 @@ FIND:   DQ $+8          ; std1983
         ; ( addr1 -- addr2 trueish ) when found
         ; ( addr1 -- addr1 ff ) when not found
         mov rsi, [rbp-8]        ; RSI is addr of counted string.
-        mov rax, DICT+8
-        ; rax holds address of (length, pointer) name pair.
+        mov rax, DICT+8 ; Fake a "Name Field" pointer.
+        ; rax points to Name Field.
         ; Immediately before that is the Link Field
         ; (that points to the next word in the dictionary).
 .loop:  mov rax, [rax-8]
@@ -652,6 +662,11 @@ FIND:   DQ $+8          ; std1983
         ; dict string in (rdx, r14)
         cmp r13, r14
         jnz .loop       ; lengths don't match, try next
+        ; The dictionary only holds 8 bytes of name,
+        ; so we must check at most 8 bytes.
+        cmp r13, 8
+        jle .ch         ; <= 8 already
+        mov r13, 8      ; clamp to length 8
 .ch:    test r13, r13
         jz .matched
         mov r8, 0
@@ -665,9 +680,9 @@ FIND:   DQ $+8          ; std1983
         dec r13
         jmp .ch
 .matched:
-        ; Skip over length and name bytes,
+        ; Skip over Name Field (length and 8 name bytes),
         ; storing Code Field Address in RAX (and then replace TOS).
-        lea rax, [rax + 8 + r14]
+        lea rax, [rax + 16]
         mov [rbp-8], rax
         ; Push true (-1) for non-immediate word.
         mov qword [rbp], -1
