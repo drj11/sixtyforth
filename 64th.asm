@@ -109,7 +109,7 @@ UDOT:                   ; std1983
         DQ 1            ; buf 1
         DQ PLUS         ; buf+1
         DQ restofDOT
-        DQ NEXTWORD
+        DQ EXIT
         DQ dudot         ; Link Field
 
 ddot:
@@ -118,7 +118,7 @@ ddot:
 
 DOT:    DQ stdexe
         DQ UDOT
-        DQ NEXTWORD
+        DQ EXIT
         DQ ddot
 
 dnegate:
@@ -176,7 +176,7 @@ dhere:
 HERE:   DQ stdexe       ; std1983
         DQ CP
         DQ FETCH
-        DQ NEXTWORD
+        DQ EXIT
         DQ dhere
 
 dstore:
@@ -215,7 +215,7 @@ PLUSSTORE:
         DQ PLUS         ; (a s)
         DQ SWAP         ; (s a)
         DQ STORE
-        DQ NEXTWORD
+        DQ EXIT
         DQ dplusstore
 
 dallot:
@@ -226,7 +226,7 @@ ALLOT:  DQ stdexe       ; std1983
         ; allot (w -- )
         DQ CP
         DQ PLUSSTORE
-        DQ NEXTWORD
+        DQ EXIT
         DQ dallot
 
 dcomma:
@@ -239,7 +239,7 @@ COMMA:  DQ stdexe       ; std1983
         DQ 8
         DQ ALLOT
         DQ STORE
-        DQ NEXTWORD
+        DQ EXIT
         DQ dcomma
 
 dcmove:
@@ -297,7 +297,7 @@ CREATE: DQ stdexe       ; std1983
         DQ LIT
         DQ DICT         ; (nfa &dict)
         DQ STORE
-        DQ NEXTWORD
+        DQ EXIT
         DQ dcreate
 
 dtick:
@@ -310,11 +310,11 @@ TICK:   DQ stdexe       ; std1983
         DQ FIND         ; (addr n)
         DQ ZEROBRANCH
         DQ ((.z-$)/8)-1
-        DQ NEXTWORD
+        DQ EXIT
 .z:     DQ DROP
         DQ LIT
         DQ 0
-        DQ NEXTWORD
+        DQ EXIT
         DQ dtick
 
 dtobody:
@@ -324,7 +324,7 @@ toBODY: DQ stdexe       ; std1983
 .body:  DQ LIT
         DQ .body - toBODY       ; 8, basically
         DQ PLUS
-        DQ NEXTWORD
+        DQ EXIT
         DQ dtobody
 
 dstate:
@@ -341,14 +341,14 @@ dsemicolon:
 SEMICOLON:
         DQ stdexe       ; std1983
         DQ LIT
-        DQ NEXTWORD
+        DQ EXIT
         DQ COMMA
         ; :todo: check compiler safety
         DQ LIT
         DQ 0
         DQ STATE
         DQ STORE
-        DQ NEXTWORD
+        DQ EXIT
         DQ dsemicolon
 
 dtib:
@@ -401,7 +401,7 @@ INTERACTOR:
         DQ qEXECUTE
         DQ BRANCH
         DQ -(($-.w)/8)-1
-.x:     DQ NEXTWORD
+.x:     DQ EXIT
 
 ipl:    DQ stdexe
         DQ INTERACTOR
@@ -416,11 +416,11 @@ qEXECUTE:
         DQ ZEROBRANCH
         DQ ((.n-$)/8)-1
         DQ EXECUTE
-        DQ NEXTWORD
+        DQ EXIT
 .n:
         DQ COUNT
         DQ NOTINDICT
-        DQ NEXTWORD
+        DQ EXIT
 
 
 SECTION .text
@@ -452,7 +452,7 @@ stdvar:
 
 ;;; Machine code implementations of various Forth words.
 
-NEXTWORD:       DQ $+8
+EXIT:   DQ $+8          ; std1983
         sub r12, 8
         mov rbx, [r12]
         jmp next
@@ -599,7 +599,7 @@ COUNT:  DQ stdexe       ; std1983
         DQ PLUS         ; (addr adddr+8)
         DQ SWAP         ; (addr+8 addr)
         DQ FETCH        ; (addr+8 length)
-        DQ NEXTWORD
+        DQ EXIT
 
 ; Note: Can't be called "WORD" as that's a NASM keyword.
 fWORD:  ; Doesn't implement Forth standard (yet)
