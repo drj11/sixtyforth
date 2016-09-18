@@ -351,6 +351,15 @@ SEMICOLON:
         DQ EXIT
         DQ dsemicolon
 
+dexit:
+        DQ 4
+        DB 'exit'
+EXIT:   DQ $+8          ; std1983
+        sub r12, 8
+        mov rbx, [r12]
+        jmp next
+        DQ dexit
+
 dtib:
         DQ 3
         DB 'tib'
@@ -451,11 +460,6 @@ stdvar:
         jmp next
 
 ;;; Machine code implementations of various Forth words.
-
-EXIT:   DQ $+8          ; std1983
-        sub r12, 8
-        mov rbx, [r12]
-        jmp next
 
 EXECUTE:
         DQ $+8          ; std1983
