@@ -405,7 +405,7 @@ INTERACTOR:
 
 ipl:    DQ stdexe
         DQ INTERACTOR
-        DQ EXIT
+        DQ sysEXIT
 
 qEXECUTE:
         ; (addr flag -- ...)
@@ -696,7 +696,8 @@ NOTINDICT:      DQ $+8
         add rbp, 8
         jmp next
 
-EXIT:   DQ $+8
+sysEXIT:
+        DQ $+8
         mov rdi, 0
         mov rax, 60
         syscall
