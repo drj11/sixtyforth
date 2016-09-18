@@ -335,6 +335,22 @@ stateaddr:
         DQ 0
         DQ dstate
 
+dsemicolon
+        DQ 1    ; :todo: immediate
+        DB ';'
+SEMICOLON:
+        DQ stdexe       ; std1983
+        DQ LIT
+        DQ NEXTWORD
+        DQ COMMA
+        ; :todo: check compiler safety
+        DQ LIT
+        DQ 0
+        DQ STATE
+        DQ STORE
+        DQ NEXTWORD
+        DQ dsemicolon
+
 dtib:
         DQ 3
         DB 'tib'
