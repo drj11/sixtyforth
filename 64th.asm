@@ -288,12 +288,9 @@ CREATE: DQ stdexe       ; std1983
         DQ LIT
         DQ 8
         DQ PLUS         ; (nfa addr N+8)
-        DQ SWAP         ; (nfa N+8 addr)
-        DQ OVER         ; (nfa N+8 addr N+8)
-        DQ HERE         ; (nfa N+8 addr N+8 here)
-        DQ SWAP         ; (nfa N+8 addr here N+8)
-        DQ CMOVE        ; (nfa N+8)
-        DQ DROP
+        DQ HERE         ; (nfa addr N+8 here)
+        DQ SWAP         ; (nfa addr here N+8)
+        DQ CMOVE        ; (nfa)
         DQ LIT
         DQ 16
         DQ CP           ; (nfa 16 cp)
