@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '>in @ negate >in @ + .' | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    (13) exit 0;;
+esac
+exit 2
