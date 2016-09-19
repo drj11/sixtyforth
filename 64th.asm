@@ -16,7 +16,7 @@ tibend  EQU $
 wordbuf RESB 8192
 
 stack   RESB 100000
-continuationstack       RESB 100000
+returnstack       RESB 100000
 
 
 SECTION .data
@@ -451,7 +451,7 @@ GLOBAL _start
 _start:
         ; Initialise the model registers.
         mov rbp, stack
-        mov r12, continuationstack
+        mov r12, returnstack
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
         ; so as to fake executing the Forth word IPL.
         mov rdx, INTERACTOR
