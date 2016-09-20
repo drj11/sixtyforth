@@ -439,6 +439,37 @@ TIB:    DQ $+8          ; std1983
         jmp next
         DQ dtib
 
+dfword:
+        DQ 4
+        DQ 'word'
+; Note: Can't be called "WORD" as that's a NASM keyword.
+fWORD:  ; Doesn't implement Forth standard (yet)
+        DQ $+8
+fword0:
+        sub rbp, 8
+        mov r13, wordbuf+8
+.skip:  call rdbyte
+        test rax, rax   ; RAX < 0 ?
+        js .end
+        cmp rax, 32
+        jc .skip
+.l:     mov [r13], al
+        inc r13
+        call rdbyte
+        test rax, rax
+        js .end
+        cmp rax, 32
+        ja .l
+.end:   ; Compute length.
+        sub r13, wordbuf+8
+        ; Store length to make a counted string.
+        mov [wordbuf], r13
+        ; Push address of counted string.
+        mov qword [rbp], wordbuf
+        add rbp, 8
+        jmp next
+        DQ dfword
+
 dquit:
         DQ 4
         DQ 'quit'
@@ -655,33 +686,6 @@ COUNT:  DQ stdexe       ; std1983
         DQ SWAP         ; (addr+8 addr)
         DQ FETCH        ; (addr+8 length)
         DQ EXIT
-
-; Note: Can't be called "WORD" as that's a NASM keyword.
-fWORD:  ; Doesn't implement Forth standard (yet)
-        DQ $+8
-fword0:
-        sub rbp, 8
-        mov r13, wordbuf+8
-.skip:  call rdbyte
-        test rax, rax   ; RAX < 0 ?
-        js .end
-        cmp rax, 32
-        jc .skip
-.l:     mov [r13], al
-        inc r13
-        call rdbyte
-        test rax, rax
-        js .end
-        cmp rax, 32
-        ja .l
-.end:   ; Compute length.
-        sub r13, wordbuf+8
-        ; Store length to make a counted string.
-        mov [wordbuf], r13
-        ; Push address of counted string.
-        mov qword [rbp], wordbuf
-        add rbp, 8
-        jmp next
 
 FIND:   DQ $+8          ; std1983
         ; search and locate string in dictionary
