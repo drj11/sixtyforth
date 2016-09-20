@@ -166,6 +166,19 @@ PLUS:   DQ $+8          ; std1983
         jmp next
         DQ dplus
 
+dminus:
+        DQ 1
+        DQ '-'
+MINUS:  DQ $+8          ; std1983
+        ; - ( A B -- difference)
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        DQ dminus
+
 dcp:
         DQ 2
         DQ 'cp'
