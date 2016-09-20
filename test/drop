@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(printf "1 2 drop 3\n. .\n" | $FORTH)
+echo $out
+case "$out" in
+    ("3 1 ") exit 0;;
+esac
+exit 2

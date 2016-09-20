@@ -225,6 +225,50 @@ PLUSSTORE:
         DQ EXIT
         DQ dplusstore
 
+dswap:
+        DQ 4
+        DQ 'swap'
+SWAP:   DQ $+8
+        ; SWAP (A B -- B A)
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+        jmp next
+        DQ dswap
+
+dqdup:
+        DQ 4
+        DQ '?dup'
+qDUP:   DQ $+8
+        ; ?DUP (NZ -- NZ NZ)    when not zero
+        ;      (0 -- 0)         when zero
+        mov rax, [rbp-8]
+        test rax, rax
+        jz next
+        jmp duprax
+        DQ dqdup
+
+dover:
+        DQ 4
+        DQ 'over'
+OVER:   DQ $+8
+        ; OVER (A B -- A B A)
+        mov rax, [rbp-16]
+        mov [rbp], rax
+        add rbp, 8
+        jmp next
+        DQ dover
+
+ddrop:
+        DQ 4
+        DQ 'drop'
+DROP:   DQ $+8
+        ; DROP (A -- )
+        sub rbp, 8
+        jmp next
+        DQ ddrop
+
 dallot:
         DQ 5
         DQ 'allot'
@@ -520,34 +564,6 @@ BRANCH: DQ $+8
         mov rcx, [rbx]
         add rbx, 8
         lea rbx, [rbx + 8*rcx]
-        jmp next
-
-SWAP:   DQ $+8
-        ; SWAP (A B -- B A)
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-        jmp next
-
-QDUP:   DQ $+8
-        ; ?DUP (NZ -- NZ NZ)    when not zero
-        ;      (0 -- 0)         when zero
-        mov rax, [rbp-8]
-        test rax, rax
-        jz next
-        jmp duprax
-
-OVER:   DQ $+8
-        ; OVER (A B -- A B A)
-        mov rax, [rbp-16]
-        mov [rbp], rax
-        add rbp, 8
-        jmp next
-
-DROP:   DQ $+8
-        ; DROP (A -- )
-        sub rbp, 8
         jmp next
 
 EQ0:    DQ $+8
