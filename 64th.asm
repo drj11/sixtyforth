@@ -64,6 +64,18 @@ duprax: mov [rbp], rax
         jmp next
         DQ ddup
 
+ddepth:
+        DQ 5
+        DQ 'depth'
+DEPTH:  DQ $+8          ; std1983
+        ; DEPTH ( -- +n)
+        mov rcx, stack
+        mov rax, rbp
+        sub rax, rcx
+        shr rax, 3
+        jmp duprax
+        DQ ddepth
+
 dudot:
         DQ 2    ; Name length
         DQ 'u.' ; Name
