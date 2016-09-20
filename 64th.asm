@@ -410,6 +410,17 @@ toBODY: DQ stdexe       ; std1983
         DQ EXIT
         DQ dtobody
 
+dfrombody:
+        DQ 5
+        DQ 'body>'
+fromBODY:
+        DQ stdexe       ; std1983[harris]
+.body:  DQ LIT
+        DQ .body - fromBODY     ; 8, basically
+        DQ MINUS
+        DQ EXIT
+        DQ dfrombody
+
 dstate:
         DQ 5
         DQ 'state'
