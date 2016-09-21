@@ -96,7 +96,7 @@ UDOT:                   ; std1983
         DQ DIVMOD       ; -- Q R
         DQ SWAP         ; -- R Q
         DQ DUP          ; -- R Q Q
-        DQ EQ0          ; -- R Q flag
+        DQ zequals      ; -- R Q flag
         DQ ZEROBRANCH   ; -- R Q
         DQ -(($-.10div)/8) - 1
         DQ DROP
@@ -139,6 +139,21 @@ DOT:    DQ stdexe
         DQ UDOT
         DQ EXIT
         DQ ddot
+
+dzequals:
+        DQ 2
+        DQ '0='
+zequals:
+        DQ $+8          ; std1983
+        ; 0= (A -- Bool)
+        ; Result is -1 (TRUE) if A = 0;
+        ; Result is 0 (FALSE) otherwise.
+        mov rax, [rbp-8]
+        sub rax, 1      ; is-zero now in Carry flag
+        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
+        mov [rbp-8], rax
+        jmp next
+        DQ dzequals
 
 dzless:
         DQ 2
@@ -193,6 +208,19 @@ MINUS:  DQ $+8          ; std1983
         mov [rbp-8], rax
         jmp next
         DQ dminus
+
+dor:
+        DQ 2
+        DQ 'or'
+OR:     DQ $+8          ; std1983
+        ; OR (A B -- bitwise-or)
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        or rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        DQ dor
 
 dcp:
         DQ 2
@@ -633,11 +661,27 @@ qEXECUTE:
         ; if flag is non zero then EXECUTE addr;
         ; otherwise try and handle number.
         DQ stdexe
+        DQ qDUP
         DQ ZEROBRANCH
         DQ ((.n-$)/8)-1
+        ; (addr +-1)
+        ; immediate=1; non-immediate=-1
+        DQ LIT
+        DQ 1
+        DQ PLUS         ; (addr 0/2)
+        DQ STATE
+        DQ FETCH        ; (addr 0/2 compiling?)
+        DQ zequals      ; (addr 0/2 interpreting?)
+        DQ OR           ; (addr 0/2)
+        ; 0=compile; 2=execute
+        DQ ZEROBRANCH
+        DQ ((.comp-$)/8)-1
         DQ EXECUTE
         DQ EXIT
-.n:
+.comp:  ; (addr)
+        DQ COMMA
+        DQ EXIT
+.n:     ; (addr)
         DQ COUNT
         DQ NOTINDICT
         DQ EXIT
@@ -711,16 +755,6 @@ BRANCH: DQ $+8
         mov rcx, [rbx]
         add rbx, 8
         lea rbx, [rbx + 8*rcx]
-        jmp next
-
-EQ0:    DQ $+8
-        ; EQ0 (A -- Bool)
-        ; Result is -1 (TRUE) if A = 0;
-        ; Result is 0 (FALSE) otherwise.
-        mov rax, [rbp-8]
-        sub rax, 1      ; is-zero now in Carry flag
-        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
-        mov [rbp-8], rax
         jmp next
 
 LT:     DQ $+8
