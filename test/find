@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(printf "32 word + find negate .\n" | $FORTH)
+echo $out
+case "$out" in
+    ("1 ") exit 0;;
+esac
+exit 2

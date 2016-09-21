@@ -494,6 +494,61 @@ fword0:
         jmp next
         DQ dfword
 
+dfind:
+        DQ 4
+        DQ 'find'
+FIND:   DQ $+8          ; std1983
+        ; search and locate string in dictionary
+        ; ( addr1 -- addr2 trueish ) when found
+        ; ( addr1 -- addr1 ff ) when not found
+        mov rsi, [rbp-8]        ; RSI is addr of counted string.
+        mov rax, DICT+8 ; Fake a "Name Field" pointer.
+        ; rax points to Name Field.
+        ; Immediately before that is the Link Field
+        ; (that points to the next word in the dictionary).
+.loop:  mov rax, [rax-8]
+        test rax, rax
+        jz .empty
+        mov r13, [rsi]          ; length
+        lea rcx, [rsi+8]        ; pointer
+        ; target string in (rcx, r13)
+        mov r14, [rax]          ; length of dict name
+        lea rdx, [rax+8]        ; pointer to dict name
+        ; dict string in (rdx, r14)
+        cmp r13, r14
+        jnz .loop       ; lengths don't match, try next
+        ; The dictionary only holds 8 bytes of name,
+        ; so we must check at most 8 bytes.
+        cmp r13, 8
+        jle .ch         ; <= 8 already
+        mov r13, 8      ; clamp to length 8
+.ch:    test r13, r13
+        jz .matched
+        mov r8, 0
+        mov r9, 0
+        mov r8b, [rcx]
+        mov r9b, [rdx]
+        cmp r8, r9
+        jnz .loop       ; byte doesn't match, try next
+        inc rcx
+        inc rdx
+        dec r13
+        jmp .ch
+.matched:
+        ; Skip over Name Field (length and 8 name bytes),
+        ; storing Code Field Address in RAX (and then replace TOS).
+        lea rax, [rax + 16]
+        mov [rbp-8], rax
+        ; Push true (-1) for non-immediate word.
+        mov qword [rbp], -1
+        add rbp, 8
+        jmp next
+.empty:
+        mov qword [rbp], 0
+        add rbp, 8
+        jmp next
+        DQ dfind
+
 dquit:
         DQ 4
         DQ 'quit'
@@ -710,57 +765,6 @@ COUNT:  DQ stdexe       ; std1983
         DQ SWAP         ; (addr+8 addr)
         DQ FETCH        ; (addr+8 length)
         DQ EXIT
-
-FIND:   DQ $+8          ; std1983
-        ; search and locate string in dictionary
-        ; ( addr1 -- addr2 trueish ) when found
-        ; ( addr1 -- addr1 ff ) when not found
-        mov rsi, [rbp-8]        ; RSI is addr of counted string.
-        mov rax, DICT+8 ; Fake a "Name Field" pointer.
-        ; rax points to Name Field.
-        ; Immediately before that is the Link Field
-        ; (that points to the next word in the dictionary).
-.loop:  mov rax, [rax-8]
-        test rax, rax
-        jz .empty
-        mov r13, [rsi]          ; length
-        lea rcx, [rsi+8]        ; pointer
-        ; target string in (rcx, r13)
-        mov r14, [rax]          ; length of dict name
-        lea rdx, [rax+8]        ; pointer to dict name
-        ; dict string in (rdx, r14)
-        cmp r13, r14
-        jnz .loop       ; lengths don't match, try next
-        ; The dictionary only holds 8 bytes of name,
-        ; so we must check at most 8 bytes.
-        cmp r13, 8
-        jle .ch         ; <= 8 already
-        mov r13, 8      ; clamp to length 8
-.ch:    test r13, r13
-        jz .matched
-        mov r8, 0
-        mov r9, 0
-        mov r8b, [rcx]
-        mov r9b, [rdx]
-        cmp r8, r9
-        jnz .loop       ; byte doesn't match, try next
-        inc rcx
-        inc rdx
-        dec r13
-        jmp .ch
-.matched:
-        ; Skip over Name Field (length and 8 name bytes),
-        ; storing Code Field Address in RAX (and then replace TOS).
-        lea rax, [rax + 16]
-        mov [rbp-8], rax
-        ; Push true (-1) for non-immediate word.
-        mov qword [rbp], -1
-        add rbp, 8
-        jmp next
-.empty:
-        mov qword [rbp], 0
-        add rbp, 8
-        jmp next
 
 NOTINDICT:      DQ $+8
         ; ( pointer length -- N )
