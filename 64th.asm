@@ -430,7 +430,7 @@ stateaddr:
         DQ dstate
 
 dsemicolon:
-        DQ 1    ; :todo: immediate
+        DQ 1|(2<<32)    ; :todo: immediate
         DQ ';'
 SEMICOLON:
         DQ stdexe       ; std1983
@@ -513,6 +513,9 @@ FIND:   DQ $+8          ; std1983
         lea rcx, [rsi+8]        ; pointer
         ; target string in (rcx, r13)
         mov r14, [rax]          ; length of dict name
+        ; mask off flags
+        mov rdx, 0xffffffff
+        and r14, rdx
         lea rdx, [rax+8]        ; pointer to dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
@@ -535,12 +538,19 @@ FIND:   DQ $+8          ; std1983
         dec r13
         jmp .ch
 .matched:
+        ; fetch flags
+        mov rdx, [rax]
+        shr rdx, 32
         ; Skip over Name Field (length and 8 name bytes),
         ; storing Code Field Address in RAX (and then replace TOS).
         lea rax, [rax + 16]
         mov [rbp-8], rax
-        ; Push true (-1) for non-immediate word.
-        mov qword [rbp], -1
+        ; std1983 requires -1 (true) for non-immediate word,
+        ; and 1 for immediate word.
+        ; Flags (rdx) is 0 for non-immediate; 2 for immediate.
+        ; So we can subtract 1.
+        sub rdx, 1
+        mov [rbp], rdx
         add rbp, 8
         jmp next
 .empty:
