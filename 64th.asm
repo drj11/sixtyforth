@@ -143,7 +143,7 @@ DOT:    DQ stdexe
 dzless:
         DQ 2
         DQ '0<'
-zless:  DQ $+8
+zless:  DQ $+8          ; std1983
         ; 0< (n -- true) when n < 0
         ;    (n -- false) otherwise
         mov rax, [rbp-8]
