@@ -472,6 +472,17 @@ stateaddr:
         DQ 0
         DQ dstate
 
+dket:
+        DQ 1
+        DQ ']'
+ket:    DQ stdexe       ; std1983
+        DQ LIT
+        DQ 1
+        DQ STATE
+        DQ STORE
+        DQ EXIT
+        DQ dket
+
 dsemicolon:
         DQ 1|(2<<32)    ; :todo: immediate
         DQ ';'
