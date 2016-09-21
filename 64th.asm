@@ -140,6 +140,21 @@ DOT:    DQ stdexe
         DQ EXIT
         DQ ddot
 
+dzless:
+        DQ 2
+        DQ '0<'
+zless:  DQ $+8
+        ; 0< (n -- true) when n < 0
+        ;    (n -- false) otherwise
+        mov rax, [rbp-8]
+        mov rcx, -1
+        test rax, rax
+        js .sk
+        add rcx, 1
+.sk:    mov [rbp-8], rcx
+        jmp next
+        DQ dzless
+
 dnegate:
         DQ 6
         DQ 'negate'
