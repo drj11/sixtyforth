@@ -49,6 +49,12 @@ promptlen EQU $-prompt
 ; This means that the Name Field is fixed size,
 ; but can still distinguish between
 ; names of different lengths that share a prefix.
+;
+; The Length field also holds flags. It is a 64-bit word
+; that holds the length in the least significant 32-bits,
+; and flags in the upper 32 bits.
+; The only flag that is used currently is bit 33 (2<<32),
+; which is 1 when the word is marked as IMMEDIATE.
 
 STARTOFDICT:
         DQ 0    ; Link Field
