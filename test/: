@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ': trip dup dup ; 7 trip . . .' | $FORTH)
+echo $out
+case "$out" in
+    ("7 7 7 ") exit 0;;
+esac
+exit 2

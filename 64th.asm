@@ -489,6 +489,20 @@ ket:    DQ stdexe       ; std1983
         DQ EXIT
         DQ dket
 
+dcolon:
+        DQ 1
+        DQ ':'
+colon:  DQ stdexe       ; std1983
+        DQ CREATE
+        DQ LIT
+        DQ stdexe
+        DQ HERE
+        DQ fromBODY
+        DQ STORE
+        DQ ket
+        DQ EXIT
+        DQ dcolon
+
 dsemicolon:
         DQ 1|(2<<32)    ; :todo: immediate
         DQ ';'
