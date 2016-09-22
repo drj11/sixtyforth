@@ -58,13 +58,13 @@ next:
 - jump to TARGET
 
 At the end of a typical Forth block,
-there is the word EXIT (defined by [FORTH1983].
+there is the word EXIT (defined by [FORTH1983]).
 EXIT, when executed,
 effectively does a function return.
 It:
 
 - pop Top Of Continuation Stack to CODEPOINTER
-goto next (in standard cycle)
+- goto next (in standard cycle)
 
 A standard Forth block has an executable code address
 followed by a sequence of dictionary words (see above).
