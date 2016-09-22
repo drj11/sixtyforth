@@ -1,5 +1,5 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-../../64th}
 
 # This test is non-portable because it assumes that:
 # a) we can run «;» in interpret mode; and,
