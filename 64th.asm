@@ -12,6 +12,7 @@ buflen  EQU $-buf
 tibaddr RESB 500        ; (address of) Terminal Input Buffer
                         ; (see >IN and #TIB for pointer and size)
 tibend  EQU $
+tibsize EQU tibend - tibaddr
 
 wordbuf RESB 8192
 
@@ -837,7 +838,7 @@ filbuf:
         mov rsi, tibaddr
         mov qword [atoIN], 0    ; reset pointers prior to syscall
         mov qword [anumberTIB], 0
-        mov rdx, tibend - tibaddr
+        mov rdx, tibsize
         mov rax, 0
         syscall
         test rax, rax
