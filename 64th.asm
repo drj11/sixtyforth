@@ -193,13 +193,13 @@ dhold:
         DQ 'hold'
 HOLD:   DQ stdexe
         DQ PIC
-        DQ FETCH        ; (q ascii pic)
-        DQ oneminus     ; (q ascii addr)
-        DQ SWAP         ; (q addr ascii)
-        DQ OVER         ; (q addr ascii addr)
-        DQ CSTORE       ; (q addr)
+        DQ FETCH        ; (ascii pic)
+        DQ oneminus     ; (ascii addr)
+        DQ SWAP         ; (addr ascii)
+        DQ OVER         ; (addr ascii addr)
+        DQ CSTORE       ; (addr)
         DQ PIC
-        DQ STORE        ; (q)
+        DQ STORE
         DQ EXIT
         Link(dhold)
 
