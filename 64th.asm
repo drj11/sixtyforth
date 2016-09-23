@@ -211,6 +211,19 @@ sharpgreater:
         DQ EXIT
         Link(dsharpgreater)
 
+dsharps:
+        DQ 2
+        DQ '#s'
+sharpS:
+        DQ stdexe
+.l:     DQ sharp
+        DQ DUP
+        DQ zequals
+        DQ ZEROBRANCH
+        DQ -(($-.l)/8)-1
+        DQ EXIT
+        Link(dsharps)
+
 ddigit:
         DQ 5
         DQ 'digit'
