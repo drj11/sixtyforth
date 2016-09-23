@@ -191,7 +191,7 @@ sharp:  DQ stdexe
 dhold:
         DQ 4
         DQ 'hold'
-HOLD:   DQ stdexe
+HOLD:   DQ stdexe       ; std1983
         DQ PIC
         DQ FETCH        ; (ascii pic)
         DQ oneminus     ; (ascii addr)
