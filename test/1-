@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '2 1- dup 1- . .' | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    ("0 1") exit 0;;
+esac
+exit 2
