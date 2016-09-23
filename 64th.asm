@@ -57,6 +57,8 @@ promptlen EQU $-prompt
 ; The only flag that is used currently is bit 33 (2<<32),
 ; which is 1 when the word is marked as IMMEDIATE.
 
+%define Link(a) DQ (a)
+
 STARTOFDICT:
         DQ 0    ; Link Field
 
@@ -69,7 +71,7 @@ DUP:    DQ $+8          ; std1983
 duprax: mov [rbp], rax
         add rbp, 8
         jmp next
-        DQ ddup
+        Link(ddup)
 
 ddepth:
         DQ 5
@@ -81,7 +83,7 @@ DEPTH:  DQ $+8          ; std1983
         sub rax, rcx
         shr rax, 3
         jmp duprax
-        DQ ddepth
+        Link(ddepth)
 
 dudot:
         DQ 2    ; Name length
@@ -136,7 +138,7 @@ UDOT:                   ; std1983
         DQ PLUS         ; buf+1
         DQ restofDOT
         DQ EXIT
-        DQ dudot         ; Link Field
+        Link(dudot)     ; Link Field
 
 ddot:
         DQ 1
@@ -145,7 +147,7 @@ ddot:
 DOT:    DQ stdexe
         DQ UDOT
         DQ EXIT
-        DQ ddot
+        Link(ddot)
 
 dzequals:
         DQ 2
@@ -160,7 +162,7 @@ zequals:
         sbb rax, rax    ; C=0 -> 0; C=1 -> -1
         mov [rbp-8], rax
         jmp next
-        DQ dzequals
+        Link(dzequals)
 
 dzless:
         DQ 2
@@ -175,7 +177,7 @@ zless:  DQ $+8          ; std1983
         add rcx, 1
 .sk:    mov [rbp-8], rcx
         jmp next
-        DQ dzless
+        Link(dzless)
 
 dnegate:
         DQ 6
@@ -187,12 +189,11 @@ NEGATE:                 ; std1983
         neg rax
         mov [rbp-8], rax
         jmp next
-        DQ dnegate
+        Link(dnegate)
 
 dplus:
         DQ 1
         DQ '+'
-
 PLUS:   DQ $+8          ; std1983
         ; + (A B -- sum)
         mov rax, [rbp-16]
@@ -201,7 +202,7 @@ PLUS:   DQ $+8          ; std1983
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
-        DQ dplus
+        Link(dplus)
 
 dminus:
         DQ 1
@@ -214,7 +215,7 @@ MINUS:  DQ $+8          ; std1983
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
-        DQ dminus
+        Link(dminus)
 
 dor:
         DQ 2
@@ -227,14 +228,14 @@ OR:     DQ $+8          ; std1983
         sub rbp, 8
         mov [rbp-8], rax
         jmp next
-        DQ dor
+        Link(dor)
 
 dcp:
         DQ 2
         DQ 'cp'
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
-        DQ dcp
+        Link(dcp)
 
 dnumbertib:
         DQ 4
@@ -243,14 +244,14 @@ numberTIB:              ; std1983
         DQ stdvar
 anumberTIB:
         DQ 0
-        DQ dnumbertib
+        Link(dnumbertib)
 
 dtoin:
         DQ 3
         DQ '>in'
 toIN:   DQ stdvar       ; std1983
 atoIN:  DQ 0
-        DQ dtoin
+        Link(dtoin)
 
 dhere:
         DQ 4
@@ -259,12 +260,11 @@ HERE:   DQ stdexe       ; std1983
         DQ CP
         DQ FETCH
         DQ EXIT
-        DQ dhere
+        Link(dhere)
 
 dstore:
         DQ 1
         DQ '!'
-
 STORE:  DQ $+8          ; std1983
 store0: ; ! ( w addr -- )
         mov rax, [rbp-16]
@@ -272,7 +272,7 @@ store0: ; ! ( w addr -- )
         sub rbp, 16
         mov [rcx], rax
         jmp next
-        DQ dstore
+        Link(dstore)
 
 dfetch:
         DQ 1
@@ -283,7 +283,7 @@ FETCH:  DQ $+8          ; std1983
         mov rax, [rax]
         mov [rbp-8], rax
         jmp next
-        DQ dfetch
+        Link(dfetch)
 
 dplusstore:
         DQ 2
@@ -298,7 +298,7 @@ PLUSSTORE:
         DQ SWAP         ; (s a)
         DQ STORE
         DQ EXIT
-        DQ dplusstore
+        Link(dplusstore)
 
 dswap:
         DQ 4
@@ -310,7 +310,7 @@ SWAP:   DQ $+8
         mov [rbp-16], rdx
         mov [rbp-8], rax
         jmp next
-        DQ dswap
+        Link(dswap)
 
 dqdup:
         DQ 4
@@ -322,7 +322,7 @@ qDUP:   DQ $+8
         test rax, rax
         jz next
         jmp duprax
-        DQ dqdup
+        Link(dqdup)
 
 dover:
         DQ 4
@@ -333,7 +333,7 @@ OVER:   DQ $+8
         mov [rbp], rax
         add rbp, 8
         jmp next
-        DQ dover
+        Link(dover)
 
 ddrop:
         DQ 4
@@ -342,7 +342,7 @@ DROP:   DQ $+8
         ; DROP (A -- )
         sub rbp, 8
         jmp next
-        DQ ddrop
+        Link(ddrop)
 
 dallot:
         DQ 5
@@ -353,7 +353,7 @@ ALLOT:  DQ stdexe       ; std1983
         DQ CP
         DQ PLUSSTORE
         DQ EXIT
-        DQ dallot
+        Link(dallot)
 
 dcomma:
         DQ 1
@@ -366,7 +366,7 @@ COMMA:  DQ stdexe       ; std1983
         DQ ALLOT
         DQ STORE
         DQ EXIT
-        DQ dcomma
+        Link(dcomma)
 
 dcmove:
         DQ 5
@@ -383,7 +383,7 @@ cmove0: mov rcx, [rbp-8]
         mov [rdi+rdx], al
         inc rdx
         jmp .l
-        DQ dcmove
+        Link(dcmove)
 
 dcreate:
         DQ 6
@@ -431,7 +431,7 @@ CREATE: DQ stdexe       ; std1983
         DQ DICT         ; (nfa &dict)
         DQ STORE
         DQ EXIT
-        DQ dcreate
+        Link(dcreate)
 
 dtick:
         DQ 1
@@ -448,7 +448,7 @@ TICK:   DQ stdexe       ; std1983
         DQ LIT
         DQ 0
         DQ EXIT
-        DQ dtick
+        Link(dtick)
 
 dtobody:
         DQ 5
@@ -458,7 +458,7 @@ toBODY: DQ stdexe       ; std1983
         DQ .body - toBODY       ; 8, basically
         DQ PLUS
         DQ EXIT
-        DQ dtobody
+        Link(dtobody)
 
 dfrombody:
         DQ 5
@@ -469,7 +469,7 @@ fromBODY:
         DQ .body - fromBODY     ; 8, basically
         DQ MINUS
         DQ EXIT
-        DQ dfrombody
+        Link(dfrombody)
 
 dstate:
         DQ 5
@@ -477,7 +477,7 @@ dstate:
 STATE:  DQ stdvar       ; std1983
 stateaddr:
         DQ 0
-        DQ dstate
+        Link(dstate)
 
 dket:
         DQ 1
@@ -488,7 +488,7 @@ ket:    DQ stdexe       ; std1983
         DQ STATE
         DQ STORE
         DQ EXIT
-        DQ dket
+        Link(dket)
 
 dcolon:
         DQ 1
@@ -502,7 +502,7 @@ colon:  DQ stdexe       ; std1983
         DQ STORE
         DQ ket
         DQ EXIT
-        DQ dcolon
+        Link(dcolon)
 
 dsemicolon:
         DQ 1|(2<<32)    ; :todo: immediate
@@ -518,7 +518,7 @@ SEMICOLON:
         DQ STATE
         DQ STORE
         DQ EXIT
-        DQ dsemicolon
+        Link(dsemicolon)
 
 dexit:
         DQ 4
@@ -527,7 +527,7 @@ EXIT:   DQ $+8          ; std1983
         sub r12, 8
         mov rbx, [r12]
         jmp next
-        DQ dexit
+        Link(dexit)
 
 dtib:
         DQ 3
@@ -536,7 +536,7 @@ TIB:    DQ $+8          ; std1983
         mov qword [rbp], tibaddr
         add rbp, 8
         jmp next
-        DQ dtib
+        Link(dtib)
 
 dfword:
         DQ 4
@@ -567,7 +567,7 @@ fword0:
         mov qword [rbp], wordbuf
         add rbp, 8
         jmp next
-        DQ dfword
+        Link(dfword)
 
 dfind:
         DQ 4
@@ -632,20 +632,20 @@ FIND:   DQ $+8          ; std1983
         mov qword [rbp], 0
         add rbp, 8
         jmp next
-        DQ dfind
+        Link(dfind)
 
 dquit:
         DQ 4
         DQ 'quit'
 QUIT:   DQ reset
-        DQ dquit
+        Link(dquit)
 
 duseless:
         DQ 7
         DQ 'useless'
 USELESS:
         DQ stdvar
-        DQ duseless
+        Link(duseless)
 
 dictfree TIMES 8000 DQ 0
 
