@@ -173,6 +173,7 @@ lesssharp:
         DQ tibaddr
         DQ PIC
         DQ STORE
+        DQ EXIT
         Link(dlesssharp)
 
 dsharp:
