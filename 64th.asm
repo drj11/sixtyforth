@@ -217,6 +217,15 @@ MINUS:  DQ $+8          ; std1983
         jmp next
         Link(dminus)
 
+ddivide:
+        DQ 1
+        DQ '/'
+divide: DQ stdexe
+        DQ DIVMOD
+        DQ DROP
+        DQ EXIT
+        Link(ddivide)
+
 dor:
         DQ 2
         DQ 'or'
