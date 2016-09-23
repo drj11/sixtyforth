@@ -195,6 +195,22 @@ sharp:  DQ stdexe
         DQ EXIT
         Link(dsharp)
 
+dsharpgreater:
+        DQ 2
+        DQ '#>'
+sharpgreater:
+        DQ stdexe
+        ; #> (n -- addr +n)
+        DQ DROP
+        DQ PIC
+        DQ FETCH        ; (addr)
+        DQ LIT
+        DQ tibaddr      ; (addr tib)
+        DQ OVER         ; (addr tib addr)
+        DQ MINUS        ; (addr +n)
+        DQ EXIT
+        Link(dsharpgreater)
+
 ddigit:
         DQ 5
         DQ 'digit'

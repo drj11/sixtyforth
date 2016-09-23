@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '<# #> .' | $FORTH)
+echo $out
+case $out in
+    ('0 ') exit 0;;
+esac
+exit 2
