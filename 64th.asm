@@ -57,7 +57,7 @@ promptlen EQU $-prompt
 ; The only flag that is used currently is bit 33 (2<<32),
 ; which is 1 when the word is marked as IMMEDIATE.
 
-%define Link(a) DQ (a)
+%define Link(a) DQ (a)-8
 
 STARTOFDICT:
         DQ 0    ; Link Field
@@ -389,17 +389,17 @@ dcreate:
         DQ 6
         DQ 'create'
 CREATE: DQ stdexe       ; std1983
+        ; Link Field Address, used much later
+        DQ HERE         ; (lfa)
         ; Compile Link Field
         DQ LIT
         DQ DICT
         DQ FETCH
         DQ COMMA
-        ; Name Field Address, used much later
-        DQ HERE         ; (nfa)
         ; Get Word
         DQ LIT
         DQ ' '
-        DQ fWORD        ; (nfa addr)
+        DQ fWORD        ; (lfa addr)
 
         ; Compile Name Field
         ; Note: this copies the entire name string
@@ -409,18 +409,18 @@ CREATE: DQ stdexe       ; std1983
         ; if it is that long.
         ; This works as long as you don't run out of dictionary space.
         ; But is not very tidy.
-        DQ DUP          ; (nfa addr addr)
-        DQ FETCH        ; (nfa addr N)
+        DQ DUP          ; (lfa addr addr)
+        DQ FETCH        ; (lfa addr N)
         DQ LIT
         DQ 8
-        DQ PLUS         ; (nfa addr N+8)
-        DQ HERE         ; (nfa addr N+8 here)
-        DQ SWAP         ; (nfa addr here N+8)
-        DQ CMOVE        ; (nfa)
+        DQ PLUS         ; (lfa addr N+8)
+        DQ HERE         ; (lfa addr N+8 here)
+        DQ SWAP         ; (lfa addr here N+8)
+        DQ CMOVE        ; (lfa)
         DQ LIT
         DQ 16
-        DQ CP           ; (nfa 16 cp)
-        DQ PLUSSTORE    ; (nfa)
+        DQ CP           ; (lfa 16 cp)
+        DQ PLUSSTORE    ; (lfa)
 
         ; Compile Code Field
         DQ LIT
@@ -428,7 +428,7 @@ CREATE: DQ stdexe       ; std1983
         DQ COMMA
         ; Update Dictionary pointer
         DQ LIT
-        DQ DICT         ; (nfa &dict)
+        DQ DICT         ; (lfa &dict)
         DQ STORE
         DQ EXIT
         Link(dcreate)
@@ -577,21 +577,20 @@ FIND:   DQ $+8          ; std1983
         ; ( addr1 -- addr2 trueish ) when found
         ; ( addr1 -- addr1 ff ) when not found
         mov rsi, [rbp-8]        ; RSI is addr of counted string.
-        mov rax, DICT+8 ; Fake a "Name Field" pointer.
-        ; rax points to Name Field.
-        ; Immediately before that is the Link Field
+        mov rax, DICT   ; Link to most recent word
+        ; rax points to Link Field
         ; (that points to the next word in the dictionary).
-.loop:  mov rax, [rax-8]
+.loop:  mov rax, [rax]
         test rax, rax
         jz .empty
         mov r13, [rsi]          ; length
         lea rcx, [rsi+8]        ; pointer
         ; target string in (rcx, r13)
-        mov r14, [rax]          ; length of dict name
+        mov r14, [rax+8]        ; length of dict name
         ; mask off flags
         mov rdx, 0xffffffff
         and r14, rdx
-        lea rdx, [rax+8]        ; pointer to dict name
+        lea rdx, [rax+16]       ; pointer to dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
         jnz .loop       ; lengths don't match, try next
@@ -614,11 +613,11 @@ FIND:   DQ $+8          ; std1983
         jmp .ch
 .matched:
         ; fetch flags
-        mov rdx, [rax]
+        mov rdx, [rax+8]
         shr rdx, 32
-        ; Skip over Name Field (length and 8 name bytes),
+        ; Skip over Link and Name Field (length and 8 name bytes),
         ; storing Code Field Address in RAX (and then replace TOS).
-        lea rax, [rax + 16]
+        lea rax, [rax + 24]
         mov [rbp-8], rax
         ; std1983 requires -1 (true) for non-immediate word,
         ; and 1 for immediate word.
@@ -649,7 +648,7 @@ USELESS:
 
 dictfree TIMES 8000 DQ 0
 
-DICT:   DQ duseless
+DICT:   Link(duseless)
 
 ; (outer) Interpreter loop:
 ; Fill input bufffer (if cannot, exit);
