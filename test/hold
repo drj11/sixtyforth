@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '13799 <# # # # 44 hold #s #> type' | $FORTH)
+echo $out
+case $out in
+    ('13,799') exit 0;;
+esac
+exit 2

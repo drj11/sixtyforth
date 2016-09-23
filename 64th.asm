@@ -184,6 +184,14 @@ sharp:  DQ stdexe
         DQ FETCH        ; (n b)
         DQ DIVMOD       ; (q r)
         DQ DIGIT        ; (q ascii)
+        DQ HOLD
+        DQ EXIT
+        Link(dsharp)
+
+dhold:
+        DQ 4
+        DQ 'hold'
+HOLD:   DQ stdexe
         DQ PIC
         DQ FETCH        ; (q ascii pic)
         DQ oneminus     ; (q ascii addr)
@@ -193,7 +201,7 @@ sharp:  DQ stdexe
         DQ PIC
         DQ STORE        ; (q)
         DQ EXIT
-        Link(dsharp)
+        Link(dhold)
 
 dsharpgreater:
         DQ 2
