@@ -1,0 +1,9 @@
+#!/bin/sh
+FORTH=${FORTH:-../../64th}
+
+out=$(echo 0 digit 9 digit 10 digit 11 digit . . . . | $FORTH | sed 's/ *$//')
+echo $out
+case $out in
+    ("66 65 57 48") exit 0;;
+esac
+exit 2

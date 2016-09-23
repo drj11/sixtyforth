@@ -9,6 +9,7 @@ SECTION .bss
 buf     RESB 8192
 buflen  EQU $-buf
 
+picture RESB 100        ; For picture output, <# and so on.
 tibaddr RESB 500        ; (address of) Terminal Input Buffer
                         ; (see >IN and #TIB for pointer and size)
 tibend  EQU $
@@ -149,6 +150,73 @@ DOT:    DQ stdexe
         DQ EXIT
         Link(ddot)
 
+dbase:
+        DQ 4
+        DQ 'base'
+BASE:   DQ stdvar
+        DQ 10
+        Link(dbase)
+
+dpic:
+        DQ 3
+        DQ 'pic'
+PIC:    DQ stdvar
+        DQ 0
+        Link(dpic)
+
+dlesssharp:
+        DQ 2
+        DQ '<#'
+lesssharp:
+        DQ stdexe
+        DQ LIT
+        DQ tibaddr
+        DQ PIC
+        DQ STORE
+        Link(dlesssharp)
+
+dsharp:
+        DQ 1
+        DQ '#'
+sharp:  DQ stdexe
+        DQ BASE
+        DQ FETCH        ; (n b)
+        DQ DIVMOD       ; (q r)
+        DQ DIGIT        ; (q ascii)
+        DQ PIC
+        DQ FETCH        ; (q ascii pic)
+        DQ oneminus     ; (q ascii addr)
+        DQ SWAP         ; (q addr ascii)
+        DQ OVER         ; (q addr ascii addr)
+        DQ CSTORE       ; (q addr)
+        DQ PIC
+        DQ STORE        ; (q)
+        DQ EXIT
+        Link(dsharp)
+
+ddigit:
+        DQ 5
+        DQ 'digit'
+DIGIT:  DQ stdexe
+        ; DIGIT (n -- ascii)
+        ; convert digit (0 to 15) to ASCII
+        ; 0 -> 48
+        ; 10 -> 65
+        DQ LIT
+        DQ 9            ; (n 9)
+        DQ OVER         ; (n 9 n)
+        DQ lessthan     ; (n bf)
+        DQ ZEROBRANCH
+        DQ ((.l-$)/8)-1
+        DQ LIT
+        DQ 7
+        DQ PLUS
+.l:     DQ LIT
+        DQ '0'
+        DQ PLUS
+        DQ EXIT
+        Link(ddigit)
+
 dzequals:
         DQ 2
         DQ '0='
@@ -178,6 +246,20 @@ zless:  DQ $+8          ; std1983
 .sk:    mov [rbp-8], rcx
         jmp next
         Link(dzless)
+
+dlessthan:
+        DQ 1
+        DQ '<'
+lessthan:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        cmp rax, rcx
+        sbb rax, rax
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        Link(dlessthan)
 
 dnegate:
         DQ 6
@@ -216,6 +298,17 @@ MINUS:  DQ $+8          ; std1983
         mov [rbp-8], rax
         jmp next
         Link(dminus)
+
+doneminus:
+        DQ 2
+        DQ '1-'
+oneminus:
+        DQ $+8
+        mov rax, [rbp-8]
+        sub rax, 1
+        mov [rbp-8], rax
+        jmp next
+        Link(doneminus)
 
 ddivide:
         DQ 1

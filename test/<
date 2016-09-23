@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '1 9 < negate 9 9 < negate 10 9 < negate . . .' | $FORTH)
+echo $out
+case "$out" in
+    ("0 0 1 ") exit 0;;
+esac
+exit 2
