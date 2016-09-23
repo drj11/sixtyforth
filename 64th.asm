@@ -232,6 +232,19 @@ sharpS:
         DQ EXIT
         Link(dsharps)
 
+dsign:
+        DQ 4
+        DQ 'sign'
+SIGN:   DQ stdexe       ; std1983
+        DQ zless
+        DQ ZEROBRANCH
+        DQ ((.pos-$)/8)-1
+        DQ LIT
+        DQ '-'
+        DQ HOLD
+.pos:   DQ EXIT
+        Link(dsign)
+
 ddigit:
         DQ 5
         DQ 'digit'
