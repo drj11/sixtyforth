@@ -34,8 +34,8 @@ promptlen EQU $-prompt
 ; - Code Field          1 QWord
 ; - Parameter Field     N Qwords
 ;
-; The Link Field holds the address of the Name Field.
-; Thus to read the next Link Field, 8 must be subtracted from this.
+; The Link Field holds the address of the previous Link Field.
+; Thus to locate the previous Name Field, 8 must be added to this.
 ; Generally the Link Field points to a numerically lower address.
 ; A Link Field with contents of 0 marks the end of the dictionary.
 ;
