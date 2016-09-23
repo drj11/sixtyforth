@@ -2,7 +2,7 @@
 	ld -g -o $@ $<
 
 64th.o: 64th.asm
-	nasm -w+error -g -f elf64 -o $@ $<
+	nasm -w+error -g -f elf64 -o $@ -l 64th.lst $<
 
 node_modules/urchin/urchin:
 	npm install urchin
