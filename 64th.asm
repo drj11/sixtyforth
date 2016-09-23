@@ -234,6 +234,20 @@ DIGIT:  DQ stdexe
         DQ EXIT
         Link(ddigit)
 
+dtype:
+        DQ 4
+        DQ 'type'
+type:   DQ $+8
+        ; TYPE (addr +n -- )
+        mov rdx, [rbp-8]
+        mov rsi, [rbp-16]
+        sub rbp, 16
+        mov rdi, 1      ; stdout
+        mov rax, sys_write
+        syscall
+        jmp next
+        Link(dtype)
+
 dzequals:
         DQ 2
         DQ '0='
