@@ -117,7 +117,19 @@ ddot:
         DQ '.'
 
 dot:    DQ stdexe
-        DQ Udot
+        DQ DUP          ; (n n)
+        DQ fABS         ; (n +n)
+        DQ LIT
+        DQ 0            ; (n +n 0)
+        DQ lesssharp
+        DQ LIT
+        DQ ' '
+        DQ HOLD
+        DQ sharpS
+        DQ ROT
+        DQ SIGN
+        DQ sharpgreater
+        DQ TYPE
         DQ EXIT
         Link(ddot)
 
