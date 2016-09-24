@@ -103,8 +103,7 @@ Udot:   DQ stdexe
         DQ LIT
         DQ 0
         DQ lesssharp
-        DQ LIT
-        DQ ' '
+        DQ fBL
         DQ HOLD
         DQ sharpS
         DQ sharpgreater
@@ -122,8 +121,7 @@ dot:    DQ stdexe
         DQ LIT
         DQ 0            ; (n +n 0)
         DQ lesssharp
-        DQ LIT
-        DQ ' '
+        DQ fBL
         DQ HOLD
         DQ sharpS
         DQ ROT
@@ -263,7 +261,7 @@ dbl:
         DQ 'bl'         ; std1994
 fBL:    DQ stdexe
         DQ LIT
-        DQ 32
+        DQ ' '
         DQ EXIT
         Link(dbl)
 
@@ -602,8 +600,7 @@ CREATE: DQ stdexe       ; std1983
         DQ fetch
         DQ comma
         ; Get Word
-        DQ LIT
-        DQ ' '
+        DQ fBL
         DQ fWORD        ; (lfa addr)
 
         ; Compile Name Field
@@ -642,8 +639,7 @@ dtick:
         DQ 1
         DQ "'"
 TICK:   DQ stdexe       ; std1983
-        DQ LIT
-        DQ ' '
+        DQ fBL
         DQ fWORD        ; (addr)
         DQ FIND         ; (addr n)
         DQ ZEROBRANCH
@@ -874,8 +870,7 @@ INTERACTOR:
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
 .w:
-        DQ LIT
-        DQ ' '
+        DQ fBL
         DQ fWORD        ; (addr)
         DQ DUP
         DQ fetch
