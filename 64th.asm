@@ -88,58 +88,19 @@ DEPTH:  DQ $+8          ; std1983
 
 dudot:
         DQ 2    ; Name length
-        DQ 'u.' ; Name
-UDOT:                   ; std1983
-; Observation: It is easy to calculate the least significant digit,
-; by dividing by 10 and taking the remainder.
-; We proceed by pushing the digits onto the stack,
-; pushing the least significant first.
-; This creates a stack of digits of variable length;
-; we mark the beginning of the stack of digits with
-; a sentinel value, which is 99 (which can't possible be a digit).
-        DQ stdexe
+        DQ 'u.'         ; std1983
+UDOT:   DQ stdexe
         DQ LIT
-        DQ 99
-        DQ SWAP
-.10div: DQ LIT
-        DQ 10
-        DQ DIVMOD       ; -- Q R
-        DQ SWAP         ; -- R Q
-        DQ DUP          ; -- R Q Q
-        DQ zequals      ; -- R Q flag
-        DQ ZEROBRANCH   ; -- R Q
-        DQ -(($-.10div)/8) - 1
-        DQ DROP
-        ; stack now contains the digits
-        DQ BUF
-.pop:   DQ SWAP         ; buf d
-        DQ DUP          ; buf d d
+        DQ 0
+        DQ lesssharp
         DQ LIT
-        DQ 10           ; buf d d 10
-        DQ LT           ; buf d flag
-        DQ ZEROBRANCH   ; buf d
-        DQ (.write-$)/8 - 1
-        DQ LIT
-        DQ 48           ; buf d 48
-        DQ PLUS         ; buf ch
-        DQ OVER         ; buf ch buf
-        DQ CSTORE       ; buf
-        DQ LIT
-        DQ 1            ; buf 1
-        DQ PLUS         ; buf+1
-        DQ BRANCH
-        DQ -(($-.pop)/8) - 1
-.write: DQ DROP         ; buf
-        DQ LIT
-        DQ ' '          ; buf _
-        DQ OVER         ; buf _ buf
-        DQ CSTORE       ; buf
-        DQ LIT
-        DQ 1            ; buf 1
-        DQ PLUS         ; buf+1
-        DQ restofDOT
+        DQ ' '
+        DQ HOLD
+        DQ sharpS
+        DQ sharpgreater
+        DQ TYPE
         DQ EXIT
-        Link(dudot)     ; Link Field
+        Link(dudot)
 
 ddot:
         DQ 1
