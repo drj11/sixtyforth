@@ -180,11 +180,15 @@ dsharp:
         DQ 1
         DQ '#'
 sharp:  DQ stdexe
+        ; # (+d1 -- +d2)
+        ; :todo: Only works for single range numbers
+        DQ SWAP         ; (0 n)
         DQ BASE
-        DQ FETCH        ; (n b)
-        DQ DIVMOD       ; (q r)
-        DQ DIGIT        ; (q ascii)
-        DQ HOLD
+        DQ FETCH        ; (0 n b)
+        DQ DIVMOD       ; (0 q r)
+        DQ DIGIT        ; (0 q ascii)
+        DQ HOLD         ; (0 q)
+        DQ SWAP         ; (q 0)
         DQ EXIT
         Link(dsharp)
 
@@ -208,7 +212,8 @@ dsharpgreater:
         DQ '#>'
 sharpgreater:
         DQ stdexe
-        ; #> (n -- addr +n)
+        ; #> (d+ -- addr +n)
+        DQ DROP
         DQ DROP
         DQ PIC
         DQ FETCH        ; (addr)
@@ -224,8 +229,10 @@ dsharps:
         DQ '#s'
 sharpS:
         DQ stdexe
-.l:     DQ sharp
-        DQ DUP
+.l:     DQ sharp        ; (d+)
+        DQ OVER
+        DQ OVER         ; (d+ d+)
+        DQ OR           ; (d+ n)
         DQ zequals
         DQ ZEROBRANCH
         DQ -(($-.l)/8)-1

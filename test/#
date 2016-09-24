@@ -1,6 +1,6 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
-out=$(echo '123 <# # dup . # dup . # dup .' | $FORTH)
+out=$(echo '123 0 <# # over . # over . # over .' | $FORTH)
 echo $out
 case $out in
     ('12 1 0 ') exit 0;;

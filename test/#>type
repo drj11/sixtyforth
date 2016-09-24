@@ -1,6 +1,6 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
-out=$(echo '137 <# # # #> type' | $FORTH)
+out=$(echo '137 0 <# # # #> type' | $FORTH)
 echo $out
 case $out in
     ('37') exit 0;;
