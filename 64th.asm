@@ -1066,18 +1066,6 @@ divMOD: DQ $+8
         add rbp, 8
         jmp next
 
-restofDOT:      DQ $+8
-        ; ( PTR -- )
-        ; write contents of buffer to stdout
-        sub rbp, 8
-        mov rdx, [rbp]
-        sub rdx, buf    ; the buffer length
-        mov rdi, 1      ; stdout
-        mov rsi, buf
-        mov rax, sys_write
-        syscall
-        jmp next
-
 BUF:    DQ $+8
         mov rdx, buf
         mov [rbp], rdx
