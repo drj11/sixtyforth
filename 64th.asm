@@ -182,13 +182,13 @@ dsharp:
 sharp:  DQ stdexe
         ; # (+d1 -- +d2)
         ; :todo: Only works for single range numbers
-        DQ SWAP         ; (0 n)
         DQ BASE
-        DQ FETCH        ; (0 n b)
-        DQ DIVMOD       ; (0 q r)
-        DQ DIGIT        ; (0 q ascii)
-        DQ HOLD         ; (0 q)
-        DQ SWAP         ; (q 0)
+        DQ FETCH        ; (d b)
+        DQ umslashmod   ; (q r)
+        DQ DIGIT        ; (q ascii)
+        DQ HOLD         ; (q)
+        DQ LIT
+        DQ 0            ; (q 0)
         DQ EXIT
         Link(dsharp)
 
