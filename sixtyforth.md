@@ -88,3 +88,13 @@ that have `stdvar` in their code field.
 ## Calling between
 
 How do we call Forth from machine code, and vice versa?
+
+## Standards
+
+Mostly Forth-83 but expanded to 64-bit.
+Where we need additional words,
+these will come from ANSI FORTH.
+
+Additional words to keep an eye on:
+
+S>D
