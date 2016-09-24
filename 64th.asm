@@ -87,9 +87,9 @@ DEPTH:  DQ $+8          ; std1983
         Link(ddepth)
 
 dudot:
-        DQ 2    ; Name length
+        DQ 2
         DQ 'u.'         ; std1983
-UDOT:   DQ stdexe
+Udot:   DQ stdexe
         DQ LIT
         DQ 0
         DQ lesssharp
@@ -106,8 +106,8 @@ ddot:
         DQ 1
         DQ '.'
 
-DOT:    DQ stdexe
-        DQ UDOT
+dot:    DQ stdexe
+        DQ Udot
         DQ EXIT
         Link(ddot)
 
@@ -133,7 +133,7 @@ lesssharp:
         DQ LIT
         DQ tibaddr
         DQ PIC
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dlesssharp)
 
@@ -144,8 +144,8 @@ sharp:  DQ stdexe
         ; # (+d1 -- +d2)
         ; :todo: Only works for single range numbers
         DQ BASE
-        DQ FETCH        ; (d b)
-        DQ umslashmod   ; (q r)
+        DQ fetch        ; (d b)
+        DQ UMslashMOD   ; (q r)
         DQ DIGIT        ; (q ascii)
         DQ HOLD         ; (q)
         DQ LIT
@@ -158,13 +158,13 @@ dhold:
         DQ 'hold'
 HOLD:   DQ stdexe       ; std1983
         DQ PIC
-        DQ FETCH        ; (ascii pic)
+        DQ fetch        ; (ascii pic)
         DQ oneminus     ; (ascii addr)
         DQ SWAP         ; (addr ascii)
         DQ OVER         ; (addr ascii addr)
-        DQ CSTORE       ; (addr)
+        DQ Cstore       ; (addr)
         DQ PIC
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dhold)
 
@@ -177,7 +177,7 @@ sharpgreater:
         DQ DROP
         DQ DROP
         DQ PIC
-        DQ FETCH        ; (addr)
+        DQ fetch        ; (addr)
         DQ LIT
         DQ tibaddr      ; (addr tib)
         DQ OVER         ; (addr tib addr)
@@ -238,7 +238,7 @@ DIGIT:  DQ stdexe
 
 dtype:
         DQ 4
-        DQ 'type'
+        DQ 'type'       ; std1983
 TYPE:   DQ $+8
         ; TYPE (addr +n -- )
         mov rdx, [rbp-8]
@@ -297,7 +297,6 @@ lessthan:
 dnegate:
         DQ 6
         DQ 'negate'
-
 NEGATE:                 ; std1983
         DQ $+8
         mov rax, [rbp-8]
@@ -347,7 +346,7 @@ ddivide:
         DQ 1
         DQ '/'
 divide: DQ stdexe
-        DQ DIVMOD
+        DQ divMOD
         DQ DROP
         DQ EXIT
         Link(ddivide)
@@ -355,7 +354,7 @@ divide: DQ stdexe
 dumslashmod:
         DQ 6
         DQ 'um/mod'     ; std1994
-umslashmod:
+UMslashMOD:
         DQ $+8
         ; UM/MOD (ud u1 -- uq ur)
         ; Note: Double Single -> Single Single
@@ -421,14 +420,14 @@ dhere:
         DQ 'here'
 HERE:   DQ stdexe       ; std1983
         DQ CP
-        DQ FETCH
+        DQ fetch
         DQ EXIT
         Link(dhere)
 
 dstore:
         DQ 1
         DQ '!'
-STORE:  DQ $+8          ; std1983
+store:  DQ $+8          ; std1983
 store0: ; ! ( w addr -- )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -440,7 +439,7 @@ store0: ; ! ( w addr -- )
 dfetch:
         DQ 1
         DQ '@'
-FETCH:  DQ $+8          ; std1983
+fetch:  DQ $+8          ; std1983
         ; @ (addr -- w)
         mov rax, [rbp-8]
         mov rax, [rax]
@@ -451,15 +450,15 @@ FETCH:  DQ $+8          ; std1983
 dplusstore:
         DQ 2
         DQ '+!'
-PLUSSTORE:
+plusstore:
         DQ stdexe       ; std1983
         ; (w addr -- )
         DQ SWAP         ; (a w)
         DQ OVER         ; (a w a)
-        DQ FETCH        ; (a w b)
+        DQ fetch        ; (a w b)
         DQ PLUS         ; (a s)
         DQ SWAP         ; (s a)
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dplusstore)
 
@@ -514,20 +513,20 @@ dallot:
 ALLOT:  DQ stdexe       ; std1983
         ; allot (w -- )
         DQ CP
-        DQ PLUSSTORE
+        DQ plusstore
         DQ EXIT
         Link(dallot)
 
 dcomma:
         DQ 1
         DQ ','
-COMMA:  DQ stdexe       ; std1983
+comma:  DQ stdexe       ; std1983
         ; , (w -- )
         DQ HERE
         DQ LIT
         DQ 8
         DQ ALLOT
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dcomma)
 
@@ -557,8 +556,8 @@ CREATE: DQ stdexe       ; std1983
         ; Compile Link Field
         DQ LIT
         DQ DICT
-        DQ FETCH
-        DQ COMMA
+        DQ fetch
+        DQ comma
         ; Get Word
         DQ LIT
         DQ ' '
@@ -573,7 +572,7 @@ CREATE: DQ stdexe       ; std1983
         ; This works as long as you don't run out of dictionary space.
         ; But is not very tidy.
         DQ DUP          ; (lfa addr addr)
-        DQ FETCH        ; (lfa addr N)
+        DQ fetch        ; (lfa addr N)
         DQ LIT
         DQ 8
         DQ PLUS         ; (lfa addr N+8)
@@ -583,16 +582,16 @@ CREATE: DQ stdexe       ; std1983
         DQ LIT
         DQ 16
         DQ CP           ; (lfa 16 cp)
-        DQ PLUSSTORE    ; (lfa)
+        DQ plusstore    ; (lfa)
 
         ; Compile Code Field
         DQ LIT
         DQ stdvar
-        DQ COMMA
+        DQ comma
         ; Update Dictionary pointer
         DQ LIT
         DQ DICT         ; (lfa &dict)
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dcreate)
 
@@ -649,7 +648,7 @@ ket:    DQ stdexe       ; std1983
         DQ LIT
         DQ 1
         DQ STATE
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dket)
 
@@ -662,7 +661,7 @@ colon:  DQ stdexe       ; std1983
         DQ stdexe
         DQ HERE
         DQ fromBODY
-        DQ STORE
+        DQ store
         DQ ket
         DQ EXIT
         Link(dcolon)
@@ -670,16 +669,16 @@ colon:  DQ stdexe       ; std1983
 dsemicolon:
         DQ 1|(2<<32)    ; :todo: immediate
         DQ ';'
-SEMICOLON:
+semicolon:
         DQ stdexe       ; std1983
         DQ LIT
         DQ EXIT
-        DQ COMMA
+        DQ comma
         ; :todo: check compiler safety
         DQ LIT
         DQ 0
         DQ STATE
-        DQ STORE
+        DQ store
         DQ EXIT
         Link(dsemicolon)
 
@@ -828,7 +827,7 @@ INTERACTOR:
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
         DQ numberTIB
-        DQ FETCH
+        DQ fetch
         DQ ZEROBRANCH
         DQ ((.x-$)/8)-1
 .w:
@@ -836,7 +835,7 @@ INTERACTOR:
         DQ ' '
         DQ fWORD        ; (addr)
         DQ DUP
-        DQ FETCH
+        DQ fetch
         DQ ZEROBRANCH
         DQ -(($-.line)/8)-1
         DQ FIND
@@ -864,7 +863,7 @@ qEXECUTE:
         DQ 1
         DQ PLUS         ; (addr 0/2)
         DQ STATE
-        DQ FETCH        ; (addr 0/2 compiling?)
+        DQ fetch        ; (addr 0/2 compiling?)
         DQ zequals      ; (addr 0/2 interpreting?)
         DQ OR           ; (addr 0/2)
         ; 0=compile; 2=execute
@@ -873,7 +872,7 @@ qEXECUTE:
         DQ EXECUTE
         DQ EXIT
 .comp:  ; (addr)
-        DQ COMMA
+        DQ comma
         DQ EXIT
 .n:     ; (addr)
         DQ COUNT
@@ -963,7 +962,7 @@ LT:     DQ $+8
         add rbp, 8
         jmp next
 
-CSTORE: DQ $+8
+Cstore: DQ $+8
         ; C! (ch buf -- )
         mov rax, [rbp-16]
         mov rdx, [rbp-8]
@@ -1016,7 +1015,7 @@ COUNT:  DQ stdexe       ; std1983
         DQ 8
         DQ PLUS         ; (addr adddr+8)
         DQ SWAP         ; (addr+8 addr)
-        DQ FETCH        ; (addr+8 length)
+        DQ fetch        ; (addr+8 length)
         DQ EXIT
 
 NOTINDICT:      DQ $+8
@@ -1047,7 +1046,7 @@ sysEXIT:
         mov rax, 60
         syscall
 
-DIVMOD: DQ $+8
+divMOD: DQ $+8
         ; /MOD (dividend divisor -- quotient remainder)
         ; > r15
         sub rbp, 8
