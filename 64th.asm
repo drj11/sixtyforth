@@ -391,6 +391,34 @@ divide: DQ stdexe
         DQ EXIT
         Link(ddivide)
 
+dumslashmod:
+        DQ 6
+        DQ 'um/mod'     ; std1994
+umslashmod:
+        DQ $+8
+        ; UM/MOD (ud u1 -- uq ur)
+        ; Note: Double Single -> Single Single
+        ; > r15
+        sub rbp, 8
+        mov r15, [rbp]
+        ; > RDX
+        sub rbp, 8
+        mov rdx, [rbp]
+        ; > RAX
+        sub rbp, 8
+        mov rax, [rbp]
+
+        div r15
+
+        ; RAX >
+        mov [rbp], rax
+        add rbp, 8
+        ; RDX >
+        mov [rbp], rdx
+        add rbp, 8
+        jmp next
+        Link(dumslashmod)
+
 dor:
         DQ 2
         DQ 'or'
