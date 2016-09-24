@@ -6,9 +6,6 @@ sys_write EQU 1
 
 SECTION .bss
 
-buf     RESB 8192
-buflen  EQU $-buf
-
 picture RESB 300        ; For picture output, <# and so on.
 tibaddr RESB 500        ; (address of) Terminal Input Buffer
                         ; (see >IN and #TIB for pointer and size)
