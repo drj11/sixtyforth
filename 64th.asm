@@ -302,6 +302,18 @@ NEGATE:                 ; std1983
         jmp next
         Link(dnegate)
 
+dabs:
+        DQ 3
+        DQ 'abs'        ; std1983
+fABS:    DQ $+8
+        mov rax, [rbp-8]
+        test rax, rax
+        jns .pos
+        neg rax
+.pos:   mov [rbp-8], rax
+        jmp next
+        Link(dabs)
+
 dplus:
         DQ 1
         DQ '+'
