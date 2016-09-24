@@ -71,6 +71,19 @@ duprax: mov [rbp], rax
         jmp next
         Link(ddup)
 
+drot:
+        DQ 3
+        DQ 'rot'
+ROT:    DQ $+8          ; std1983
+        mov rax, [rbp-8]
+        mov rcx, [rbp-16]
+        mov rdx, [rbp-24]
+        mov [rbp-24], rcx
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        Link(drot)
+
 ddepth:
         DQ 5
         DQ 'depth'
