@@ -278,7 +278,7 @@ DIGIT:  DQ stdexe
 dtype:
         DQ 4
         DQ 'type'
-type:   DQ $+8
+TYPE:   DQ $+8
         ; TYPE (addr +n -- )
         mov rdx, [rbp-8]
         mov rsi, [rbp-16]
