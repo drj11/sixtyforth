@@ -1066,12 +1066,6 @@ divMOD: DQ $+8
         add rbp, 8
         jmp next
 
-BUF:    DQ $+8
-        mov rdx, buf
-        mov [rbp], rdx
-        add rbp, 8
-        jmp next
-
 QPROMPT: DQ $+8
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
