@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '97 0 <# # bl hold # #> type' | $FORTH)
+echo $out
+case "$out" in
+    ("9 7") exit 0;;
+esac
+exit 2

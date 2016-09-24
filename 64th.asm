@@ -258,6 +258,15 @@ DIGIT:  DQ stdexe
         DQ EXIT
         Link(ddigit)
 
+dbl:
+        DQ 2
+        DQ 'bl'         ; std1994
+fBL:    DQ stdexe
+        DQ LIT
+        DQ 32
+        DQ EXIT
+        Link(dbl)
+
 dtype:
         DQ 4
         DQ 'type'       ; std1983
