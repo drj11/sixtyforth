@@ -1037,7 +1037,7 @@ filbuf:
         ; fill the lexing buffer by
         ; reading some bytes from stdin.
         ; Use a count equal to the size of the buffer
-        mov rdi, 0      ; sys_read
+        mov rdi, sys_read
         mov rsi, tibaddr
         mov qword [atoIN], 0    ; reset pointers prior to syscall
         mov qword [anumberTIB], 0
