@@ -23,6 +23,7 @@ SECTION .data
 prompt DB '> '
 promptlen EQU $-prompt
 
+
 ; Start of Dictionary
 ; The Dictionary is a key Forth datastructure.
 ; It is a linked list, with each element having the structure:
@@ -444,6 +445,15 @@ TRUE:   DQ stdexe
         DQ -1
         DQ EXIT
         Link(dtrue)
+
+dfalse:
+        DQ 5
+        DQ 'false'      ; std1994
+FALSE:  DQ stdexe
+        DQ LIT
+        DQ 0
+        DQ EXIT
+        Link(dfalse)
 
 dor:
         DQ 2
@@ -964,13 +974,26 @@ qEXECUTE:
         DQ comma
         DQ EXIT
 .n:     ; (addr)
-        DQ COUNT
         DQ qNUMBER
-        DQ DROP
+        DQ ZEROBRANCH
+        DQ ((.abort-$)/8)-1
         DQ EXIT
+.abort:
+        DQ COUNT
+        DQ TYPE
+        DQ LIT
+        DQ .error
+        DQ LIT
+        DQ 2
+        DQ TYPE
+        DQ QUIT
+.error: DQ ' ?'
 
 qNUMBER:
         DQ stdexe
+        ; ?NUMBER (c-string -- n true) if convertible
+        ;         (c-string -- c-string false) if not convertible
+        DQ COUNT
         DQ NOTINDICT
         DQ TRUE
         DQ EXIT
