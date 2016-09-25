@@ -281,6 +281,20 @@ TYPE:   DQ $+8
         jmp next
         Link(dtype)
 
+dcount:
+        DQ 5
+        DQ 'count'      ; std1983 - modified
+COUNT:  DQ stdexe
+        ; (addr -- addr+8 +n)
+        DQ DUP          ; (addr addr)
+        DQ LIT
+        DQ 8
+        DQ PLUS         ; (addr adddr+8)
+        DQ SWAP         ; (addr+8 addr)
+        DQ fetch        ; (addr+8 length)
+        DQ EXIT
+        Link(dcount)
+
 dzequals:
         DQ 2
         DQ '0='         ; std1983
@@ -1062,16 +1076,6 @@ filbuf:
         add rdi, rax
         mov [anumberTIB], rax
 .x:     jmp next
-
-COUNT:  DQ stdexe       ; std1983
-        ; (addr -- addr+8 +n)
-        DQ DUP          ; (addr addr)
-        DQ LIT
-        DQ 8
-        DQ PLUS         ; (addr adddr+8)
-        DQ SWAP         ; (addr+8 addr)
-        DQ fetch        ; (addr+8 length)
-        DQ EXIT
 
 NOTINDICT:      DQ $+8
         ; ( pointer length -- N )

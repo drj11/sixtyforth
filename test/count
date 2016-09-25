@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(printf ": c bl word count ; c abc .\n" | $FORTH)
+echo $out
+case "$out" in
+    ("3 ") exit 0;;
+esac
+exit 2
