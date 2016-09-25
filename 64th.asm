@@ -873,8 +873,10 @@ INTERACTOR:
 .w:
         DQ fBL
         DQ fWORD        ; (addr)
-        DQ DUP
-        DQ fetch
+        DQ DUP          ; (addr addr)
+        DQ COUNT        ; (addr a n)
+        DQ SWAP
+        DQ DROP         ; (addr n)
         DQ ZEROBRANCH
         DQ -(($-.line)/8)-1
         DQ FIND
