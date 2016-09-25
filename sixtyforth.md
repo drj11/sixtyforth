@@ -8,6 +8,8 @@ http://forth.sourceforge.net/standard/fst83/
 [LOELIGER1981] "Threaded Interpretive Languages";
 R. G. Loeliger; 1981
 
+http://galileo.phys.virginia.edu/classes/551.jvn.fall01/primer.htm
+
 
 ## Register Conventions
 
