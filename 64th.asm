@@ -744,23 +744,36 @@ dfword:
         DQ 4
         DQ 'word'
 ; Note: Can't be called "WORD" as that's a NASM keyword.
-fWORD:  ; Doesn't implement Forth standard (yet)
-        DQ $+8
+fWORD:  DQ $+8
+        ; Doesn't implement Forth standard (yet)
+        ; Register usage:
+        ; RAX character / temp
+        ; RDX delimiter
+        ; R13 current pointer (into wordbuf)
 fword0:
         sub rbp, 8
+        mov rdx, [rbp]  ; delimiter in RDX
         mov r13, wordbuf+8
 .skip:  call rdbyte
         test rax, rax   ; RAX < 0 ?
         js .end
+        ; Skip Control Codes
         cmp rax, 32
         jc .skip
+        ; Skip delimiter
+        cmp rax, rdx
+        jz .skip
 .l:     mov [r13], al
         inc r13
         call rdbyte
         test rax, rax
         js .end
+        ; Test for Control Codes
         cmp rax, 32
-        ja .l
+        jb .end
+        ; Test for delimiter
+        cmp rax, rdx
+        jnz .l
 .end:   ; Compute length.
         sub r13, wordbuf+8
         ; Store length to make a counted string.
