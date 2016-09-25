@@ -436,6 +436,15 @@ UMslashMOD:
         jmp next
         Link(dumslashmod)
 
+dtrue:
+        DQ 4
+        DQ 'true'       ; std1994
+TRUE:   DQ stdexe
+        DQ LIT
+        DQ -1
+        DQ EXIT
+        Link(dtrue)
+
 dor:
         DQ 2
         DQ 'or'         ; std1983
@@ -956,7 +965,14 @@ qEXECUTE:
         DQ EXIT
 .n:     ; (addr)
         DQ COUNT
+        DQ qNUMBER
+        DQ DROP
+        DQ EXIT
+
+qNUMBER:
+        DQ stdexe
         DQ NOTINDICT
+        DQ TRUE
         DQ EXIT
 
 
