@@ -967,7 +967,8 @@ LIT:    DQ $+8
         add rbp, 8
         jmp next
 
-ZEROBRANCH:     DQ $+8
+ZEROBRANCH:
+        DQ $+8
         ; read the next word as a relative offset;
         ; pop the TOS and test it;
         ; if it is 0 then branch by adding the offset
