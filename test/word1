@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+# Test for bug present on 2016-09-25:
+# delimiters preceding a word should be skipped (but they are not).
+out=$(echo '9 1  dup . .' | $FORTH)
+echo $out
+case "$out" in
+    ("1 1 ") exit 0;;
+esac
+exit 2
