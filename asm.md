@@ -34,3 +34,10 @@ Typical `nasm` workflow:
     nasm -f elf64 -l foo.lst foo.asm
     ld -s -o foo foo.o
 
+## Factoids
+
+There is no 64-bit absolute jump.
+
+Multiplication always has `rax` as an implied input.
+Result is always in (most significant) `rdx:rax` (least significant).
+`rax` × `somereg` -> `rdx:rax`
