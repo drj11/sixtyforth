@@ -504,6 +504,18 @@ fetch:  DQ $+8
         jmp next
         Link(dfetch)
 
+dcfetch:
+        DQ 2
+        DQ 'c@'         ; std1983
+Cfetch: DQ $+8
+        ; C@ (addr -- ch)
+        mov rdx, [rbp-8]
+        xor rax, rax
+        mov al, [rdx]
+        mov [rbp-8], rax
+        jmp next
+        Link(dcfetch)
+
 dplusstore:
         DQ 2
         DQ '+!'         ; std1983
