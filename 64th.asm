@@ -55,15 +55,18 @@ promptlen EQU $-prompt
 ; The only flag that is used currently is bit 33 (2<<32),
 ; which is 1 when the word is marked as IMMEDIATE.
 
+; For creating link pointers in the dictionary.
 %define Link(a) DQ (a)-8
+; Or (using «|») into Length Field to create IMMEDIATE word.
+%define Immediate (2<<32)
 
 STARTOFDICT:
         DQ 0    ; Link Field
 
 ddup:
         DQ 3
-        DQ 'dup'
-DUP:    DQ $+8          ; std1983
+        DQ 'dup'        ; std1983
+DUP:    DQ $+8
         ; DUP (A -- A A)
         mov rax, [rbp-8]
 duprax: mov [rbp], rax
@@ -73,8 +76,8 @@ duprax: mov [rbp], rax
 
 drot:
         DQ 3
-        DQ 'rot'
-ROT:    DQ $+8          ; std1983
+        DQ 'rot'        ; std1983
+ROT:    DQ $+8
         mov rax, [rbp-8]
         mov rcx, [rbp-16]
         mov rdx, [rbp-24]
@@ -86,8 +89,8 @@ ROT:    DQ $+8          ; std1983
 
 ddepth:
         DQ 5
-        DQ 'depth'
-DEPTH:  DQ $+8          ; std1983
+        DQ 'depth'      ; std1983
+DEPTH:  DQ $+8
         ; DEPTH ( -- +n)
         mov rcx, stack
         mov rax, rbp
@@ -113,8 +116,7 @@ Udot:   DQ stdexe
 
 ddot:
         DQ 1
-        DQ '.'
-
+        DQ '.'          ; std1983
 dot:    DQ stdexe
         DQ DUP          ; (n n)
         DQ fABS         ; (n +n)
@@ -133,7 +135,7 @@ dot:    DQ stdexe
 
 dbase:
         DQ 4
-        DQ 'base'
+        DQ 'base'       ; std1983
 BASE:   DQ stdvar
         DQ 10
         Link(dbase)
@@ -147,7 +149,7 @@ PIC:    DQ stdvar
 
 dlesssharp:
         DQ 2
-        DQ '<#'
+        DQ '<#'         ; std1983
 lesssharp:
         DQ stdexe
         DQ LIT
@@ -159,7 +161,7 @@ lesssharp:
 
 dsharp:
         DQ 1
-        DQ '#'
+        DQ '#'          ; std1983
 sharp:  DQ stdexe
         ; # (+d1 -- +d2)
         ; :todo: Only works for single range numbers
@@ -175,8 +177,8 @@ sharp:  DQ stdexe
 
 dhold:
         DQ 4
-        DQ 'hold'
-HOLD:   DQ stdexe       ; std1983
+        DQ 'hold'       ; std1983
+HOLD:   DQ stdexe
         DQ PIC
         DQ fetch        ; (ascii pic)
         DQ oneminus     ; (ascii addr)
@@ -190,7 +192,7 @@ HOLD:   DQ stdexe       ; std1983
 
 dsharpgreater:
         DQ 2
-        DQ '#>'
+        DQ '#>'         ; std1983
 sharpgreater:
         DQ stdexe
         ; #> (d+ -- addr +n)
@@ -207,7 +209,7 @@ sharpgreater:
 
 dsharps:
         DQ 2
-        DQ '#s'
+        DQ '#s'         ; std1983
 sharpS:
         DQ stdexe
 .l:     DQ sharp        ; (d+)
@@ -222,8 +224,8 @@ sharpS:
 
 dsign:
         DQ 4
-        DQ 'sign'
-SIGN:   DQ stdexe       ; std1983
+        DQ 'sign'       ; std1983
+SIGN:   DQ stdexe
         DQ zless
         DQ ZEROBRANCH
         DQ ((.pos-$)/8)-1
@@ -281,9 +283,9 @@ TYPE:   DQ $+8
 
 dzequals:
         DQ 2
-        DQ '0='
+        DQ '0='         ; std1983
 zequals:
-        DQ $+8          ; std1983
+        DQ $+8
         ; 0= (A -- Bool)
         ; Result is -1 (TRUE) if A = 0;
         ; Result is 0 (FALSE) otherwise.
@@ -296,8 +298,8 @@ zequals:
 
 dzless:
         DQ 2
-        DQ '0<'
-zless:  DQ $+8          ; std1983
+        DQ '0<'         ; std1983
+zless:  DQ $+8
         ; 0< (n -- true) when n < 0
         ;    (n -- false) otherwise
         mov rax, [rbp-8]
@@ -311,7 +313,7 @@ zless:  DQ $+8          ; std1983
 
 dlessthan:
         DQ 1
-        DQ '<'
+        DQ '<'          ; std1983
 lessthan:
         DQ $+8
         mov rax, [rbp-16]
@@ -325,8 +327,8 @@ lessthan:
 
 dnegate:
         DQ 6
-        DQ 'negate'
-NEGATE:                 ; std1983
+        DQ 'negate'     ; std1983
+NEGATE:
         DQ $+8
         mov rax, [rbp-8]
         neg rax
@@ -337,7 +339,7 @@ NEGATE:                 ; std1983
 dabs:
         DQ 3
         DQ 'abs'        ; std1983
-fABS:    DQ $+8
+fABS:   DQ $+8
         mov rax, [rbp-8]
         test rax, rax
         jns .pos
@@ -348,8 +350,8 @@ fABS:    DQ $+8
 
 dplus:
         DQ 1
-        DQ '+'
-PLUS:   DQ $+8          ; std1983
+        DQ '+'          ; std1983
+PLUS:   DQ $+8
         ; + (A B -- sum)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -361,8 +363,8 @@ PLUS:   DQ $+8          ; std1983
 
 dminus:
         DQ 1
-        DQ '-'
-MINUS:  DQ $+8          ; std1983
+        DQ '-'          ; std1983
+MINUS:  DQ $+8
         ; - ( A B -- difference)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -374,7 +376,7 @@ MINUS:  DQ $+8          ; std1983
 
 doneminus:
         DQ 2
-        DQ '1-'
+        DQ '1-'         ; std1983
 oneminus:
         DQ $+8
         mov rax, [rbp-8]
@@ -385,7 +387,7 @@ oneminus:
 
 ddivide:
         DQ 1
-        DQ '/'
+        DQ '/'          ; std1983
 divide: DQ stdexe
         DQ divMOD
         DQ DROP
@@ -422,8 +424,8 @@ UMslashMOD:
 
 dor:
         DQ 2
-        DQ 'or'
-OR:     DQ $+8          ; std1983
+        DQ 'or'         ; std1983
+OR:     DQ $+8
         ; OR (A B -- bitwise-or)
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -440,10 +442,19 @@ CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution
         DQ dictfree
         Link(dcp)
 
+dhere:
+        DQ 4
+        DQ 'here'       ; std1983
+HERE:   DQ stdexe
+        DQ CP
+        DQ fetch
+        DQ EXIT
+        Link(dhere)
+
 dnumbertib:
         DQ 4
-        DQ '#tib'
-numberTIB:              ; std1983
+        DQ '#tib'       ; std1983
+numberTIB:
         DQ stdvar
 anumberTIB:
         DQ 0
@@ -451,24 +462,15 @@ anumberTIB:
 
 dtoin:
         DQ 3
-        DQ '>in'
-toIN:   DQ stdvar       ; std1983
+        DQ '>in'        ; std1983
+toIN:   DQ stdvar
 atoIN:  DQ 0
         Link(dtoin)
 
-dhere:
-        DQ 4
-        DQ 'here'
-HERE:   DQ stdexe       ; std1983
-        DQ CP
-        DQ fetch
-        DQ EXIT
-        Link(dhere)
-
 dstore:
         DQ 1
-        DQ '!'
-store:  DQ $+8          ; std1983
+        DQ '!'          ; std1983
+store:  DQ $+8
 store0: ; ! ( w addr -- )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -479,8 +481,8 @@ store0: ; ! ( w addr -- )
 
 dfetch:
         DQ 1
-        DQ '@'
-fetch:  DQ $+8          ; std1983
+        DQ '@'          ; std1983
+fetch:  DQ $+8
         ; @ (addr -- w)
         mov rax, [rbp-8]
         mov rax, [rax]
@@ -490,9 +492,9 @@ fetch:  DQ $+8          ; std1983
 
 dplusstore:
         DQ 2
-        DQ '+!'
+        DQ '+!'         ; std1983
 plusstore:
-        DQ stdexe       ; std1983
+        DQ stdexe
         ; (w addr -- )
         DQ SWAP         ; (a w)
         DQ OVER         ; (a w a)
@@ -505,7 +507,7 @@ plusstore:
 
 dswap:
         DQ 4
-        DQ 'swap'
+        DQ 'swap'       ; std1983
 SWAP:   DQ $+8
         ; SWAP (A B -- B A)
         mov rax, [rbp-16]
@@ -517,7 +519,7 @@ SWAP:   DQ $+8
 
 dqdup:
         DQ 4
-        DQ '?dup'
+        DQ '?dup'       ; std1983
 qDUP:   DQ $+8
         ; ?DUP (NZ -- NZ NZ)    when not zero
         ;      (0 -- 0)         when zero
@@ -529,7 +531,7 @@ qDUP:   DQ $+8
 
 dover:
         DQ 4
-        DQ 'over'
+        DQ 'over'       ; std1983
 OVER:   DQ $+8
         ; OVER (A B -- A B A)
         mov rax, [rbp-16]
@@ -540,7 +542,7 @@ OVER:   DQ $+8
 
 ddrop:
         DQ 4
-        DQ 'drop'
+        DQ 'drop'       ; std1983
 DROP:   DQ $+8
         ; DROP (A -- )
         sub rbp, 8
@@ -549,9 +551,8 @@ DROP:   DQ $+8
 
 dallot:
         DQ 5
-        DQ 'allot'
-
-ALLOT:  DQ stdexe       ; std1983
+        DQ 'allot'      ; std1983
+ALLOT:  DQ stdexe
         ; allot (w -- )
         DQ CP
         DQ plusstore
@@ -560,8 +561,8 @@ ALLOT:  DQ stdexe       ; std1983
 
 dcomma:
         DQ 1
-        DQ ','
-comma:  DQ stdexe       ; std1983
+        DQ ','          ; std1983
+comma:  DQ stdexe
         ; , (w -- )
         DQ HERE
         DQ LIT
@@ -573,8 +574,8 @@ comma:  DQ stdexe       ; std1983
 
 dcmove:
         DQ 5
-        DQ 'cmove'
-CMOVE:  DQ $+8;         ; std1983
+        DQ 'cmove'      ; std1983
+CMOVE:  DQ $+8;
 cmove0: mov rcx, [rbp-8]
         mov rdi, [rbp-16]
         mov rsi, [rbp-24]
@@ -590,8 +591,8 @@ cmove0: mov rcx, [rbp-8]
 
 dcreate:
         DQ 6
-        DQ 'create'
-CREATE: DQ stdexe       ; std1983
+        DQ 'create'     ; std1983
+CREATE: DQ stdexe
         ; Link Field Address, used much later
         DQ HERE         ; (lfa)
         ; Compile Link Field
@@ -637,8 +638,8 @@ CREATE: DQ stdexe       ; std1983
 
 dtick:
         DQ 1
-        DQ "'"
-TICK:   DQ stdexe       ; std1983
+        DQ "'"          ; std1983
+TICK:   DQ stdexe
         DQ fBL
         DQ fWORD        ; (addr)
         DQ FIND         ; (addr n)
@@ -653,8 +654,8 @@ TICK:   DQ stdexe       ; std1983
 
 dtobody:
         DQ 5
-        DQ '>body'
-toBODY: DQ stdexe       ; std1983
+        DQ '>body'      ; std1983
+toBODY: DQ stdexe
 .body:  DQ LIT
         DQ .body - toBODY       ; 8, basically
         DQ PLUS
@@ -663,9 +664,9 @@ toBODY: DQ stdexe       ; std1983
 
 dfrombody:
         DQ 5
-        DQ 'body>'
+        DQ 'body>'      ; std1983[harris]
 fromBODY:
-        DQ stdexe       ; std1983[harris]
+        DQ stdexe
 .body:  DQ LIT
         DQ .body - fromBODY     ; 8, basically
         DQ MINUS
@@ -674,16 +675,16 @@ fromBODY:
 
 dstate:
         DQ 5
-        DQ 'state'
-STATE:  DQ stdvar       ; std1983
+        DQ 'state'      ; std1983
+STATE:  DQ stdvar
 stateaddr:
         DQ 0
         Link(dstate)
 
 dket:
         DQ 1
-        DQ ']'
-ket:    DQ stdexe       ; std1983
+        DQ ']'          ; std1983
+ket:    DQ stdexe
         DQ LIT
         DQ 1
         DQ STATE
@@ -693,8 +694,8 @@ ket:    DQ stdexe       ; std1983
 
 dcolon:
         DQ 1
-        DQ ':'
-colon:  DQ stdexe       ; std1983
+        DQ ':'          ; std1983
+colon:  DQ stdexe
         DQ CREATE
         DQ LIT
         DQ stdexe
@@ -706,10 +707,10 @@ colon:  DQ stdexe       ; std1983
         Link(dcolon)
 
 dsemicolon:
-        DQ 1|(2<<32)    ; :todo: immediate
-        DQ ';'
+        DQ 1 | Immediate
+        DQ ';'          ; std1983
 semicolon:
-        DQ stdexe       ; std1983
+        DQ stdexe
         DQ LIT
         DQ EXIT
         DQ comma
@@ -723,8 +724,8 @@ semicolon:
 
 dexit:
         DQ 4
-        DQ 'exit'
-EXIT:   DQ $+8          ; std1983
+        DQ 'exit'       ; std1983
+EXIT:   DQ $+8
         sub r12, 8
         mov rbx, [r12]
         jmp next
@@ -732,8 +733,8 @@ EXIT:   DQ $+8          ; std1983
 
 dtib:
         DQ 3
-        DQ 'tib'
-TIB:    DQ $+8          ; std1983
+        DQ 'tib'        ; std1983
+TIB:    DQ $+8
         mov qword [rbp], tibaddr
         add rbp, 8
         jmp next
@@ -772,8 +773,8 @@ fword0:
 
 dfind:
         DQ 4
-        DQ 'find'
-FIND:   DQ $+8          ; std1983
+        DQ 'find'       ; std1983
+FIND:   DQ $+8
         ; search and locate string in dictionary
         ; ( addr1 -- addr2 trueish ) when found
         ; ( addr1 -- addr1 ff ) when not found
@@ -836,7 +837,7 @@ FIND:   DQ $+8          ; std1983
 
 dquit:
         DQ 4
-        DQ 'quit'
+        DQ 'quit'       ; std1983
 QUIT:   DQ reset
         Link(dquit)
 
