@@ -652,6 +652,18 @@ comma:  DQ stdexe
         DQ EXIT
         Link(dcomma)
 
+dliteral:
+        DQ 7 | Immediate
+        DQ 'literal'    ; std1983
+LITERAL:
+        DQ stdexe
+        DQ LIT
+        DQ LIT          ; haha, weird or what?
+        DQ comma
+        DQ comma
+        DQ EXIT
+        Link(dliteral)
+
 dcmove:
         DQ 5
         DQ 'cmove'      ; std1983
@@ -1012,6 +1024,14 @@ qEXECUTE:
         DQ qNUMBER
         DQ ZEROBRANCH
         DQ ((.abort-$)/8)-1
+        ; (n)
+        DQ STATE
+        DQ fetch
+        ; (n compiling?)
+        DQ ZEROBRANCH
+        DQ ((.x-$)/8)-1
+        DQ LITERAL
+.x:
         DQ EXIT
 .abort:
         DQ COUNT
