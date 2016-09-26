@@ -100,6 +100,41 @@ DEPTH:  DQ $+8
         jmp duprax
         Link(ddepth)
 
+dtonumber:
+        DQ 7
+        DQ '>number'    ; std1994
+toNUMBER:
+        DQ $+8
+        ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
+        ; :todo: only works in single range
+        mov rdi, [rbp-8]        ; length remaining
+        mov rsi, [rbp-16]       ; pointer
+        mov rax, [rbp-32]       ; (partial) converted number
+        mov r8, [abase]         ; BASE
+.dig:
+        mov rcx, 0
+        mov cl, [rsi]
+        sub rcx, 48     ; Convert from ASCII digit
+        jc .end         ; ASCII value < '0'
+        cmp rcx, 10
+        jc .digitok     ; ASCII value <= '9'
+        sub rcx, 7      ; number of chars between '9' and 'A' in ASCII
+        jc .end         ; '9' < ASCII value < 'A'
+        cmp rcx, r8
+        jnc .end        ; BASE <= numeric value
+.digitok:
+        mul r8
+        add rax, rcx
+        inc rsi
+        dec rdi
+        jnz .dig
+.end:   mov [rbp-32], rax
+        mov [rbp-24], rdx
+        mov [rbp-16], rsi
+        mov [rbp-8], rdi
+        jmp next
+        Link(dtonumber)
+
 dudot:
         DQ 2
         DQ 'u.'         ; std1983
@@ -1145,37 +1180,6 @@ filbuf:
         add rdi, rax
         mov [anumberTIB], rax
 .x:     jmp next
-
-toNUMBER:
-        DQ $+8
-        ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
-        ; :todo: only works in single range
-        mov rdi, [rbp-8]
-        mov rsi, [rbp-16]
-        mov rax, [rbp-32]
-        mov r8, [abase]
-.dig:
-        mul r8
-        mov rcx, 0
-        mov cl, [rsi]
-        sub rcx, 48     ; Convert from ASCII digit
-        jc .end         ; ASCII value < '0'
-        cmp rcx, 10
-        jc .digitok     ; ASCII value <= '9'
-        sub rcx, 7      ; number of chars between '9' and 'A' in ASCII
-        jc .end         ; '9' < ASCII value < 'A'
-        cmp rcx, r8
-        jnc .end        ; BASE <= numeric value
-.digitok:
-        add rax, rcx
-        inc rsi
-        dec rdi
-        jnz .dig
-.end:   mov [rbp-32], rax
-        mov [rbp-24], rdx
-        mov [rbp-16], rsi
-        mov [rbp-8], rdi
-        jmp next
 
 sysEXIT:
         DQ $+8

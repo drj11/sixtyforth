@@ -1,0 +1,9 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ': x bl word false false rot count >number ;
+x 37.59 drop drop drop .' | $FORTH)
+echo $out
+case "$out" in
+    ("37 ") exit 0;;
+    esac
+exit 2
