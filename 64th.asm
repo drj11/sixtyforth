@@ -1082,10 +1082,10 @@ qNUMBER:
         ; ?NUMBER (c-string -- n true) if convertible
         ;         (c-string -- c-string false) if not convertible
         DQ DUP
+        DQ COUNT        ; (c-string addr +n)
         DQ FALSE
-        DQ FALSE        ; (c-string c-string 0 0)
-        DQ ROT          ; (c-string 0 0 c-string)
-        DQ COUNT        ; (c-string 0 0 addr +n)
+        DQ FALSE        ; (c-string addr +n 0 0)
+        DQ twoSWAP      ; (c-string 0 0 addr +n)
         DQ toNUMBER     ; (c-string ud a n)
         DQ ZEROBRANCH
         DQ ((.success-$)/8)-1
