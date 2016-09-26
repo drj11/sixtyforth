@@ -138,7 +138,7 @@ dbase:
         DQ 4
         DQ 'base'       ; std1983
 BASE:   DQ stdvar
-        DQ 10
+abase:  DQ 10
         Link(dbase)
 
 dpic:
@@ -993,9 +993,27 @@ qNUMBER:
         DQ stdexe
         ; ?NUMBER (c-string -- n true) if convertible
         ;         (c-string -- c-string false) if not convertible
-        DQ COUNT
-        DQ NOTINDICT
-        DQ TRUE
+        DQ DUP
+        DQ FALSE
+        DQ FALSE        ; (c-string c-string 0 0)
+        DQ ROT          ; (c-string 0 0 c-string)
+        DQ COUNT        ; (c-string 0 0 addr +n)
+        DQ toNUMBER     ; (c-string ud a n)
+        DQ ZEROBRANCH
+        DQ ((.success-$)/8)-1
+        ; (c-string ud a)
+        DQ DROP
+        DQ DROP
+        DQ DROP
+        DQ FALSE
+        DQ EXIT
+.success:
+        ; (c-string ud a)
+        DQ DROP         ; (c-string ud)
+        DQ ROT          ; (ud c-string)
+        DQ DROP         ; (ud)
+        DQ DROP         ; (u)
+        DQ TRUE         ; (u true)
         DQ EXIT
 
 
@@ -1128,26 +1146,35 @@ filbuf:
         mov [anumberTIB], rax
 .x:     jmp next
 
-NOTINDICT:      DQ $+8
-        ; ( pointer length -- N )
-        ; convert to number N.
-        sub rbp, 8
-        mov rdi, [rbp]
-        sub rbp, 8
-        mov rsi, [rbp]
-        mov rax, 0
-.dig:   mov rcx, 10
-        mul rcx
+toNUMBER:
+        DQ $+8
+        ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
+        ; :todo: only works in single range
+        mov rdi, [rbp-8]
+        mov rsi, [rbp-16]
+        mov rax, [rbp-32]
+        mov r8, [abase]
+.dig:
+        mul r8
         mov rcx, 0
         mov cl, [rsi]
-        sub rcx, 48
-        jc .end
+        sub rcx, 48     ; Convert from ASCII digit
+        jc .end         ; ASCII value < '0'
+        cmp rcx, 10
+        jc .digitok     ; ASCII value <= '9'
+        sub rcx, 7      ; number of chars between '9' and 'A' in ASCII
+        jc .end         ; '9' < ASCII value < 'A'
+        cmp rcx, r8
+        jnc .end        ; BASE <= numeric value
+.digitok:
         add rax, rcx
         inc rsi
         dec rdi
         jnz .dig
-.end:   mov [rbp], rax
-        add rbp, 8
+.end:   mov [rbp-32], rax
+        mov [rbp-24], rdx
+        mov [rbp-16], rsi
+        mov [rbp-8], rdi
         jmp next
 
 sysEXIT:

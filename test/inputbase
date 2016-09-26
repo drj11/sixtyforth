@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '10 16 base ! 10 A . . .' | $FORTH)
+echo $out
+case "$out" in
+    ("A 10 A ") exit 0;;
+esac
+exit 2
