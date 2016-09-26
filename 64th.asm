@@ -620,6 +620,20 @@ OVER:   DQ $+8
         jmp next
         Link(dover)
 
+d2over:
+        DQ 5
+        DQ '2over'      ; std1994
+twoOVER:
+        DQ $+8
+        ; 2OVER (p q r s -- p q r s p q)
+        mov rcx, [rbp-32]
+        mov rdx, [rbp-24]
+        add rbp, 16
+        mov [rbp-16], rcx
+        mov [rbp-8], rdx
+        jmp next
+        Link(d2over)
+
 ddrop:
         DQ 4
         DQ 'drop'       ; std1983
