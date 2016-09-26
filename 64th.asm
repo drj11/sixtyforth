@@ -331,6 +331,20 @@ COUNT:  DQ stdexe
         DQ EXIT
         Link(dcount)
 
+dequals:
+        DQ 1
+        DQ '='          ; std1983
+equals: DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rax, rcx
+        sub rax, 1
+        sbb rax, rax
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        Link(dequals)
+
 dzequals:
         DQ 2
         DQ '0='         ; std1983
@@ -1083,25 +1097,56 @@ qNUMBER:
         ;         (c-string -- c-string false) if not convertible
         DQ DUP
         DQ COUNT        ; (c-string addr +n)
+        DQ scansign     ; (c-string sign addr +n)
         DQ FALSE
-        DQ FALSE        ; (c-string addr +n 0 0)
-        DQ twoSWAP      ; (c-string 0 0 addr +n)
-        DQ toNUMBER     ; (c-string ud a n)
+        DQ FALSE        ; (c-string sign addr +n 0 0)
+        DQ twoSWAP      ; (c-string sign 0 0 addr +n)
+        DQ toNUMBER     ; (c-string sign ud a n)
         DQ ZEROBRANCH
         DQ ((.success-$)/8)-1
-        ; (c-string ud a)
+        ; (c-string sign ud a)
+        DQ DROP
         DQ DROP
         DQ DROP
         DQ DROP
         DQ FALSE
         DQ EXIT
 .success:
-        ; (c-string ud a)
-        DQ DROP         ; (c-string ud)
-        DQ ROT          ; (ud c-string)
+        ; (c-string sign ud a)
+        DQ DROP         ; (c-string sign ud)
+        DQ twoSWAP      ; (ud c-string sign)
+        DQ DROP
         DQ DROP         ; (ud)
         DQ DROP         ; (u)
         DQ TRUE         ; (u true)
+        DQ EXIT
+
+scansign:
+        DQ stdexe
+        ; (addr +n -- sign addr +n)
+        DQ DUP
+        DQ ZEROBRANCH
+        DQ ((.empty-$)/8)-1
+        DQ SWAP         ; (+n addr)
+        DQ DUP
+        DQ Cfetch       ; (+n addr ch)
+        DQ LIT
+        DQ '-'
+        DQ equals       ; (+n addr bf)
+        ; Note: here use fact that -1 is True
+        DQ ROT          ; (addr bf +n)
+        DQ OVER         ; (addr bf +n bf)
+        DQ PLUS         ; (addr bf +n)
+        DQ ROT
+        DQ ROT          ; (+n addr bf)
+        DQ SWAP
+        DQ OVER         ; (+n bf addr bf)
+        DQ MINUS        ; (+n bf addr)
+        DQ ROT          ; (bf addr +n)
+        DQ EXIT
+.empty: DQ FALSE
+        DQ ROT
+        DQ ROT
         DQ EXIT
 
 
