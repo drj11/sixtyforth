@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(printf "1 2 3 4 5 2swap\n. . . . .\n" | $FORTH)
+echo $out
+case "$out" in
+    ("3 2 5 4 1 ") exit 0;;
+esac
+exit 2

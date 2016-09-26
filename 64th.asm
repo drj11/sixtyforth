@@ -597,6 +597,25 @@ SWAP:   DQ $+8
         jmp next
         Link(dswap)
 
+d2swap:
+        DQ 5
+        DQ '2swap'      ; std1994
+twoSWAP:
+        DQ $+8
+        ; 2SWAP (p q r s -- r s p q)
+        ; Swap 2OS and 4OS
+        mov rcx, [rbp-32]
+        mov rdx, [rbp-16]
+        mov [rbp-32], rdx
+        mov [rbp-16], rcx
+        ; Swap TOS and 3OS
+        mov rcx, [rbp-24]
+        mov rdx, [rbp-8]
+        mov [rbp-24], rdx
+        mov [rbp-8], rcx
+        jmp next
+        Link(d2swap)
+
 dqdup:
         DQ 4
         DQ '?dup'       ; std1983
