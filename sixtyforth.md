@@ -105,4 +105,33 @@ these will come from ANSI Forth.
 
 Additional words to keep an eye on:
 
-S>D
+M*/ Performs `double * single -> double` as well as
+`double / single -> double`.
+
+## Double precision
+
+Recall that in Forth _double precision_ usually means
+an integer value formed from two single cell values.
+ANSI Forth uses the term _double-cell_.
+
+In a 64-bit implementation double-cell values
+don't seem very useful.
+The largest 128 bit unsigned number is
+340282366920938463463374607431768211455.
+The largest 64 bit unsigned number is
+18446744073709551615.
+Do you really need that extra width?
+
+However, various bits of the standards force you into
+at least some support for double-cell values.
+Most notably `#` for pictured numeric output,
+and `>NUMBER` for converting from string to double-cell value.
+So you have to be able to do both output and input of them.
+
+The output routines involve
+dividing a double-cell value by a single-cell value (the `BASE`);
+the input routines involve
+multiplying a double-cell value by a single-cell value.
+Both of those are catered for by `M*/`
+(according to [FORTH1994] described by Chuck Moore as
+the most useful arithmetic operator in Forth).
