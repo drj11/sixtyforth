@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(printf "%s\n" '-1 -2 xor .' | $FORTH)
+echo $out
+case "$out" in
+    ("1 ") exit 0;;
+esac
+exit 2

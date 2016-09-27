@@ -562,6 +562,19 @@ OR:     DQ $+8
         jmp next
         Link(dor)
 
+dxor:
+        DQ 3
+        DQ 'xor'        ; std1983
+XOR:    DQ $+8
+        ; XOR (a b -- bitwise-xor)
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        xor rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        Link(dxor)
+
 dcp:
         DQ 2
         DQ 'cp'
