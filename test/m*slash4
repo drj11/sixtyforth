@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ' -12 -1 -10 2 m*/ . . 12 0 -10 2 m*/ . .' | $FORTH)
+echo $out
+case "$out" in
+    ("0 60 -1 -60 ") exit 0;;
+esac
+exit 2
