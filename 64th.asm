@@ -674,10 +674,10 @@ DtoS:   DQ stdexe
         DQ DROP
         DQ EXIT
 
-dmplusminus:
+ddplusminus:
         DQ 3
-        DQ 'm+-'        ; acornsoft - modified
-Mplusminus:
+        DQ 'd+-'        ; acornsoft
+Dplusminus:
         DQ $+8
         ; m+- (d n -- d)
         mov rax, [rbp-8]
@@ -1160,7 +1160,7 @@ qNUMBER:
         DQ DROP         ; (c-string sign ud)
         DQ twoSWAP      ; (ud c-string sign)
         DQ NIP          ; (ud sign)
-        DQ Mplusminus   ; (d)
+        DQ Dplusminus   ; (d)
         DQ DtoS         ; (n)
         DQ TRUE         ; (n true)
         DQ EXIT
