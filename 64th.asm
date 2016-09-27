@@ -137,29 +137,53 @@ toNUMBER:
 
 dmstarslash:
         DQ 3
-        DQ 'm*/'        ; std1994 double
+        DQ 'm*/'                ; std1994 double
 Mstarslash:
-        DQ $+8
+        DQ stdexe
         ; M*/ (d1 n1 +n2 -- d2)
-        ; :todo: only handles unsigned case right now
-        mov r8, [rbp-24]        ; most sig of (signed) d1
-        mov rax, [rbp-32]       ; least sig of d1
-        mov r10, [rbp-16]       ; (signed) n1
-        ; :todo: compute result sign, store it somewhere;
-        ; convert all operands to unsigned.
-        ; triple-cell result in (most sig) r13, r14, r15 (least sig)
-        ; rax * n1 -> r14:r15
+        DQ twoOVER
+        DQ twoOVER      ; (d1 n1 n2 d1 n1 n2)
+        DQ DROP         ; (d1 n1 n2 d1 n1)
+        DQ XOR          ; (d1 n1 n2 dsign)
+        ; dsign is a double with the correct sign
+        ; and otherwise arbitrary digits
+        DQ twoROT       ; (n1 n2 dsign d1)
+        DQ DABS         ; (n1 n2 dsign ud1)
+        DQ twoROT       ; (dsign ud1 n1 n2)
+        DQ SWAP         ; (dsign ud1 n2 n1)
+        DQ fABS         ; (dsign ud1 n2 u1)
+        DQ SWAP         ; (dsign ud1 u1 n2)
+        DQ UMstarslash  ; (dsign ud)
+        DQ ROT          ; (x ud sign)
+        DQ Dplusminus   ; (x d)
+        DQ ROT          ; (d x)
+        DQ DROP
+        DQ EXIT
+        Link(dmstarslash)
+
+dumstarslash:
+        DQ 4
+        DQ 'um*/'
+UMstarslash:
+        DQ $+8
+        ; UM*/ (ud1 u1 +n2 -- ud2)
+        ; Same as M*/ but unsigned everywhere.
+        mov r8, [rbp-24]        ; most sig of ud1
+        mov rax, [rbp-32]       ; least sig of ud1
+        mov r10, [rbp-16]       ; u1
+        ; Compute triple-cell intermediate result in
+        ; (most sig) r13, r14, r15 (least sig)
+        ; rax * u1 -> r14:r15
         mul r10
         mov r15, rax
         mov r14, rdx
-        ; r8 * n1 added to r13:r14
+        ; r8 * u1 added to r13:r14
         mov rax, r8
         mul r10
         add r14, rax
         adc rdx, 0
         mov r13, rdx
         ; triple-cell product now in r13:r14:r15
-        ; :todo: divide
         mov r10, [rbp-8]        ; r10 now divisor
         ; Credit to LaFarr http://www.zyvra.org/lafarr/math/intro.htm
         ; for this multiword division.
@@ -174,11 +198,11 @@ Mstarslash:
         div r10
         mov r15, rax
         ; Deposit result
-        sub rbp, 8
+        sub rbp, 16
         mov [rbp-16], r15
         mov [rbp-8], r14
         jmp next
-        Link(dmstarslash)
+        Link(dumstarslash)
 
 dudot:
         DQ 2
