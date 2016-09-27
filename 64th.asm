@@ -238,6 +238,26 @@ dot:    DQ stdexe
         DQ EXIT
         Link(ddot)
 
+dddot:
+        DQ 2
+        DQ 'd.'         ; std1994
+Ddot:   DQ stdexe
+        ; D. ( d -- )
+        DQ DUP          ; ( d n ) n same sign as d
+        DQ ROT
+        DQ ROT          ; ( n d )
+        DQ DABS         ; ( n +d )
+        DQ lesssharp
+        DQ fBL
+        DQ HOLD
+        DQ sharpS
+        DQ ROT
+        DQ SIGN
+        DQ sharpgreater
+        DQ TYPE
+        DQ EXIT
+        Link(dddot)
+
 dbase:
         DQ 4
         DQ 'base'       ; std1983
