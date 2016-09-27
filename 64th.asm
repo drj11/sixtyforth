@@ -718,6 +718,7 @@ ddtos:
 DtoS:   DQ stdexe
         DQ DROP
         DQ EXIT
+        Link(ddtos)
 
 ddplusminus:
         DQ 3
@@ -743,7 +744,18 @@ Dplusminus:
         mov [rbp-16], rdx
         mov [rbp-8], rax
 .x:     jmp next
-        Link(ddtos)
+        Link(ddplusminus)
+
+ddabs:
+        DQ 4
+        DQ 'dabs'       ; std1994 double
+DABS:   DQ stdexe
+        ; DABS (d -- ud)
+        DQ LIT
+        DQ 7            ; Arbitrary, should be positive.
+        DQ Dplusminus
+        DQ EXIT
+        Link(ddabs)
 
 ddrop:
         DQ 4

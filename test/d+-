@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '7 0 -3 d+- . .' | $FORTH)
+echo $out
+case "$out" in
+    ("-1 -7 ") exit 0;;
+esac
+exit 2
