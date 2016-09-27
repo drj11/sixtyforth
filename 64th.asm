@@ -153,7 +153,8 @@ Mstarslash:
         DQ SWAP         ; (dsign ud1 n2 n1)
         DQ fABS         ; (dsign ud1 n2 u1)
         DQ SWAP         ; (dsign ud1 u1 n2)
-        DQ UMstarslash  ; (dsign ud)
+        DQ UMstarslashMOD  ; (dsign ud r)
+        DQ DROP         ; (dsign ud)
         DQ ROT          ; (x ud sign)
         DQ Dplusminus   ; (x d)
         DQ ROT          ; (d x)
@@ -161,13 +162,13 @@ Mstarslash:
         DQ EXIT
         Link(dmstarslash)
 
-dumstarslash:
-        DQ 4
-        DQ 'um*/'
-UMstarslash:
+dumstarslashmod:
+        DQ 7
+        DQ 'um*/mod'
+UMstarslashMOD:
         DQ $+8
-        ; UM*/ (ud1 u1 +n2 -- ud2)
-        ; Same as M*/ but unsigned everywhere.
+        ; UM*/MOD (ud1 u1 +n2 -- ud2 +n3)
+        ; Same as M*/ but unsigned everywhere, and leaving MOD.
         mov r8, [rbp-24]        ; most sig of ud1
         mov rax, [rbp-32]       ; least sig of ud1
         mov r10, [rbp-16]       ; u1
@@ -198,11 +199,12 @@ UMstarslash:
         div r10
         mov r15, rax
         ; Deposit result
-        sub rbp, 16
-        mov [rbp-16], r15
-        mov [rbp-8], r14
+        sub rbp, 8
+        mov [rbp-24], r15
+        mov [rbp-16], r14
+        mov [rbp-8], rdx
         jmp next
-        Link(dumstarslash)
+        Link(dumstarslashmod)
 
 dudot:
         DQ 2
@@ -288,15 +290,14 @@ dsharp:
         DQ 1
         DQ '#'          ; std1983
 sharp:  DQ stdexe
-        ; # (+d1 -- +d2)
-        ; :todo: Only works for single range numbers
-        DQ BASE
-        DQ fetch        ; (d b)
-        DQ UMslashMOD   ; (q r)
-        DQ DIGIT        ; (q ascii)
-        DQ HOLD         ; (q)
+        ; # (ud1 -- ud2)
         DQ LIT
-        DQ 0            ; (q 0)
+        DQ 1            ; (ud 1)
+        DQ BASE
+        DQ fetch        ; (ud 1 b)
+        DQ UMstarslashMOD   ; (ud r)
+        DQ DIGIT        ; (ud ascii)
+        DQ HOLD         ; (ud)
         DQ EXIT
         Link(dsharp)
 
