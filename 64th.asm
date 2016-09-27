@@ -135,6 +135,34 @@ toNUMBER:
         jmp next
         Link(dtonumber)
 
+dmstarslash:
+        DQ 3
+        DQ 'm*/'        ; std1994 double
+Mstarslash:
+        DQ $+8
+        ; M*/ (d1 n1 +n2 -- d2)
+        ; :todo: only handles unsigned case right now
+        mov r8, [rbp-32]        ; most sig of (signed) d1
+        mov rax, [rbp-24]       ; least sig of d1
+        mov r10, [rbp-16]       ; (signed) n1
+        ; :todo: compute result sign, store it somewhere;
+        ; convert all operands to unsigned.
+        mul r10
+        ; triple-cell result in (most sig) r13, r14, r15 (least sig)
+        mov r15, rax
+        mov r14, rdx
+        mov rax, r8
+        mul r10
+        add r14, rax
+        adc rdx, 0
+        mov r13, rdx
+        ; :todo: divide
+        sub rbp, 8
+        mov [rbp-16], r14
+        mov [rbp-8], r15
+        jmp next
+        Link(dmstarslash)
+
 dudot:
         DQ 2
         DQ 'u.'         ; std1983
