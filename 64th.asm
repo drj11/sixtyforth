@@ -142,24 +142,41 @@ Mstarslash:
         DQ $+8
         ; M*/ (d1 n1 +n2 -- d2)
         ; :todo: only handles unsigned case right now
-        mov r8, [rbp-32]        ; most sig of (signed) d1
-        mov rax, [rbp-24]       ; least sig of d1
+        mov r8, [rbp-24]        ; most sig of (signed) d1
+        mov rax, [rbp-32]       ; least sig of d1
         mov r10, [rbp-16]       ; (signed) n1
         ; :todo: compute result sign, store it somewhere;
         ; convert all operands to unsigned.
-        mul r10
         ; triple-cell result in (most sig) r13, r14, r15 (least sig)
+        ; rax * n1 -> r14:r15
+        mul r10
         mov r15, rax
         mov r14, rdx
+        ; r8 * n1 added to r13:r14
         mov rax, r8
         mul r10
         add r14, rax
         adc rdx, 0
         mov r13, rdx
+        ; triple-cell product now in r13:r14:r15
         ; :todo: divide
+        mov r10, [rbp-8]        ; r10 now divisor
+        ; Credit to LaFarr http://www.zyvra.org/lafarr/math/intro.htm
+        ; for this multiword division.
+        mov rdx, 0
+        mov rax, r13
+        div r10
+        mov r13, rax
+        mov rax, r14
+        div r10
+        mov r14, rax
+        mov rax, r15
+        div r10
+        mov r15, rax
+        ; Deposit result
         sub rbp, 8
-        mov [rbp-16], r14
-        mov [rbp-8], r15
+        mov [rbp-16], r15
+        mov [rbp-8], r14
         jmp next
         Link(dmstarslash)
 
