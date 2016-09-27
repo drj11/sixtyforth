@@ -5,6 +5,10 @@
 [FORTH1983] The Forth-83 Standard:
 http://forth.sourceforge.net/standard/fst83/
 
+[FORTH1994] American National Standard for Information Systems —
+Programming Language — Forth; ANSI X3.215-1994; 1994-03-24;
+http://www.greenarraychips.com/home/documents/dpans94.pdf
+
 [LOELIGER1981] "Threaded Interpretive Languages";
 R. G. Loeliger; 1981
 
