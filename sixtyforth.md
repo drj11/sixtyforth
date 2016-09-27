@@ -101,7 +101,7 @@ How do we call Forth from machine code, and vice versa?
 
 Mostly Forth-83 but expanded to 64-bit.
 Where we need additional words,
-these will come from ANSI FORTH.
+these will come from ANSI Forth.
 
 Additional words to keep an eye on:
 
