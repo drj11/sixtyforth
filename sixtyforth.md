@@ -1,5 +1,7 @@
 # SixtyForth
 
+Notes on the design and implementation of SixtyForth.
+
 ## REFERENCES
 
 [FORTH1983] The Forth-83 Standard:
