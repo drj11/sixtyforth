@@ -667,12 +667,56 @@ twoOVER:
         jmp next
         Link(d2over)
 
+ddtos:
+        DQ 3
+        DQ 'd>s'        ; std1994 double
+DtoS:   DQ stdexe
+        DQ DROP
+        DQ EXIT
+
+dmplusminus:
+        DQ 3
+        DQ 'm+-'        ; acornsoft - modified
+Mplusminus:
+        DQ $+8
+        ; m+- (d n -- d)
+        mov rax, [rbp-8]
+        mov rcx, [rbp-16]
+        sub rbp, 8
+        ; Have operands got same sign?
+        xor rax, rcx
+        jns .x
+        ; rcx has most significant single precision number.
+        ; Put least sigfnificant single into rax.
+        mov rax, [rbp-16]
+        mov rdx, 0
+        sub rdx, rax
+        ; Negated least significant now in rdx.
+        mov rax, 0
+        sbb rax, rcx
+        ; Megated most significant now in rax.
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+.x:     jmp next
+        Link(ddtos)
+
 ddrop:
         DQ 4
         DQ 'drop'       ; std1983
 DROP:   DQ $+8
         ; DROP (A -- )
         sub rbp, 8
+        jmp next
+        Link(ddrop)
+
+dnip:
+        DQ 3
+        DQ 'nip'        ; std1994 core-ext
+NIP:    DQ $+8
+        ; NIP (a b -- b)
+        mov rax, [rbp-8]
+        sub rbp, 8
+        mov [rbp-8], rax
         jmp next
         Link(ddrop)
 
@@ -1115,10 +1159,10 @@ qNUMBER:
         ; (c-string sign ud a)
         DQ DROP         ; (c-string sign ud)
         DQ twoSWAP      ; (ud c-string sign)
-        DQ DROP
-        DQ DROP         ; (ud)
-        DQ DROP         ; (u)
-        DQ TRUE         ; (u true)
+        DQ NIP          ; (ud sign)
+        DQ Mplusminus   ; (d)
+        DQ DtoS         ; (n)
+        DQ TRUE         ; (n true)
         DQ EXIT
 
 scansign:
