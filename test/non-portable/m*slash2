@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../../64th}
+out=$(echo '0 1 10000 65535 m*/ . .' | $FORTH)
+echo $out
+case "$out" in
+    ("0 2814792717434890000 ") exit 0;;
+esac
+exit 2
