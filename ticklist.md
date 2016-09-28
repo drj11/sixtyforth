@@ -30,7 +30,7 @@ p - partially implemented (for example, small inputs only)
 <       i
 =       i
 >       i
->R
+>R      i
 ?DUP    i
 @       i
 ABS     i
@@ -59,7 +59,7 @@ NOT
 OR      i
 OVER    i
 PICK
-R>
+R>      i
 R@
 ROLL
 ROT     i
