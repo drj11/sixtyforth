@@ -1,0 +1,9 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '-4 2+ dup . 2+ dup . 2+ dup . 1 + 2- dup . 2- dup .' |
+  $FORTH)
+echo $out
+case $out in
+    ("-2 0 2 1 -1 ") exit 0;;
+esac
+exit 2

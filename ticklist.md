@@ -24,8 +24,8 @@ p - partially implemented (for example, small inputs only)
 0>      i
 1+      i
 1-      i
-2+
-2-
+2+      i
+2-      i
 2/
 <       i
 =       i

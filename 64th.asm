@@ -1231,6 +1231,28 @@ oneplus:
         DQ EXIT
         Link(doneplus)
 
+dtwoplus:
+        DQ 2
+        DQ '2+'         ; std1983
+twoplus:
+        DQ stdexe
+        DQ LIT
+        DQ 2
+        DQ PLUS
+        DQ EXIT
+        Link(dtwoplus)
+
+dtwominus:
+        DQ 2
+        DQ '2-'         ; std1983
+twominus:
+        DQ stdexe
+        DQ LIT
+        DQ 2
+        DQ MINUS
+        DQ EXIT
+        Link(dtwominus)
+
 duseless:
         DQ 7
         DQ 'useless'
