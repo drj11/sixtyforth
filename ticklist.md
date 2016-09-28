@@ -34,7 +34,7 @@ p - partially implemented (for example, small inputs only)
 ?DUP    i
 @       i
 ABS     i
-AND
+AND     i
 C!      i
 C@      i
 CMOVE   i

@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '129 7 and . 7 129 or .' | $FORTH)
+echo $out
+case "$out" in
+    ("1 135 ") exit 0;;
+esac
+exit 2

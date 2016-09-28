@@ -609,6 +609,19 @@ OR:     DQ $+8
         jmp next
         Link(dor)
 
+dand:
+        DQ 3
+        DQ 'and'        ; std1983
+AND:    DQ $+8
+        ; AND ( a b -- bitwise-and )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        and rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        Link(dand)
+
 dxor:
         DQ 3
         DQ 'xor'        ; std1983
