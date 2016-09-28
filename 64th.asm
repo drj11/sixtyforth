@@ -578,6 +578,23 @@ UMslashMOD:
         jmp next
         Link(dumslashmod)
 
+ddplus:
+        DQ 2
+        DQ 'd+'         ; std1983
+Dplus:  DQ $+8
+        ; D+ (d1 d2 -- d3)
+        mov rax, [rbp-32]       ; least significant part of augend
+        mov rdx, [rbp-24]       ; most
+        mov r8, [rbp-16]        ; least significant part of addend
+        mov r9, [rbp-8]         ; most
+        add rax, r8
+        adc rdx, r9
+        sub rbp, 16
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        Link(ddplus)
+
 dtrue:
         DQ 4
         DQ 'true'       ; std1994

@@ -40,7 +40,7 @@ C@      i
 CMOVE   i
 CMOVE>
 COUNT   m
-D+
+D+      i
 D<
 DEPTH   i
 DNEGATE
