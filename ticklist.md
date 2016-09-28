@@ -21,7 +21,7 @@ p - partially implemented (for example, small inputs only)
 /MOD
 0<      i
 0=      i
-0>
+0>      i
 1+
 1-      i
 2+

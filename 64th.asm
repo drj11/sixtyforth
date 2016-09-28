@@ -1209,6 +1209,17 @@ ftimes: DQ stdexe
         DQ EXIT
         Link(dtimes)
 
+dzgreater:
+        DQ 2
+        DQ '0>'         ; std1983
+zgreater:
+        DQ stdexe
+        ; 0> (n -- b)
+        DQ NEGATE
+        DQ zless
+        DQ EXIT
+        Link(dzgreater)
+
 duseless:
         DQ 7
         DQ 'useless'
