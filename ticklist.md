@@ -43,7 +43,7 @@ COUNT   m
 D+      i
 D<
 DEPTH   i
-DNEGATE
+DNEGATE i
 DROP    i
 DUP     i
 EXECUTE i

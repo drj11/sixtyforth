@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '7 2 dnegate . . -9 -1 dnegate d.' | $FORTH)
+echo $out
+case $out in
+    ('-3 -7 9 ') exit 0;;
+esac
+exit 2

@@ -1295,6 +1295,18 @@ greaterthan:
         DQ EXIT
         Link(dgreaterthan)
 
+ddnegate:
+        DQ 7
+        DQ 'dnegate'    ; std1983
+DNEGATE:
+        DQ stdexe
+        ; DNEGATE (d1 -- d2)
+        DQ DUP          ; (d1 n)
+        DQ NEGATE       ; (d1 nn)
+        DQ Dplusminus   ; (dn1)
+        DQ EXIT
+        Link(ddnegate)
+
 duseless:
         DQ 7
         DQ 'useless'
