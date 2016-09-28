@@ -1220,6 +1220,17 @@ zgreater:
         DQ EXIT
         Link(dzgreater)
 
+doneplus:
+        DQ 2
+        DQ '1+'         ; std1983
+oneplus:
+        DQ stdexe
+        DQ LIT
+        DQ 1
+        DQ PLUS
+        DQ EXIT
+        Link(doneplus)
+
 duseless:
         DQ 7
         DQ 'useless'
