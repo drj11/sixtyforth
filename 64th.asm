@@ -472,10 +472,12 @@ lessthan:
         DQ $+8
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
-        cmp rax, rcx
-        sbb rax, rax
+        xor rdx, rdx
+        cmp rax, rcx    ; V iff rax < rcx
+        setl dl
+        neg rdx
         sub rbp, 8
-        mov [rbp-8], rax
+        mov [rbp-8], rdx
         jmp next
         Link(dlessthan)
 
@@ -1252,6 +1254,16 @@ twominus:
         DQ MINUS
         DQ EXIT
         Link(dtwominus)
+
+dgreaterthan:
+        DQ 1
+        DQ '>'          ; std1983
+greaterthan:
+        DQ stdexe
+        DQ SWAP
+        DQ lessthan
+        DQ EXIT
+        Link(dgreaterthan)
 
 duseless:
         DQ 7

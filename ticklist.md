@@ -29,7 +29,7 @@ p - partially implemented (for example, small inputs only)
 2/
 <       i
 =       i
->
+>       i
 >R
 ?DUP    i
 @       i
