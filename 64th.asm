@@ -550,7 +550,7 @@ divide: DQ stdexe
 
 dumslashmod:
         DQ 6
-        DQ 'um/mod'     ; std1994
+        DQ 'um/mod'     ; std1983
 UMslashMOD:
         DQ $+8
         ; UM/MOD (ud u1 -- uq ur)
