@@ -1,67 +1,73 @@
 # A Forth-83 ticklist
 
+KEY
+
+i - implemented
+m - implemented in a modified fashion
+p - partially implemented (for example, small inputs only)
+
 
 ## Nucleus layer 
 
 
-!
+!       i
 *
 */
 */MOD
-+
-+!
--
-/
++       i
++!      i
+-       i
+/       p (check rounding mode)
 /MOD
-0<
-0=
+0<      i
+0=      i
 0>
 1+
-1-
+1-      i
 2+
 2-
 2/
-<
-=
+<       i
+=       i
 >
 >R
-?DUP
-@
-ABS
+?DUP    i
+@       i
+ABS     i
 AND
-C!
-C@
-CMOVE
+C!      i
+C@      i
+CMOVE   i
 CMOVE>
-COUNT
+COUNT   m
 D+
 D<
-DEPTH
+DEPTH   i
 DNEGATE
-DROP
-DUP
-EXECUTE
-EXIT
+DROP    i
+DUP     i
+EXECUTE i
+EXIT    i
 FILL
 I
 J
 MAX
 MIN
 MOD
-NEGATE
+NEGATE  i
 NOT
-OR
-OVER
+OR      i
+OVER    i
 PICK
 R>
 R@
 ROLL
-ROT
-SWAP
+ROT     i
+SWAP    i
 U<
 UM*
-UM/MOD
-XOR
+UM/MOD  i
+XOR     i
 
 
 ## Device layer 
@@ -77,76 +83,77 @@ KEY
 SAVE-BUFFERS
 SPACE
 SPACES
-TYPE
+TYPE    i
 UPDATE
 
 
 ## Interpreter layer 
 
 
-#
-#>
-#S
-#TIB
-'
+#       i
+#>      i
+#S      i
+#TIB    i
+'       i
 (
 -TRAILING
-.
+.       i
 .(
-<#
->BODY
->IN
+<#      i
+>BODY   i
+>IN     i
 ABORT
-BASE
+BASE    i
 BLK
 CONVERT
 DECIMAL
 DEFINITIONS
-FIND
+FIND    i
 FORGET
 FORTH
 FORTH-83
-HERE
-HOLD
+HERE    i
+HOLD    i
 LOAD
 PAD
-QUIT
-SIGN
+QUIT    i
+SIGN    i
 SPAN
-TIB
-U.
-WORD
+TIB     i
+U.      i
+WORD    i
 
 
 ## Compiler layer 
 
 
 +LOOP
-,
+,       i
 ."
-:
-;
+:       i
+;       i
 ABORT"
-ALLOT
+ALLOT   i
 BEGIN
 COMPILE
 CONSTANT
-CREATE
+CREATE  i
 DO
 DOES>
 ELSE
 IF
 IMMEDIATE
 LEAVE
-LITERAL
+LITERAL i
 LOOP
 REPEAT
-STATE
+STATE   i
 THEN
 UNTIL
 VARIABLE
 VOCABULARY
 WHILE
+[
 [']
 [COMPILE]
-]
+]       i
