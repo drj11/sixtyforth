@@ -1173,6 +1173,42 @@ dquit:
 QUIT:   DQ reset
         Link(dquit)
 
+dz:
+        DQ 1
+        DQ '0'
+z:      DQ stdexe
+        DQ LIT
+        DQ 0
+        DQ EXIT
+        Link(dz)
+
+dstod:
+        DQ 3
+        DQ 's>d'        ; std1994
+StoD:   DQ stdexe
+        ; (n -- d)
+        DQ DUP
+        DQ fABS         ; (n +n)
+        DQ z            ; (n +n 0)
+        DQ ROT          ; (0 +n n)
+        DQ Dplusminus   ; (d)
+        DQ EXIT
+        Link(dstod)
+
+dtimes:
+        DQ 1
+        DQ '*'          ; std1983
+ftimes: DQ stdexe
+        ; * (n1 n2 -- n3)
+        DQ StoD         ; (n1 d2)
+        DQ ROT          ; (d2 n1)
+        DQ LIT
+        DQ 1            ; (d2 n1 1)
+        DQ Mstarslash   ; (d)
+        DQ DtoS         ; (n)
+        DQ EXIT
+        Link(dtimes)
+
 duseless:
         DQ 7
         DQ 'useless'
