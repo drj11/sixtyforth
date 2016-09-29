@@ -1445,6 +1445,39 @@ THEN:
         DQ EXIT
         Link(dthen)
 
+dbegin:
+        DQ 5 | Immediate
+        DQ 'begin'      ; std1983
+BEGIN:
+        DQ stdexe
+        ; BEGIN ( -- token 'BEGIN )     at compile time
+        DQ HERE
+        DQ LIT
+        DQ BEGIN
+        DQ EXIT
+        Link(dbegin)
+
+duntil:
+        DQ 5 | Immediate
+        DQ 'until'      ; std1983
+UNTIL:
+        DQ stdexe
+        ; UNTIL ( token 'BEGIN -- )     at compile time
+        DQ DROP         ; :todo: safety check 'BEGIN
+        DQ LIT
+        DQ ZEROBRANCH
+        DQ comma
+        DQ HERE         ; ( token here )
+        DQ CELLplus
+        DQ MINUS        ; ( byteoffset )
+        DQ LIT
+        DQ 1
+        DQ CELLS
+        DQ divide       ; ( offset )
+        DQ comma
+        DQ EXIT
+        Link(duntil)
+
 duseless:
         DQ 7
         DQ 'useless'
