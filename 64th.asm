@@ -1,5 +1,6 @@
 BITS 64
 
+
 sys_read EQU 0
 sys_write EQU 1
 
@@ -1374,6 +1375,29 @@ LAST:   DQ stdexe
         DQ PLUS
         DQ EXIT
         Link(dlast)
+
+dcells:
+        DQ 5
+        DQ 'cells'      ; std1994
+CELLS:  DQ stdexe
+        DQ LIT
+        DQ 8
+        DQ ftimes
+        DQ EXIT
+        Link(dcells)
+
+dvariable:
+        DQ 8
+        DQ 'variable'   ; std1983
+VARIABLE:
+        DQ stdexe
+        DQ CREATE
+        DQ LIT
+        DQ 1
+        DQ CELLS
+        DQ ALLOT
+        DQ EXIT
+        Link(dvariable)
 
 duseless:
         DQ 7

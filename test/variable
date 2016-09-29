@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo 'variable bop
+97 bop !
+3 bop @ . .' | $FORTH)
+echo $out
+case "$out" in
+    ("97 3 ") exit 0;;
+esac
+exit 2
