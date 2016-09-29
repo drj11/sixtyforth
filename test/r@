@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ': dub >r r@ r> ; 99 dub . . ' | $FORTH)
+echo $out
+case "$out" in
+    ("99 99 ") exit 0;;
+esac
+exit 2

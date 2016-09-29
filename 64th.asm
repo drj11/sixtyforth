@@ -1102,6 +1102,14 @@ Rfrom:  DQ $+8
         jmp duprax
         Link(drfrom)
 
+drfetch:
+        DQ 2
+        DQ 'r@'         ; std1983
+Rfetch: DQ $+8
+        mov rax, [r12-8]
+        jmp duprax
+        Link(drfetch)
+
 dtib:
         DQ 3
         DQ 'tib'        ; std1983

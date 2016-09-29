@@ -60,7 +60,7 @@ OR      i
 OVER    i
 PICK
 R>      i
-R@
+R@      i
 ROLL
 ROT     i
 SWAP    i
