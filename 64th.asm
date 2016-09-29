@@ -1024,6 +1024,17 @@ fromBODY:
         DQ EXIT
         Link(dfrombody)
 
+dfromname:
+        DQ 5
+        DQ '>name'      ; std1983[harris]
+fromNAME:
+        DQ stdexe
+        DQ LIT
+        DQ fromNAME - dfromname ; 16, basically
+        DQ PLUS
+        DQ EXIT
+        Link(dfromname)
+
 dstate:
         DQ 5
         DQ 'state'      ; std1983
@@ -1334,6 +1345,35 @@ DNEGATE:
         DQ Dplusminus   ; (dn1)
         DQ EXIT
         Link(ddnegate)
+
+dimmediate:
+        DQ 9
+        DQ 'immediat'   ; std1983
+IMMEDIATE:
+        DQ stdexe
+        DQ LAST         ; (addr)
+        DQ DUP          ; (addr addr)
+        DQ fetch        ; (addr length)
+        DQ LIT
+        DQ Immediate    ; (addr length immflag)
+        DQ OR           ; (addr lengthflag)
+        DQ SWAP         ; (l addr)
+        DQ store
+        DQ EXIT
+        Link(dimmediate)
+
+dlast:
+        DQ 4
+        DQ 'last'       ; Acornsoft
+LAST:   DQ stdexe
+        DQ LIT
+        DQ DICT
+        DQ fetch
+        DQ LIT          ; L>NAME
+        DQ 8
+        DQ PLUS
+        DQ EXIT
+        Link(dlast)
 
 duseless:
         DQ 7
