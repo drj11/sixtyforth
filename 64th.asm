@@ -1386,6 +1386,18 @@ CELLS:  DQ stdexe
         DQ EXIT
         Link(dcells)
 
+dcellplus:
+        DQ 5
+        DQ 'cell+'      ; std1994
+CELLplus:
+        DQ stdexe
+        DQ LIT
+        DQ 1
+        DQ CELLS
+        DQ PLUS
+        DQ EXIT
+        Link(dcellplus)
+
 dvariable:
         DQ 8
         DQ 'variable'   ; std1983
@@ -1398,6 +1410,40 @@ VARIABLE:
         DQ ALLOT
         DQ EXIT
         Link(dvariable)
+
+dif:
+        DQ 2 | Immediate
+        DQ 'if'         ; std1983
+IF:
+        DQ stdexe
+        ; IF ( -- token )       at compile time
+        DQ LIT
+        DQ ZEROBRANCH
+        DQ comma
+        DQ HERE         ; patch token
+        DQ TRUE
+        DQ comma
+        DQ EXIT
+        Link(dif)
+
+dthen:
+        DQ 4 | Immediate
+        DQ 'then'       ; std1983
+THEN:
+        DQ stdexe
+        ; THEN ( token -- )     at compile time
+        DQ HERE         ; ( token here )
+        DQ OVER         ; ( token here token )
+        DQ CELLplus     ; ( token here addr )
+        DQ MINUS        ; ( token offset )
+        DQ LIT
+        DQ 1
+        DQ CELLS        ; ( token offset 8 )
+        DQ divide       ; ( token offset )
+        DQ SWAP         ; ( offset token )
+        DQ store
+        DQ EXIT
+        Link(dthen)
 
 duseless:
         DQ 7
