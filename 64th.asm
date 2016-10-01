@@ -1421,7 +1421,7 @@ IF:
         DQ ZEROBRANCH
         DQ comma
         DQ HERE         ; patch token
-        DQ TRUE
+        DQ TRUE         ; compile dummy offset
         DQ comma
         DQ EXIT
         Link(dif)
