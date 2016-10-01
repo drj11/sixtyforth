@@ -1426,6 +1426,27 @@ IF:
         DQ EXIT
         Link(dif)
 
+delse:
+        DQ 4 | Immediate
+        DQ 'else'       ; std1983
+fELSE:
+        DQ stdexe
+        ; ELSE ( token -- newtoken)     at compile time
+        DQ LIT
+        DQ BRANCH
+        DQ comma        ; ( token )
+        DQ HERE         ; ( token newtoken )
+        DQ TRUE         ; compile dummy offset
+        DQ comma
+        DQ SWAP         ; ( newtoken token )
+        DQ HERE         ; ( newtoken token here )
+        DQ OVER         ; ( newtoken token here token )
+        DQ MINUS        ; ( newtoken token offset )
+        DQ SWAP         ; ( newtoken offset token )
+        DQ store        ; ( newtoken )
+        DQ EXIT
+        Link(delse)
+
 dthen:
         DQ 4 | Immediate
         DQ 'then'       ; std1983

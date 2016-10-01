@@ -140,7 +140,7 @@ CONSTANT
 CREATE  i
 DO
 DOES>
-ELSE
+ELSE    i
 IF      i
 IMMEDIATE       i
 LEAVE
