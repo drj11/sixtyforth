@@ -1675,10 +1675,10 @@ LIT:    DQ $+8
 
 ZEROBRANCH:
         DQ $+8
-        ; read the next word as a relative offset;
+        ; Read the next word as a relative offset (in bytes);
         ; pop the TOS and test it;
-        ; if it is 0 then branch by adding the offset
-        ; to CODEPOINTER.
+        ; if it is 0 then
+        ; branch by adding offset to current CODEPOINTER.
         mov rcx, [rbx]
         sub rbp, 8
         mov rax, [rbp]
@@ -1691,7 +1691,7 @@ ZEROBRANCH:
         jmp next
 
 BRANCH: DQ $+8
-        ; read the next word as a relative offset;
+        ; Read the next word as a relative offset (in bytes);
         ; branch by adding offset to current CODEPOINTER.
         mov rcx, [rbx]
         lea rbx, [rbx + rcx]
