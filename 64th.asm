@@ -1517,7 +1517,7 @@ INTERACTOR:
         DQ FIND
         DQ qEXECUTE
         DQ BRANCH
-        DQ -(($-.w)/8)-1
+        DQ -(($-.w)/8)
 .x:     DQ EXIT
 
 ipl:    DQ stdexe
@@ -1700,9 +1700,8 @@ ZEROBRANCH:
 
 BRANCH: DQ $+8
         ; read the next word as a relative offset;
-        ; branch by adding offset to CODEPOINTER.
+        ; branch by adding offset to current CODEPOINTER.
         mov rcx, [rbx]
-        add rbx, 8
         lea rbx, [rbx + 8*rcx]
         jmp next
 
