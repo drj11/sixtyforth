@@ -345,7 +345,7 @@ sharpS:
         DQ OR           ; (d+ n)
         DQ zequals
         DQ ZEROBRANCH
-        DQ -(($-.l)/8)-1
+        DQ -(($-.l)/8)
         DQ EXIT
         Link(dsharps)
 
@@ -355,7 +355,7 @@ dsign:
 SIGN:   DQ stdexe
         DQ zless
         DQ ZEROBRANCH
-        DQ ((.pos-$)/8)-1
+        DQ ((.pos-$)/8)
         DQ LIT
         DQ '-'
         DQ HOLD
@@ -375,7 +375,7 @@ DIGIT:  DQ stdexe
         DQ OVER         ; (n 9 n)
         DQ lessthan     ; (n bf)
         DQ ZEROBRANCH
-        DQ ((.l-$)/8)-1
+        DQ ((.l-$)/8)
         DQ LIT
         DQ 7
         DQ PLUS
@@ -996,7 +996,7 @@ TICK:   DQ stdexe
         DQ fWORD        ; (addr)
         DQ FIND         ; (addr n)
         DQ ZEROBRANCH
-        DQ ((.z-$)/8)-1
+        DQ ((.z-$)/8)
         DQ EXIT
 .z:     DQ DROP
         DQ LIT
@@ -1434,7 +1434,6 @@ THEN:
         ; THEN ( token -- )     at compile time
         DQ HERE         ; ( token here )
         DQ OVER         ; ( token here token )
-        DQ CELLplus     ; ( token here addr )
         DQ MINUS        ; ( token offset )
         DQ LIT
         DQ 1
@@ -1468,7 +1467,6 @@ UNTIL:
         DQ ZEROBRANCH
         DQ comma
         DQ HERE         ; ( token here )
-        DQ CELLplus
         DQ MINUS        ; ( byteoffset )
         DQ LIT
         DQ 1
@@ -1506,7 +1504,7 @@ INTERACTOR:
         DQ numberTIB
         DQ fetch
         DQ ZEROBRANCH
-        DQ ((.x-$)/8)-1
+        DQ ((.x-$)/8)
 .w:
         DQ fBL
         DQ fWORD        ; (addr)
@@ -1515,7 +1513,7 @@ INTERACTOR:
         DQ SWAP
         DQ DROP         ; (addr n)
         DQ ZEROBRANCH
-        DQ -(($-.line)/8)-1
+        DQ -(($-.line)/8)
         DQ FIND
         DQ qEXECUTE
         DQ BRANCH
@@ -1534,7 +1532,7 @@ qEXECUTE:
         DQ stdexe
         DQ qDUP
         DQ ZEROBRANCH
-        DQ ((.n-$)/8)-1
+        DQ ((.n-$)/8)
         ; (addr +-1)
         ; immediate=1; non-immediate=-1
         DQ LIT
@@ -1546,7 +1544,7 @@ qEXECUTE:
         DQ OR           ; (addr 0/2)
         ; 0=compile; 2=execute
         DQ ZEROBRANCH
-        DQ ((.comp-$)/8)-1
+        DQ ((.comp-$)/8)
         DQ EXECUTE
         DQ EXIT
 .comp:  ; (addr)
@@ -1555,13 +1553,13 @@ qEXECUTE:
 .n:     ; (addr)
         DQ qNUMBER
         DQ ZEROBRANCH
-        DQ ((.abort-$)/8)-1
+        DQ ((.abort-$)/8)
         ; (n)
         DQ STATE
         DQ fetch
         ; (n compiling?)
         DQ ZEROBRANCH
-        DQ ((.x-$)/8)-1
+        DQ ((.x-$)/8)
         DQ LITERAL
 .x:
         DQ EXIT
@@ -1588,7 +1586,7 @@ qNUMBER:
         DQ twoSWAP      ; (c-string sign 0 0 addr +n)
         DQ toNUMBER     ; (c-string sign ud a n)
         DQ ZEROBRANCH
-        DQ ((.success-$)/8)-1
+        DQ ((.success-$)/8)
         ; (c-string sign ud a)
         DQ DROP
         DQ DROP
@@ -1611,7 +1609,7 @@ scansign:
         ; (addr +n -- sign addr +n)
         DQ DUP
         DQ ZEROBRANCH
-        DQ ((.empty-$)/8)-1
+        DQ ((.empty-$)/8)
         DQ SWAP         ; (+n addr)
         DQ DUP
         DQ Cfetch       ; (+n addr ch)
@@ -1690,11 +1688,13 @@ ZEROBRANCH:
         ; if it is 0 then branch by adding the offset
         ; to CODEPOINTER.
         mov rcx, [rbx]
-        add rbx, 8
         sub rbp, 8
         mov rax, [rbp]
         test rax, rax
-        jnz next
+        jz .branch
+        add rbx, 8
+        jmp next
+.branch:
         lea rbx, [rbx + 8*rcx]
         jmp next
 
