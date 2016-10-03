@@ -1489,6 +1489,39 @@ UNTIL:
         DQ EXIT
         Link(duntil)
 
+dsquote:
+        DQ 2 | Immediate
+        DQ 's"'         ; std1994
+Squote:
+        DQ stdexe
+        DQ LIT
+        DQ '"'
+        DQ fWORD
+        DQ COUNT        ; ( c-addr u )
+        DQ LIT
+        DQ BRANCH
+        DQ comma
+        DQ DUP          ; ( c-addr u u )
+        DQ CELLplus     ; ( c-addr u v )
+        DQ comma        ; ( c-addr u )
+        DQ HERE         ; ( c-addr u here )
+        DQ OVER         ; ( c-addr u here u )
+        DQ ALLOT        ; ( c-addr u here )
+        DQ LIT
+        DQ LIT          ; compile LIT here
+        DQ comma
+        DQ DUP
+        DQ comma
+        DQ LIT
+        DQ LIT          ; compile LIT u
+        DQ comma
+        DQ OVER
+        DQ comma        ; ( c-addr u here )
+        DQ SWAP         ; ( c-addr here u )
+        DQ CMOVE
+        DQ EXIT
+        Link(dsquote)
+
 duseless:
         DQ 7
         DQ 'useless'

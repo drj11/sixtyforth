@@ -157,3 +157,7 @@ WHILE
 [']
 [COMPILE]
 ]       i
+
+## From std1994
+
+S"      i
