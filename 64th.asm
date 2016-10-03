@@ -1494,6 +1494,17 @@ dsquote:
         DQ 's"'         ; std1994
 Squote:
         DQ stdexe
+        ; This implementation of S" is
+        ; a bit pedestration.
+        ; A string is compiled into a branch over
+        ; the string which is copied into the dictionary
+        ; after the branch,
+        ; followed by a push of its address and its length.
+        ; :todo: a more exciting implementation
+        ; would use a single branch-extra primitive
+        ; that used the branch value and location to
+        ; not only compute the branch but also the
+        ; address and length of the string.
         DQ LIT
         DQ '"'
         DQ fWORD
