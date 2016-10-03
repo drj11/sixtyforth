@@ -1507,16 +1507,10 @@ Squote:
         DQ HERE         ; ( c-addr u here )
         DQ OVER         ; ( c-addr u here u )
         DQ ALLOT        ; ( c-addr u here )
-        DQ LIT
-        DQ LIT          ; compile LIT here
-        DQ comma
         DQ DUP
-        DQ comma
-        DQ LIT
-        DQ LIT          ; compile LIT u
-        DQ comma
+        DQ LITERAL      ; compile LIT here
         DQ OVER
-        DQ comma        ; ( c-addr u here )
+        DQ LITERAL      ; compile LIT u
         DQ SWAP         ; ( c-addr here u )
         DQ CMOVE
         DQ EXIT
