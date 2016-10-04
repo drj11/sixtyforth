@@ -1489,6 +1489,20 @@ UNTIL:
         DQ EXIT
         Link(duntil)
 
+daligned:
+        DQ 7
+        DQ 'aligned'    ; std1994
+ALIGNED:
+        DQ stdexe
+        ; ALIGNED ( addr -- a-addr )
+        DQ oneminus
+        DQ LIT
+        DQ 7
+        DQ OR
+        DQ oneplus
+        DQ EXIT
+        Link(daligned)
+
 dsquote:
         DQ 2 | Immediate
         DQ 's"'         ; std1994
@@ -1514,9 +1528,11 @@ Squote:
         DQ comma
         DQ DUP          ; ( c-addr u u )
         DQ CELLplus     ; ( c-addr u v )
+        DQ ALIGNED      ; ( c-addr u v' )
         DQ comma        ; ( c-addr u )
         DQ HERE         ; ( c-addr u here )
         DQ OVER         ; ( c-addr u here u )
+        DQ ALIGNED      ; ( c-addr u here u' )
         DQ ALLOT        ; ( c-addr u here )
         DQ DUP
         DQ LITERAL      ; compile LIT here
