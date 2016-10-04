@@ -1495,6 +1495,47 @@ UNTIL:
         DQ EXIT
         Link(duntil)
 
+dwhile:
+        DQ 5 | Immediate
+        DQ 'while'      ; std1983
+WHILE:
+        DQ stdexe
+        ; WHILE ( token 'BEGIN -- token 'BEGIN w-token 'WHILE )
+        DQ LIT
+        DQ ZEROBRANCH
+        DQ comma
+        ; :todo: safety check 'BEGIN
+        DQ HERE
+        DQ LIT
+        DQ WHILE
+        DQ TRUE
+        DQ comma
+        DQ EXIT
+        Link(dwhile)
+
+drepeat:
+        DQ 6 | Immediate
+        DQ 'repeat'     ; std1983
+REPEAT:
+        DQ stdexe
+        ; REPEAT ( b-token 'BEGIN w-token 'WHILE -- )
+        DQ twoSWAP      ; ( w-token 'WHILE b-token 'BEGIN )
+        DQ DROP         ; :todo: safety check 'BEGIN
+        DQ LIT
+        DQ BRANCH
+        DQ comma
+        DQ HERE         ; ( w-token 'WHILE b-token here)
+        DQ MINUS        ; ( w-token 'WHILE offset )
+        DQ comma        ; ( w-token 'WHILE )
+        DQ DROP         ; :todo: safety check 'WHILE
+        DQ HERE         ; ( w-token here )
+        DQ OVER         ; ( w-token here w-token )
+        DQ MINUS        ; ( w-token offset )
+        DQ SWAP         ; ( offset w-token )
+        DQ store
+        DQ EXIT
+        Link(drepeat)
+
 daligned:
         DQ 7
         DQ 'aligned'    ; std1994
