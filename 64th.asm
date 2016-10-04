@@ -138,7 +138,7 @@ toNUMBER:
 
 dmstarslash:
         DQ 3
-        DQ 'm*/'                ; std1994 double
+        DQ 'm*/'        ; std1994 double
 Mstarslash:
         DQ stdexe
         ; M*/ (d1 n1 +n2 -- d2)
@@ -1245,6 +1245,12 @@ dquit:
 QUIT:   DQ reset
         Link(dquit)
 
+dabort:
+        DQ 5
+        DQ 'abort'      ; std1983
+ABORT:  DQ dreset
+        Link(dabort)
+
 dz:
         DQ 1
         DQ '0'
@@ -1543,6 +1549,32 @@ Squote:
         DQ EXIT
         Link(dsquote)
 
+dabortquote:
+        DQ 6 | Immediate
+        DQ 'abort"'
+ABORTquote:
+        DQ stdexe
+        DQ LIT
+        DQ ZEROBRANCH
+        DQ comma
+        DQ HERE         ; ( here )
+        DQ TRUE
+        DQ comma
+        DQ Squote
+        DQ LIT
+        DQ TYPE
+        DQ comma
+        DQ LIT
+        DQ ABORT
+        DQ comma
+        DQ HERE         ; ( addr here )
+        DQ OVER         ; ( addr here addr )
+        DQ MINUS        ; ( addr offset )
+        DQ SWAP         ; ( offset addr )
+        DQ store
+        DQ EXIT
+        Link(dabortquote)
+
 duseless:
         DQ 7
         DQ 'useless'
@@ -1703,6 +1735,7 @@ scansign:
 SECTION .text
 GLOBAL _start
 _start:
+dreset: ; ABORT jumps here (data reset)
         ; Initialise the model registers.
         mov rbp, stack
 reset:  ; QUIT jumps here

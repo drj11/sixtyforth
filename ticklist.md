@@ -102,7 +102,7 @@ UPDATE
 <#      i
 >BODY   i
 >IN     i
-ABORT
+ABORT   p (not directly tested)
 BASE    i
 BLK
 CONVERT
@@ -132,7 +132,7 @@ WORD    i
 ."
 :       i
 ;       i
-ABORT"
+ABORT"  i
 ALLOT   i
 BEGIN   i
 COMPILE
