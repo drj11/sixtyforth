@@ -160,4 +160,20 @@ WHILE
 
 ## From std1994
 
+>NUMBER i
+2OVER   i
+2ROT    i
+2SWAP   i
+ALIGNED i
+BL      i
+CELL+   i
+CELLS   i
+D.      i
+D>S     i
+DABS    i
+FALSE   i
+M*/     i
+NIP     i
 S"      i
+S>D     i
+TRUE    i
