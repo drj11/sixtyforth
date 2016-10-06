@@ -1652,6 +1652,53 @@ bracketCHAR:
         DQ EXIT
         Link(dbracketchar)
 
+dparse:
+        DQ 5
+        DQ 'parse'
+PARSE:
+        DQ stdexe
+        ; ( char -- c-addr u )
+        DQ toIN
+        DQ fetch        ; char o
+        DQ TRUE         ; char o true
+        DQ ROT          ; o true char
+.ch:
+        ; o x char
+        DQ NIP          ; o char
+        DQ toIN
+        DQ fetch        ; o char >in
+        DQ SWAP         ; o >in char
+        DQ OVER         ; o >in char >in
+        DQ numberTIB
+        DQ fetch
+        DQ lessthan
+        DQ ZEROBRANCH
+        DQ .got-$
+        DQ OVER         ; o >in char >in
+        DQ TIB          ; o >in char >in tib
+        DQ PLUS         ; o >in char addr
+        DQ Cfetch       ; o >in char c
+        ; increment >in
+        DQ LIT
+        DQ 1
+        DQ toIN
+        DQ plusstore
+        DQ OVER         ; o >in char c char
+        DQ equals       ; o >in char flag
+        DQ ZEROBRANCH
+        DQ -($-.ch)
+.got:
+        ; c-addr >in char
+        DQ DROP         ; o >in
+        DQ OVER         ; o >in o
+        DQ MINUS        ; o u
+        DQ SWAP         ; u o
+        DQ TIB          ; u o TIB
+        DQ PLUS         ; u c-addr
+        DQ SWAP         ; c-addr u
+        DQ EXIT
+        Link(dparse)
+
 duseless:
         DQ 7
         DQ 'useless'

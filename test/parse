@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '64 parse foo@ dup . type' | $FORTH)
+echo $out
+case "$out" in
+    ("3 foo") exit 0;;
+esac
+exit 2

@@ -176,9 +176,8 @@ DABS    i
 FALSE   i
 M*/     i
 NIP     i
+PARSE   i
 S"      i
 S>D     i
 TRUE    i
 [CHAR]  i
-
-PARSE
