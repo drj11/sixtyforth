@@ -1592,7 +1592,7 @@ Squote:
 
 dabortquote:
         DQ 6 | Immediate
-        DQ 'abort"'
+        DQ 'abort"'     ; std1983
 ABORTquote:
         DQ stdexe
         DQ LIT
@@ -1618,7 +1618,7 @@ ABORTquote:
 
 dnotequals:
         DQ 2
-        DQ '<>'
+        DQ '<>'         ; std1994
 notequals:
         DQ stdexe
         ; <> (a b -- -1)
@@ -1631,7 +1631,7 @@ notequals:
 
 dchar:
         DQ 4
-        DQ 'char'
+        DQ 'char'       ; std1994
 CHAR:
         DQ stdexe
         DQ fBL
@@ -1644,7 +1644,7 @@ CHAR:
 
 dbracketchar:
         DQ 6 | Immediate
-        DQ '[char]'
+        DQ '[char]'     ; std1994
 bracketCHAR:
         DQ stdexe
         DQ CHAR
@@ -1654,7 +1654,7 @@ bracketCHAR:
 
 dparse:
         DQ 5
-        DQ 'parse'
+        DQ 'parse'      ; std1994
 PARSE:
         DQ stdexe
         ; ( char -- c-addr u )
