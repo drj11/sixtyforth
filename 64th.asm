@@ -1699,6 +1699,18 @@ PARSE:
         DQ EXIT
         Link(dparse)
 
+ddotparen:
+        DQ 2 | Immediate
+        DQ '.('
+dotparen:
+        DQ stdexe
+        DQ LIT
+        DQ ')'
+        DQ PARSE
+        DQ TYPE
+        DQ EXIT
+        Link(ddotparen)
+
 duseless:
         DQ 7
         DQ 'useless'

@@ -98,7 +98,7 @@ UPDATE
 (
 -TRAILING
 .       i
-.(
+.(      i
 <#      i
 >BODY   i
 >IN     i

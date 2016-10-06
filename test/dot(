@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '13 : x .( hello) 7 ; . x x + .' | $FORTH)
+echo $out
+case "$out" in
+    ("hello13 14 ") exit 0;;
+esac
+exit 2
