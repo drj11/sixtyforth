@@ -169,6 +169,7 @@ ALIGNED i
 BL      i
 CELL+   i
 CELLS   i
+CHAR    i
 D.      i
 D>S     i
 DABS    i
@@ -178,3 +179,5 @@ NIP     i
 S"      i
 S>D     i
 TRUE    i
+
+PARSE

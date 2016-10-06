@@ -1629,6 +1629,19 @@ notequals:
         DQ EXIT
         Link(dnotequals)
 
+dchar:
+        DQ 4
+        DQ 'char'
+CHAR:
+        DQ stdexe
+        DQ fBL
+        DQ fWORD
+        DQ COUNT
+        DQ DROP
+        DQ Cfetch
+        DQ EXIT
+        Link(dchar)
+
 duseless:
         DQ 7
         DQ 'useless'
