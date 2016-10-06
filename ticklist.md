@@ -179,5 +179,6 @@ NIP     i
 S"      i
 S>D     i
 TRUE    i
+[CHAR]  i
 
 PARSE

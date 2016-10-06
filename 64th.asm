@@ -1642,6 +1642,16 @@ CHAR:
         DQ EXIT
         Link(dchar)
 
+dbracketchar:
+        DQ 6 | Immediate
+        DQ '[char]'
+bracketCHAR:
+        DQ stdexe
+        DQ CHAR
+        DQ LITERAL
+        DQ EXIT
+        Link(dbracketchar)
+
 duseless:
         DQ 7
         DQ 'useless'

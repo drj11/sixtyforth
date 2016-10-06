@@ -1,0 +1,9 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ': cc [char] A [char] B ;
+cc cc . . . .' | $FORTH)
+echo $out
+case "$out" in
+    ("66 65 66 65 ") exit 0;;
+esac
+exit 2
