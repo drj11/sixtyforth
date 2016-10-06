@@ -1616,6 +1616,19 @@ ABORTquote:
         DQ EXIT
         Link(dabortquote)
 
+dnotequals:
+        DQ 2
+        DQ '<>'
+notequals:
+        DQ stdexe
+        ; <> (a b -- -1)
+        ;    (a a -- 0)
+        DQ XOR
+        DQ zequals
+        DQ zequals
+        DQ EXIT
+        Link(dnotequals)
+
 duseless:
         DQ 7
         DQ 'useless'

@@ -160,6 +160,7 @@ WHILE   i
 
 ## From std1994
 
+<>      i
 >NUMBER i
 2OVER   i
 2ROT    i
