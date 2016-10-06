@@ -1568,8 +1568,7 @@ Squote:
         ; address and length of the string.
         DQ LIT
         DQ '"'
-        DQ fWORD
-        DQ COUNT        ; ( c-addr u )
+        DQ PARSE        ; ( c-addr u )
         DQ LIT
         DQ BRANCH
         DQ comma
