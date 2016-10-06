@@ -441,9 +441,9 @@ dzequals:
         DQ '0='         ; std1983
 zequals:
         DQ $+8
-        ; 0= (A -- Bool)
-        ; Result is -1 (TRUE) if A = 0;
-        ; Result is 0 (FALSE) otherwise.
+        ; 0= (0 -- -1)
+        ;    (x -- 0) when x is not 0
+        ; true is all bits 1: -1
         mov rax, [rbp-8]
         sub rax, 1      ; is-zero now in Carry flag
         sbb rax, rax    ; C=0 -> 0; C=1 -> -1
