@@ -542,15 +542,6 @@ oneminus:
         jmp next
         Link(doneminus)
 
-ddivide:
-        DQ 1
-        DQ '/'          ; std1983
-divide: DQ stdexe
-        DQ divMOD
-        DQ DROP
-        DQ EXIT
-        Link(ddivide)
-
 dumslashmod:
         DQ 6
         DQ 'um/mod'     ; std1983

@@ -17,7 +17,7 @@ p - partially implemented (for example, small inputs only)
 +       i
 +!      i
 -       i
-/       p (check rounding mode)
+/
 /MOD
 0<      i
 0=      i

@@ -1,8 +1,0 @@
-#!/bin/sh
-FORTH=${FORTH:-../64th}
-out=$(echo 7 2 / . | $FORTH | sed 's/ *$//')
-echo $out
-case $out in
-    (3) exit 0;;
-esac
-exit 2
