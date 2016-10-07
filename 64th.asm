@@ -941,6 +941,22 @@ cmove0: mov rcx, [rbp-8]
         jmp .l
         Link(dcmove)
 
+dmin:
+        DQ 3
+        DQ 'min'        ; std1983
+MIN:
+        DQ stdexe
+        DQ OVER
+        DQ OVER
+        DQ lessthan     ; a b flag
+        DQ ZEROBRANCH
+        DQ .s-$
+        DQ SWAP
+.s:
+        DQ DROP
+        DQ EXIT
+        Link(dmin)
+
 dcreate:
         DQ 6
         DQ 'create'     ; std1983
@@ -952,30 +968,24 @@ CREATE: DQ stdexe
         DQ DICT
         DQ fetch
         DQ comma
-        ; Get Word
-        DQ fBL
-        DQ fWORD        ; (lfa addr)
 
-        ; Compile Name Field
-        ; Note: this copies the entire name string
-        ; into the dictionary, even though
-        ; only 8 bytes of the string are used.
-        ; The Code Field will overwrite bytes 9 to 16 of a name
-        ; if it is that long.
-        ; This works as long as you don't run out of dictionary space.
-        ; But is not very tidy.
-        DQ DUP          ; (lfa addr addr)
-        DQ fetch        ; (lfa addr N)
+        DQ PARSEWORD    ; ( lfa addr u )
+
+        ; Compile Name Field.
+        ; Name Length.
+        DQ DUP
+        DQ comma
+        ; Name String
         DQ LIT
-        DQ 8
-        DQ PLUS         ; (lfa addr N+8)
-        DQ HERE         ; (lfa addr N+8 here)
-        DQ SWAP         ; (lfa addr here N+8)
-        DQ CMOVE        ; (lfa)
+        DQ 8            ; ( lfa addr u 8 )
+        DQ MIN          ; ( lfa addr u|8 )
+        DQ HERE         ; ( lfa addr u|8 here )
+        DQ SWAP         ; ( lfa addr here u|8 )
+        DQ CMOVE        ; ( lfa )
         DQ LIT
-        DQ 16
-        DQ CP           ; (lfa 16 cp)
-        DQ plusstore    ; (lfa)
+        DQ 1
+        DQ CELLS        ; ( lfa cc )
+        DQ ALLOT
 
         ; Compile Code Field
         DQ LIT
