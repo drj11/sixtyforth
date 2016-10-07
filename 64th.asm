@@ -549,24 +549,20 @@ UMslashMOD:
         DQ $+8
         ; UM/MOD (ud u1 -- uq ur)
         ; Note: Double Single -> Single Single
-        ; > r15
-        sub rbp, 8
-        mov r15, [rbp]
-        ; > RDX
-        sub rbp, 8
-        mov rdx, [rbp]
-        ; > RAX
-        sub rbp, 8
-        mov rax, [rbp]
+        ; Divisor
+        mov rcx, [rbp-8]
+        ; Dividend, most significant.
+        mov rdx, [rbp-16]
+        ; Dividend, least significant.
+        mov rax, [rbp-24]
 
-        div r15
+        div rcx
 
-        ; RAX >
-        mov [rbp], rax
-        add rbp, 8
-        ; RDX >
-        mov [rbp], rdx
-        add rbp, 8
+        sub rbp, 8
+        ; Deposit quotient.
+        mov [rbp-16], rax
+        ; Deposit remainder.
+        mov [rbp-8], rdx
         jmp next
         Link(dumslashmod)
 
