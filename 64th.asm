@@ -1633,9 +1633,7 @@ dchar:
         DQ 'char'       ; std1994
 CHAR:
         DQ stdexe
-        DQ fBL
-        DQ fWORD
-        DQ COUNT
+        DQ PARSEWORD    ; c-addr u
         DQ DROP
         DQ Cfetch
         DQ EXIT
@@ -1697,6 +1695,17 @@ PARSE:
         DQ SWAP         ; c-addr u
         DQ EXIT
         Link(dparse)
+
+dparseword:
+        DQ 10
+        DQ 'parse-wo'
+PARSEWORD:
+        DQ stdexe
+        DQ fBL
+        DQ fWORD
+        DQ COUNT
+        DQ EXIT
+        Link(dparseword)
 
 ddotparen:
         DQ 2 | Immediate
