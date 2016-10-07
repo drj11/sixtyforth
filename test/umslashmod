@@ -3,6 +3,6 @@ FORTH=${FORTH:-../64th}
 out=$(echo '0 1 1000000000 um/mod . .'| $FORTH)
 echo $out
 case $out in
-    ('709551616 18446744073 ') exit 0;;
+    ('18446744073 709551616 ') exit 0;;
 esac
 exit 2

@@ -547,7 +547,7 @@ dumslashmod:
         DQ 'um/mod'     ; std1983
 UMslashMOD:
         DQ $+8
-        ; UM/MOD (ud u1 -- uq ur)
+        ; UM/MOD (ud u1 -- ur uq)
         ; Note: Double Single -> Single Single
         ; Divisor
         mov rcx, [rbp-8]
@@ -559,10 +559,10 @@ UMslashMOD:
         div rcx
 
         sub rbp, 8
-        ; Deposit quotient.
-        mov [rbp-16], rax
         ; Deposit remainder.
-        mov [rbp-8], rdx
+        mov [rbp-16], rdx
+        ; Deposit quotient.
+        mov [rbp-8], rax
         jmp next
         Link(dumslashmod)
 
