@@ -672,6 +672,17 @@ toIN:   DQ stdvar
 atoIN:  DQ 0
         Link(dtoin)
 
+dsource:
+        DQ 5
+        DQ 'source'     ; std1994
+SOURCE:
+        DQ stdexe
+        ; :todo: Implement more input sources.
+        DQ TIB
+        DQ numberTIB
+        DQ EXIT
+        Link(dsource)
+
 dstore:
         DQ 1
         DQ '!'          ; std1983
@@ -1663,13 +1674,14 @@ PARSE:
         DQ fetch        ; o char >in
         DQ SWAP         ; o >in char
         DQ OVER         ; o >in char >in
-        DQ numberTIB
-        DQ fetch
+        DQ SOURCE       ; o >in char >in s-addr u
+        DQ NIP          ; o >in char >in u
         DQ lessthan
         DQ ZEROBRANCH
         DQ .got-$
         DQ OVER         ; o >in char >in
-        DQ TIB          ; o >in char >in tib
+        DQ SOURCE       ; o >in char >in s-addr u
+        DQ DROP         ; o >in char >in s-addr
         DQ PLUS         ; o >in char addr
         DQ Cfetch       ; o >in char c
         ; increment >in
@@ -1682,12 +1694,13 @@ PARSE:
         DQ ZEROBRANCH
         DQ -($-.ch)
 .got:
-        ; c-addr >in char
+        ; offset >in char
         DQ DROP         ; o >in
         DQ OVER         ; o >in o
         DQ MINUS        ; o u
         DQ SWAP         ; u o
-        DQ TIB          ; u o TIB
+        DQ SOURCE       ; u o s-addr u
+        DQ DROP         ; u o s-addr
         DQ PLUS         ; u c-addr
         DQ SWAP         ; c-addr u
         DQ EXIT
