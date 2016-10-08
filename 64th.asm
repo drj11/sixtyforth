@@ -656,15 +656,6 @@ HERE:   DQ stdexe
         DQ EXIT
         Link(dhere)
 
-dnumbertib:
-        DQ 4
-        DQ '#tib'       ; std1983
-numberTIB:
-        DQ stdvar
-anumberTIB:
-        DQ 0
-        Link(dnumbertib)
-
 dtoin:
         DQ 3
         DQ '>in'        ; std1983
@@ -1885,6 +1876,11 @@ scansign:
         DQ ROT
         DQ ROT
         DQ EXIT
+
+numberTIB:
+        DQ stdvar
+anumberTIB:
+        DQ 0
 
 
 SECTION .text
