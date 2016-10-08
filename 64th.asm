@@ -680,6 +680,7 @@ SOURCE:
         ; :todo: Implement more input sources.
         DQ TIB
         DQ numberTIB
+        DQ fetch
         DQ EXIT
         Link(dsource)
 
@@ -1754,8 +1755,8 @@ INTERACTOR:
 .line:  DQ DROP
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
-        DQ numberTIB
-        DQ fetch
+        DQ SOURCE
+        DQ NIP
         DQ ZEROBRANCH
         DQ (.x-$)
 .w:
