@@ -2123,7 +2123,7 @@ BUMPIB:
         ; IB has #IB added to it,
         ; and if it is still within IBLIMIT,
         ; and is positioned at a newline,
-        ; IB is increment past it.
+        ; IB is incremented past it.
         DQ LIT
         DQ 0
         DQ toIN
