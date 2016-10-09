@@ -1755,6 +1755,16 @@ dotparen:
         DQ EXIT
         Link(ddotparen)
 
+dinvert:
+        DQ 6
+        DQ 'invert'
+INVERT:
+        DQ stdexe
+        DQ TRUE
+        DQ XOR
+        DQ EXIT
+        Link(dinvert)
+
 duseless:
         DQ 7
         DQ 'useless'

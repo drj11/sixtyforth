@@ -174,6 +174,7 @@ D.      i
 D>S     i
 DABS    i
 FALSE   i
+INVERT  i
 M*/     i
 NIP     i
 PARSE   i
