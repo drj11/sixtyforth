@@ -1703,11 +1703,48 @@ dparseword:
         DQ 'parse-wo'
 PARSEWORD:
         DQ stdexe
+        DQ SKIP
         DQ fBL
-        DQ fWORD
-        DQ COUNT
+        DQ PARSE
         DQ EXIT
         Link(dparseword)
+
+dskip:
+        DQ 4
+        DQ 'skip'
+SKIP:
+        DQ stdexe
+        ; SKIP ( -- )
+        ; Skip over leading blanks in parse area.
+        ; >IN is advanced until:
+        ;   either the end of parse area is reached; or,
+        ;   it points to a non-blank character.
+        ; Future version may skip over all whitespace.
+.begin:
+        DQ SOURCE       ; addr u
+        DQ toIN
+        DQ fetch        ; addr u >in
+        DQ equals       ; addr flag
+        DQ ZEROBRANCH
+        DQ .then-$
+        DQ EXIT
+.then:  DQ toIN
+        DQ fetch        ; addr >in
+        DQ PLUS         ; c-addr
+        DQ Cfetch       ; c
+        DQ fBL          ; c bl
+        DQ equals       ; flag
+        DQ ZEROBRANCH
+        DQ .escape-$
+        DQ LIT
+        DQ 1            ; 1
+        DQ toIN         ; 1 >in
+        DQ plusstore
+        DQ BRANCH
+        DQ -($ - .begin)
+.escape:
+        DQ EXIT
+        Link(dskip)
 
 ddotparen:
         DQ 2 | Immediate
