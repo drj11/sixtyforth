@@ -399,15 +399,17 @@ fBL:    DQ stdexe
 dtype:
         DQ 4
         DQ 'type'       ; std1983
-TYPE:   DQ $+8
+TYPE:   DQ stdexe
         ; TYPE (addr +n -- )
-        mov rdx, [rbp-8]
-        mov rsi, [rbp-16]
-        sub rbp, 16
-        mov rdi, 1      ; stdout
-        mov rax, sys_write
-        syscall
-        jmp next
+        DQ LIT
+        DQ 1            ; addr n 1      ; stdout
+        DQ ROT
+        DQ ROT          ; 1 addr n
+        DQ LIT
+        DQ sys_write
+        DQ SYSCALL3
+        DQ DROP
+        DQ EXIT
         Link(dtype)
 
 dcount:
