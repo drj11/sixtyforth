@@ -8,10 +8,12 @@ sys_write EQU 1
 SECTION .bss
 
 picture RESB 300        ; For picture output, <# and so on.
-tibaddr RESB 500        ; (address of) Terminal Input Buffer
-                        ; (see >IN and #TIB for pointer and size)
-tibend  EQU $
-tibsize EQU tibend - tibaddr
+picend  EQU $
+
+ib0 RESB 500            ; Input Block 0
+ib1 RESB 500            ; Input Block 1
+
+ibsize EQU ib1 - ib0
 
 wordbuf RESB 8192
 
@@ -281,7 +283,7 @@ dlesssharp:
 lesssharp:
         DQ stdexe
         DQ LIT
-        DQ tibaddr
+        DQ picend
         DQ PIC
         DQ store
         DQ EXIT
@@ -328,8 +330,8 @@ sharpgreater:
         DQ PIC
         DQ fetch        ; (addr)
         DQ LIT
-        DQ tibaddr      ; (addr tib)
-        DQ OVER         ; (addr tib addr)
+        DQ picend       ; (addr end)
+        DQ OVER         ; (addr end addr)
         DQ MINUS        ; (addr +n)
         DQ EXIT
         Link(dsharpgreater)
@@ -664,13 +666,15 @@ atoIN:  DQ 0
         Link(dtoin)
 
 dsource:
-        DQ 5
+        DQ 6
         DQ 'source'     ; std1994
 SOURCE:
         DQ stdexe
         ; :todo: Implement more input sources.
-        DQ TIB
-        DQ numberTIB
+        DQ LIT
+        DQ aIB
+        DQ fetch
+        DQ numberIB
         DQ fetch
         DQ EXIT
         Link(dsource)
@@ -917,7 +921,9 @@ LITERAL:
 dcmove:
         DQ 5
         DQ 'cmove'      ; std1983
-CMOVE:  DQ $+8;
+CMOVE:
+        DQ $+8
+        ; CMOVE ( from to u -- )
 cmove0: mov rcx, [rbp-8]
         mov rdi, [rbp-16]
         mov rsi, [rbp-24]
@@ -1121,15 +1127,6 @@ Rfetch: DQ $+8
         mov rax, [r12-8]
         jmp duprax
         Link(drfetch)
-
-dtib:
-        DQ 3
-        DQ 'tib'        ; std1983
-TIB:    DQ $+8
-        mov qword [rbp], tibaddr
-        add rbp, 8
-        jmp next
-        Link(dtib)
 
 dfword:
         DQ 4
@@ -1783,6 +1780,7 @@ INTERACTOR:
 .line:  DQ DROP
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
+        DQ DROP
         DQ SOURCE
         DQ NIP
         DQ ZEROBRANCH
@@ -1914,10 +1912,40 @@ scansign:
         DQ ROT
         DQ EXIT
 
-numberTIB:
+; Input Buffer / Parse Area
+; A fresh block, from OS, in read into ib1.
+; IB + #IB <= IBLIMIT
+; When a new line is required,
+; the input block area is scanned until either:
+; a line terminator is found; or,
+; IBLIMIT is reached.
+; If a line terminator is found then
+; IB and #IB are updated, with no new IO.
+; If IBLIMIT is reached then
+; the valid portion of ib1 (from IB to IBLIMIT)
+; is copied to the end of ib0, and
+; a fresh block is read into ib1,
+; updating IBLIMIT (and IB and #IB).
+; If the freshly read block has length zero, then
+; that marks EOF and REFILL returns FALSE.
+
+numberIB:
         DQ stdvar
-anumberTIB:
+        ; Size of current input buffer.
+anumberIB:
         DQ 0
+
+IB:
+        DQ stdvar
+        ; address of current input buffer.
+aIB:
+        DQ ib1
+
+IBLIMIT:
+        DQ stdvar
+        ; Pointer to one past last valid byte in input block.
+aIBLIMIT:
+        DQ ib1
 
 
 SECTION .text
@@ -2014,41 +2042,179 @@ Cstore: DQ $+8
         jmp next
 
 rdbyte:
-        ; read a byte from the TIB
-        ; using #TIB and >IN.
+        ; read a byte from the Input Buffer.
         ; Result is returned in RAX.
         ; If there is a byte, it is returned in RAX
         ; (the byte is 0-extended to fill RAX);
-        ; otherwise, End Of File condition, -1 is returned.
+        ; otherwise, End Of Buffer condition, -1 is returned.
         mov rdi, [atoIN]
-        mov rcx, [anumberTIB]
+        mov rcx, [anumberIB]
         sub rcx, rdi
         jnz .ch
         mov rax, -1
         ret
 .ch     mov rax, 0
-        lea rcx, [rdi +  tibaddr]
+        mov rcx, [aIB]
+        add rcx, rdi
         mov al, [rcx]
         inc rdi
         mov [atoIN], rdi
         ret
 
+COPYDOWN:
+        DQ stdexe
+        ; Copy region from (newly bumped) IB (to IBLIMIT)
+        ; down to end of ib0.
+        DQ LIT
+        DQ ib1          ; ib1
+        DQ IBLIMIT
+        DQ fetch        ; ib1 iblimit
+        DQ OVER         ; ib1 iblimit ib1
+        DQ MINUS        ; ib1 u
+        DQ DUP
+        DQ NEGATE       ; ib1 u -u
+        DQ IB
+        DQ plusstore    ; check IB underflow here
+        DQ OVER
+        DQ OVER         ; ib1 u ib1 u
+        DQ MINUS        ; ib1 u target
+        DQ SWAP         ; ib1 target u
+        DQ CMOVE        ;
+        DQ EXIT
+
+SCAN:
+        DQ stdexe
+        ; scan the input buffer, from IB to IBLIMIT,
+        ; for a newline.
+        ; SCAN ( -- p false ) newline found
+        ;      ( -- iblimit true ) newline not found
+        DQ IB
+        DQ fetch        ; p
+.begin:
+        DQ IBLIMIT
+        DQ fetch        ; p iblimit
+        DQ OVER         ; p iblimit p
+        DQ equals       ; p flag
+        DQ ZEROBRANCH
+        DQ .ch - $
+        DQ TRUE
+        DQ EXIT
+.ch:
+        ; p
+        DQ DUP
+        DQ Cfetch       ; p c
+        DQ LIT
+        DQ 10           ; p c 10
+        DQ equals       ; p flag
+        DQ ZEROBRANCH
+        DQ .continue - $
+        DQ FALSE
+        DQ EXIT
+.continue:
+        ; p
+        DQ oneplus
+        DQ BRANCH
+        DQ -($ - .begin)
+
+BUMPIB:
+        DQ stdexe
+        ; Bump IB past the current record,
+        ; and reset >IN to 0.
+        ; IB has #IB added to it,
+        ; and if it is still within IBLIMIT,
+        ; and is positioned at a newline,
+        ; IB is increment past it.
+        DQ LIT
+        DQ 0
+        DQ toIN
+        DQ store
+        DQ numberIB     ; #ib
+        DQ fetch
+        DQ LIT
+        DQ 0
+        DQ numberIB
+        DQ store
+        DQ IB           ; #ib ib
+        DQ plusstore
+        DQ IB
+        DQ fetch
+        DQ IBLIMIT
+        DQ fetch        ; ib iblimit
+        DQ equals
+        DQ ZEROBRANCH
+        DQ .bump - $
+        DQ EXIT
+.bump:
+        DQ IB
+        DQ fetch        ; ib
+        DQ Cfetch       ; c
+        DQ LIT
+        DQ 10           ; c 10
+        DQ equals
+        DQ ZEROBRANCH
+        DQ .then - $
+        DQ LIT
+        DQ 1
+        DQ IB           ; &ib 1
+        DQ plusstore
+.then:
+        DQ EXIT
+
 filbuf:
+        DQ stdexe
+        ; REFILL ( -- flag )
+        ; see numberIB for description.
+        DQ BUMPIB
+        DQ SCAN         ; p flag
+        DQ ZEROBRANCH
+        DQ .scanned - $
+        DQ DROP
+        DQ COPYDOWN
+        DQ READIB1
+        ; If empty after reading, can't refill.
+        DQ IBLIMIT
+        DQ fetch        ; iblimit
+        DQ IB
+        DQ fetch        ; iblimit ib
+        DQ equals
+        DQ ZEROBRANCH
+        DQ .then - $
+        DQ FALSE
+        DQ EXIT
+.then:
+        DQ SCAN         ; p flag
+        ; Regardless of whether we found a newline,
+        ; return the parse area.
+        ; It must be the case that the last read block
+        ; does not contain a newline.
+        ; Either it is an unterminated final record
+        ; (which we are going to accept),
+        ; or there is a line longer than a block.
+        ; The latter means that the line is too long,
+        ; we parse it where the block falls and carry on.
+        DQ DROP         ; p
+.scanned:
+        ; p marks next newline (or one past the end of the block)
+        DQ IB           ; p &ib
+        DQ fetch        ; p ib
+        DQ MINUS        ; u
+        DQ numberIB     ; u &#ib
+        DQ store
+        DQ TRUE
+        DQ EXIT
+
+READIB1:
         DQ $+8
-        ; fill the lexing buffer by
-        ; reading some bytes from stdin.
-        ; Use a count equal to the size of the buffer
         mov rdi, sys_read
-        mov rsi, tibaddr
-        mov qword [atoIN], 0    ; reset pointers prior to syscall
-        mov qword [anumberTIB], 0
-        mov rdx, tibsize
+        mov rsi, ib1
+        mov qword [aIBLIMIT], ib1
+        mov rdx, ibsize
         mov rax, 0
         syscall
         test rax, rax
         jle .x          ; :todo: check for errors
-        add rdi, rax
-        mov [anumberTIB], rax
+        lea rax, [rax + ib1]
+        mov [aIBLIMIT], rax
 .x:     jmp next
 
 sysEXIT:
@@ -2082,7 +2248,7 @@ QPROMPT: DQ $+8
         ; issue a prompt.
         ; Currently, always assumed interactive.
         mov rdi, [atoIN]
-        mov rcx, [anumberTIB]
+        mov rcx, [anumberIB]
         cmp rcx, rdi
         jnz next
         ; do syscall
