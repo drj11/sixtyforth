@@ -180,5 +180,6 @@ NIP     i
 PARSE   i
 S"      i
 S>D     i
+SM/MOD  i
 TRUE    i
 [CHAR]  i

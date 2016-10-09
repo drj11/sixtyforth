@@ -1,0 +1,11 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '4 s>d 3 sm/mod . .
+-4 s>d 3 sm/mod . .
+4 s>d -3 sm/mod . .
+-4 s>d -3 sm/mod . .'| $FORTH)
+echo $out
+case $out in
+    ('1 1 -1 -1 -1 1 1 -1 ') exit 0;;
+esac
+exit 2

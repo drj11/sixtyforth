@@ -1248,6 +1248,24 @@ dabort:
 ABORT:  DQ dreset
         Link(dabort)
 
+dsmslashmod:
+        DQ 6
+        DQ 'sm/mod'
+SMslashMOD:
+        DQ $+8
+        ; SM/MOD (d-dividend n-divisor -- n-quotient n-remainder)
+        mov rcx, [rbp-8]
+        mov rdx, [rbp-16]
+        mov rax, [rbp-24]
+
+        idiv rcx
+
+        sub rbp, 8
+        mov [rbp-8], rax
+        mov [rbp-16], rdx
+        jmp next
+        Link(dsmslashmod)
+
 dz:
         DQ 1
         DQ '0'
@@ -2232,26 +2250,6 @@ sysEXIT:
         mov rdi, 0
         mov rax, 60
         syscall
-
-divMOD: DQ $+8
-        ; /MOD (dividend divisor -- quotient remainder)
-        ; > r15
-        sub rbp, 8
-        mov r15, [rbp]
-        ; > RAX
-        sub rbp, 8
-        mov rax, [rbp]
-
-        mov rdx, 0
-        idiv r15
-
-        ; RAX >
-        mov [rbp], rax
-        add rbp, 8
-        ; RDX >
-        mov [rbp], rdx
-        add rbp, 8
-        jmp next
 
 QPROMPT: DQ $+8
         ; If interactive and the input buffer is empty,
