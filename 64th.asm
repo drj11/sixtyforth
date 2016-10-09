@@ -2251,18 +2251,40 @@ sysEXIT:
         mov rax, 60
         syscall
 
-QPROMPT: DQ $+8
+QPROMPT:
+        DQ stdexe
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
         ; Currently, always assumed interactive.
-        mov rdi, [atoIN]
-        mov rcx, [anumberIB]
-        cmp rcx, rdi
-        jnz next
-        ; do syscall
-        mov rdi, 2      ; stderr
-        mov rsi, prompt
-        mov rdx, promptlen
-        mov rax, sys_write
+        DQ toIN
+        DQ fetch
+        DQ numberIB
+        DQ fetch
+        DQ notequals
+        DQ ZEROBRANCH
+        DQ .then - $
+        DQ EXIT
+.then:
+        DQ LIT
+        DQ 2
+        DQ LIT
+        DQ prompt
+        DQ LIT
+        DQ promptlen
+        DQ LIT
+        DQ sys_write
+        DQ SYSCALL3
+        DQ DROP
+        DQ EXIT
+
+SYSCALL3:
+        DQ $+8
+        mov rdi, [rbp-32]
+        mov rsi, [rbp-24]
+        mov rdx, [rbp-16]
+        ; syscall number
+        mov rax, [rbp-8]
+        sub rbp, 24
         syscall
+        mov [rbp-8], rax
         jmp next
