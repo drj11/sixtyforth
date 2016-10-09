@@ -2279,6 +2279,9 @@ QPROMPT:
 
 SYSCALL3:
         DQ $+8
+        ; SYSCALL3 ( a b c n -- rax )
+        ; Call syscall n with 3 arguments;
+        ; return with RAX left on stack.
         mov rdi, [rbp-32]
         mov rsi, [rbp-24]
         mov rdx, [rbp-16]
