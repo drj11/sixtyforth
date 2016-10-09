@@ -2241,8 +2241,6 @@ READIB1:
         mov rdx, ibsize
         mov rax, 0
         syscall
-        test rax, rax
-        jle .x          ; :todo: check for errors
         lea rax, [rax + ib1]
         mov [aIBLIMIT], rax
 .x:     jmp next
