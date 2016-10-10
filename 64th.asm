@@ -67,6 +67,25 @@ promptlen EQU $-prompt
 STARTOFDICT:
         DQ 0    ; Link Field
 
+dsyscall3:
+        DQ 8
+        DQ 'syscall3'
+SYSCALL3:
+        DQ $+8
+        ; SYSCALL3 ( a b c n -- rax )
+        ; Call syscall n with 3 arguments;
+        ; return with RAX left on stack.
+        mov rdi, [rbp-32]
+        mov rsi, [rbp-24]
+        mov rdx, [rbp-16]
+        ; syscall number
+        mov rax, [rbp-8]
+        sub rbp, 24
+        syscall
+        mov [rbp-8], rax
+        jmp next
+        Link(dsyscall3)
+
 ddup:
         DQ 3
         DQ 'dup'        ; std1983
@@ -208,6 +227,23 @@ UMstarslashMOD:
         mov [rbp-8], rdx
         jmp next
         Link(dumstarslashmod)
+
+disatty:
+        DQ 6
+        DQ 'isatty'
+ISATTY:
+        DQ stdexe
+        ; ISATTY ( u-fd -- flag )
+        ; True if file descriptor u-fd refers to a TTY.
+        DQ LIT
+        DQ 21505        ; 0x5401 = TCGETS
+        DQ HERE         ; dummy buffer
+        DQ LIT
+        DQ 16           ; syscall 16 is ioctl
+        DQ SYSCALL3
+        DQ zequals      ; 0 is success; convert to true/false
+        DQ EXIT
+        Link(disatty)
 
 dudot:
         DQ 2
@@ -2256,6 +2292,14 @@ QPROMPT:
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
         ; Currently, always assumed interactive.
+        DQ LIT
+        DQ 0
+        DQ ISATTY
+        DQ zequals
+        DQ ZEROBRANCH
+        DQ .interactive - $
+        DQ EXIT
+.interactive:
         DQ toIN
         DQ fetch
         DQ numberIB
@@ -2276,18 +2320,3 @@ QPROMPT:
         DQ SYSCALL3
         DQ DROP
         DQ EXIT
-
-SYSCALL3:
-        DQ $+8
-        ; SYSCALL3 ( a b c n -- rax )
-        ; Call syscall n with 3 arguments;
-        ; return with RAX left on stack.
-        mov rdi, [rbp-32]
-        mov rsi, [rbp-24]
-        mov rdx, [rbp-16]
-        ; syscall number
-        mov rax, [rbp-8]
-        sub rbp, 24
-        syscall
-        mov [rbp-8], rax
-        jmp next
