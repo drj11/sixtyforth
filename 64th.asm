@@ -1846,9 +1846,6 @@ INTERACTOR:
 .line:  DQ DROP
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
-        DQ DROP
-        DQ SOURCE
-        DQ NIP
         DQ ZEROBRANCH
         DQ (.x-$)
 .w:
