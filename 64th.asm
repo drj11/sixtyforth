@@ -1036,9 +1036,7 @@ dtick:
         DQ 1
         DQ "'"          ; std1983
 TICK:   DQ stdexe
-        DQ fBL
-        DQ fWORD        ; addr
-        DQ COUNT        ; c-addr u
+        DQ PARSEWORD    ; c-addr u
         DQ FINDWORD     ; 0 | xt n
         DQ ZEROBRANCH
         DQ (.z-$)
