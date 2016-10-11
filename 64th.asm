@@ -1037,14 +1037,14 @@ dtick:
         DQ "'"          ; std1983
 TICK:   DQ stdexe
         DQ fBL
-        DQ fWORD        ; (addr)
-        DQ FIND         ; (addr n)
+        DQ fWORD        ; addr
+        DQ COUNT        ; c-addr u
+        DQ FINDWORD     ; 0 | xt n
         DQ ZEROBRANCH
         DQ (.z-$)
         DQ EXIT
-.z:     DQ DROP
-        DQ LIT
-        DQ 0
+.z:
+        DQ FALSE
         DQ EXIT
         Link(dtick)
 
@@ -1209,6 +1209,71 @@ fword0:
         add rbp, 8
         jmp next
         Link(dfword)
+
+dfindword:
+        DQ 8
+        DQ 'findword'
+FINDWORD:
+        DQ $+8
+        ; search and locate string in dictionary
+        ; (similar interface to SEARCH-WORDLIST)
+        ; FINDWORD ( c-addr u -- xt 1 ) found immediate
+        ;          ( c-addr u -- xt -1 ) found non-immediate
+        ;          ( c-addr u -- 0 ) not found
+        mov rax, DICT           ; Link to most recent word
+        ; rax points to Link Field
+        ; (that points to the next word in the dictionary).
+.loop:  mov rax, [rax]
+        test rax, rax
+        jz .empty
+        mov r13, [rbp-8]        ; length
+        mov rcx, [rbp-16]       ; pointer
+        ; target string in (rcx, r13)
+        mov r14, [rax+8]        ; length of dict name
+        ; mask off flags
+        mov rdx, 0xffffffff
+        and r14, rdx
+        lea rdx, [rax+16]       ; pointer to dict name
+        ; dict string in (rdx, r14)
+        cmp r13, r14
+        jnz .loop       ; lengths don't match, try next
+        ; The dictionary only holds 8 bytes of name,
+        ; so we must check at most 8 bytes.
+        cmp r13, 8
+        jle .ch         ; <= 8 already
+        mov r13, 8      ; clamp to length 8
+.ch:    test r13, r13
+        jz .matched
+        mov r8, 0
+        mov r9, 0
+        mov r8b, [rcx]
+        mov r9b, [rdx]
+        cmp r8, r9
+        jnz .loop       ; byte doesn't match, try next
+        inc rcx
+        inc rdx
+        dec r13
+        jmp .ch
+.matched:
+        ; fetch flags
+        mov rdx, [rax+8]
+        shr rdx, 32
+        ; Skip over Link and Name Field (length and 8 name bytes),
+        ; storing Code Field Address in RAX (and then replace TOS).
+        lea rax, [rax + 24]
+        mov [rbp-16], rax
+        ; std1983 requires -1 (true) for non-immediate word,
+        ; and 1 for immediate word.
+        ; Flags (rdx) is 0 for non-immediate; 2 for immediate.
+        ; So we can subtract 1.
+        sub rdx, 1
+        mov [rbp-8], rdx
+        jmp next
+.empty:
+        sub rbp, 8
+        mov qword [rbp-8], 0
+        jmp next
+        Link(dfindword)
 
 dfind:
         DQ 4
@@ -1857,7 +1922,10 @@ INTERACTOR:
         DQ DROP         ; (addr n)
         DQ ZEROBRANCH
         DQ -($-.line)
-        DQ FIND
+        DQ COUNT        ; c-addr u
+        DQ OVER
+        DQ OVER         ; c-addr u c-addr u
+        DQ FINDWORD     ; c-addr u { 0 | xt n }
         DQ qEXECUTE
         DQ BRANCH
         DQ -($-.w)
@@ -1868,7 +1936,8 @@ ipl:    DQ stdexe
         DQ sysEXIT
 
 qEXECUTE:
-        ; (addr flag -- ...)
+        ; ( c-addr u 0 -- n ) push number
+        ; ( c-addr u xt n -- ... ) execute word
         ; addr and flag are typically left by FIND.
         ; if flag is non zero then EXECUTE addr;
         ; otherwise try and handle number.
@@ -1876,7 +1945,11 @@ qEXECUTE:
         DQ qDUP
         DQ ZEROBRANCH
         DQ (.n-$)
-        ; (addr +-1)
+        ; c-addr u addr +-1
+        DQ ROT
+        DQ DROP         ; c-addr addr +-1
+        DQ ROT
+        DQ DROP         ; addr +-1
         ; immediate=1; non-immediate=-1
         DQ LIT
         DQ 1
@@ -1885,7 +1958,7 @@ qEXECUTE:
         DQ fetch        ; (addr 0/2 compiling?)
         DQ zequals      ; (addr 0/2 interpreting?)
         DQ OR           ; (addr 0/2)
-        ; 0=compile; 2=execute
+        ; 0=compile; nz=execute
         DQ ZEROBRANCH
         DQ (.comp-$)
         DQ EXECUTE
@@ -1893,21 +1966,19 @@ qEXECUTE:
 .comp:  ; (addr)
         DQ comma
         DQ EXIT
-.n:     ; (addr)
+.n:     ; (c-addr u)
         DQ qNUMBER
         DQ ZEROBRANCH
         DQ (.abort-$)
         ; (n)
         DQ STATE
-        DQ fetch
-        ; (n compiling?)
+        DQ fetch        ; n compiling?
         DQ ZEROBRANCH
         DQ (.x-$)
         DQ LITERAL
 .x:
         DQ EXIT
 .abort:
-        DQ COUNT
         DQ TYPE
         DQ LIT
         DQ .error
@@ -1919,32 +1990,33 @@ qEXECUTE:
 
 qNUMBER:
         DQ stdexe
-        ; ?NUMBER (c-string -- n true) if convertible
-        ;         (c-string -- c-string false) if not convertible
-        DQ DUP
-        DQ COUNT        ; (c-string addr +n)
-        DQ scansign     ; (c-string sign addr +n)
+        ; ?NUMBER (c-addr u -- n true) if convertible
+        ;         (c-addr u -- c-addr u false) if not convertible
+        DQ OVER
+        DQ OVER         ; c-addr u c-addr u
+        DQ scansign     ; c-addr u sign c-addr u
         DQ FALSE
-        DQ FALSE        ; (c-string sign addr +n 0 0)
-        DQ twoSWAP      ; (c-string sign 0 0 addr +n)
-        DQ toNUMBER     ; (c-string sign ud a n)
+        DQ FALSE        ; c-addr u sign c-addr u 0 0
+        DQ twoSWAP      ; c-addr u sign 0 0 c-addr u
+        DQ toNUMBER     ; c-addr u sign ud a n)
         DQ ZEROBRANCH
         DQ (.success-$)
-        ; (c-string sign ud a)
+        ; c-addr u sign ud a
         DQ DROP
         DQ DROP
         DQ DROP
         DQ DROP
-        DQ FALSE
+        DQ FALSE        ; c-addr u
         DQ EXIT
 .success:
-        ; (c-string sign ud a)
-        DQ DROP         ; (c-string sign ud)
-        DQ twoSWAP      ; (ud c-string sign)
-        DQ NIP          ; (ud sign)
-        DQ Dplusminus   ; (d)
-        DQ DtoS         ; (n)
-        DQ TRUE         ; (n true)
+        ; c-addr u sign ud a
+        DQ DROP         ; c-addr u sign ud
+        DQ twoSWAP      ; c-addr ud u sign
+        DQ NIP          ; c-addr ud sign
+        DQ Dplusminus   ; c-addr d
+        DQ DtoS         ; c-addr n      :todo: check range
+        DQ NIP          ; n
+        DQ TRUE         ; n true
         DQ EXIT
 
 scansign:
