@@ -2255,9 +2255,8 @@ QPROMPT:
         DQ stdexe
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
-        ; Currently, always assumed interactive.
         DQ LIT
-        DQ 0
+        DQ 0            ; stdin
         DQ ISATTY
         DQ zequals
         DQ ZEROBRANCH
@@ -2274,7 +2273,7 @@ QPROMPT:
         DQ EXIT
 .then:
         DQ LIT
-        DQ 2
+        DQ 2            ; stderr
         DQ LIT
         DQ prompt
         DQ LIT
