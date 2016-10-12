@@ -1956,14 +1956,14 @@ scansign:
         DQ EXIT
 
 ; Input Buffer / Parse Area
-; A fresh block, from OS, in read into ib1.
+; A fresh block, from OS, is read into ib1.
 ; IB + #IB <= IBLIMIT
 ; When a new line is required,
 ; the input block area is scanned until either:
 ; a line terminator is found; or,
 ; IBLIMIT is reached.
 ; If a line terminator is found then
-; IB and #IB are updated, with no new IO.
+; IB and #IB are updated, with no new input from OS.
 ; If IBLIMIT is reached then
 ; the valid portion of ib1 (from IB to IBLIMIT)
 ; is copied to the end of ib0, and
