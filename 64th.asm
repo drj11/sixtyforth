@@ -2084,26 +2084,6 @@ Cstore: DQ $+8
         mov [rdx], al
         jmp next
 
-rdbyte:
-        ; read a byte from the Input Buffer.
-        ; Result is returned in RAX.
-        ; If there is a byte, it is returned in RAX
-        ; (the byte is 0-extended to fill RAX);
-        ; otherwise, End Of Buffer condition, -1 is returned.
-        mov rdi, [atoIN]
-        mov rcx, [anumberIB]
-        sub rcx, rdi
-        jnz .ch
-        mov rax, -1
-        ret
-.ch     mov rax, 0
-        mov rcx, [aIB]
-        add rcx, rdi
-        mov al, [rcx]
-        inc rdi
-        mov [atoIN], rdi
-        ret
-
 COPYDOWN:
         DQ stdexe
         ; Copy region from (newly bumped) IB (to IBLIMIT)
