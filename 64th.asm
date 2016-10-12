@@ -1779,6 +1779,8 @@ SKIP:
         DQ equals       ; addr flag
         DQ ZEROBRANCH
         DQ .then-$
+        ; addr
+        DQ DROP
         DQ EXIT
 .then:  DQ toIN
         DQ fetch        ; addr >in
