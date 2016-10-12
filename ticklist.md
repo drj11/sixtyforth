@@ -93,7 +93,7 @@ UPDATE
 #       i
 #>      i
 #S      i
-#TIB    i
+#TIB    x
 '       i
 (
 -TRAILING
@@ -119,9 +119,9 @@ PAD
 QUIT    i
 SIGN    i
 SPAN
-TIB     i
+TIB     x
 U.      i
-WORD    i
+WORD    x
 
 
 ## Compiler layer 
