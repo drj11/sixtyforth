@@ -1862,21 +1862,19 @@ INTERACTOR:
         DQ stdexe
         DQ LIT
         DQ 'junk'
+        DQ LIT
+        DQ 'junk'
 .line:  DQ DROP
+        DQ DROP
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
         DQ ZEROBRANCH
         DQ (.x-$)
 .w:
-        DQ fBL
-        DQ fWORD        ; (addr)
-        DQ DUP          ; (addr addr)
-        DQ COUNT        ; (addr a n)
-        DQ SWAP
-        DQ DROP         ; (addr n)
+        DQ PARSEWORD    ; c-addr u
+        DQ DUP          ; c-addr u u
         DQ ZEROBRANCH
         DQ -($-.line)
-        DQ COUNT        ; c-addr u
         DQ OVER
         DQ OVER         ; c-addr u c-addr u
         DQ FINDWORD     ; c-addr u { 0 | xt n }
