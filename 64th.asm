@@ -2227,16 +2227,23 @@ filbuf:
         DQ EXIT
 
 READIB1:
-        DQ $+8
-        mov rdi, sys_read
-        mov rsi, ib1
-        mov qword [aIBLIMIT], ib1
-        mov rdx, ibsize
-        mov rax, 0
-        syscall
-        lea rax, [rax + ib1]
-        mov [aIBLIMIT], rax
-.x:     jmp next
+        DQ stdexe
+        DQ LIT
+        DQ ib1
+        DQ IBLIMIT
+        DQ store
+        DQ LIT
+        DQ 0            ; stdin
+        DQ LIT
+        DQ ib1
+        DQ LIT
+        DQ ibsize
+        DQ LIT
+        DQ sys_read     ;
+        DQ SYSCALL3
+        DQ IBLIMIT
+        DQ plusstore
+        DQ EXIT
 
 sysEXIT:
         DQ $+8
