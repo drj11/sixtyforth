@@ -1,8 +1,0 @@
-#!/bin/sh
-FORTH=${FORTH:-../64th}
-out=$(printf "3 5 7 32 word swap drop\n. .\n" | $FORTH)
-echo $out
-case "$out" in
-    ("7 5 ") exit 0;;
-esac
-exit 2

@@ -1,6 +1,6 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
-out=$(echo ': x bl word false false rot count >number ;
+out=$(echo ': x parse-word false false 2swap >number ;
 x 37.59 drop drop drop .' | $FORTH)
 echo $out
 case "$out" in
