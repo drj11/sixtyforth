@@ -90,7 +90,7 @@ ddup:
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
-        ; DUP (A -- A A)
+        ; DUP ( a -- a a )
         mov rax, [rbp-8]
 duprax: mov [rbp], rax
         add rbp, 8
@@ -114,7 +114,7 @@ ddepth:
         DQ 5
         DQ 'depth'      ; std1983
 DEPTH:  DQ $+8
-        ; DEPTH ( -- +n)
+        ; DEPTH ( -- +n )
         mov rcx, stack
         mov rax, rbp
         sub rax, rcx
@@ -162,7 +162,7 @@ dmstarslash:
         DQ 'm*/'        ; std1994 double
 Mstarslash:
         DQ stdexe
-        ; M*/ (d1 n1 +n2 -- d2)
+        ; M*/ ( d1 n1 +n2 -- d2 )
         DQ twoOVER
         DQ twoOVER      ; (d1 n1 n2 d1 n1 n2)
         DQ DROP         ; (d1 n1 n2 d1 n1)
@@ -189,7 +189,7 @@ dumstarslashmod:
         DQ 'um*/mod'
 UMstarslashMOD:
         DQ $+8
-        ; UM*/MOD (ud1 u1 +n2 -- ud2 +n3)
+        ; UM*/MOD ( ud1 u1 +n2 -- ud2 +n3 )
         ; Same as M*/ but unsigned everywhere, and leaving MOD.
         mov r8, [rbp-24]        ; most sig of ud1
         mov rax, [rbp-32]       ; least sig of ud1
@@ -329,7 +329,7 @@ dsharp:
         DQ 1
         DQ '#'          ; std1983
 sharp:  DQ stdexe
-        ; # (ud1 -- ud2)
+        ; # ( ud1 -- ud2 )
         DQ LIT
         DQ 1            ; (ud 1)
         DQ BASE
@@ -360,7 +360,7 @@ dsharpgreater:
         DQ '#>'         ; std1983
 sharpgreater:
         DQ stdexe
-        ; #> (d+ -- addr +n)
+        ; #> ( d+ -- addr +n )
         DQ DROP
         DQ DROP
         DQ PIC
@@ -404,7 +404,7 @@ ddigit:
         DQ 5
         DQ 'digit'
 DIGIT:  DQ stdexe
-        ; DIGIT (n -- ascii)
+        ; DIGIT ( n -- ascii )
         ; convert digit (0 to 15) to ASCII
         ; 0 -> 48
         ; 10 -> 65
@@ -436,7 +436,7 @@ dtype:
         DQ 4
         DQ 'type'       ; std1983
 TYPE:   DQ stdexe
-        ; TYPE (addr +n -- )
+        ; TYPE ( addr +n -- )
         DQ LIT
         DQ 1            ; addr n 1      ; stdout
         DQ ROT
@@ -549,7 +549,7 @@ dplus:
         DQ 1
         DQ '+'          ; std1983
 PLUS:   DQ $+8
-        ; + (A B -- sum)
+        ; + ( a b -- sum )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
         add rax, rcx
@@ -562,7 +562,7 @@ dminus:
         DQ 1
         DQ '-'          ; std1983
 MINUS:  DQ $+8
-        ; - ( A B -- difference)
+        ; - ( a b -- difference )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
         sub rax, rcx
@@ -587,8 +587,8 @@ dumslashmod:
         DQ 'um/mod'     ; std1983
 UMslashMOD:
         DQ $+8
-        ; UM/MOD (ud u1 -- ur uq)
-        ; Note: Double Single -> Single Single
+        ; UM/MOD ( ud u1 -- ur uq )
+        ; Note: Double Single -> Single Single.
         ; Divisor
         mov rcx, [rbp-8]
         ; Dividend, most significant.
@@ -610,7 +610,7 @@ ddplus:
         DQ 2
         DQ 'd+'         ; std1983
 Dplus:  DQ $+8
-        ; D+ (d1 d2 -- d3)
+        ; D+ ( d1 d2 -- d3 )
         mov rax, [rbp-32]       ; least significant part of augend
         mov rdx, [rbp-24]       ; most
         mov r8, [rbp-16]        ; least significant part of addend
@@ -645,7 +645,7 @@ dor:
         DQ 2
         DQ 'or'         ; std1983
 OR:     DQ $+8
-        ; OR (A B -- bitwise-or)
+        ; OR ( a b -- bitwise-or )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
         or rax, rcx
@@ -671,7 +671,7 @@ dxor:
         DQ 3
         DQ 'xor'        ; std1983
 XOR:    DQ $+8
-        ; XOR (a b -- bitwise-xor)
+        ; XOR ( a b -- bitwise-xor )
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
         xor rax, rcx
@@ -733,7 +733,7 @@ dfetch:
         DQ 1
         DQ '@'          ; std1983
 fetch:  DQ $+8
-        ; @ (addr -- w)
+        ; @ ( addr -- w )
         mov rax, [rbp-8]
         mov rax, [rax]
         mov [rbp-8], rax
@@ -744,7 +744,7 @@ dcfetch:
         DQ 2
         DQ 'c@'         ; std1983
 Cfetch: DQ $+8
-        ; C@ (addr -- ch)
+        ; C@ ( addr -- ch )
         mov rdx, [rbp-8]
         xor rax, rax
         mov al, [rdx]
@@ -757,7 +757,7 @@ dplusstore:
         DQ '+!'         ; std1983
 plusstore:
         DQ stdexe
-        ; (w addr -- )
+        ; ( w addr -- )
         DQ SWAP         ; (a w)
         DQ OVER         ; (a w a)
         DQ fetch        ; (a w b)
@@ -771,7 +771,7 @@ dswap:
         DQ 4
         DQ 'swap'       ; std1983
 SWAP:   DQ $+8
-        ; SWAP (A B -- B A)
+        ; SWAP ( a b -- b a )
         mov rax, [rbp-16]
         mov rdx, [rbp-8]
         mov [rbp-16], rdx
@@ -784,7 +784,7 @@ d2swap:
         DQ '2swap'      ; std1994
 twoSWAP:
         DQ $+8
-        ; 2SWAP (p q r s -- r s p q)
+        ; 2SWAP ( p q r s -- r s p q )
         ; Swap 2OS and 4OS
         mov rcx, [rbp-32]
         mov rdx, [rbp-16]
@@ -802,8 +802,8 @@ dqdup:
         DQ 4
         DQ '?dup'       ; std1983
 qDUP:   DQ $+8
-        ; ?DUP (NZ -- NZ NZ)    when not zero
-        ;      (0 -- 0)         when zero
+        ; ?DUP ( nz -- nz nz )  when not zero
+        ;      ( 0 -- 0 )       when zero
         mov rax, [rbp-8]
         test rax, rax
         jz next
@@ -814,7 +814,7 @@ dover:
         DQ 4
         DQ 'over'       ; std1983
 OVER:   DQ $+8
-        ; OVER (A B -- A B A)
+        ; OVER ( a b -- a b a )
         mov rax, [rbp-16]
         mov [rbp], rax
         add rbp, 8
@@ -826,7 +826,7 @@ d2over:
         DQ '2over'      ; std1994
 twoOVER:
         DQ $+8
-        ; 2OVER (p q r s -- p q r s p q)
+        ; 2OVER ( p q r s -- p q r s p q )
         mov rcx, [rbp-32]
         mov rdx, [rbp-24]
         add rbp, 16
@@ -840,7 +840,7 @@ d2rot:
         DQ '2rot'       ; std1994 double ext
 twoROT:
         DQ $+8
-        ; 2ROT (n o p q r s -- p q r s n o)
+        ; 2ROT ( n o p q r s -- p q r s n o )
         mov rcx, [rbp-48]
         mov rdx, [rbp-40]
         mov r8, [rbp-32]
@@ -894,7 +894,7 @@ ddabs:
         DQ 4
         DQ 'dabs'       ; std1994 double
 DABS:   DQ stdexe
-        ; DABS (d -- ud)
+        ; DABS ( d -- ud )
         DQ LIT
         DQ 7            ; Arbitrary, should be positive.
         DQ Dplusminus
@@ -905,7 +905,7 @@ ddrop:
         DQ 4
         DQ 'drop'       ; std1983
 DROP:   DQ $+8
-        ; DROP (A -- )
+        ; DROP ( a -- )
         sub rbp, 8
         jmp next
         Link(ddrop)
@@ -914,7 +914,7 @@ dnip:
         DQ 3
         DQ 'nip'        ; std1994 core-ext
 NIP:    DQ $+8
-        ; NIP (a b -- b)
+        ; NIP ( a b -- b )
         mov rax, [rbp-8]
         sub rbp, 8
         mov [rbp-8], rax
@@ -925,7 +925,7 @@ dallot:
         DQ 5
         DQ 'allot'      ; std1983
 ALLOT:  DQ stdexe
-        ; allot (w -- )
+        ; allot ( w -- )
         DQ CP
         DQ plusstore
         DQ EXIT
@@ -935,7 +935,7 @@ dcomma:
         DQ 1
         DQ ','          ; std1983
 comma:  DQ stdexe
-        ; , (w -- )
+        ; , ( w -- )
         DQ HERE
         DQ LIT
         DQ 8
@@ -1246,7 +1246,7 @@ dsmslashmod:
         DQ 'sm/mod'
 SMslashMOD:
         DQ $+8
-        ; SM/MOD (d-dividend n-divisor -- n-quotient n-remainder)
+        ; SM/MOD ( d-dividend n-divisor -- n-quotient n-remainder )
         mov rcx, [rbp-8]
         mov rdx, [rbp-16]
         mov rax, [rbp-24]
@@ -1272,11 +1272,11 @@ dstod:
         DQ 3
         DQ 's>d'        ; std1994
 StoD:   DQ stdexe
-        ; (n -- d)
+        ; ( n -- d )
         DQ DUP
         DQ fABS         ; (n +n)
         DQ z            ; (n +n 0)
-        DQ ROT          ; (0 +n n)
+        DQ ROT          ; (+n 0 n)
         DQ Dplusminus   ; (d)
         DQ EXIT
         Link(dstod)
@@ -1285,7 +1285,7 @@ dtimes:
         DQ 1
         DQ '*'          ; std1983
 ftimes: DQ stdexe
-        ; * (n1 n2 -- n3)
+        ; * ( n1 n2 -- n3 )
         DQ StoD         ; (n1 d2)
         DQ ROT          ; (d2 n1)
         DQ LIT
@@ -1354,7 +1354,7 @@ ddnegate:
         DQ 'dnegate'    ; std1983
 DNEGATE:
         DQ stdexe
-        ; DNEGATE (d1 -- d2)
+        ; DNEGATE ( d1 -- d2 )
         DQ DUP          ; (d1 n)
         DQ NEGATE       ; (d1 nn)
         DQ Dplusminus   ; (dn1)
@@ -1434,7 +1434,7 @@ IF:
         DQ LIT
         DQ ZEROBRANCH
         DQ comma
-        DQ HERE         ; patch token
+        DQ HERE         ; deposit the patch token
         DQ TRUE         ; compile dummy offset
         DQ comma
         DQ EXIT
@@ -1865,7 +1865,7 @@ qEXECUTE:
         DQ STATE
         DQ fetch        ; (addr 0/2 compiling?)
         DQ zequals      ; (addr 0/2 interpreting?)
-        DQ OR           ; (addr 0/2)
+        DQ OR           ; (addr ex)
         ; 0=compile; nz=execute
         DQ ZEROBRANCH
         DQ (.comp-$)
@@ -1898,8 +1898,8 @@ qEXECUTE:
 
 qNUMBER:
         DQ stdexe
-        ; ?NUMBER (c-addr u -- n true) if convertible
-        ;         (c-addr u -- c-addr u false) if not convertible
+        ; ?NUMBER ( c-addr u -- n true ) if convertible
+        ;         ( c-addr u -- c-addr u false ) if not convertible
         DQ OVER
         DQ OVER         ; c-addr u c-addr u
         DQ scansign     ; c-addr u sign c-addr u
@@ -1929,7 +1929,7 @@ qNUMBER:
 
 scansign:
         DQ stdexe
-        ; (addr +n -- sign addr +n)
+        ; ( addr +n -- sign addr +n )
         DQ DUP
         DQ ZEROBRANCH
         DQ (.empty-$)
@@ -2077,7 +2077,7 @@ LT:     DQ $+8
         jmp next
 
 Cstore: DQ $+8
-        ; C! (ch buf -- )
+        ; C! ( ch buf -- )
         mov rax, [rbp-16]
         mov rdx, [rbp-8]
         sub rbp, 16
