@@ -522,6 +522,22 @@ lessthan:
         jmp next
         Link(dlessthan)
 
+dulessthan:
+        DQ 2
+        DQ 'u<'
+Ulessthan:
+        DQ $+8
+        ; < ( u1 u2 -- flag )
+        ; flag is -1 (TRUE) if u1 < u2;
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        cmp rax, rcx    ; C iff B > A
+        sbb rax, rax    ; -1 iff B > A
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        Link(dulessthan)
+
 dnegate:
         DQ 6
         DQ 'negate'     ; std1983
@@ -2062,18 +2078,6 @@ BRANCH: DQ $+8
         ; branch by adding offset to current CODEPOINTER.
         mov rcx, [rbx]
         lea rbx, [rbx + rcx]
-        jmp next
-
-LT:     DQ $+8
-        ; < (A B -- flag)
-        ; flag is -1 (TRUE) if A < B;
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 16
-        cmp rax, rcx    ; C iff B > A
-        sbb rax, rax    ; -1 iff B > A
-        mov [rbp], rax
-        add rbp, 8
         jmp next
 
 Cstore: DQ $+8
