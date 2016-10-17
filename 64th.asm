@@ -1812,6 +1812,46 @@ FIND:
         DQ EXIT
         Link(dfind)
 
+devaluate:
+        DQ 8
+        DQ 'evaluate'
+EVALUATE:
+        DQ stdexe
+        ; EVALUATE ( c-addr u -- ) also side effects
+        DQ IB
+        DQ fetch
+        DQ toR
+        DQ toIN
+        DQ fetch
+        DQ toR
+        DQ numberIB
+        DQ fetch
+        DQ toR
+
+        ; u > #ib
+        DQ numberIB
+        DQ store
+        ; c-addr > ib
+        DQ IB
+        DQ store
+        ; 0 > >in
+        DQ z
+        DQ toIN
+        DQ store
+        DQ INTERPRETLINE
+
+        DQ Rfrom
+        DQ numberIB
+        DQ store
+        DQ Rfrom
+        DQ toIN
+        DQ store
+        DQ Rfrom
+        DQ IB
+        DQ store
+        DQ EXIT
+        Link(devaluate)
+
 duseless:
         DQ 7
         DQ 'useless'

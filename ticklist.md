@@ -173,6 +173,7 @@ CHAR    i
 D.      i
 D>S     i
 DABS    i
+EVALUATE        i
 FALSE   i
 INVERT  i
 M*/     i
