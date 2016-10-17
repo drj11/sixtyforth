@@ -1832,28 +1832,33 @@ DICT:   Link(duseless)
 
 INTERACTOR:
         DQ stdexe
-        DQ LIT
-        DQ 'junk'
-        DQ LIT
-        DQ 'junk'
-.line:  DQ DROP
-        DQ DROP
+.line:
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
         DQ ZEROBRANCH
         DQ (.x-$)
+        DQ INTERPRETLINE
+        DQ BRANCH
+        DQ -($ - .line)
+.x:     DQ EXIT
+
+INTERPRETLINE:
+        DQ stdexe
 .w:
         DQ PARSEWORD    ; c-addr u
         DQ DUP          ; c-addr u u
         DQ ZEROBRANCH
-        DQ -($-.line)
+        DQ .x - $
         DQ OVER
         DQ OVER         ; c-addr u c-addr u
         DQ FINDWORD     ; c-addr u { 0 | xt n }
         DQ qEXECUTE
         DQ BRANCH
         DQ -($-.w)
-.x:     DQ EXIT
+.x:
+        DQ DROP
+        DQ DROP
+        DQ EXIT
 
 ipl:    DQ stdexe
         DQ INTERACTOR
