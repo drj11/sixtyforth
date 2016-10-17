@@ -249,8 +249,7 @@ dudot:
         DQ 2
         DQ 'u.'         ; std1983
 Udot:   DQ stdexe
-        DQ LIT
-        DQ 0
+        DQ z
         DQ lesssharp
         DQ fBL
         DQ HOLD
@@ -266,8 +265,7 @@ ddot:
 dot:    DQ stdexe
         DQ DUP          ; (n n)
         DQ fABS         ; (n +n)
-        DQ LIT
-        DQ 0            ; (n +n 0)
+        DQ z            ; (n +n 0)
         DQ lesssharp
         DQ fBL
         DQ HOLD
@@ -652,8 +650,7 @@ dfalse:
         DQ 5
         DQ 'false'      ; std1994
 FALSE:  DQ stdexe
-        DQ LIT
-        DQ 0
+        DQ z
         DQ EXIT
         Link(dfalse)
 
@@ -1136,8 +1133,7 @@ semicolon:
         DQ EXIT
         DQ comma
         ; :todo: check compiler safety
-        DQ LIT
-        DQ 0
+        DQ z
         DQ STATE
         DQ store
         DQ EXIT
@@ -2198,14 +2194,12 @@ BUMPIB:
         ; and if it is still within IBLIMIT,
         ; and is positioned at a newline,
         ; IB is incremented past it.
-        DQ LIT
-        DQ 0
+        DQ z
         DQ toIN
         DQ store
         DQ numberIB     ; #ib
         DQ fetch
-        DQ LIT
-        DQ 0
+        DQ z
         DQ numberIB
         DQ store
         DQ IB           ; #ib ib
