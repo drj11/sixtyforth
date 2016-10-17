@@ -1844,6 +1844,8 @@ INTERACTOR:
 
 INTERPRETLINE:
         DQ stdexe
+        ; Interpret successively parsed words,
+        ; until there are no more to interpret.
 .w:
         DQ PARSEWORD    ; c-addr u
         DQ DUP          ; c-addr u u
