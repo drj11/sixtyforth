@@ -1045,20 +1045,6 @@ CREATE: DQ stdexe
         DQ EXIT
         Link(dcreate)
 
-dtick:
-        DQ 1
-        DQ "'"          ; std1983
-TICK:   DQ stdexe
-        DQ PARSEWORD    ; c-addr u
-        DQ FINDWORD     ; 0 | xt n
-        DQ ZEROBRANCH
-        DQ (.z-$)
-        DQ EXIT
-.z:
-        DQ FALSE
-        DQ EXIT
-        Link(dtick)
-
 dtobody:
         DQ 5
         DQ '>body'      ; std1983
@@ -2302,5 +2288,8 @@ rcstring:
         ; DNEGATE       std1983
         ; DNEGATE ( d1 -- -d1 )
         DB ': dnegate dup negate d+- ; '
+
+        ; '             std1983
+        DB ": ' parse-word findword if exit then 0 ; "
 
 rclength EQU $ - rcstring
