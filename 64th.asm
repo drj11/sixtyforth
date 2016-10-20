@@ -1361,18 +1361,6 @@ greaterthan:
         DQ EXIT
         Link(dgreaterthan)
 
-ddnegate:
-        DQ 7
-        DQ 'dnegate'    ; std1983
-DNEGATE:
-        DQ stdexe
-        ; DNEGATE ( d1 -- d2 )
-        DQ DUP          ; (d1 n)
-        DQ NEGATE       ; (d1 nn)
-        DQ Dplusminus   ; (dn1)
-        DQ EXIT
-        Link(ddnegate)
-
 dimmediate:
         DQ 9
         DQ 'immediat'   ; std1983
@@ -2311,4 +2299,8 @@ rcstring:
         DB ': then here over - swap ! ; immediate '
         ; VARIABLE      std1983
         DB ': variable create 1 cells allot ; '
+        ; DNEGATE       std1983
+        ; DNEGATE ( d1 -- -d1 )
+        DB ': dnegate dup negate d+- ; '
+
 rclength EQU $ - rcstring
