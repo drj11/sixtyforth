@@ -1768,18 +1768,6 @@ SKIP:
         DQ EXIT
         Link(dskip)
 
-ddotparen:
-        DQ 2 | Immediate
-        DQ '.('
-dotparen:
-        DQ stdexe
-        DQ LIT
-        DQ ')'
-        DQ PARSE
-        DQ TYPE
-        DQ EXIT
-        Link(ddotparen)
-
 dinvert:
         DQ 6
         DQ 'invert'
@@ -2344,5 +2332,6 @@ RC:
 
 rcstring:
         DB ': 2drop drop drop ; '
+        DB ': .( [char] ) parse type ; immediate '
 rclength EQU $ - rcstring
 
