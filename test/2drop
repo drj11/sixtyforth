@@ -1,0 +1,8 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '7 5 6 2drop .' | $FORTH)
+echo $out
+case "$out" in
+    ("7 ") exit 0;;
+esac
+exit 2

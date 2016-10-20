@@ -162,6 +162,7 @@ WHILE   i
 
 <>      i
 >NUMBER i
+2DROP   i
 2OVER   i
 2ROT    i
 2SWAP   i

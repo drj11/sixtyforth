@@ -1868,6 +1868,8 @@ DICT:   Link(duseless)
 
 INTERACTOR:
         DQ stdexe
+        DQ RC
+        DQ EVALUATE
 .line:
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
@@ -2328,3 +2330,19 @@ QPROMPT:
         DQ SYSCALL3
         DQ DROP
         DQ EXIT
+
+RC:
+        DQ stdexe
+        ; RC ( -- c-addr u )
+        ; deposit the 2-value Run Command string,
+        ; ready for EVALUATE.
+        DQ LIT
+        DQ rcstring
+        DQ LIT
+        DQ rclength
+        DQ EXIT
+
+rcstring:
+        DB ': 2drop drop drop ; '
+rclength EQU $ - rcstring
+
