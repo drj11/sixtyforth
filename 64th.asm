@@ -1424,19 +1424,6 @@ CELLplus:
         DQ EXIT
         Link(dcellplus)
 
-dvariable:
-        DQ 8
-        DQ 'variable'   ; std1983
-VARIABLE:
-        DQ stdexe
-        DQ CREATE
-        DQ LIT
-        DQ 1
-        DQ CELLS
-        DQ ALLOT
-        DQ EXIT
-        Link(dvariable)
-
 dif:
         DQ 2 | Immediate
         DQ 'if'         ; std1983
@@ -2322,4 +2309,6 @@ rcstring:
         ; THEN          std1983
         ; THEN ( token -- )     at compile time
         DB ': then here over - swap ! ; immediate '
+        ; VARIABLE      std1983
+        DB ': variable create 1 cells allot ; '
 rclength EQU $ - rcstring
