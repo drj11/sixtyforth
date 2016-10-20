@@ -1473,20 +1473,6 @@ fELSE:
         DQ EXIT
         Link(delse)
 
-dthen:
-        DQ 4 | Immediate
-        DQ 'then'       ; std1983
-THEN:
-        DQ stdexe
-        ; THEN ( token -- )     at compile time
-        DQ HERE         ; ( token here )
-        DQ OVER         ; ( token here token )
-        DQ MINUS        ; ( token offset )
-        DQ SWAP         ; ( offset token )
-        DQ store
-        DQ EXIT
-        Link(dthen)
-
 dbegin:
         DQ 5 | Immediate
         DQ 'begin'      ; std1983
@@ -2333,5 +2319,7 @@ RC:
 rcstring:
         DB ': 2drop drop drop ; '
         DB ': .( [char] ) parse type ; immediate '
+        ; THEN          std1983
+        ; THEN ( token -- )     at compile time
+        DB ': then here over - swap ! ; immediate '
 rclength EQU $ - rcstring
-
