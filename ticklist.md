@@ -155,7 +155,7 @@ VOCABULARY
 WHILE   i
 [
 [']
-[COMPILE]
+[COMPILE]       i
 ]       i
 
 ## From std1994

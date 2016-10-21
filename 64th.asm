@@ -2292,4 +2292,7 @@ rcstring:
         ; '             std1983
         DB ": ' parse-word findword if exit then 0 ; "
 
+        ; [COMPILE]     std1983
+        DB ": [compile] ' , ; immediate "
+
 rclength EQU $ - rcstring
