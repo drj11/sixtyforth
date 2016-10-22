@@ -1791,7 +1791,7 @@ DICT:   Link(duseless)
 ;   FIND: To convert from string to DICT entry.
 ;   qEXECUTE: execute / convert number / compile.
 
-INTERACTOR:
+READLOOP:
         DQ stdexe
         DQ RC
         DQ EVALUATE
@@ -1826,7 +1826,7 @@ INTERPRETLINE:
         DQ EXIT
 
 ipl:    DQ stdexe
-        DQ INTERACTOR
+        DQ READLOOP
         DQ sysEXIT
 
 qEXECUTE:
@@ -1989,7 +1989,7 @@ reset:  ; QUIT jumps here
         mov qword [rax], 0
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
         ; so as to fake executing the Forth word IPL.
-        mov rdx, INTERACTOR
+        mov rdx, READLOOP
         mov rbx, ipl+16
 
 stdexe:
