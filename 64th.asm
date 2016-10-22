@@ -1984,9 +1984,20 @@ dreset: ; ABORT jumps here (data reset)
         ; Initialise the model registers.
         mov rbp, stack
 reset:  ; QUIT jumps here
+        mov rcx, 0
         mov r12, returnstack
         mov rax, stateaddr
         mov qword [rax], 0
+        mov rax, anumberIB
+        mov qword [rax], 0
+        mov rax, atoIN
+        mov [rax], rcx
+        mov rcx, ib1
+        mov rax, aIB
+        mov [rax], rcx
+        mov rax, aIBLIMIT
+        mov [rax], rcx
+
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
         ; so as to fake executing the Forth word IPL.
         mov rdx, READLOOP
