@@ -1606,16 +1606,6 @@ CHAR:
         DQ EXIT
         Link(dchar)
 
-dbracketchar:
-        DQ 6 | Immediate
-        DQ '[char]'     ; std1994
-bracketCHAR:
-        DQ stdexe
-        DQ CHAR
-        DQ LITERAL
-        DQ EXIT
-        Link(dbracketchar)
-
 dparse:
         DQ 5
         DQ 'parse'      ; std1994
@@ -2279,7 +2269,6 @@ RC:
 
 rcstring:
         DB ': 2drop drop drop ; '
-        DB ': .( [char] ) parse type ; immediate '
         ; THEN          std1983
         ; THEN ( token -- )     at compile time
         DB ': then here over - swap ! ; immediate '
@@ -2294,5 +2283,8 @@ rcstring:
 
         ; [COMPILE]     std1983
         DB ": [compile] ' , ; immediate "
+        ; [CHAR]        std1994
+        DB ": [char] char [compile] literal ; immediate "
+        DB ': .( [char] ) parse type ; immediate '
 
 rclength EQU $ - rcstring
