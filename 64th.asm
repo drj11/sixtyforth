@@ -236,11 +236,9 @@ ISATTY:
         DQ stdexe
         ; ISATTY ( u-fd -- flag )
         ; True if file descriptor u-fd refers to a TTY.
-        DQ LIT
-        DQ 21505        ; 0x5401 = TCGETS
+        DQ LIT, 0x5401  ; TCGETS
         DQ HERE         ; dummy buffer
-        DQ LIT
-        DQ 16           ; syscall 16 is ioctl
+        DQ LIT, 16      ; syscall 16 is ioctl
         DQ SYSCALL3
         DQ zequals      ; 0 is success; convert to true/false
         DQ EXIT
@@ -317,8 +315,7 @@ dlesssharp:
         DQ '<#'         ; std1983
 lesssharp:
         DQ stdexe
-        DQ LIT
-        DQ picend
+        DQ LIT, picend
         DQ PIC
         DQ store
         DQ EXIT
@@ -329,8 +326,7 @@ dsharp:
         DQ '#'          ; std1983
 sharp:  DQ stdexe
         ; # ( ud1 -- ud2 )
-        DQ LIT
-        DQ 1            ; (ud 1)
+        DQ LIT, 1       ; (ud 1)
         DQ BASE
         DQ fetch        ; (ud 1 b)
         DQ UMstarslashMOD   ; (ud r)
@@ -364,8 +360,7 @@ sharpgreater:
         DQ DROP
         DQ PIC
         DQ fetch        ; (addr)
-        DQ LIT
-        DQ picend       ; (addr end)
+        DQ LIT, picend  ; (addr end)
         DQ OVER         ; (addr end addr)
         DQ MINUS        ; (addr +n)
         DQ EXIT
@@ -393,8 +388,7 @@ SIGN:   DQ stdexe
         DQ zless
         DQ ZEROBRANCH
         DQ (.pos-$)
-        DQ LIT
-        DQ '-'
+        DQ LIT, '-'
         DQ HOLD
 .pos:   DQ EXIT
         Link(dsign)
@@ -407,17 +401,14 @@ DIGIT:  DQ stdexe
         ; convert digit (0 to 15) to ASCII
         ; 0 -> 48
         ; 10 -> 65
-        DQ LIT
-        DQ 9            ; (n 9)
+        DQ LIT, 9       ; (n 9)
         DQ OVER         ; (n 9 n)
         DQ lessthan     ; (n bf)
         DQ ZEROBRANCH
         DQ (.l-$)
-        DQ LIT
-        DQ 7
+        DQ LIT, 7
         DQ PLUS
-.l:     DQ LIT
-        DQ '0'
+.l:     DQ LIT, '0'
         DQ PLUS
         DQ EXIT
         Link(ddigit)
@@ -426,8 +417,7 @@ dbl:
         DQ 2
         DQ 'bl'         ; std1994
 fBL:    DQ stdexe
-        DQ LIT
-        DQ ' '
+        DQ LIT, ' '
         DQ EXIT
         Link(dbl)
 
@@ -436,12 +426,10 @@ dtype:
         DQ 'type'       ; std1983
 TYPE:   DQ stdexe
         ; TYPE ( addr +n -- )
-        DQ LIT
-        DQ 1            ; addr n 1      ; stdout
+        DQ LIT, 1       ; addr n 1      ; stdout
         DQ ROT
         DQ ROT          ; 1 addr n
-        DQ LIT
-        DQ sys_write
+        DQ LIT, sys_write
         DQ SYSCALL3
         DQ DROP
         DQ EXIT
@@ -453,8 +441,7 @@ dcount:
 COUNT:  DQ stdexe
         ; (addr -- addr+8 +n)
         DQ DUP          ; (addr addr)
-        DQ LIT
-        DQ 8
+        DQ LIT, 8
         DQ PLUS         ; (addr adddr+8)
         DQ SWAP         ; (addr+8 addr)
         DQ fetch        ; (addr+8 length)
@@ -642,8 +629,7 @@ dtrue:
         DQ 4
         DQ 'true'       ; std1994
 TRUE:   DQ stdexe
-        DQ LIT
-        DQ -1
+        DQ LIT, -1
         DQ EXIT
         Link(dtrue)
 
@@ -723,8 +709,7 @@ dsource:
 SOURCE:
         DQ stdexe
         ; :todo: Implement more input sources.
-        DQ LIT
-        DQ aIB
+        DQ LIT, aIB
         DQ fetch
         DQ numberIB
         DQ fetch
@@ -909,8 +894,7 @@ ddabs:
         DQ 'dabs'       ; std1994 double
 DABS:   DQ stdexe
         ; DABS ( d -- ud )
-        DQ LIT
-        DQ 7            ; Arbitrary, should be positive.
+        DQ LIT, 7       ; Arbitrary, should be positive.
         DQ Dplusminus
         DQ EXIT
         Link(ddabs)
@@ -951,8 +935,7 @@ dcomma:
 comma:  DQ stdexe
         ; , ( w -- )
         DQ HERE
-        DQ LIT
-        DQ 8
+        DQ LIT, 8
         DQ ALLOT
         DQ store
         DQ EXIT
@@ -963,8 +946,7 @@ dliteral:
         DQ 'literal'    ; std1983
 LITERAL:
         DQ stdexe
-        DQ LIT
-        DQ LIT          ; haha, weird or what?
+        DQ LIT, LIT     ; haha, weird or what?
         DQ comma
         DQ comma
         DQ EXIT
@@ -1012,8 +994,7 @@ CREATE: DQ stdexe
         ; Link Field Address, used much later
         DQ HERE         ; (lfa)
         ; Compile Link Field
-        DQ LIT
-        DQ DICT
+        DQ LIT, DICT
         DQ fetch
         DQ comma
 
@@ -1024,24 +1005,20 @@ CREATE: DQ stdexe
         DQ DUP
         DQ comma
         ; Name String
-        DQ LIT
-        DQ 8            ; ( lfa addr u 8 )
+        DQ LIT, 8       ; ( lfa addr u 8 )
         DQ MIN          ; ( lfa addr u|8 )
         DQ HERE         ; ( lfa addr u|8 here )
         DQ SWAP         ; ( lfa addr here u|8 )
         DQ CMOVE        ; ( lfa )
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ CELLS        ; ( lfa cc )
         DQ ALLOT
 
         ; Compile Code Field
-        DQ LIT
-        DQ stdvar
+        DQ LIT, stdvar
         DQ comma
         ; Update Dictionary pointer
-        DQ LIT
-        DQ DICT         ; (lfa &dict)
+        DQ LIT, DICT    ; ( lfa &dict )
         DQ store
         DQ EXIT
         Link(dcreate)
@@ -1050,8 +1027,7 @@ dtobody:
         DQ 5
         DQ '>body'      ; std1983
 toBODY: DQ stdexe
-.body:  DQ LIT
-        DQ .body - toBODY       ; 8, basically
+.body:  DQ LIT, (.body-toBODY)  ; 8, basically
         DQ PLUS
         DQ EXIT
         Link(dtobody)
@@ -1061,8 +1037,7 @@ dfrombody:
         DQ 'body>'      ; std1983[harris]
 fromBODY:
         DQ stdexe
-.body:  DQ LIT
-        DQ .body - fromBODY     ; 8, basically
+.body:  DQ LIT, (.body-fromBODY)        ; 8, basically
         DQ MINUS
         DQ EXIT
         Link(dfrombody)
@@ -1072,8 +1047,7 @@ dfromname:
         DQ '>name'      ; std1983[harris]
 fromNAME:
         DQ stdexe
-        DQ LIT
-        DQ fromNAME - dfromname ; 16, basically
+        DQ LIT, (fromNAME-dfromname)    ; 16, basically
         DQ PLUS
         DQ EXIT
         Link(dfromname)
@@ -1090,8 +1064,7 @@ dket:
         DQ 1
         DQ ']'          ; std1983
 ket:    DQ stdexe
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ STATE
         DQ store
         DQ EXIT
@@ -1102,8 +1075,7 @@ dcolon:
         DQ ':'          ; std1983
 colon:  DQ stdexe
         DQ CREATE
-        DQ LIT
-        DQ stdexe
+        DQ LIT, stdexe
         DQ HERE
         DQ fromBODY
         DQ store
@@ -1116,8 +1088,7 @@ dsemicolon:
         DQ ';'          ; std1983
 semicolon:
         DQ stdexe
-        DQ LIT
-        DQ EXIT
+        DQ LIT, EXIT
         DQ comma
         ; :todo: check compiler safety
         DQ z
@@ -1262,8 +1233,7 @@ dz:
         DQ 1
         DQ '0'
 z:      DQ stdexe
-        DQ LIT
-        DQ 0
+        DQ LIT, 0
         DQ EXIT
         Link(dz)
 
@@ -1287,8 +1257,7 @@ ftimes: DQ stdexe
         ; * ( n1 n2 -- n3 )
         DQ StoD         ; (n1 d2)
         DQ ROT          ; (d2 n1)
-        DQ LIT
-        DQ 1            ; (d2 n1 1)
+        DQ LIT, 1       ; (d2 n1 1)
         DQ Mstarslash   ; (d)
         DQ DtoS         ; (n)
         DQ EXIT
@@ -1310,8 +1279,7 @@ doneplus:
         DQ '1+'         ; std1983
 oneplus:
         DQ stdexe
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ PLUS
         DQ EXIT
         Link(doneplus)
@@ -1321,8 +1289,7 @@ dtwoplus:
         DQ '2+'         ; std1983
 twoplus:
         DQ stdexe
-        DQ LIT
-        DQ 2
+        DQ LIT, 2
         DQ PLUS
         DQ EXIT
         Link(dtwoplus)
@@ -1332,8 +1299,7 @@ dtwominus:
         DQ '2-'         ; std1983
 twominus:
         DQ stdexe
-        DQ LIT
-        DQ 2
+        DQ LIT, 2
         DQ MINUS
         DQ EXIT
         Link(dtwominus)
@@ -1368,11 +1334,9 @@ dlast:
         DQ 4
         DQ 'last'       ; Acornsoft
 LAST:   DQ stdexe
-        DQ LIT
-        DQ DICT
+        DQ LIT, DICT
         DQ fetch
-        DQ LIT          ; L>NAME
-        DQ 8
+        DQ LIT, 8       ; L>NAME
         DQ PLUS
         DQ EXIT
         Link(dlast)
@@ -1381,8 +1345,7 @@ dcells:
         DQ 5
         DQ 'cells'      ; std1994
 CELLS:  DQ stdexe
-        DQ LIT
-        DQ 8
+        DQ LIT, 8
         DQ ftimes
         DQ EXIT
         Link(dcells)
@@ -1392,8 +1355,7 @@ dcellplus:
         DQ 'cell+'      ; std1994
 CELLplus:
         DQ stdexe
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ CELLS
         DQ PLUS
         DQ EXIT
@@ -1405,8 +1367,7 @@ dif:
 IF:
         DQ stdexe
         ; IF ( -- token )       at compile time
-        DQ LIT
-        DQ ZEROBRANCH
+        DQ LIT, ZEROBRANCH
         DQ comma
         DQ HERE         ; deposit the patch token
         DQ TRUE         ; compile dummy offset
@@ -1420,8 +1381,7 @@ delse:
 fELSE:
         DQ stdexe
         ; ELSE ( token -- newtoken)     at compile time
-        DQ LIT
-        DQ BRANCH
+        DQ LIT, BRANCH
         DQ comma        ; ( token )
         DQ HERE         ; ( token newtoken )
         DQ TRUE         ; compile dummy offset
@@ -1442,8 +1402,7 @@ BEGIN:
         DQ stdexe
         ; BEGIN ( -- token 'BEGIN )     at compile time
         DQ HERE
-        DQ LIT
-        DQ BEGIN
+        DQ LIT, BEGIN
         DQ EXIT
         Link(dbegin)
 
@@ -1454,8 +1413,7 @@ UNTIL:
         DQ stdexe
         ; UNTIL ( token 'BEGIN -- )     at compile time
         DQ DROP         ; :todo: safety check 'BEGIN
-        DQ LIT
-        DQ ZEROBRANCH
+        DQ LIT, ZEROBRANCH
         DQ comma
         DQ HERE         ; ( token here )
         DQ MINUS        ; ( byteoffset )
@@ -1469,13 +1427,11 @@ dwhile:
 WHILE:
         DQ stdexe
         ; WHILE ( token 'BEGIN -- token 'BEGIN w-token 'WHILE )
-        DQ LIT
-        DQ ZEROBRANCH
+        DQ LIT, ZEROBRANCH
         DQ comma
         ; :todo: safety check 'BEGIN
         DQ HERE
-        DQ LIT
-        DQ WHILE
+        DQ LIT, WHILE
         DQ TRUE
         DQ comma
         DQ EXIT
@@ -1489,8 +1445,7 @@ REPEAT:
         ; REPEAT ( b-token 'BEGIN w-token 'WHILE -- )
         DQ twoSWAP      ; ( w-token 'WHILE b-token 'BEGIN )
         DQ DROP         ; :todo: safety check 'BEGIN
-        DQ LIT
-        DQ BRANCH
+        DQ LIT, BRANCH
         DQ comma
         DQ HERE         ; ( w-token 'WHILE b-token here)
         DQ MINUS        ; ( w-token 'WHILE offset )
@@ -1511,8 +1466,7 @@ ALIGNED:
         DQ stdexe
         ; ALIGNED ( addr -- a-addr )
         DQ oneminus
-        DQ LIT
-        DQ 7
+        DQ LIT, 7
         DQ OR
         DQ oneplus
         DQ EXIT
@@ -1534,11 +1488,9 @@ Squote:
         ; that used the branch value and location to
         ; not only compute the branch but also the
         ; address and length of the string.
-        DQ LIT
-        DQ '"'
+        DQ LIT, '"'
         DQ PARSE        ; ( c-addr u )
-        DQ LIT
-        DQ BRANCH
+        DQ LIT, BRANCH
         DQ comma
         DQ DUP          ; ( c-addr u u )
         DQ CELLplus     ; ( c-addr u v )
@@ -1562,18 +1514,15 @@ dabortquote:
         DQ 'abort"'     ; std1983
 ABORTquote:
         DQ stdexe
-        DQ LIT
-        DQ ZEROBRANCH
+        DQ LIT, ZEROBRANCH
         DQ comma
         DQ HERE         ; ( here )
         DQ TRUE
         DQ comma
         DQ Squote
-        DQ LIT
-        DQ TYPE
+        DQ LIT, TYPE
         DQ comma
-        DQ LIT
-        DQ ABORT
+        DQ LIT, ABORT
         DQ comma
         DQ HERE         ; ( addr here )
         DQ OVER         ; ( addr here addr )
@@ -1635,8 +1584,7 @@ PARSE:
         DQ PLUS         ; o >in char addr
         DQ Cfetch       ; o >in char c
         ; increment >in
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ toIN
         DQ plusstore
         DQ OVER         ; o >in char c char
@@ -1696,8 +1644,7 @@ SKIP:
         DQ equals       ; flag
         DQ ZEROBRANCH
         DQ .escape-$
-        DQ LIT
-        DQ 1            ; 1
+        DQ LIT, 1       ; 1
         DQ toIN         ; 1 >in
         DQ plusstore
         DQ BRANCH
@@ -1845,8 +1792,7 @@ qEXECUTE:
         DQ ROT
         DQ DROP         ; addr +-1
         ; immediate=1; non-immediate=-1
-        DQ LIT
-        DQ 1
+        DQ LIT, 1
         DQ PLUS         ; (addr 0/2)
         DQ STATE
         DQ fetch        ; (addr 0/2 compiling?)
@@ -1874,10 +1820,8 @@ qEXECUTE:
         DQ EXIT
 .abort:
         DQ TYPE
-        DQ LIT
-        DQ .error
-        DQ LIT
-        DQ 2
+        DQ LIT, .error
+        DQ LIT, 2
         DQ TYPE
         DQ QUIT
 .error: DQ ' ?'
@@ -1929,8 +1873,7 @@ scansign:
         DQ SWAP         ; (+n addr)
         DQ DUP
         DQ Cfetch       ; (+n addr ch)
-        DQ LIT
-        DQ '-'
+        DQ LIT, '-'
         DQ equals       ; (+n addr bf)
         ; Note: here use fact that -1 is True
         DQ ROT          ; (addr bf +n)
@@ -2080,8 +2023,7 @@ COPYDOWN:
         DQ stdexe
         ; Copy region from (newly bumped) IB (to IBLIMIT)
         ; down to end of ib0.
-        DQ LIT
-        DQ ib1          ; ib1
+        DQ LIT, ib1     ; ib1
         DQ IBLIMIT
         DQ fetch        ; ib1 iblimit
         DQ OVER         ; ib1 iblimit ib1
@@ -2118,8 +2060,7 @@ SCAN:
         ; p
         DQ DUP
         DQ Cfetch       ; p c
-        DQ LIT
-        DQ 10           ; p c 10
+        DQ LIT, 10      ; p c 10
         DQ equals       ; p flag
         DQ ZEROBRANCH
         DQ .continue - $
@@ -2161,14 +2102,12 @@ BUMPIB:
         DQ IB
         DQ fetch        ; ib
         DQ Cfetch       ; c
-        DQ LIT
-        DQ 10           ; c 10
+        DQ LIT, 10      ; c 10
         DQ equals
         DQ ZEROBRANCH
         DQ .then - $
-        DQ LIT
-        DQ 1
-        DQ IB           ; &ib 1
+        DQ LIT, 1
+        DQ IB           ; 1 &ib
         DQ plusstore
 .then:
         DQ EXIT
@@ -2218,18 +2157,13 @@ filbuf:
 
 READIB1:
         DQ stdexe
-        DQ LIT
-        DQ ib1
+        DQ LIT, ib1
         DQ IBLIMIT
         DQ store
-        DQ LIT
-        DQ 0            ; stdin
-        DQ LIT
-        DQ ib1
-        DQ LIT
-        DQ ibsize
-        DQ LIT
-        DQ sys_read     ;
+        DQ LIT, 0       ; stdin
+        DQ LIT, ib1
+        DQ LIT, ibsize
+        DQ LIT, sys_read
         DQ SYSCALL3
         DQ IBLIMIT
         DQ plusstore
@@ -2245,8 +2179,7 @@ QPROMPT:
         DQ stdexe
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
-        DQ LIT
-        DQ 0            ; stdin
+        DQ LIT, 0       ; stdin
         DQ ISATTY
         DQ zequals
         DQ ZEROBRANCH
@@ -2262,14 +2195,10 @@ QPROMPT:
         DQ .then - $
         DQ EXIT
 .then:
-        DQ LIT
-        DQ 2            ; stderr
-        DQ LIT
-        DQ prompt
-        DQ LIT
-        DQ promptlen
-        DQ LIT
-        DQ sys_write
+        DQ LIT, 2       ; stderr
+        DQ LIT, prompt
+        DQ LIT, promptlen
+        DQ LIT, sys_write
         DQ SYSCALL3
         DQ DROP
         DQ EXIT
@@ -2279,18 +2208,14 @@ RC:
         ; RC ( -- c-addr u )
         ; deposit the 2-value Run Command string,
         ; ready for EVALUATE.
-        DQ LIT
-        DQ rcstring
-        DQ LIT
-        DQ rclength
+        DQ LIT, rcstring
+        DQ LIT, rclength
         DQ EXIT
 
 RUNRC:
         DQ stdexe
-        DQ LIT
-        DQ EXIT
-        DQ LIT
-        DQ avRESET
+        DQ LIT, EXIT
+        DQ LIT, avRESET
         DQ store
         DQ RC
         DQ EVALUATE
