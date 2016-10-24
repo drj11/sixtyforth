@@ -1793,8 +1793,7 @@ DICT:   Link(duseless)
 
 READLOOP:
         DQ stdexe
-        DQ RC
-        DQ EVALUATE
+        DQ vRESET
 .line:
         DQ QPROMPT
         DQ filbuf       ; basically QUERY from std
@@ -1911,6 +1910,13 @@ qNUMBER:
         DQ DtoS         ; c-addr n      :todo: check range
         DQ NIP          ; n
         DQ TRUE         ; n true
+        DQ EXIT
+
+vRESET:
+        DQ stdexe
+        ; vectored reset
+avRESET:
+        DQ RUNRC
         DQ EXIT
 
 scansign:
@@ -2276,6 +2282,17 @@ RC:
         DQ rcstring
         DQ LIT
         DQ rclength
+        DQ EXIT
+
+RUNRC:
+        DQ stdexe
+        DQ LIT
+        DQ EXIT
+        DQ LIT
+        DQ avRESET
+        DQ store
+        DQ RC
+        DQ EVALUATE
         DQ EXIT
 
 rcstring:
