@@ -92,7 +92,8 @@ ddup:
 DUP:    DQ $+8
         ; DUP ( a -- a a )
         mov rax, [rbp-8]
-duprax: mov [rbp], rax
+pushrax:
+        mov [rbp], rax
         add rbp, 8
         jmp next
         Link(ddup)
@@ -119,7 +120,7 @@ DEPTH:  DQ $+8
         mov rax, rbp
         sub rax, rcx
         shr rax, 3
-        jmp duprax
+        jmp pushrax
         Link(ddepth)
 
 dtonumber:
@@ -820,7 +821,7 @@ qDUP:   DQ $+8
         mov rax, [rbp-8]
         test rax, rax
         jz next
-        jmp duprax
+        jmp pushrax
         Link(dqdup)
 
 dover:
@@ -1151,7 +1152,7 @@ drfrom:
 Rfrom:  DQ $+8
         mov rax, [r12-8]
         sub r12, 8
-        jmp duprax
+        jmp pushrax
         Link(drfrom)
 
 drfetch:
@@ -1159,7 +1160,7 @@ drfetch:
         DQ 'r@'         ; std1983
 Rfetch: DQ $+8
         mov rax, [r12-8]
-        jmp duprax
+        jmp pushrax
         Link(drfetch)
 
 dfindword:
