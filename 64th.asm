@@ -127,35 +127,75 @@ dtonumber:
         DQ 7
         DQ '>number'    ; std1994
 toNUMBER:
-        DQ $+8
+        DQ stdexe
         ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
-        ; :todo: only works in single range
-        mov rdi, [rbp-8]        ; length remaining
-        mov rsi, [rbp-16]       ; pointer
-        mov rax, [rbp-32]       ; (partial) converted number
-        mov r8, [abase]         ; BASE
-.dig:
-        mov rcx, 0
-        mov cl, [rsi]
-        sub rcx, 48     ; Convert from ASCII digit
-        jc .end         ; ASCII value < '0'
-        cmp rcx, 10
-        jc .digitok     ; ASCII value <= '9'
-        sub rcx, 7      ; number of chars between '9' and 'A' in ASCII
-        jc .end         ; '9' < ASCII value < 'A'
-        cmp rcx, r8
-        jnc .end        ; BASE <= numeric value
-.digitok:
-        mul r8
-        add rax, rcx
-        inc rsi
-        dec rdi
-        jnz .dig
-.end:   mov [rbp-32], rax
-        mov [rbp-24], rdx
-        mov [rbp-16], rsi
-        mov [rbp-8], rdi
-        jmp next
+.begin:
+        DQ DUP          ; ud c-addr u u
+        DQ ZEROBRANCH
+        DQ .x - $
+        DQ ASCIItoDIGIT ; ud c-addr u n
+        DQ DUP, zless   ; ud c-addr u n bf
+        DQ ZEROBRANCH
+        DQ .ok - $
+        DQ DROP
+.x:
+        DQ EXIT
+.ok:
+        ; ud c-addr u n
+        DQ toR          ; ud c-addr u
+        DQ twoSWAP      ; c-addr u ud
+        DQ BASE, fetch  ; c-addr u ud base
+        DQ UMstar       ; c-addr u ud
+        DQ Rfrom        ; c-addr u ud n
+        DQ z            ; c-addr u ud n 0
+        DQ Dplus        ; c-addr u ud
+        DQ twoSWAP      ; ud c-addr
+        DQ BRANCH
+        DQ -($ - .begin)
+ASCIItoDIGIT:
+        DQ stdexe
+        ; factor of >NUMBER
+        ; ( c-addr u -- c-addr u n )
+        ; c-addr and u are updated
+        ; n is the next digit;
+        ; n is negative if there is no next digit.
+        DQ OVER, Cfetch ; c-addr u ch
+        DQ LIT, '0'     ; c-addr u ch '0'
+        ; Exit if character < '0'
+        DQ MINUS        ; c-addr u c
+        DQ DUP, zless   ; c-addr u c bf
+        DQ ZEROBRANCH
+        DQ .then - $
+        DQ EXIT
+.then:
+        ; Exit if character <= '9'
+        DQ DUP          ; c-addr u c c
+        DQ LIT, 10      ; c-addr u c c 10
+        DQ lessthan     ; c-addr u c bf
+        DQ ZEROBRANCH
+        DQ .then1 - $
+        DQ ROT          ; u c c-addr
+        DQ oneplus      ; u c c-addr
+        DQ ROT          ; c c-addr u
+        DQ oneminus     ; c c-addr u
+        DQ ROT          ; c-addr u c
+        DQ EXIT
+.then1:
+        DQ LIT, 7       ; c-addr u c 7
+        DQ MINUS        ; c-addr u c
+        ; Exit if character < 'A'
+        DQ DUP, zless   ; c-addr u c bf
+        DQ ZEROBRANCH
+        DQ .then2 - $
+        DQ EXIT
+.then2:
+        DQ ROT          ; u c c-addr
+        DQ oneplus      ; u c c-addr
+        DQ ROT          ; c c-addr u
+        DQ oneminus     ; c c-addr u
+        DQ ROT          ; c-addr u c
+.x:
+        DQ EXIT
         Link(dtonumber)
 
 dmstarslash:
@@ -184,6 +224,18 @@ Mstarslash:
         DQ DROP
         DQ EXIT
         Link(dmstarslash)
+
+dumstar:
+        DQ 3
+        DQ 'um*'
+UMstar:
+        DQ stdexe
+        ; UM* ( ud u -- ud-product )
+        DQ LIT, 1       ; ud u 1
+        DQ UMstarslashMOD       ; ud u-r
+        DQ DROP         ; ud
+        DQ EXIT
+        Link(dumstar)
 
 dumstarslashmod:
         DQ 7
