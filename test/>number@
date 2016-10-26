@@ -5,6 +5,6 @@ out=$(echo ': x s" 3@5" ;
 . drop d.' | $FORTH)
 printf '%s\n' "$out"
 case "$out" in
-    ("0 3 ") exit 0;;
+    ("2 3 ") exit 0;;
     esac
 exit 2
