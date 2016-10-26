@@ -185,7 +185,7 @@ ASCIItoDIGIT:
         DQ MINUS        ; c-addr u c
         ; Exit if character < 'A'
         DQ DUP          ; c-addr u c c
-        DQ LIT, 11      ; c-addr u c c 11
+        DQ LIT, 10      ; c-addr u c c 10
         DQ lessthan     ; c-addr u c bf
         DQ ZEROBRANCH
         DQ .then2 - $
