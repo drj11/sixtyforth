@@ -2,7 +2,7 @@
 FORTH=${FORTH:-../64th}
 out=$(echo ': x parse-word false false 2swap >number ;
 x 37.59 drop drop drop .' | $FORTH)
-echo $out
+printf '%s\n' "$out"
 case "$out" in
     ("37 ") exit 0;;
     esac

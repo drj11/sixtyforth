@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo ': x s" 3@5" ;
+0 0 x >number
+. drop d.' | $FORTH)
+printf '%s\n' "$out"
+case "$out" in
+    ("2 3 ") exit 0;;
+    esac
+exit 2
