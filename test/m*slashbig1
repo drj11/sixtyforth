@@ -4,7 +4,7 @@ FORTH=${FORTH:-../64th}
 out=$(echo '123000111000222 0 1000111000222 1 m*/
       1000111000222 1 m*/
       d.' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("123027418594966528145366302411582941048 ") exit 0;;
 esac

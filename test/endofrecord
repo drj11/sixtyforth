@@ -6,7 +6,7 @@ FORTH=${FORTH:-../64th}
 out=$(echo 'variable bop
 97 bop !
 3 bop @ . .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("97 3 ") exit 0;;
 esac

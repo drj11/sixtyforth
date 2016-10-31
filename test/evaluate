@@ -2,7 +2,7 @@
 FORTH=${FORTH:-../64th}
 out=$(echo ': x s" 2 * 1+" ;
   7 9 x evaluate . .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("19 7 ") exit 0;;
 esac

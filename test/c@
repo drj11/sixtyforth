@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
 out=$(echo ': c parse-word drop c@ ; c 0a .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("48 ") exit 0;;
 esac

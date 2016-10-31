@@ -4,7 +4,7 @@ FORTH=${FORTH:-../64th}
 # has a bug where it terminated on a blank line.
 
 out=$(printf '7\n\n.' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("7 ") exit 0;;
 esac

@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
 out=$(echo create magic \' magic magic body\> - . | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case ${out} in
     ('0 ') exit 0;;
 esac

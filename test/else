@@ -5,7 +5,7 @@ out=$(echo ': p if 7 else 9 then ;
   1 p .
   -1 p .
   ' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("9 7 7 ") exit 0;;
 esac

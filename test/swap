@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
 out=$(printf "1 2 swap 3\n. . .\n" | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("3 1 2 ") exit 0;;
 esac

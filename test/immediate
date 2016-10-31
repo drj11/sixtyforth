@@ -3,7 +3,7 @@ FORTH=${FORTH:-../64th}
 out=$(echo ': seven 7 ; immediate
       : dummy seven ;
       .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("7 ") exit 0;;
 esac

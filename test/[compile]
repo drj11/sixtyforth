@@ -4,7 +4,7 @@ out=$(echo ': x [compile] literal ;
 : y x ; immediate
 3 99 : z y ; .
 z .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("3 99 ") exit 0;;
 esac

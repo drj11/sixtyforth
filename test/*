@@ -5,7 +5,7 @@ dup negate dup * .
 dup dup negate * .
 dup negate swap * .
 ' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("12345678987654321 12345678987654321 -12345678987654321 -12345678987654321 ") exit 0;;
 esac

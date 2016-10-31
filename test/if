@@ -3,7 +3,7 @@ FORTH=${FORTH:-../64th}
 out=$(echo ': select if swap then drop ;
   1 2 3 select .
   8 9 0 select .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("2 8 ") exit 0;;
 esac

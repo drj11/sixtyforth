@@ -3,7 +3,7 @@ FORTH=${FORTH:-../64th}
 # Test bug when PARSE-WORD is used before buffer input end.
 out=$(echo 'depth . parse-word
   depth .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("0 2 ") exit 0;;
 esac

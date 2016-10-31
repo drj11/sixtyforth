@@ -2,7 +2,7 @@
 FORTH=${FORTH:-../64th}
 # test zero length string (suggested by std1994 A.6.2.2008)
 out=$(echo ': x s" " ; x . depth .' | $FORTH)
-echo $out
+printf "%s\n" "$out"
 case "$out" in
     ("0 1 ") exit 0;;
 esac
