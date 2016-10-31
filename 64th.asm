@@ -176,45 +176,40 @@ ASCIItoDIGIT:
         ; n is the next digit;
         ; n is negative if there is no next digit.
         DQ OVER, Cfetch ; c-addr u ch
-        DQ LIT, '0'     ; c-addr u ch '0'
-        ; Exit if character < '0'
-        DQ MINUS        ; c-addr u c
-        DQ DUP, zless   ; c-addr u c bf
+        DQ DUP          ; c-addr u ch ch
+        DQ LIT, '0'     ; c-addr u ch ch '0'
+        DQ LIT, '9'+1   ; c-addr u ch ch '0' ':'
+        DQ WITHIN       ; c-addr u ch bf
+        ; ok if '0' <= ch <= '9'
         DQ ZEROBRANCH
         DQ .then - $
+        DQ LIT, '0'
+        DQ MINUS        ; c-addr u c
+        DQ ROT          ; u c c-addr
+        DQ oneplus      ; u c c-addr
+        DQ ROT          ; c c-addr u
+        DQ oneminus     ; c c-addr u
+        DQ ROT          ; c-addr u c
         DQ EXIT
 .then:
-        ; Exit if character <= '9'
-        DQ DUP          ; c-addr u c c
-        DQ LIT, 10      ; c-addr u c c 10
-        DQ lessthan     ; c-addr u c bf
-        DQ ZEROBRANCH
-        DQ .then1 - $
-        DQ ROT          ; u c c-addr
-        DQ oneplus      ; u c c-addr
-        DQ ROT          ; c c-addr u
-        DQ oneminus     ; c c-addr u
-        DQ ROT          ; c-addr u c
-        DQ EXIT
-.then1:
-        DQ LIT, 7       ; c-addr u c 7
+        DQ LIT, 'A'-10  ; c-addr u c 'A'
         DQ MINUS        ; c-addr u c
-        ; Exit if character < 'A'
+        ; Now, A -> 10, B -> 11, and so on.
         DQ DUP          ; c-addr u c c
         DQ LIT, 10      ; c-addr u c c 10
-        DQ lessthan     ; c-addr u c bf
+        DQ BASE, fetch  ; c-addr u c c 10 base
+        DQ WITHIN       ; c-addr u c bf
         DQ ZEROBRANCH
         DQ .then2 - $
-        DQ DROP
-        DQ TRUE
-        DQ EXIT
-.then2:
         DQ ROT          ; u c c-addr
         DQ oneplus      ; u c c-addr
         DQ ROT          ; c c-addr u
         DQ oneminus     ; c c-addr u
         DQ ROT          ; c-addr u c
-.x:
+        DQ EXIT
+.then2:
+        DQ DROP
+        DQ TRUE
         DQ EXIT
         Link(dtonumber)
 
