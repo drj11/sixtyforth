@@ -1,0 +1,9 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '33000 32000 34000 within .
+  1 -5 5 within .' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("-1 -1 ") exit 0;;
+esac
+exit 2

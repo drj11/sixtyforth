@@ -123,6 +123,22 @@ DEPTH:  DQ $+8
         jmp pushrax
         Link(ddepth)
 
+dwithin:
+        DQ 6
+        DQ 'within'     ; std1994
+WITHIN:
+        DQ stdexe
+        ; WITHIN ( test low high -- flag )
+        ; Implementation as per [FORTH1994]
+        DQ OVER
+        DQ MINUS
+        DQ toR
+        DQ MINUS
+        DQ Rfrom
+        DQ Ulessthan
+        DQ EXIT
+        Link(dwithin)
+
 dtonumber:
         DQ 7
         DQ '>number'    ; std1994
