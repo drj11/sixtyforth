@@ -184,4 +184,5 @@ S"      i
 S>D     i
 SM/MOD  i
 TRUE    i
+WITHIN  i
 [CHAR]  i
