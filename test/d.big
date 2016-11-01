@@ -1,0 +1,25 @@
+#!/bin/sh
+# Largest signed double.
+FORTH=${FORTH:-../64th}
+out=$(echo ': msq over um* ;
+2 0
+msq
+msq
+msq
+msq
+msq
+msq
+1 0 d+
+over over
+-2 -1 d+
+drop
+2
+um*/mod
+drop
+d.
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("170141183460469231731687303715884105727 ") exit 0;;
+esac
+exit 2
