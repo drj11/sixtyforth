@@ -2297,7 +2297,7 @@ rcstring:
         DB ': variable create 1 cells allot ; '
         ; DNEGATE       std1983
         ; DNEGATE ( d1 -- -d1 )
-        DB ': dnegate dup negate d+- ; '
+        DB ': dnegate -1 1 m*/ ; '
 
         ; '             std1983
         DB ": ' parse-word findword if exit then 0 ; "
