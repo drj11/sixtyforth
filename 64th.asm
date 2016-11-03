@@ -64,6 +64,25 @@ promptlen EQU $-prompt
 ; Or (using «|») into Length Field to create IMMEDIATE word.
 %define Immediate (2<<32)
 
+; Assembler Style
+; For Forth words defined in assembler,
+; try and stick to the following guidelines:
+
+; :asm:load-store:
+; Pretend Intel 64 is a Load/Store architecture:
+; prefer instructions that either just do load/store, or
+; just do register to register computation.
+
+; :asm:fetch-do-store:
+; Words should be organised to do in order:
+; - fetch data from stack to registers;
+; - do computation;
+; - store data from registers to stack.
+
+; :asm:memseq:
+; In general access memory sequentially from lower addresses to
+; higher addresses.
+
 STARTOFDICT:
         DQ 0    ; Link Field
 
