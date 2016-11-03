@@ -121,9 +121,9 @@ drot:
         DQ 3
         DQ 'rot'        ; std1983
 ROT:    DQ $+8
-        mov rax, [rbp-8]
-        mov rcx, [rbp-16]
         mov rdx, [rbp-24]
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
         mov [rbp-24], rcx
         mov [rbp-16], rax
         mov [rbp-8], rdx
@@ -278,8 +278,8 @@ UMstarslashMOD:
         DQ $+8
         ; UM*/MOD ( ud1 u1 +n2 -- ud2 +n3 )
         ; Same as M*/ but unsigned everywhere, and leaving MOD.
-        mov r8, [rbp-24]        ; most sig of ud1
         mov rax, [rbp-32]       ; least sig of ud1
+        mov r8, [rbp-24]        ; most sig of ud1
         mov r10, [rbp-16]       ; u1
         ; Compute triple-cell intermediate result in
         ; (most sig) r13, r14, r15 (least sig)
@@ -569,6 +569,7 @@ dzless:
 zless:  DQ $+8
         ; 0< (n -- true) when n < 0
         ;    (n -- false) otherwise
+        ; :todo: can we make branchless?
         mov rax, [rbp-8]
         mov rcx, -1
         test rax, rax
@@ -587,7 +588,7 @@ lessthan:
         mov rcx, [rbp-8]
         xor rdx, rdx
         cmp rax, rcx    ; V iff rax < rcx
-        setl dl
+        setl dl         ; :todo: seems super clumsy
         neg rdx
         sub rbp, 8
         mov [rbp-8], rdx
@@ -625,6 +626,7 @@ dabs:
         DQ 3
         DQ 'abs'        ; std1983
 fABS:   DQ $+8
+        ; :todo: can we make branchless?
         mov rax, [rbp-8]
         test rax, rax
         jns .pos
@@ -675,14 +677,14 @@ dumslashmod:
         DQ 'um/mod'     ; std1983
 UMslashMOD:
         DQ $+8
-        ; UM/MOD ( ud u1 -- ur uq )
+        ; UM/MOD ( ud-dividend u-divisor -- u-r u-q )
         ; Note: Double Single -> Single Single.
-        ; Divisor
-        mov rcx, [rbp-8]
-        ; Dividend, most significant.
-        mov rdx, [rbp-16]
         ; Dividend, least significant.
         mov rax, [rbp-24]
+        ; Dividend, most significant.
+        mov rdx, [rbp-16]
+        ; Divisor
+        mov rcx, [rbp-8]
 
         div rcx
 
@@ -871,14 +873,13 @@ twoSWAP:
         DQ $+8
         ; 2SWAP ( p q r s -- r s p q )
         ; Swap 2OS and 4OS
-        mov rcx, [rbp-32]
-        mov rdx, [rbp-16]
-        mov [rbp-32], rdx
-        mov [rbp-16], rcx
-        ; Swap TOS and 3OS
+        mov rax, [rbp-32]
         mov rcx, [rbp-24]
-        mov rdx, [rbp-8]
-        mov [rbp-24], rdx
+        mov rdx, [rbp-16]
+        mov rsi, [rbp-8]
+        mov [rbp-32], rdx
+        mov [rbp-24], rsi
+        mov [rbp-16], rax
         mov [rbp-8], rcx
         jmp next
         Link(d2swap)
@@ -901,9 +902,7 @@ dover:
 OVER:   DQ $+8
         ; OVER ( a b -- a b a )
         mov rax, [rbp-16]
-        mov [rbp], rax
-        add rbp, 8
-        jmp next
+        jmp pushrax
         Link(dover)
 
 d2over:
@@ -955,8 +954,8 @@ ddplusminus:
 Dplusminus:
         DQ $+8
         ; m+- (d n -- d)
-        mov rax, [rbp-8]
         mov rcx, [rbp-16]
+        mov rax, [rbp-8]
         sub rbp, 8
         ; Have operands got same sign?
         xor rax, rcx
@@ -1044,9 +1043,10 @@ dcmove:
 CMOVE:
         DQ $+8
         ; CMOVE ( from to u -- )
-cmove0: mov rcx, [rbp-8]
-        mov rdi, [rbp-16]
+cmove0:
         mov rsi, [rbp-24]
+        mov rdi, [rbp-16]
+        mov rcx, [rbp-8]
         sub rbp, 24
         mov rdx, 0
 .l:     cmp rcx, rdx
@@ -1303,15 +1303,15 @@ dsmslashmod:
 SMslashMOD:
         DQ $+8
         ; SM/MOD ( d-dividend n-divisor -- n-quotient n-remainder )
-        mov rcx, [rbp-8]
-        mov rdx, [rbp-16]
         mov rax, [rbp-24]
+        mov rdx, [rbp-16]
+        mov rcx, [rbp-8]
 
         idiv rcx
 
         sub rbp, 8
-        mov [rbp-8], rax
         mov [rbp-16], rdx
+        mov [rbp-8], rax
         jmp next
         Link(dsmslashmod)
 
