@@ -61,6 +61,7 @@ promptlen EQU $-prompt
 
 ; For creating link pointers in the dictionary.
 %define Link(a) DQ (a)-8
+%define CtoL(a) DQ (a)-24
 ; Or (using «|») into Length Field to create IMMEDIATE word.
 %define Immediate (2<<32)
 
@@ -86,7 +87,6 @@ promptlen EQU $-prompt
 STARTOFDICT:
         DQ 0    ; Link Field
 
-dsyscall3:
         DQ 8
         DQ 'syscall3'
 SYSCALL3:
@@ -103,9 +103,8 @@ SYSCALL3:
         syscall
         mov [rbp-8], rax
         jmp next
-        Link(dsyscall3)
+        CtoL(SYSCALL3)
 
-ddup:
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -115,9 +114,8 @@ pushrax:
         mov [rbp], rax
         add rbp, 8
         jmp next
-        Link(ddup)
+        CtoL(DUP)
 
-drot:
         DQ 3
         DQ 'rot'        ; std1983
 ROT:    DQ $+8
@@ -128,9 +126,8 @@ ROT:    DQ $+8
         mov [rbp-16], rax
         mov [rbp-8], rdx
         jmp next
-        Link(drot)
+        CtoL(ROT)
 
-ddepth:
         DQ 5
         DQ 'depth'      ; std1983
 DEPTH:  DQ $+8
@@ -140,9 +137,8 @@ DEPTH:  DQ $+8
         sub rax, rcx
         shr rax, 3
         jmp pushrax
-        Link(ddepth)
+        CtoL(DEPTH)
 
-dwithin:
         DQ 6
         DQ 'within'     ; std1994
 WITHIN:
@@ -156,9 +152,8 @@ WITHIN:
         DQ Rfrom
         DQ Ulessthan
         DQ EXIT
-        Link(dwithin)
+        CtoL(WITHIN)
 
-dtonumber:
         DQ 7
         DQ '>number'    ; std1994
 toNUMBER:
@@ -230,9 +225,8 @@ ASCIItoDIGIT:
         DQ DROP
         DQ TRUE
         DQ EXIT
-        Link(dtonumber)
+        CtoL(toNUMBER)
 
-dmstarslash:
         DQ 3
         DQ 'm*/'        ; std1994 double
 Mstarslash:
@@ -257,9 +251,8 @@ Mstarslash:
         DQ ROT          ; (d x)
         DQ DROP
         DQ EXIT
-        Link(dmstarslash)
+        CtoL(Mstarslash)
 
-dumstar:
         DQ 3
         DQ 'um*'
 UMstar:
@@ -269,9 +262,8 @@ UMstar:
         DQ UMstarslashMOD       ; ud u-r
         DQ DROP         ; ud
         DQ EXIT
-        Link(dumstar)
+        CtoL(UMstar)
 
-dumstarslashmod:
         DQ 7
         DQ 'um*/mod'
 UMstarslashMOD:
@@ -313,9 +305,8 @@ UMstarslashMOD:
         mov [rbp-16], r14
         mov [rbp-8], rdx
         jmp next
-        Link(dumstarslashmod)
+        CtoL(UMstarslashMOD)
 
-disatty:
         DQ 6
         DQ 'isatty'
 ISATTY:
@@ -328,9 +319,8 @@ ISATTY:
         DQ SYSCALL3
         DQ zequals      ; 0 is success; convert to true/false
         DQ EXIT
-        Link(disatty)
+        CtoL(ISATTY)
 
-dudot:
         DQ 2
         DQ 'u.'         ; std1983
 Udot:   DQ stdexe
@@ -342,7 +332,7 @@ Udot:   DQ stdexe
         DQ sharpgreater
         DQ TYPE
         DQ EXIT
-        Link(dudot)
+        CtoL(Udot)
 
 ddot:
         DQ 1
@@ -1363,7 +1353,6 @@ zgreater:
         DQ EXIT
         Link(dzgreater)
 
-doneplus:
         DQ 2
         DQ '1+'         ; std1983
 oneplus:
@@ -1371,7 +1360,7 @@ oneplus:
         DQ LIT, 1
         DQ PLUS
         DQ EXIT
-        Link(doneplus)
+        CtoL(oneplus)
 
 dtwoplus:
         DQ 2
