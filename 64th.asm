@@ -333,7 +333,6 @@ Udot:   DQ stdexe
         DQ EXIT
         CtoL(Udot)
 
-ddot:
         DQ 1
         DQ '.'          ; std1983
 dot:    DQ stdexe
@@ -351,7 +350,6 @@ dot:    DQ stdexe
         DQ EXIT
         CtoL(dot)
 
-dddot:
         DQ 2
         DQ 'd.'         ; std1994
 Ddot:   DQ stdexe
@@ -371,21 +369,18 @@ Ddot:   DQ stdexe
         DQ EXIT
         CtoL(Ddot)
 
-dbase:
         DQ 4
         DQ 'base'       ; std1983
 BASE:   DQ stdvar
 abase:  DQ 10
         CtoL(BASE)
 
-dpic:
         DQ 3
         DQ 'pic'
 PIC:    DQ stdvar
         DQ 0
         CtoL(PIC)
 
-dlesssharp:
         DQ 2
         DQ '<#'         ; std1983
 lesssharp:
@@ -396,7 +391,6 @@ lesssharp:
         DQ EXIT
         CtoL(lesssharp)
 
-dsharp:
         DQ 1
         DQ '#'          ; std1983
 sharp:  DQ stdexe
@@ -410,7 +404,6 @@ sharp:  DQ stdexe
         DQ EXIT
         CtoL(sharp)
 
-dhold:
         DQ 4
         DQ 'hold'       ; std1983
 HOLD:   DQ stdexe
@@ -425,7 +418,6 @@ HOLD:   DQ stdexe
         DQ EXIT
         CtoL(HOLD)
 
-dsharpgreater:
         DQ 2
         DQ '#>'         ; std1983
 sharpgreater:
@@ -441,7 +433,6 @@ sharpgreater:
         DQ EXIT
         CtoL(sharpgreater)
 
-dsharps:
         DQ 2
         DQ '#s'         ; std1983
 sharpS:
@@ -456,7 +447,6 @@ sharpS:
         DQ EXIT
         CtoL(sharpS)
 
-dsign:
         DQ 4
         DQ 'sign'       ; std1983
 SIGN:   DQ stdexe
@@ -468,7 +458,6 @@ SIGN:   DQ stdexe
 .pos:   DQ EXIT
         CtoL(SIGN)
 
-ddigit:
         DQ 5
         DQ 'digit'
 DIGIT:  DQ stdexe
@@ -488,7 +477,6 @@ DIGIT:  DQ stdexe
         DQ EXIT
         CtoL(DIGIT)
 
-dbl:
         DQ 2
         DQ 'bl'         ; std1994
 fBL:    DQ stdexe
@@ -496,7 +484,6 @@ fBL:    DQ stdexe
         DQ EXIT
         CtoL(fBL)
 
-dtype:
         DQ 4
         DQ 'type'       ; std1983
 TYPE:   DQ stdexe
@@ -510,7 +497,6 @@ TYPE:   DQ stdexe
         DQ EXIT
         CtoL(TYPE)
 
-dcount:
         DQ 5
         DQ 'count'      ; std1983 - modified
 COUNT:  DQ stdexe
@@ -523,7 +509,6 @@ COUNT:  DQ stdexe
         DQ EXIT
         CtoL(COUNT)
 
-dequals:
         DQ 1
         DQ '='          ; std1983
 equals: DQ $+8
@@ -537,7 +522,6 @@ equals: DQ $+8
         jmp next
         CtoL(equals)
 
-dzequals:
         DQ 2
         DQ '0='         ; std1983
 zequals:
@@ -552,7 +536,6 @@ zequals:
         jmp next
         CtoL(zequals)
 
-dzless:
         DQ 2
         DQ '0<'         ; std1983
 zless:  DQ $+8
@@ -567,7 +550,6 @@ zless:  DQ $+8
         jmp next
         CtoL(zless)
 
-dlessthan:
         DQ 1
         DQ '<'          ; std1983
 lessthan:
@@ -583,7 +565,6 @@ lessthan:
         jmp next
         CtoL(lessthan)
 
-dulessthan:
         DQ 2
         DQ 'u<'
 Ulessthan:
@@ -599,7 +580,6 @@ Ulessthan:
         jmp next
         CtoL(Ulessthan)
 
-dnegate:
         DQ 6
         DQ 'negate'     ; std1983
 NEGATE:
@@ -610,7 +590,6 @@ NEGATE:
         jmp next
         CtoL(NEGATE)
 
-dabs:
         DQ 3
         DQ 'abs'        ; std1983
 fABS:   DQ $+8
@@ -627,7 +606,6 @@ fABS:   DQ $+8
         jmp next
         CtoL(fABS)
 
-dplus:
         DQ 1
         DQ '+'          ; std1983
 PLUS:   DQ $+8
@@ -640,7 +618,6 @@ PLUS:   DQ $+8
         jmp next
         CtoL(PLUS)
 
-dminus:
         DQ 1
         DQ '-'          ; std1983
 MINUS:  DQ $+8
@@ -653,7 +630,6 @@ MINUS:  DQ $+8
         jmp next
         CtoL(MINUS)
 
-doneminus:
         DQ 2
         DQ '1-'         ; std1983
 oneminus:
@@ -664,7 +640,6 @@ oneminus:
         jmp next
         CtoL(oneminus)
 
-dumslashmod:
         DQ 6
         DQ 'um/mod'     ; std1983
 UMslashMOD:
@@ -688,7 +663,6 @@ UMslashMOD:
         jmp next
         CtoL(UMslashMOD)
 
-ddplus:
         DQ 2
         DQ 'd+'         ; std1983
 Dplus:  DQ $+8
@@ -705,7 +679,6 @@ Dplus:  DQ $+8
         jmp next
         CtoL(Dplus)
 
-dtrue:
         DQ 4
         DQ 'true'       ; std1994
 TRUE:   DQ stdexe
@@ -713,7 +686,6 @@ TRUE:   DQ stdexe
         DQ EXIT
         CtoL(TRUE)
 
-dfalse:
         DQ 5
         DQ 'false'      ; std1994
 FALSE:  DQ stdexe
@@ -721,7 +693,6 @@ FALSE:  DQ stdexe
         DQ EXIT
         CtoL(FALSE)
 
-dor:
         DQ 2
         DQ 'or'         ; std1983
 OR:     DQ $+8
@@ -734,7 +705,6 @@ OR:     DQ $+8
         jmp next
         CtoL(OR)
 
-dand:
         DQ 3
         DQ 'and'        ; std1983
 AND:    DQ $+8
@@ -747,7 +717,6 @@ AND:    DQ $+8
         jmp next
         CtoL(AND)
 
-dxor:
         DQ 3
         DQ 'xor'        ; std1983
 XOR:    DQ $+8
@@ -760,14 +729,12 @@ XOR:    DQ $+8
         jmp next
         CtoL(XOR)
 
-dcp:
         DQ 2
         DQ 'cp'
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
         CtoL(CP)
 
-dhere:
         DQ 4
         DQ 'here'       ; std1983
 HERE:   DQ stdexe
@@ -776,14 +743,12 @@ HERE:   DQ stdexe
         DQ EXIT
         CtoL(HERE)
 
-dtoin:
         DQ 3
         DQ '>in'        ; std1983
 toIN:   DQ stdvar
 atoIN:  DQ 0
         CtoL(toIN)
 
-dsource:
         DQ 6
         DQ 'source'     ; std1994
 SOURCE:
@@ -796,7 +761,6 @@ SOURCE:
         DQ EXIT
         CtoL(SOURCE)
 
-dstore:
         DQ 1
         DQ '!'          ; std1983
 store:  DQ $+8
@@ -808,7 +772,6 @@ store0: ; ! ( w addr -- )
         jmp next
         CtoL(store)
 
-dfetch:
         DQ 1
         DQ '@'          ; std1983
 fetch:  DQ $+8
@@ -819,7 +782,6 @@ fetch:  DQ $+8
         jmp next
         CtoL(fetch)
 
-dcfetch:
         DQ 2
         DQ 'c@'         ; std1983
 Cfetch: DQ $+8
@@ -831,7 +793,6 @@ Cfetch: DQ $+8
         jmp next
         CtoL(Cfetch)
 
-dplusstore:
         DQ 2
         DQ '+!'         ; std1983
 plusstore:
@@ -846,7 +807,6 @@ plusstore:
         DQ EXIT
         CtoL(plusstore)
 
-dswap:
         DQ 4
         DQ 'swap'       ; std1983
 SWAP:   DQ $+8
@@ -876,7 +836,6 @@ twoSWAP:
         jmp next
         CtoL(twoSWAP)
 
-dqdup:
         DQ 4
         DQ '?dup'       ; std1983
 qDUP:   DQ $+8
@@ -888,7 +847,6 @@ qDUP:   DQ $+8
         jmp pushrax
         CtoL(qDUP)
 
-dover:
         DQ 4
         DQ 'over'       ; std1983
 OVER:   DQ $+8
@@ -932,7 +890,6 @@ twoROT:
         jmp next
         CtoL(twoROT)
 
-ddtos:
         DQ 3
         DQ 'd>s'        ; std1994 double
 DtoS:   DQ stdexe
@@ -940,7 +897,6 @@ DtoS:   DQ stdexe
         DQ EXIT
         CtoL(DtoS)
 
-ddplusminus:
         DQ 3
         DQ 'd+-'        ; acornsoft
 Dplusminus:
@@ -966,7 +922,6 @@ Dplusminus:
 .x:     jmp next
         CtoL(Dplusminus)
 
-ddabs:
         DQ 4
         DQ 'dabs'       ; std1994 double
 DABS:   DQ stdexe
@@ -976,7 +931,6 @@ DABS:   DQ stdexe
         DQ EXIT
         CtoL(DABS)
 
-ddrop:
         DQ 4
         DQ 'drop'       ; std1983
 DROP:   DQ $+8
@@ -985,7 +939,6 @@ DROP:   DQ $+8
         jmp next
         CtoL(DROP)
 
-dnip:
         DQ 3
         DQ 'nip'        ; std1994 core-ext
 NIP:    DQ $+8
@@ -996,7 +949,6 @@ NIP:    DQ $+8
         jmp next
         CtoL(NIP)
 
-dallot:
         DQ 5
         DQ 'allot'      ; std1983
 ALLOT:  DQ stdexe
@@ -1006,7 +958,6 @@ ALLOT:  DQ stdexe
         DQ EXIT
         CtoL(ALLOT)
 
-dcomma:
         DQ 1
         DQ ','          ; std1983
 comma:  DQ stdexe
@@ -1018,7 +969,6 @@ comma:  DQ stdexe
         DQ EXIT
         CtoL(comma)
 
-dliteral:
         DQ 7 | Immediate
         DQ 'literal'    ; std1983
 LITERAL:
@@ -1029,7 +979,6 @@ LITERAL:
         DQ EXIT
         CtoL(LITERAL)
 
-dcmove:
         DQ 5
         DQ 'cmove'      ; std1983
 CMOVE:
@@ -1049,7 +998,6 @@ cmove0:
         jmp .l
         CtoL(CMOVE)
 
-dmin:
         DQ 3
         DQ 'min'        ; std1983
 MIN:
@@ -1065,7 +1013,6 @@ MIN:
         DQ EXIT
         CtoL(MIN)
 
-dcreate:
         DQ 6
         DQ 'create'     ; std1983
 CREATE: DQ stdexe
@@ -1101,7 +1048,6 @@ CREATE: DQ stdexe
         DQ EXIT
         CtoL(CREATE)
 
-dtobody:
         DQ 5
         DQ '>body'      ; std1983
 toBODY: DQ stdexe
@@ -1110,7 +1056,6 @@ toBODY: DQ stdexe
         DQ EXIT
         CtoL(toBODY)
 
-dfrombody:
         DQ 5
         DQ 'body>'      ; std1983[harris]
 fromBODY:
@@ -1120,17 +1065,16 @@ fromBODY:
         DQ EXIT
         CtoL(fromBODY)
 
-dfromname:
+nffromNAME:
         DQ 5
         DQ '>name'      ; std1983[harris]
 fromNAME:
         DQ stdexe
-        DQ LIT, (fromNAME-dfromname)    ; 16, basically
+        DQ LIT, (fromNAME-nffromNAME)   ; 16, basically
         DQ PLUS
         DQ EXIT
         CtoL(fromNAME)
 
-dstate:
         DQ 5
         DQ 'state'      ; std1983
 STATE:  DQ stdvar
@@ -1138,7 +1082,6 @@ stateaddr:
         DQ 0
         CtoL(STATE)
 
-dket:
         DQ 1
         DQ ']'          ; std1983
 ket:    DQ stdexe
@@ -1148,7 +1091,6 @@ ket:    DQ stdexe
         DQ EXIT
         CtoL(ket)
 
-dcolon:
         DQ 1
         DQ ':'          ; std1983
 colon:  DQ stdexe
@@ -1161,7 +1103,6 @@ colon:  DQ stdexe
         DQ EXIT
         CtoL(colon)
 
-dsemicolon:
         DQ 1 | Immediate
         DQ ';'          ; std1983
 semicolon:
@@ -1175,7 +1116,6 @@ semicolon:
         DQ EXIT
         CtoL(semicolon)
 
-dexit:
         DQ 4
         DQ 'exit'       ; std1983
 EXIT:   DQ $+8
@@ -1184,7 +1124,6 @@ EXIT:   DQ $+8
         jmp next
         CtoL(EXIT)
 
-dtor:
         DQ 2
         DQ '>r'         ; std1983
 toR:    DQ $+8
@@ -1195,7 +1134,6 @@ toR:    DQ $+8
         jmp next
         CtoL(toR)
 
-drfrom:
         DQ 2
         DQ 'r>'         ; std1983
 Rfrom:  DQ $+8
@@ -1204,7 +1142,6 @@ Rfrom:  DQ $+8
         jmp pushrax
         CtoL(Rfrom)
 
-drfetch:
         DQ 2
         DQ 'r@'         ; std1983
 Rfetch: DQ $+8
@@ -1212,7 +1149,6 @@ Rfetch: DQ $+8
         jmp pushrax
         CtoL(Rfetch)
 
-dfindword:
         DQ 8
         DQ 'findword'
 FINDWORD:
@@ -1277,19 +1213,16 @@ FINDWORD:
         jmp next
         CtoL(FINDWORD)
 
-dquit:
         DQ 4
         DQ 'quit'       ; std1983
 QUIT:   DQ reset
         CtoL(QUIT)
 
-dabort:
         DQ 5
         DQ 'abort'      ; std1983
 ABORT:  DQ dreset
         CtoL(ABORT)
 
-dsmslashrem:
         DQ 6
         DQ 'sm/rem'     ; std1994
 SMslashREM:
@@ -1307,7 +1240,6 @@ SMslashREM:
         jmp next
         CtoL(SMslashREM)
 
-dz:
         DQ 1
         DQ '0'
 z:      DQ stdexe
@@ -1315,7 +1247,6 @@ z:      DQ stdexe
         DQ EXIT
         CtoL(z)
 
-dstod:
         DQ 3
         DQ 's>d'        ; std1994
 StoD:   DQ stdexe
@@ -1328,7 +1259,6 @@ StoD:   DQ stdexe
         DQ EXIT
         CtoL(StoD)
 
-dtimes:
         DQ 1
         DQ '*'          ; std1983
 ftimes: DQ stdexe
@@ -1341,7 +1271,6 @@ ftimes: DQ stdexe
         DQ EXIT
         CtoL(ftimes)
 
-dzgreater:
         DQ 2
         DQ '0>'         ; std1983
 zgreater:
@@ -1361,7 +1290,6 @@ oneplus:
         DQ EXIT
         CtoL(oneplus)
 
-dtwoplus:
         DQ 2
         DQ '2+'         ; std1983
 twoplus:
@@ -1371,7 +1299,6 @@ twoplus:
         DQ EXIT
         CtoL(twoplus)
 
-dtwominus:
         DQ 2
         DQ '2-'         ; std1983
 twominus:
@@ -1381,7 +1308,6 @@ twominus:
         DQ EXIT
         CtoL(twominus)
 
-dgreaterthan:
         DQ 1
         DQ '>'          ; std1983
 greaterthan:
@@ -1391,7 +1317,6 @@ greaterthan:
         DQ EXIT
         CtoL(greaterthan)
 
-dimmediate:
         DQ 9
         DQ 'immediat'   ; std1983
 IMMEDIATE:
@@ -1407,7 +1332,6 @@ IMMEDIATE:
         DQ EXIT
         CtoL(IMMEDIATE)
 
-dlast:
         DQ 4
         DQ 'last'       ; Acornsoft
 LAST:   DQ stdexe
@@ -1418,7 +1342,6 @@ LAST:   DQ stdexe
         DQ EXIT
         CtoL(LAST)
 
-dcells:
         DQ 5
         DQ 'cells'      ; std1994
 CELLS:  DQ stdexe
@@ -1427,7 +1350,6 @@ CELLS:  DQ stdexe
         DQ EXIT
         CtoL(CELLS)
 
-dcellplus:
         DQ 5
         DQ 'cell+'      ; std1994
 CELLplus:
@@ -1438,7 +1360,6 @@ CELLplus:
         DQ EXIT
         CtoL(CELLplus)
 
-dif:
         DQ 2 | Immediate
         DQ 'if'         ; std1983
 IF:
@@ -1452,7 +1373,6 @@ IF:
         DQ EXIT
         CtoL(IF)
 
-delse:
         DQ 4 | Immediate
         DQ 'else'       ; std1983
 fELSE:
@@ -1472,7 +1392,6 @@ fELSE:
         DQ EXIT
         CtoL(fELSE)
 
-dbegin:
         DQ 5 | Immediate
         DQ 'begin'      ; std1983
 BEGIN:
@@ -1483,7 +1402,6 @@ BEGIN:
         DQ EXIT
         CtoL(BEGIN)
 
-duntil:
         DQ 5 | Immediate
         DQ 'until'      ; std1983
 UNTIL:
@@ -1498,7 +1416,6 @@ UNTIL:
         DQ EXIT
         CtoL(UNTIL)
 
-dwhile:
         DQ 5 | Immediate
         DQ 'while'      ; std1983
 WHILE:
@@ -1514,7 +1431,6 @@ WHILE:
         DQ EXIT
         CtoL(WHILE)
 
-drepeat:
         DQ 6 | Immediate
         DQ 'repeat'     ; std1983
 REPEAT:
@@ -1536,7 +1452,6 @@ REPEAT:
         DQ EXIT
         CtoL(REPEAT)
 
-daligned:
         DQ 7
         DQ 'aligned'    ; std1994
 ALIGNED:
@@ -1549,7 +1464,6 @@ ALIGNED:
         DQ EXIT
         CtoL(ALIGNED)
 
-dsquote:
         DQ 2 | Immediate
         DQ 's"'         ; std1994
 Squote:
@@ -1586,7 +1500,6 @@ Squote:
         DQ EXIT
         CtoL(Squote)
 
-dabortquote:
         DQ 6 | Immediate
         DQ 'abort"'     ; std1983
 ABORTquote:
@@ -1609,7 +1522,6 @@ ABORTquote:
         DQ EXIT
         CtoL(ABORTquote)
 
-dnotequals:
         DQ 2
         DQ '<>'         ; std1994
 notequals:
@@ -1622,7 +1534,6 @@ notequals:
         DQ EXIT
         CtoL(notequals)
 
-dchar:
         DQ 4
         DQ 'char'       ; std1994
 CHAR:
@@ -1633,7 +1544,6 @@ CHAR:
         DQ EXIT
         CtoL(CHAR)
 
-dparse:
         DQ 5
         DQ 'parse'      ; std1994
 PARSE:
@@ -1681,7 +1591,6 @@ PARSE:
         DQ EXIT
         CtoL(PARSE)
 
-dparseword:
         DQ 10
         DQ 'parse-wo'
 PARSEWORD:
@@ -1692,7 +1601,6 @@ PARSEWORD:
         DQ EXIT
         CtoL(PARSEWORD)
 
-dskip:
         DQ 4
         DQ 'skip'
 SKIP:
@@ -1730,7 +1638,6 @@ SKIP:
         DQ EXIT
         CtoL(SKIP)
 
-dinvert:
         DQ 6
         DQ 'invert'
 INVERT:
@@ -1740,7 +1647,6 @@ INVERT:
         DQ EXIT
         CtoL(INVERT)
 
-dfind:
         DQ 4
         DQ 'find'
 FIND:
@@ -1758,7 +1664,6 @@ FIND:
         DQ EXIT
         CtoL(FIND)
 
-devaluate:
         DQ 8
         DQ 'evaluate'
 EVALUATE:
@@ -1798,7 +1703,6 @@ EVALUATE:
         DQ EXIT
         CtoL(EVALUATE)
 
-duseless:
         DQ 7
         DQ 'useless'
 USELESS:
