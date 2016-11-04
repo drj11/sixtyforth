@@ -625,12 +625,16 @@ dabs:
         DQ 3
         DQ 'abs'        ; std1983
 fABS:   DQ $+8
-        ; :todo: can we make branchless?
         mov rax, [rbp-8]
-        test rax, rax
-        jns .pos
-        neg rax
-.pos:   mov [rbp-8], rax
+        ; Convert carry flag to Forth boolean in rcx
+        mov rcx, rax
+        shl rcx, 1
+        sbb rcx, rcx
+        ; rcx is now 0 or -1
+        ; If rcx is -1, negate the old-school way.
+        xor rax, rcx
+        sub rax, rcx
+        mov [rbp-8], rax
         jmp next
         Link(dabs)
 
