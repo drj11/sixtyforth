@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-../64th}
-out=$(echo '4 s>d 3 sm/mod . .
--4 s>d 3 sm/mod . .
-4 s>d -3 sm/mod . .
--4 s>d -3 sm/mod . .'| $FORTH)
+out=$(echo '4 s>d 3 sm/rem . .
+-4 s>d 3 sm/rem . .
+4 s>d -3 sm/rem . .
+-4 s>d -3 sm/rem . .'| $FORTH)
 printf "%s\n" "$out"
 case $out in
     ('1 1 -1 -1 -1 1 1 -1 ') exit 0;;

@@ -1297,10 +1297,10 @@ dabort:
 ABORT:  DQ dreset
         Link(dabort)
 
-dsmslashmod:
+dsmslashrem:
         DQ 6
-        DQ 'sm/mod'
-SMslashMOD:
+        DQ 'sm/rem'     ; std1994
+SMslashREM:
         DQ $+8
         ; SM/MOD ( d-dividend n-divisor -- n-quotient n-remainder )
         mov rax, [rbp-24]
@@ -1313,7 +1313,7 @@ SMslashMOD:
         mov [rbp-16], rdx
         mov [rbp-8], rax
         jmp next
-        Link(dsmslashmod)
+        Link(dsmslashrem)
 
 dz:
         DQ 1
