@@ -569,13 +569,12 @@ dzless:
 zless:  DQ $+8
         ; 0< (n -- true) when n < 0
         ;    (n -- false) otherwise
-        ; :todo: can we make branchless?
         mov rax, [rbp-8]
-        mov rcx, -1
-        test rax, rax
-        js .sk
-        add rcx, 1
-.sk:    mov [rbp-8], rcx
+        ; Shift sign bit into carry flag.
+        shl rax, 1
+        ; Convert carry flag to Forth boolean.
+        sbb rax, rax
+        mov [rbp-8], rax
         jmp next
         Link(dzless)
 
