@@ -182,7 +182,7 @@ NIP     i
 PARSE   i
 S"      i
 S>D     i
-SM/MOD  i
+SM/REM  i
 TRUE    i
 WITHIN  i
 [CHAR]  i
