@@ -95,7 +95,7 @@ UPDATE
 #S      i
 #TIB    x
 '       i
-(
+(       i
 -TRAILING
 .       i
 .(      i

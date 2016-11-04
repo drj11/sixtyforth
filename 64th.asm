@@ -2222,4 +2222,7 @@ rcstring:
         DB ": [char] char [compile] literal ; immediate "
         DB ': .( [char] ) parse type ; immediate '
 
+        ; (             std1983
+        DB ': ( [char] ) parse drop drop ; immediate '
+
 rclength EQU $ - rcstring
