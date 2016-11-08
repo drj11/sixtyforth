@@ -1048,6 +1048,39 @@ CREATE: DQ stdexe
         DQ EXIT
         CtoL(CREATE)
 
+        DQ 8
+        DQ 'codedoes'
+CODEDOES:
+        DQ stdexe
+        ; CODEDOES ( -- addr n )
+        ; (used internally by DOES>)
+        ; Push the string that is the machine code
+        ; that is pointed to by the CFA
+        ; of the word that DOES> changes.
+        DQ LIT, doestarget
+        DQ LIT, doestargetlen
+        DQ EXIT
+doestarget:
+        jmp [.n+0]
+.n:
+        DQ pushparam
+doestargetlen EQU $ - doestarget
+
+pushparam:
+        ; Push the parameter field onto the stack.
+        ; This machine code is executed by
+        ; words that have been modified by DOES>.
+        ; And it is reached via
+        ; the absolute relocatable sequence `doestarget`.
+        ; It transfers control to the threaded code following
+        ; the call to this code.
+        add rdx, 8
+        mov [rbp], rdx
+        add rbp, 8
+        lea rbx, [rax+doestargetlen]
+        jmp next
+        CtoL(CODEDOES)
+
         DQ 5
         DQ '>body'      ; std1983
 toBODY: DQ stdexe
@@ -2202,6 +2235,7 @@ RUNRC:
         DQ EVALUATE
         DQ EXIT
 
+
 rcstring:
         DB ': 2drop drop drop ; '
         ; THEN          std1983
@@ -2224,5 +2258,20 @@ rcstring:
 
         ; (             std1983
         DB ': ( [char] ) parse drop drop ; immediate '
+
+        ; COMPILE       std1983
+        ; Using the definition in [FORTH1994] A.6.1.2033
+        DB ': compile r> dup @ , cell+ >r ; '
+
+        ; (fix-cfa)
+        ; Adjusts the CFA of the last defined word
+        ; (to point to address following (does) in the calling word);
+        ; and terminate excution of calling word.
+        DB ': (fix-cfa) r> last name> ! ; '
+        ; DOES>         std1983
+        DB ': does> compile (fix-cfa) codedoes '; addr n
+        DB 'here over allot '                   ; from n to
+        DB 'swap cmove ; immediate '
+
 
 rclength EQU $ - rcstring
