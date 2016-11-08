@@ -1067,7 +1067,7 @@ fromBODY:
 
 nffromNAME:
         DQ 5
-        DQ '>name'      ; std1983[harris]
+        DQ 'name>'      ; std1983[harris]
 fromNAME:
         DQ stdexe
         DQ LIT, (fromNAME-nffromNAME)   ; 16, basically
