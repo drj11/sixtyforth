@@ -1954,7 +1954,7 @@ stdvar:
 
 EXECUTE:
         DQ $+8          ; std1983
-        ; addr --
+        ; EXECUTE ( addr -- )
         ; execute the Forth word that has compilation address `addr`
         sub rbp, 8
         mov rdx, [rbp]
