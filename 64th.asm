@@ -2265,7 +2265,8 @@ rcstring:
 
         ; (fix-cfa)
         ; Adjusts the CFA of the last defined word
-        ; (to point to address following (does) in the calling word);
+        ; (to point to address following call to this word
+        ; in the calling word);
         ; and terminate excution of calling word.
         DB ': (fix-cfa) r> last name> ! ; '
         ; DOES>         std1983
