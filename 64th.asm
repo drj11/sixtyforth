@@ -1680,6 +1680,17 @@ INVERT:
         DQ EXIT
         CtoL(INVERT)
 
+        DQ 3
+        DQ 'bic'
+BIC:
+        DQ stdexe
+        ; BIt Clear (name from Alpha Architecture)
+        ; BIC ( na nb -- nc )
+        DQ INVERT
+        DQ AND
+        DQ EXIT
+        CtoL(BIC)
+
         DQ 4
         DQ 'find'
 FIND:

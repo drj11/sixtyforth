@@ -1,0 +1,9 @@
+#!/bin/sh
+# Non-standard word
+FORTH=${FORTH:-../64th}
+out=$(echo '22 7 bic . 49 -4 bic .' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("16 1 ") exit 0;;
+esac
+exit 2
