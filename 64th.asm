@@ -1490,10 +1490,10 @@ REPEAT:
 ALIGNED:
         DQ stdexe
         ; ALIGNED ( addr -- a-addr )
-        DQ oneminus
         DQ LIT, 7
-        DQ OR
-        DQ oneplus
+        DQ PLUS
+        DQ LIT, 7
+        DQ BIC
         DQ EXIT
         CtoL(ALIGNED)
 
