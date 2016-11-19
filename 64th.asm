@@ -198,11 +198,7 @@ ASCIItoDIGIT:
         DQ .then - $
         DQ LIT, '0'
         DQ MINUS        ; c-addr u c
-        DQ ROT          ; u c c-addr
-        DQ oneplus      ; u c c-addr
-        DQ ROT          ; c c-addr u
-        DQ oneminus     ; c c-addr u
-        DQ ROT          ; c-addr u c
+        DQ digitadvance
         DQ EXIT
 .then:
         DQ LIT, 'A'-10  ; c-addr u c 'A'
@@ -214,15 +210,21 @@ ASCIItoDIGIT:
         DQ WITHIN       ; c-addr u c bf
         DQ ZEROBRANCH
         DQ .then2 - $
+        DQ digitadvance
+        DQ EXIT
+.then2:
+        DQ DROP
+        DQ TRUE
+        DQ EXIT
+digitadvance:
+        DQ stdexe
+        ; Factor of ASCIItoDIGIT
+        ; ( c-addr u c -- c-addr+1 u-1 c )
         DQ ROT          ; u c c-addr
         DQ oneplus      ; u c c-addr
         DQ ROT          ; c c-addr u
         DQ oneminus     ; c c-addr u
         DQ ROT          ; c-addr u c
-        DQ EXIT
-.then2:
-        DQ DROP
-        DQ TRUE
         DQ EXIT
         CtoL(toNUMBER)
 
