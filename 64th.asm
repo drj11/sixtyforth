@@ -313,8 +313,9 @@ UMstarslashMOD:
 ISATTY:
         DQ stdexe
         ; ISATTY ( u-fd -- flag )
-        ; True if file descriptor u-fd refers to a TTY.
-        DQ LIT, 0x5401  ; TCGETS
+        ;   True if file descriptor u-fd refers to a TTY.
+        ; TCGETS according to /usr/include/asm-generic/ioctls.h
+        DQ LIT, 0x5401
         DQ HERE         ; dummy buffer
         DQ LIT, 16      ; syscall 16 is ioctl
         DQ SYSCALL3
