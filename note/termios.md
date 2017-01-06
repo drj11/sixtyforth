@@ -23,6 +23,12 @@ the pointer is a pointer to `struct termios`.
 However, in the `ioctl` system call,
 the pointer is a pointer to `struct __kernel_termios`.
 
+## Empirical evidence
+
+`ioctl(fd, 0x5401, p)` overwrites 36 bytes of memory.
+Which I guess (from `tcgetattr` man page)
+is 4 4-byte words and 20 1-byte characters.
+
 ## Structure conversion
 
 The documentated termios interfaces
