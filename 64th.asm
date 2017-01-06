@@ -1001,6 +1001,24 @@ cmove0:
         jmp .l
         CtoL(CMOVE)
 
+        DQ 4
+        DQ 'fill'       ; std1983
+FILL:
+        DQ $+8
+        ; FILL ( c-addr u char -- )
+        mov rdi, [rbp-24]
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
+        sub rbp, 24
+        mov rdx, 0
+.l:
+        cmp rcx, rdx
+        jz next
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        CtoL(FILL)
+
         DQ 3
         DQ 'min'        ; std1983
 MIN:

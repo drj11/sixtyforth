@@ -1,0 +1,17 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+out=$(echo '
+here
+16 allot
+dup 16 99 fill
+dup 12 33 fill
+dup c@ .
+dup 11 + c@ .
+dup 12 + c@ .
+dup 15 + c@ .
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("33 33 99 99 ") exit 0;;
+esac
+exit 2
