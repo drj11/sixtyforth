@@ -308,6 +308,54 @@ UMstarslashMOD:
         jmp next
         CtoL(UMstarslashMOD)
 
+        DQ 3
+        DQ '.x2'
+dotx2:
+        DQ stdexe
+        ; .x2 ( u -- ) print 2 hex digits
+        DQ BASE
+        DQ fetch
+        DQ SWAP         ; base u
+        DQ LIT, 16
+        DQ BASE
+        DQ store
+        DQ z
+        DQ lesssharp
+        DQ fBL
+        DQ HOLD
+        DQ sharp, sharp
+        DQ sharpgreater
+        DQ TYPE
+        DQ BASE
+        DQ store
+        DQ EXIT
+        CtoL(dotx2)
+
+        DQ 4
+        DQ 'dump'
+DUMP:
+        DQ stdexe
+        ; DUMP ( addr u -- )
+        DQ OVER         ; addr u addr
+        DQ PLUS         ; addr limit
+.l:
+        DQ OVER, OVER
+        DQ Ulessthan    ; addr limit bf
+        DQ ZEROBRANCH
+        DQ (.x-$)
+        DQ OVER         ; addr limit addr
+        DQ Cfetch
+        DQ dotx2
+        DQ SWAP         ; limit addr
+        DQ oneplus
+        DQ SWAP         ; addr+1 limit
+        DQ BRANCH
+        DQ -($-.l)
+.x:
+        DQ DROP, DROP
+        DQ EXIT
+        CtoL(DUMP)
+
         DQ 6
         DQ 'tcgets'
 TCGETS:
@@ -320,6 +368,21 @@ TCGETS:
         DQ SYSCALL3     ; res
         DQ EXIT
         CtoL(TCGETS)
+
+        DQ 7
+        DQ 'tcgets.'
+TCGETSdot:
+        DQ stdexe
+        ; TCGETS. ( fd -- res ) printout
+        DQ LIT, .b      ; fd p
+        DQ TCGETS
+        DQ LIT, .b      ; res p
+        DQ LIT, 36      ; res p u
+        DQ DUMP         ; res
+        DQ EXIT
+.b:
+        TIMES 36 DB '@'
+        CtoL(TCGETSdot)
 
         DQ 6
         DQ 'isatty'
