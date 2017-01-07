@@ -369,6 +369,40 @@ TCGETS:
         DQ EXIT
         CtoL(TCGETS)
 
+        DQ 3
+        DQ '@.8'
+fetchdot8:
+        DQ stdexe
+        ; @.8 ( addr -- )
+        ; print 8 hex digits from word at addr
+        DQ fetch
+        DQ LIT, 0xffffffff
+        DQ AND          ; qw
+        DQ BASE
+        DQ fetch
+        DQ SWAP         ; r qw
+        DQ LIT, 16
+        DQ BASE
+        DQ store
+        DQ z
+        DQ lesssharp
+        DQ fBL
+        DQ HOLD
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharp
+        DQ sharpgreater
+        DQ TYPE
+        DQ BASE
+        DQ store
+        DQ EXIT
+        CtoL(fetchdot8)
+
         DQ 7
         DQ 'tcgets.'
 TCGETSdot:
@@ -377,7 +411,15 @@ TCGETSdot:
         DQ LIT, .b      ; fd p
         DQ TCGETS
         DQ LIT, .b      ; res p
-        DQ LIT, 36      ; res p u
+        DQ fetchdot8
+        DQ LIT, .b + 4  ; res p
+        DQ fetchdot8
+        DQ LIT, .b + 8  ; res p
+        DQ fetchdot8
+        DQ LIT, .b + 12 ; res p
+        DQ fetchdot8
+        DQ LIT, .b + 16 ; res p
+        DQ LIT, 20      ; res p u
         DQ DUMP         ; res
         DQ EXIT
 .b:
