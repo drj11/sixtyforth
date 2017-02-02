@@ -20,6 +20,8 @@ wordbuf RESB 8192
 stack   RESB 100000
 returnstack       RESB 100000
 
+emitbuf RESB 1
+
 
 SECTION .data
 
@@ -616,6 +618,29 @@ TYPE:   DQ stdexe
         DQ EXIT
         CtoL(TYPE)
 
+        DQ 4
+        DQ 'emit'       ; std1994
+EMIT:
+        DQ stdexe
+        ; EMIT ( ch -- )
+        DQ LIT, emitbuf ; ch addr
+        DQ Cstore
+        DQ LIT, emitbuf ; addr
+        DQ LIT, 1       ; addr n
+        DQ TYPE
+        DQ EXIT
+        CtoL(EMIT)
+
+        DQ 2
+        DQ 'cr'         ; std1994
+CR:
+        DQ stdexe
+        ; CR ( -- )
+        DQ LIT, 10      ; POSIX
+        DQ EMIT
+        DQ EXIT
+        CtoL(CR)
+
         DQ 5
         DQ 'count'      ; std1983 - modified
 COUNT:  DQ stdexe
@@ -890,6 +915,18 @@ store0: ; ! ( w addr -- )
         mov [rcx], rax
         jmp next
         CtoL(store)
+
+        DQ 2
+        DQ 'c!'         ; std1994
+Cstore:
+        DQ $+8
+        ; C! ( ch buf -- )
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        sub rbp, 16
+        mov [rdx], al
+        jmp next
+        CtoL(Cstore)
 
         DQ 1
         DQ '@'          ; std1983
@@ -2171,14 +2208,6 @@ BRANCH: DQ $+8
         ; branch by adding offset to current CODEPOINTER.
         mov rcx, [rbx]
         lea rbx, [rbx + rcx]
-        jmp next
-
-Cstore: DQ $+8
-        ; C! ( ch buf -- )
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        sub rbp, 16
-        mov [rdx], al
         jmp next
 
 COPYDOWN:
