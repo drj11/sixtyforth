@@ -13,7 +13,7 @@ a FORTH-like language.
 The major departure is that a cell is not 16 bits wide,
 but 64 bits wide.
 A further departure is that _counted strings_
-do not being with
+do not begin with
 a byte length, but with
 a 64-bit length.
 `count` is suitably modified for this convention.
