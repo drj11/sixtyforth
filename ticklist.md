@@ -75,8 +75,8 @@ XOR     i
 
 BLOCK
 BUFFER
-CR
-EMIT
+CR      i
+EMIT    i
 EXPECT
 FLUSH
 KEY
