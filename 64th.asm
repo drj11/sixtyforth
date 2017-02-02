@@ -420,6 +420,7 @@ TCGETSdot:
         DQ fetchdot8
         DQ LIT, .b + 12 ; res p
         DQ fetchdot8
+        DQ CR
         DQ LIT, .b + 16 ; res p
         DQ LIT, 20      ; res p u
         DQ DUMP         ; res
