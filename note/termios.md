@@ -33,6 +33,42 @@ Which I guess (from `tcgetattr` man page)
 is 4 4-byte words and 20 1-byte characters.
 Yes, even on 64-bit OS.
 
+## Actual values
+
+The file `/usr/include/asm-generic/termbits.h` gives
+the bits for each of the `termios` fields.
+In octal.
+
+On my laptop the values from `TCGETS` are:
+
+66402 (octal) for c_iflag
+BRKINT
+ICRNL
+IXON
+IXANY
+IMAXBEL
+IUTF8
+
+5 (octal) for c_oflag
+OPOST
+ONLCR
+
+2277 (octal) for c_cflag
+Maximum Baud
+CS8
+CREAD
+
+105073 (octal) for c_lflag
+ISIG
+ICANON
+ECHO
+ECHOE
+ECHOK
+ECHOCTL
+ECHOKE
+IEXTEN
+
+
 ## Structure conversion
 
 The documented termios interfaces
