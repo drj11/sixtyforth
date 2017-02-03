@@ -364,6 +364,7 @@ TCGETS:
         DQ stdexe
         ; TCGETS ( fd p -- res )
         ; ioctl(fd, TCGETS, p) call
+        ; TCGETS according to /usr/include/asm-generic/ioctls.h
         DQ LIT, 0x5401  ; fd p 0x5401
         DQ SWAP         ; fd 0x5401 p
         DQ LIT, 16      ; fd 0x5401 p 16
@@ -435,7 +436,6 @@ ISATTY:
         DQ stdexe
         ; ISATTY ( u-fd -- flag )
         ;   True if file descriptor u-fd refers to a TTY.
-        ; TCGETS according to /usr/include/asm-generic/ioctls.h
         DQ HERE         ; dummy buffer
         DQ TCGETS
         DQ zequals      ; 0 is success; convert to true/false
