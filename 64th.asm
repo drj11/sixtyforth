@@ -372,6 +372,20 @@ TCGETS:
         DQ EXIT
         CtoL(TCGETS)
 
+        DQ 6
+        DQ 'tcsets'
+TCSETS:
+        DQ stdexe
+        ; TCSETS ( fd p -- res )
+        ; ioctl(fd, TCSETS, p) call
+        ; TCSETS according to /usr/include/asm-generic/ioctls.h
+        DQ LIT, 0x5402  ; fd p 0x5402
+        DQ SWAP         ; fd 0x5402 p
+        DQ LIT, 16      ; fd 0x5402 p 16
+        DQ SYSCALL3     ; res
+        DQ EXIT
+        CtoL(TCSETS)
+
         DQ 3
         DQ '@.8'
 fetchdot8:
@@ -411,24 +425,30 @@ fetchdot8:
 TCGETSdot:
         DQ stdexe
         ; TCGETS. ( fd -- res ) printout
-        DQ LIT, .b      ; fd p
+        DQ LIT, TCGETSV.b      ; fd p
         DQ TCGETS
-        DQ LIT, .b      ; res p
+        DQ LIT, TCGETSV.b      ; res p
         DQ fetchdot8
-        DQ LIT, .b + 4  ; res p
+        DQ LIT, TCGETSV.b + 4  ; res p
         DQ fetchdot8
-        DQ LIT, .b + 8  ; res p
+        DQ LIT, TCGETSV.b + 8  ; res p
         DQ fetchdot8
-        DQ LIT, .b + 12 ; res p
+        DQ LIT, TCGETSV.b + 12 ; res p
         DQ fetchdot8
         DQ CR
-        DQ LIT, .b + 16 ; res p
+        DQ LIT, TCGETSV.b + 16 ; res p
         DQ LIT, 20      ; res p u
         DQ DUMP         ; res
         DQ EXIT
+        CtoL(TCGETSdot)
+
+        DQ 7
+        DQ 'tcgetsv'
+TCGETSV:
+        DQ stdvar
 .b:
         TIMES 36 DB '@'
-        CtoL(TCGETSdot)
+        CtoL(TCGETSV)
 
         DQ 6
         DQ 'isatty'
