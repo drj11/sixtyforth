@@ -106,6 +106,15 @@ SYSCALL3:
         jmp next
         CtoL(SYSCALL3)
 
+        DQ 7
+        DQ 'sysread'
+SYSREAD:
+        DQ stdexe
+        DQ LIT, sys_read
+        DQ SYSCALL3
+        DQ EXIT
+        CtoL(SYSREAD)
+
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -2375,8 +2384,7 @@ READIB1:
         DQ LIT, 0       ; stdin
         DQ LIT, ib1
         DQ LIT, ibsize
-        DQ LIT, sys_read
-        DQ SYSCALL3
+        DQ SYSREAD
         DQ IBLIMIT
         DQ plusstore
         DQ EXIT
