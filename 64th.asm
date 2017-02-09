@@ -2480,5 +2480,31 @@ rcstring:
         DB 'here over allot '                   ; from n to
         DB 'swap cmove ; immediate '
 
+        ; C!XA
+        ; C!XA ( X M addr -- )
+        ; fetch byte C from addr,
+        ; then compute ((C AND M) XOR X),
+        ; and store at addr.
+        DB ': c!xa dup >r c@ and xor r> c! ; '
+
+        DB 'variable rlbuf '
+
+        DB 'create rltcgetsv 36 allot '
+
+        DB ': getch '
+        ; Store original TTY settings.
+        DB   '0 rltcgetsv tcgets drop '
+        ; Fetch and modify TTY settings...
+        DB   '0 tcgetsv tcgets drop '
+        ; Clear ICANON and ECHO bits.
+        DB   '0 10 invert tcgetsv 12 + c!xa '
+        DB   '0 tcgetsv tcsets drop '
+        ; Read (single) byte
+        DB   '0 rlbuf 1 sysread drop '
+        DB   'rlbuf c@ '
+        ; Restore TTY settings.
+        DB   '0 rltcgetsv tcsets drop '
+        DB   '; '
+
 
 rclength EQU $ - rcstring
