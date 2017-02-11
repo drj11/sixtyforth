@@ -2487,7 +2487,7 @@ rcstring:
         ; and store at addr.
         DB ': c!xa dup >r c@ and xor r> c! ; '
 
-        DB 'variable rlbuf '
+        DB 'variable chbuf '
 
         DB 'create rltcgetsv 36 allot '
 
@@ -2500,8 +2500,8 @@ rcstring:
         DB   '0 10 invert tcgetsv 12 + c!xa '
         DB   '0 tcgetsv tcsets drop '
         ; Read (single) byte
-        DB   '0 rlbuf 1 sysread drop '
-        DB   'rlbuf c@ '
+        DB   '0 chbuf 1 sysread drop '
+        DB   'chbuf c@ '
         ; Restore TTY settings.
         DB   '0 rltcgetsv tcsets drop '
         DB   '; '
