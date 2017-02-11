@@ -106,6 +106,26 @@ SYSCALL3:
         jmp next
         CtoL(SYSCALL3)
 
+        DQ 8
+        DQ 'syscall6'
+SYSCALL6:
+        DQ $+8
+        ; SYSCALL6 ( a b c d e f n -- rax )
+        ; Call syscall n with 6 argument;
+        ; return with RAX left on stack.
+        mov rdi, [rbp-56]
+        mov rsi, [rbp-48]
+        mov rdx, [rbp-40]
+        mov r10, [rbp-32]
+        mov r8, [rbp-24]
+        mov r9, [rbp-16]
+        mov rax, [rbp-8]
+        sub rbp, 48
+        syscall
+        mov [rbp-8], rax
+        jmp next
+        CtoL(SYSCALL6)
+
         DQ 7
         DQ 'sysread'
 SYSREAD:
