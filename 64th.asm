@@ -1983,12 +1983,10 @@ dictfree TIMES 8000 DQ 0
 DICT:   CtoL(USELESS)
 
 ; (outer) Interpreter loop:
-; Fill input bufffer (if cannot, exit);
-; Repeat, until the input buffer is empty:
-;   WORD: lex single word from input: creates a string.
-;   FIND: To convert from string to DICT entry.
-;   qEXECUTE: execute / convert number / compile.
-
+; Repeat:
+;   issue prompt;
+;   fill buffers from input (if cannot, exit);
+;   interpret line
 READLOOP:
         DQ stdexe
         DQ vRESET
@@ -2001,6 +1999,11 @@ READLOOP:
         DQ BRANCH
         DQ -($ - .line)
 .x:     DQ EXIT
+
+; Repeat, until the input buffer is empty:
+;   PARSEWORD: lex single word from input: creates a string.
+;   FINDWORD: To convert from string to DICT entry.
+;   qEXECUTE: execute / convert number / compile.
 
 INTERPRETLINE:
         DQ stdexe
