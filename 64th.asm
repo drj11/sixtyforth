@@ -2491,6 +2491,11 @@ rcstring:
 
         DB 'create rltcgetsv 36 allot '
 
+        ; Read (single) byte
+        DB ': getc '
+        DB   '0 chbuf 1 sysread drop '
+        DB   'chbuf c@ ; '
+
         DB ': getch '
         ; Store original TTY settings.
         DB   '0 rltcgetsv tcgets drop '
@@ -2499,9 +2504,10 @@ rcstring:
         ; Clear ICANON and ECHO bits.
         DB   '0 10 invert tcgetsv 12 + c!xa '
         DB   '0 tcgetsv tcsets drop '
-        ; Read (single) byte
-        DB   '0 chbuf 1 sysread drop '
-        DB   'chbuf c@ '
+
+        ; read
+        DB   'getc '
+
         ; Restore TTY settings.
         DB   '0 rltcgetsv tcsets drop '
         DB   '; '
