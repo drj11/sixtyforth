@@ -3,6 +3,7 @@ BITS 64
 
 sys_read EQU 0
 sys_write EQU 1
+sys_mmap EQU 9
 
 
 SECTION .bss
@@ -1849,7 +1850,7 @@ PARSE:
         CtoL(PARSE)
 
         DQ 10
-        DQ 'parse-wo'
+        DQ 'parse-wo'   ; suggested by std1994 A.6.2.2008
 PARSEWORD:
         DQ stdexe
         DQ SKIP
