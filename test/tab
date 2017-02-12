@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-../64th}
+# Test that TAB delimits words.
+# (not required by [std1994], but sensible)
+out=$(printf '99\t.' | $FORTH)
+
+case "$out" in
+    ("99 ") exit 0;;
+esac
+exit 2
