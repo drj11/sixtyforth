@@ -1505,6 +1505,34 @@ z:      DQ stdexe
         DQ EXIT
         CtoL(z)
 
+        DQ 6
+        DQ 'lshift'
+LSHIFT:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+
+        shl rax, cl
+
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(LSHIFT)
+
+        DQ 6
+        DQ 'rshift'
+RSHIFT:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+
+        shr rax, cl
+
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(RSHIFT)
+
         DQ 3
         DQ 's>d'        ; std1994
 StoD:   DQ stdexe
@@ -1802,43 +1830,82 @@ CHAR:
         DQ EXIT
         CtoL(CHAR)
 
-        DQ 5
-        DQ 'parse'      ; std1994
-PARSE:
+        DQ 11
+        DQ 'combinem'
+COMBINEMASK:
         DQ stdexe
-        ; ( char -- c-addr u )
+        ; COMBINEMASK ( char mask -- cmask )
+        ; Factor of PARSEMASK (see also CHOK).
+        ; Combines the char and the mask into one value.
+        DQ LIT, 32      ; char mask 32
+        DQ LSHIFT       ; char shifted
+        DQ OR           ; cmask
+        DQ EXIT
+        CtoL(COMBINEMASK)
+
+        DQ 4
+        DQ 'chok'
+CHOK:
+        DQ stdexe
+        ; CHOK ( cmask c -- cmask flag )
+        ; Factor of PARSEMASK (see also COMBINEMASK).
+        ; `cmask` holds a combined mask and test character.
+        ; `c` is first masked (by shifting cmask's bits 32 to 63
+        ; into bits 0 to 31, then using BIC to clear them),
+        ; and then tested for equality with the test character
+        ; (by testing against bits 0 to 7 of cmask).
+        DQ OVER         ; cmask c cmask
+        DQ LIT, 32      ; cmask c cmask 32
+        DQ RSHIFT       ; cmask c mask
+        DQ BIC          ; cmask masked
+        DQ OVER         ; cmask masked cmask
+        DQ LIT, 255     ; cmask masked cmask 255
+        DQ AND          ; cmask masked tester
+        DQ equals       ; cmask flag
+        DQ EXIT
+        CtoL(CHOK)
+
+        DQ 9
+        DQ 'parsemas'
+PARSEMASK:
+        DQ stdexe
+        ; PARSEMASK ( char mask -- c-addr u )
+        ; (recall `>in` is an offset from the source address)
+        ; `o` is the original value of `>in`, saved at the beginning
+        ; of this word and tucked away at the bottom of the stack.
+        DQ COMBINEMASK  ; cmask
         DQ toIN
-        DQ fetch        ; char o
-        DQ TRUE         ; char o true
-        DQ ROT          ; o true char
+        DQ fetch        ; cmask o
+        DQ TRUE         ; cmask o true
+        DQ ROT          ; o true cmask
 .ch:
         ; o x char
-        DQ NIP          ; o char
+        DQ NIP          ; o cmask
         DQ toIN
-        DQ fetch        ; o char >in
-        DQ SWAP         ; o >in char
-        DQ OVER         ; o >in char >in
-        DQ SOURCE       ; o >in char >in s-addr u
-        DQ NIP          ; o >in char >in u
+        DQ fetch        ; o cmask >in
+        DQ SWAP         ; o >in cmask
+        DQ OVER         ; o >in cmask >in
+        DQ SOURCE       ; o >in cmask >in s-addr u
+        DQ NIP          ; o >in cmask >in u
         DQ lessthan
         DQ ZEROBRANCH
         DQ .got-$
-        DQ OVER         ; o >in char >in
-        DQ SOURCE       ; o >in char >in s-addr u
-        DQ DROP         ; o >in char >in s-addr
-        DQ PLUS         ; o >in char addr
-        DQ Cfetch       ; o >in char c
+        DQ OVER         ; o >in cmask >in
+        DQ SOURCE       ; o >in cmask >in s-addr u
+        DQ DROP         ; o >in cmask >in s-addr
+        DQ PLUS         ; o >in cmask addr
+        DQ Cfetch       ; o >in cmask c
         ; increment >in
         DQ LIT, 1
         DQ toIN
-        DQ plusstore
-        DQ OVER         ; o >in char c char
-        DQ equals       ; o >in char flag
+        DQ plusstore    ; o >in cmask c
+        DQ CHOK         ; o >in cmask flag
         DQ ZEROBRANCH
         DQ -($-.ch)
 .got:
-        ; offset >in char
+        ; offset >in cmask
         DQ DROP         ; o >in
+        ; convert two indexes into addr u form
         DQ OVER         ; o >in o
         DQ MINUS        ; o u
         DQ SWAP         ; u o
@@ -1846,6 +1913,16 @@ PARSE:
         DQ DROP         ; u o s-addr
         DQ PLUS         ; u c-addr
         DQ SWAP         ; c-addr u
+        DQ EXIT
+        CtoL(PARSEMASK)
+
+        DQ 5
+        DQ 'parse'      ; std1994
+PARSE:
+        DQ stdexe
+        ; ( char -- c-addr u )
+        DQ z
+        DQ PARSEMASK
         DQ EXIT
         CtoL(PARSE)
 
