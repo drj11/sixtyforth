@@ -1830,38 +1830,39 @@ CHAR:
         DQ EXIT
         CtoL(CHAR)
 
-        DQ 11
-        DQ 'combinem'
-COMBINEMASK:
+        DQ 12
+        DQ 'combiner'
+COMBINERANGE:
         DQ stdexe
-        ; COMBINEMASK ( char mask -- cmask )
+        ; COMBINERANGE ( base limit -- range )
         ; Factor of PARSEMASK (see also CHOK).
-        ; Combines the char and the mask into one value.
-        DQ LIT, 32      ; char mask 32
-        DQ LSHIFT       ; char shifted
-        DQ OR           ; cmask
+        ; Combines the base and limit into a single value.
+        ; The limit is shifted into the upper 32 bits,
+        ; the base is left in the lower 32 bits.
+        DQ LIT, 32      ; base limit 32
+        DQ LSHIFT       ; base shifted
+        DQ OR           ; range
         DQ EXIT
-        CtoL(COMBINEMASK)
+        CtoL(COMBINERANGE)
 
         DQ 4
         DQ 'chok'
 CHOK:
         DQ stdexe
-        ; CHOK ( cmask c -- cmask flag )
-        ; Factor of PARSEMASK (see also COMBINEMASK).
-        ; `cmask` holds a combined mask and test character.
-        ; `c` is first masked (by shifting cmask's bits 32 to 63
-        ; into bits 0 to 31, then using BIC to clear them),
-        ; and then tested for equality with the test character
-        ; (by testing against bits 0 to 7 of cmask).
-        DQ OVER         ; cmask c cmask
-        DQ LIT, 32      ; cmask c cmask 32
-        DQ RSHIFT       ; cmask c mask
-        DQ BIC          ; cmask masked
-        DQ OVER         ; cmask masked cmask
-        DQ LIT, 255     ; cmask masked cmask 255
-        DQ AND          ; cmask masked tester
-        DQ equals       ; cmask flag
+        ; CHOK ( combin c -- combin flag )
+        ; Factor of PARSEMASK (see also COMBINERANGE).
+        ; `combin` holds a combined base and limit.
+        ; `c` is tested.
+        ; Result is true iff
+        ; `base` <= `c` < `limit`
+        DQ OVER         ; combin c combin
+        DQ DUP          ; combin c combin combin
+        DQ LIT, 0x1fffff; combin c combin combin mask
+        DQ AND          ; combin c combin base
+        DQ SWAP         ; combin c base combin
+        DQ LIT, 32      ; combin c base combin 32
+        DQ RSHIFT       ; combin c base limit
+        DQ WITHIN       ; combin flag
         DQ EXIT
         CtoL(CHOK)
 
@@ -1869,41 +1870,41 @@ CHOK:
         DQ 'parsemas'
 PARSEMASK:
         DQ stdexe
-        ; PARSEMASK ( char mask -- c-addr u )
+        ; PARSEMASK ( base limit -- c-addr u )
         ; (recall `>in` is an offset from the source address)
         ; `o` is the original value of `>in`, saved at the beginning
         ; of this word and tucked away at the bottom of the stack.
-        DQ COMBINEMASK  ; cmask
+        DQ COMBINERANGE ; combin
         DQ toIN
-        DQ fetch        ; cmask o
-        DQ TRUE         ; cmask o true
-        DQ ROT          ; o true cmask
+        DQ fetch        ; combin o
+        DQ TRUE         ; combin o true
+        DQ ROT          ; o true combin
 .ch:
         ; o x char
-        DQ NIP          ; o cmask
+        DQ NIP          ; o combin
         DQ toIN
-        DQ fetch        ; o cmask >in
-        DQ SWAP         ; o >in cmask
-        DQ OVER         ; o >in cmask >in
-        DQ SOURCE       ; o >in cmask >in s-addr u
-        DQ NIP          ; o >in cmask >in u
+        DQ fetch        ; o combin >in
+        DQ SWAP         ; o >in combin
+        DQ OVER         ; o >in combin >in
+        DQ SOURCE       ; o >in combin >in s-addr u
+        DQ NIP          ; o >in combin >in u
         DQ lessthan
         DQ ZEROBRANCH
         DQ .got-$
-        DQ OVER         ; o >in cmask >in
-        DQ SOURCE       ; o >in cmask >in s-addr u
-        DQ DROP         ; o >in cmask >in s-addr
-        DQ PLUS         ; o >in cmask addr
-        DQ Cfetch       ; o >in cmask c
+        DQ OVER         ; o >in combin >in
+        DQ SOURCE       ; o >in combin >in s-addr u
+        DQ DROP         ; o >in combin >in s-addr
+        DQ PLUS         ; o >in combin addr
+        DQ Cfetch       ; o >in combin c
         ; increment >in
         DQ LIT, 1
         DQ toIN
-        DQ plusstore    ; o >in cmask c
-        DQ CHOK         ; o >in cmask flag
+        DQ plusstore    ; o >in combin c
+        DQ CHOK         ; o >in combin flag
         DQ ZEROBRANCH
         DQ -($-.ch)
 .got:
-        ; offset >in cmask
+        ; offset >in combin
         DQ DROP         ; o >in
         ; convert two indexes into addr u form
         DQ OVER         ; o >in o
@@ -1921,7 +1922,8 @@ PARSEMASK:
 PARSE:
         DQ stdexe
         ; ( char -- c-addr u )
-        DQ z
+        DQ DUP          ; char char
+        DQ oneplus      ; base limit
         DQ PARSEMASK
         DQ EXIT
         CtoL(PARSE)
@@ -1931,8 +1933,9 @@ PARSE:
 PARSEWORD:
         DQ stdexe
         DQ SKIP
-        DQ fBL
-        DQ PARSE
+        DQ z
+        DQ LIT, 33
+        DQ PARSEMASK
         DQ EXIT
         CtoL(PARSEWORD)
 
