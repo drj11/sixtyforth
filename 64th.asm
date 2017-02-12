@@ -1835,7 +1835,7 @@ CHAR:
 COMBINERANGE:
         DQ stdexe
         ; COMBINERANGE ( base limit -- range )
-        ; Factor of PARSEMASK (see also CHOK).
+        ; Factor of PARSERANGE (see also CHOK).
         ; Combines the base and limit into a single value.
         ; The limit is shifted into the upper 32 bits,
         ; the base is left in the lower 32 bits.
@@ -1850,7 +1850,7 @@ COMBINERANGE:
 CHOK:
         DQ stdexe
         ; CHOK ( combin c -- combin flag )
-        ; Factor of PARSEMASK (see also COMBINERANGE).
+        ; Factor of PARSERANGE (see also COMBINERANGE).
         ; `combin` holds a combined base and limit.
         ; `c` is tested.
         ; Result is true iff
@@ -1866,11 +1866,14 @@ CHOK:
         DQ EXIT
         CtoL(CHOK)
 
-        DQ 9
-        DQ 'parsemas'
-PARSEMASK:
+        DQ 10
+        DQ 'parseran'
+PARSERANGE:
         DQ stdexe
-        ; PARSEMASK ( base limit -- c-addr u )
+        ; PARSERANGE ( base limit -- c-addr u )
+        ; Parse a word from the SOURCE input;
+        ; the word is terminated by the first character
+        ; that falls WITHIN base limit.
         ; (recall `>in` is an offset from the source address)
         ; `o` is the original value of `>in`, saved at the beginning
         ; of this word and tucked away at the bottom of the stack.
@@ -1915,7 +1918,7 @@ PARSEMASK:
         DQ PLUS         ; u c-addr
         DQ SWAP         ; c-addr u
         DQ EXIT
-        CtoL(PARSEMASK)
+        CtoL(PARSERANGE)
 
         DQ 5
         DQ 'parse'      ; std1994
@@ -1924,7 +1927,7 @@ PARSE:
         ; ( char -- c-addr u )
         DQ DUP          ; char char
         DQ oneplus      ; base limit
-        DQ PARSEMASK
+        DQ PARSERANGE
         DQ EXIT
         CtoL(PARSE)
 
@@ -1935,7 +1938,7 @@ PARSEWORD:
         DQ SKIP
         DQ z
         DQ LIT, 33
-        DQ PARSEMASK
+        DQ PARSERANGE
         DQ EXIT
         CtoL(PARSEWORD)
 
