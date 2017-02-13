@@ -2619,5 +2619,30 @@ rcstring:
         DB   '0 rltcgetsv tcsets drop '
         DB   '; '
 
+        ; see note/fstat.md
+        DB 'create fstatbuf 144 allot '
+
+        ; FSTAT* ( n -- res )
+        ; leaves result in `fstatbuf`.
+        DB ': fstat* fstatbuf 0 5 syscall3 ; '
+
+        ; FLEN ( n -- sz/err )
+        ; Length of file opened on fildes n.
+        ; -ve if there is an error.
+        DB ': flen fstat* ?dup if else fstatbuf 48 + @ then ; '
+
+        ; FMAPR ( n -- addr u )
+        ; Map fildes n into memory for reading.
+        ; address and length of mapping are left on stack.
+        DB ': fmapr dup flen dup 1 < if drop drop 0 0 else '
+          ; n sz
+          DB 'swap over '               ; sz n sz
+          DB '0 rot rot swap '          ; sz 0 sz n
+          DB '1 2 rot '                 ; sz 0 sz 1 2 n
+          DB '0 9 syscall6 '            ; sz addr
+          DB 'swap then ; '
+
+        DB ': rc4 4 fmapr ?dup if evaluate else drop then ; rc4 '
+
 
 rclength EQU $ - rcstring
