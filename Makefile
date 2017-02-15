@@ -1,5 +1,8 @@
-64th: 64th.o
-	ld -g -o $@ $<
+64th: 64th.o rc.o
+	ld -g -o $@ $^
+
+rc.o: rc.4
+	objcopy --input binary --output elf64-x86-64 --binary-architecture i386:x86-64 $< $@
 
 64th.o: 64th.asm
 	nasm -w+error -g -f elf64 -o $@ -l listing $<
