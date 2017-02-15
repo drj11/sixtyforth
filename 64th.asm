@@ -5,6 +5,9 @@ sys_read EQU 0
 sys_write EQU 1
 sys_mmap EQU 9
 
+extern _binary_rc_4_start
+extern _binary_rc_4_size
+
 
 SECTION .bss
 
@@ -2054,6 +2057,18 @@ EVALUATE:
         DQ store
         DQ EXIT
         CtoL(EVALUATE)
+
+        DQ 4
+        DQ 'rc.4'
+RC4:
+        DQ stdexe
+        ; RC.4 ( -- addr u )
+        ; Push the address and length of the internally stored
+        ; `rc.4` file.
+        DQ LIT, _binary_rc_4_start
+        DQ LIT, _binary_rc_4_size
+        DQ EXIT
+        CtoL(RC4)
 
         DQ 7
         DQ 'useless'
