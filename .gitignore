@@ -2,3 +2,5 @@ core
 node_modules
 test/.urchin.log
 vendor
+/64th
+/*.o
