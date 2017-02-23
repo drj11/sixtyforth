@@ -1938,6 +1938,8 @@ PARSE:
         DQ 'parse-wo'   ; suggested by std1994 A.6.2.2008
 PARSEWORD:
         DQ stdexe
+        DQ z
+        DQ LIT, 33
         DQ SKIP
         DQ z
         DQ LIT, 33
@@ -1949,28 +1951,26 @@ PARSEWORD:
         DQ 'skip'
 SKIP:
         DQ stdexe
-        ; SKIP ( -- )
-        ; Skip over leading blanks in parse area.
+        ; SKIP ( base limit -- )
+        ; Skip over the initial portion of the parse area that
+        ; consists of characters WITHIN base limit.
         ; >IN is advanced until:
         ;   either the end of parse area is reached; or,
-        ;   it points to a non-blank character.
-        ; Future version may skip over all whitespace.
+        ;   it points to a non-skippable character.
+        DQ COMBINERANGE ; range
 .begin:
-        DQ SOURCE       ; addr u
-        DQ toIN
-        DQ fetch        ; addr u >in
-        DQ equals       ; addr flag
+        DQ SOURCE       ; range addr u
+        DQ toIN, fetch  ; range addr u >in
+        DQ equals       ; range addr flag
         DQ ZEROBRANCH
         DQ .then-$
-        ; addr
-        DQ DROP
+        ; range addr
+        DQ DROP, DROP
         DQ EXIT
-.then:  DQ toIN
-        DQ fetch        ; addr >in
-        DQ PLUS         ; c-addr
-        DQ Cfetch       ; c
-        DQ fBL          ; c bl
-        DQ equals       ; flag
+.then:  DQ toIN, fetch  ; range addr >in
+        DQ PLUS         ; range c-addr
+        DQ Cfetch       ; range c
+        DQ CHOK         ; range flag
         DQ ZEROBRANCH
         DQ .escape-$
         DQ LIT, 1       ; 1
@@ -1979,6 +1979,7 @@ SKIP:
         DQ BRANCH
         DQ -($ - .begin)
 .escape:
+        DQ DROP
         DQ EXIT
         CtoL(SKIP)
 
