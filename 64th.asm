@@ -2059,18 +2059,6 @@ EVALUATE:
         DQ EXIT
         CtoL(EVALUATE)
 
-        DQ 4
-        DQ 'rc.4'
-RC4:
-        DQ stdexe
-        ; RC.4 ( -- addr u )
-        ; Push the address and length of the internally stored
-        ; `rc.4` file.
-        DQ LIT, _binary_rc_4_start
-        DQ LIT, _binary_rc_4_size
-        DQ EXIT
-        CtoL(RC4)
-
         DQ 7
         DQ 'useless'
 USELESS:
@@ -2548,11 +2536,12 @@ QPROMPT:
 
 RC:
         DQ stdexe
-        ; RC ( -- c-addr u )
-        ; deposit the 2-value Run Command string,
-        ; ready for EVALUATE.
-        DQ LIT, rcstring
-        DQ LIT, rclength
+        ; RC ( -- addr u )
+        ; Push the address and length of the internally stored
+        ; `rc.4` file.
+        ; Ready for EVALUATE.
+        DQ LIT, _binary_rc_4_start
+        DQ LIT, _binary_rc_4_size
         DQ EXIT
 
 RUNRC:
@@ -2565,75 +2554,3 @@ RUNRC:
         DQ EXIT
 
 
-rcstring:
-        DB ': 2drop drop drop ; '
-        ; THEN          std1983
-        ; THEN ( token -- )     at compile time
-        DB ': then here over - swap ! ; immediate '
-        ; VARIABLE      std1983
-        DB ': variable create 1 cells allot ; '
-        ; DNEGATE       std1983
-        ; DNEGATE ( d1 -- -d1 )
-        DB ': dnegate -1 1 m*/ ; '
-
-        ; '             std1983
-        DB ": ' parse-word findword if exit then 0 ; "
-
-        ; [COMPILE]     std1983
-        DB ": [compile] ' , ; immediate "
-        ; [CHAR]        std1994
-        DB ": [char] char [compile] literal ; immediate "
-        DB ': .( [char] ) parse type ; immediate '
-
-        ; (             std1983
-        DB ': ( [char] ) parse drop drop ; immediate '
-
-        ; COMPILE       std1983
-        ; Using the definition in [FORTH1994] A.6.1.2033
-        DB ': compile r> dup @ , cell+ >r ; '
-
-        ; (fix-cfa)
-        ; Adjusts the CFA of the last defined word
-        ; (to point to address following call to this word
-        ; in the calling word);
-        ; and terminate excution of calling word.
-        DB ': (fix-cfa) r> last name> ! ; '
-        ; DOES>         std1983
-        DB ': does> compile (fix-cfa) codedoes '; addr n
-        DB 'here over allot '                   ; from n to
-        DB 'swap cmove ; immediate '
-
-        ; C!XA
-        ; C!XA ( X M addr -- )
-        ; fetch byte C from addr,
-        ; then compute ((C AND M) XOR X),
-        ; and store at addr.
-        DB ': c!xa dup >r c@ and xor r> c! ; '
-
-        DB 'variable chbuf '
-
-        DB 'create rltcgetsv 36 allot '
-
-        ; Read (single) byte
-        DB ': getc '
-        DB   '0 chbuf 1 sysread drop '
-        DB   'chbuf c@ ; '
-
-        DB ': getch '
-        ; Store original TTY settings.
-        DB   '0 rltcgetsv tcgets drop '
-        ; Fetch and modify TTY settings...
-        DB   '0 tcgetsv tcgets drop '
-        ; Clear ICANON and ECHO bits.
-        DB   '0 10 invert tcgetsv 12 + c!xa '
-        DB   '0 tcgetsv tcsets drop '
-
-        ; read
-        DB   'getc '
-
-        ; Restore TTY settings.
-        DB   '0 rltcgetsv tcsets drop '
-        DB   '; '
-
-
-rclength EQU $ - rcstring

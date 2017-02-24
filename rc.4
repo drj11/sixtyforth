@@ -1,3 +1,83 @@
+: then
+  here over - swap ! ; immediate
+
+: ' parse-word findword if exit then 0 ;
+
+: [compile] ' , ; immediate
+
+: [char] char [compile] literal ; immediate
+
+: ( [char] ) parse drop drop ; immediate
+
+( NOTE: until ( is defined, above, we can't have comments. )
+
+( Here's the missing comments: )
+
+( THEN          std1983 )
+( '             std1983 )
+( [COMPILE]     std1983 )
+( [CHAR]        std1994 )
+( (             std1983 )
+
+( VARIABLE      std1983 )
+: variable create 1 cells allot ;
+
+( DNEGATE       std1983 )
+: dnegate ( d1 -- -d1 )
+  -1 1 m*/ ;
+
+: 2drop drop drop ;
+
+: .( [char] ) parse type ; immediate
+
+( COMPILE       std1983 )
+( Using the definition in [FORTH1994] A.6.1.2033 )
+: compile r> dup @ , cell+ >r ;
+
+( *fix-cfa )
+( Fixes the CFA of the last defined word )
+( to point to address following call to *fix-cfa )
+( in the calling word; )
+( and terminate excution of calling word. )
+: *fix-cfa r> last name> ! ;
+
+( DOES>         std1983 )
+: does> compile *fix-cfa codedoes       ( addr n )
+  here over allot                       ( from n to )
+  swap cmove ; immediate
+
+( fetch byte C from addr, )
+( then compute C M AND X XOR )
+( and store at addr. )
+: c!xa ( X M addr -- )
+  dup >r c@ and xor r> c! ;
+
+variable chbuf
+
+create rltcgetsv 36 allot
+
+( Read single byte )
+: getc
+  0 chbuf 1 sysread drop
+  chbuf c@ ;
+
+: getch
+
+  ( Store original TTY settings. )
+  0 rltcgetsv tcgets drop
+  ( Fetch and modify TTY settings... )
+  0 tcgetsv tcgets drop
+  ( Clear ICANON and ECHO bits. )
+  0 10 invert tcgetsv 12 + c!xa
+  0 tcgetsv tcsets drop
+
+  ( read )
+  getc
+
+  ( Restore TTY settings. )
+  0 rltcgetsv tcsets drop
+;
+
 ( see note/fstat.md )
 create fstatbuf 144 allot
 
