@@ -1,7 +1,4 @@
-: then
-  here over - swap ! ; immediate
-
-: ' parse-word findword if exit then 0 ;
+: ' parse-word findword dup 0= ?dup drop drop ;
 
 : [compile] ' , ; immediate
 
@@ -13,11 +10,15 @@
 
 ( Here's the missing comments: )
 
-( THEN          std1983 )
 ( '             std1983 )
+(   Weird definition of ' avoids using IF )
 ( [COMPILE]     std1983 )
 ( [CHAR]        std1994 )
 ( (             std1983 )
+
+( THEN          std1983 )
+: then
+  here over - swap ! ; immediate
 
 ( VARIABLE      std1983 )
 : variable create 1 cells allot ;
