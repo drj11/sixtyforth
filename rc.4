@@ -28,6 +28,18 @@
   true ,
 ; immediate
 
+( ELSE          std1983 )
+: else ( token -- newtoken      / at compile time )
+  compile branch
+  here          ( token newtoken )
+  ( compile dummy offset )
+  true ,
+  swap          ( newtoken token )
+  here over -   ( newtoken token offset )
+  swap          ( newtoken offset token )
+  !             ( newtoken )
+; immediate
+
 ( THEN          std1983 )
 : then
   here over - swap ! ; immediate

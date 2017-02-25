@@ -1649,25 +1649,6 @@ CELLplus:
         DQ EXIT
         CtoL(CELLplus)
 
-        DQ 4 | Immediate
-        DQ 'else'       ; std1983
-fELSE:
-        DQ stdexe
-        ; ELSE ( token -- newtoken)     at compile time
-        DQ LIT, BRANCH
-        DQ comma        ; ( token )
-        DQ HERE         ; ( token newtoken )
-        DQ TRUE         ; compile dummy offset
-        DQ comma
-        DQ SWAP         ; ( newtoken token )
-        DQ HERE         ; ( newtoken token here )
-        DQ OVER         ; ( newtoken token here token )
-        DQ MINUS        ; ( newtoken token offset )
-        DQ SWAP         ; ( newtoken offset token )
-        DQ store        ; ( newtoken )
-        DQ EXIT
-        CtoL(fELSE)
-
         DQ 5 | Immediate
         DQ 'begin'      ; std1983
 BEGIN:
@@ -2046,6 +2027,16 @@ EVALUATE:
         DQ EXIT
         CtoL(EVALUATE)
 
+        DQ 6
+        DQ 'branch'
+BRANCH: DQ $+8
+        ; Read the next word as a relative offset (in bytes);
+        ; branch by adding offset to current CODEPOINTER.
+        mov rcx, [rbx]
+        lea rbx, [rbx + rcx]
+        jmp next
+        CtoL(BRANCH)
+
         DQ 7
         DQ '0branch'
 ZEROBRANCH:
@@ -2332,13 +2323,6 @@ LIT:    DQ $+8
         add rbx, 8
         mov [rbp], rax
         add rbp, 8
-        jmp next
-
-BRANCH: DQ $+8
-        ; Read the next word as a relative offset (in bytes);
-        ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
-        lea rbx, [rbx + rcx]
         jmp next
 
 COPYDOWN:
