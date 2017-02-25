@@ -1791,16 +1791,6 @@ notequals:
         DQ EXIT
         CtoL(notequals)
 
-        DQ 4
-        DQ 'char'       ; std1994
-CHAR:
-        DQ stdexe
-        DQ PARSEWORD    ; c-addr u
-        DQ DROP
-        DQ Cfetch
-        DQ EXIT
-        CtoL(CHAR)
-
         DQ 12
         DQ 'combiner'
 COMBINERANGE:

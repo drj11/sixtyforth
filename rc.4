@@ -2,6 +2,8 @@
 
 : [compile] ' , ; immediate
 
+: char parse-word drop c@ ;
+
 : [char] char [compile] literal ; immediate
 
 : ( [char] ) parse drop drop ; immediate
@@ -13,6 +15,7 @@
 ( '             std1983 )
 (   Weird definition of ' avoids using IF )
 ( [COMPILE]     std1983 )
+( CHAR          std1994 )
 ( [CHAR]        std1994 )
 ( (             std1983 )
 
