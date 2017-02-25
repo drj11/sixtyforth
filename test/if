@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': select if swap then drop ;
   1 2 3 select .
   8 9 0 select .' | $FORTH)

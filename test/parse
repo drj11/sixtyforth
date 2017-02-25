@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '64 parse foo@ dup . type' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in

@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': inc 1+ ; : nipadd >r inc r> ; 7 9 nipadd . . ' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in

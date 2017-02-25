@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': x [compile] literal ;
 : y x ; immediate
 3 99 : z y ; .

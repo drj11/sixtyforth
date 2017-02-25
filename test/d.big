@@ -1,6 +1,7 @@
 #!/bin/sh
 # Largest signed double.
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': msq over um* ;
 2 0
 msq

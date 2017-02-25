@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': cc [char] A [char] B ;
 cc cc . . . .' | $FORTH)
 printf "%s\n" "$out"

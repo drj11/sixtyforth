@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '4 s>d 3 sm/rem . .
 -4 s>d 3 sm/rem . .
 4 s>d -3 sm/rem . .

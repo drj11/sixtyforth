@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '1 9 < negate 9 9 < negate 10 9 < negate . . .' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in

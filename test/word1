@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test for bug present on 2016-09-25:
 # delimiters preceding a word should be skipped (but they are not).
 out=$(echo '9 1  dup . .' | $FORTH)

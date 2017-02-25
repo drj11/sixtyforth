@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../../64th}
+FORTH=${FORTH:-.././64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 
 out=$(echo 0 digit 9 digit 10 digit 11 digit . . . . | $FORTH | sed 's/ *$//')
 echo $out

@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(printf "1 2 over 3\n. . . .\n" | $FORTH)
 printf "%s\n" "$out"
 case "$out" in

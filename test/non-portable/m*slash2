@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../../64th}
+FORTH=${FORTH:-.././64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '0 1 10000 65535 m*/ . .' | $FORTH)
 echo $out
 case "$out" in

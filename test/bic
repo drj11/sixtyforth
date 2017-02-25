@@ -1,6 +1,7 @@
 #!/bin/sh
 # Non-standard word
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '22 7 bic . 49 -4 bic .' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in

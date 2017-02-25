@@ -1,5 +1,6 @@
 #!/bin/sh
-FORTH=${FORTH:-../64th}
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo ': x parse-word false false 2swap >number ;
 x 37.59 drop drop drop .' | $FORTH)
 printf '%s\n' "$out"
