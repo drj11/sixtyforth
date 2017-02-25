@@ -1649,19 +1649,6 @@ CELLplus:
         DQ EXIT
         CtoL(CELLplus)
 
-        DQ 2 | Immediate
-        DQ 'if'         ; std1983
-IF:
-        DQ stdexe
-        ; IF ( -- token )       at compile time
-        DQ LIT, ZEROBRANCH
-        DQ comma
-        DQ HERE         ; deposit the patch token
-        DQ TRUE         ; compile dummy offset
-        DQ comma
-        DQ EXIT
-        CtoL(IF)
-
         DQ 4 | Immediate
         DQ 'else'       ; std1983
 fELSE:
@@ -2060,6 +2047,26 @@ EVALUATE:
         CtoL(EVALUATE)
 
         DQ 7
+        DQ '0branch'
+ZEROBRANCH:
+        DQ $+8
+        ; Read the next word as a relative offset (in bytes);
+        ; pop the TOS and test it;
+        ; if it is 0 then
+        ; branch by adding offset to current CODEPOINTER.
+        mov rcx, [rbx]
+        sub rbp, 8
+        mov rax, [rbp]
+        test rax, rax
+        jz .branch
+        add rbx, 8
+        jmp next
+.branch:
+        lea rbx, [rbx + rcx]
+        jmp next
+        CtoL(ZEROBRANCH)
+
+        DQ 7
         DQ 'useless'
 USELESS:
         DQ stdvar
@@ -2325,23 +2332,6 @@ LIT:    DQ $+8
         add rbx, 8
         mov [rbp], rax
         add rbp, 8
-        jmp next
-
-ZEROBRANCH:
-        DQ $+8
-        ; Read the next word as a relative offset (in bytes);
-        ; pop the TOS and test it;
-        ; if it is 0 then
-        ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
-        sub rbp, 8
-        mov rax, [rbp]
-        test rax, rax
-        jz .branch
-        add rbx, 8
-        jmp next
-.branch:
-        lea rbx, [rbx + rcx]
         jmp next
 
 BRANCH: DQ $+8

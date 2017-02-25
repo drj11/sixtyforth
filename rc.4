@@ -16,6 +16,18 @@
 ( [CHAR]        std1994 )
 ( (             std1983 )
 
+( COMPILE       std1983 )
+( Using the definition in [FORTH1994] A.6.1.2033 )
+: compile r> dup @ , cell+ >r ;
+
+( IF            std1983 )
+: if ( -- token    / at compile time )
+  compile 0branch
+  here          ( token )
+  ( compile dummy offset )
+  true ,
+; immediate
+
 ( THEN          std1983 )
 : then
   here over - swap ! ; immediate
@@ -30,10 +42,6 @@
 : 2drop drop drop ;
 
 : .( [char] ) parse type ; immediate
-
-( COMPILE       std1983 )
-( Using the definition in [FORTH1994] A.6.1.2033 )
-: compile r> dup @ , cell+ >r ;
 
 ( *fix-cfa )
 ( Fixes the CFA of the last defined word )
