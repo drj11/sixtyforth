@@ -29,6 +29,7 @@ and needs reprinting.
 Whenever a damaged part needs reprinting,
 the cursor needs moving from its current position
 to the beginning of the damaged region.
+The ANSI escape ESC [ J may be useful (clear to end of screan).
 
 Whenever the line is reprinted,
 the cursor needs moving from its current position
