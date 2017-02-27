@@ -213,6 +213,12 @@ variable rl.fixk        ( small buffer used for findword )
 ( Makes LF exit the RL loop )
 : ^J 0 ;
 
+( beginning-of-line )
+: ^A 0 rl.> ! 1 ;
+
+( forward-char )
+: ^F rl.> @ 1 + rl.n @ min rl.> ! 1 ;
+
 : rl
   0 tty.store
   0 tty.keypress
