@@ -1261,7 +1261,7 @@ MIN:
         DQ stdexe
         DQ OVER
         DQ OVER
-        DQ lessthan     ; a b flag
+        DQ greaterthan  ; a b flag
         DQ ZEROBRANCH
         DQ .s-$
         DQ SWAP
