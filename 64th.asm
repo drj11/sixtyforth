@@ -139,6 +139,18 @@ SYSREAD:
         DQ EXIT
         CtoL(SYSREAD)
 
+        DQ 7
+        DQ 'execute'
+EXECUTE:
+        DQ $+8          ; std1983
+        ; EXECUTE ( addr -- )
+        ; execute the Forth word that has compilation address `addr`
+        sub rbp, 8
+        mov rdx, [rbp]
+        mov rax, [rdx]
+        jmp rax
+        CtoL(EXECUTE)
+
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -2315,15 +2327,6 @@ stdvar:
         jmp next
 
 ;;; Machine code implementations of various Forth words.
-
-EXECUTE:
-        DQ $+8          ; std1983
-        ; EXECUTE ( addr -- )
-        ; execute the Forth word that has compilation address `addr`
-        sub rbp, 8
-        mov rdx, [rbp]
-        mov rax, [rdx]
-        jmp rax
 
 LIT:    DQ $+8
         mov rax, [rbx]
