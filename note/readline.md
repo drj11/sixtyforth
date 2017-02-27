@@ -42,3 +42,10 @@ could be used to save and restore the cursor position.
 Though they may be non-standard
 (I think it's in the private use area of ECMA-48).
 But they appear to work on Gnome Terminal.
+
+# Buffer state
+
+- rl.a address of beginning of buffer
+- rl.z size of buffer
+- rl.> position of cursor
+- rl.n number of valid input characters
