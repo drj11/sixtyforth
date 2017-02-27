@@ -108,7 +108,7 @@ create rltcgetsv 36 allot
   ( Fetch and modify TTY settings... )
   dup tcgetsv tcgets drop               ( fd )
   ( Clear ICANON and ECHO bits. )
-  dup 10 invert tcgetsv 12 + c!xa       ( fd )
+  0 10 invert tcgetsv 12 + c!xa         ( fd )
   tcgetsv tcsets drop
 ;
 
