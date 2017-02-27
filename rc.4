@@ -78,12 +78,25 @@
 
 variable chbuf
 
-create rltcgetsv 36 allot
-
 ( Read single byte )
-: getc
-  0 chbuf 1 sysread drop
-  chbuf c@ ;
+: fgetc ( fd -- c/-9999999/-ve )
+  chbuf 1 sysread
+  dup 0 < if
+  else
+    0= if -9999999
+    else
+      chbuf c@
+    then
+  then
+;
+
+( Read single byte from stdin )
+: getc ( -- c )
+       ( -- -9999999    / on End of File )
+       ( -- -ve         / on os error )
+  0 fgetc ;
+
+create rltcgetsv 36 allot
 
 : getch
 
