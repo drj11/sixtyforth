@@ -98,21 +98,34 @@ variable chbuf
 
 create rltcgetsv 36 allot
 
+( Store TTY settings. )
+: tty.store ( fd -- )
+  rltcgetsv tcgets drop
+;
+
+( Put TTY in keypress mode )
+: tty.keypress ( fd -- )
+  ( Fetch and modify TTY settings... )
+  dup tcgetsv tcgets drop               ( fd )
+  ( Clear ICANON and ECHO bits. )
+  dup 10 invert tcgetsv 12 + c!xa       ( fd )
+  tcgetsv tcsets drop
+;
+
+( Restore TTY settings. )
+: tty.restore ( fd -- )
+  rltcgetsv tcsets drop
+;
+
+( Put the TTY into keypress mode to get a single keypress )
 : getch
 
-  ( Store original TTY settings. )
-  0 rltcgetsv tcgets drop
-  ( Fetch and modify TTY settings... )
-  0 tcgetsv tcgets drop
-  ( Clear ICANON and ECHO bits. )
-  0 10 invert tcgetsv 12 + c!xa
-  0 tcgetsv tcsets drop
+  0 tty.store
+  0 tty.keypress
 
-  ( read )
   getc
 
-  ( Restore TTY settings. )
-  0 rltcgetsv tcsets drop
+  0 tty.restore
 ;
 
 ( see note/fstat.md )
