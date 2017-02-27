@@ -154,4 +154,84 @@ create fstatbuf 144 allot
 
 : rc4 4 fmapr ?dup if evaluate else drop then ;
 
+: rl.z 96 ;             ( size )
+create rl.a rl.z allot  ( address )
+variable rl.>           ( cursor )
+variable rl.n           ( validity )
+0 rl.> !
+0 rl.n !
+variable rl.k           ( small buffer for key input )
+variable rl.fixk        ( small buffer used for findword )
+
+: rl.input rl.a rl.n @ ;
+
+: rl.insert ( addr u -- 1 )
+  dup rl.n @ +
+  rl.z >
+  if
+    ( buffer full )
+    s" #%#" type
+    0
+  else
+    ( addr u )
+    ( copy text to right of cursor up to make room )
+    rl.a rl.> @ +       ( addr u from )
+    over                ( addr u from u )
+    rl.> @ + rl.a +     ( addr u from to )
+    rl.n @ rl.> @ -     ( addr u from to n )
+    cmove>              ( addr u )
+    ( increment length )
+    dup rl.n +!         ( addr u )
+    ( copy new input into cursor )
+    rl.a rl.> @ +       ( addr u > )
+    over                ( addr u > u )
+    ( bump rl.> )
+    rl.> +!             ( addr u > )
+    swap cmove          ( )
+
+    rl.input type
+    1
+  then
+;
+
+( fix-up the single character in rl.k )
+( Convert Control Chars to ^J form )
+: rl.fix
+  rl.k c@
+  32 <
+  if
+    [char] ^ rl.fixk c!
+    rl.k c@
+    64 or rl.fixk 1+ c!
+    rl.fixk 2
+  else
+    rl.k c@ rl.fixk c!
+    rl.fixk 1
+  then
+;
+
+( Makes LF exit the RL loop )
+: ^J 0 ;
+
+: rl
+  0 tty.store
+  0 tty.keypress
+
+  begin
+    getc
+    dup 0 <
+    if
+      drop 0                    ( negative: EOF or error )
+    else
+      rl.k !
+      rl.fix over over type findword
+      0= if rl.k 1 rl.insert else execute then
+    then
+    while
+  repeat
+  drop
+
+  0 tty.restore
+;
+
 : rc.defined true ;
