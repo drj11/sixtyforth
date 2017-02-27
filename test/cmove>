@@ -1,0 +1,18 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$(echo 'variable v
+: c s" abcdefgh" ;
+c v swap 
+cmove>
+v 8 type
+v 2 +
+v 1 +
+5 cmove>
+v 8 type' |
+  $FORTH | sed 's/ *$//')
+printf "%s\n" "$out"
+case $out in
+    (abcdefghaggggggh) exit 0;;
+esac
+exit 2
