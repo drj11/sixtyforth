@@ -160,6 +160,8 @@ variable rl.>           ( cursor )
 variable rl.n           ( validity )
 0 rl.> !
 0 rl.n !
+variable rl.>save
+0 rl.>save !
 variable rl.k           ( small buffer for key input )
 variable rl.fixk        ( small buffer used for findword )
 
@@ -189,7 +191,6 @@ variable rl.fixk        ( small buffer used for findword )
     rl.> +!             ( addr u > )
     swap cmove          ( )
 
-    rl.input type
     1
   then
 ;
@@ -219,6 +220,39 @@ variable rl.fixk        ( small buffer used for findword )
 ( forward-char )
 : ^F rl.> @ 1 + rl.n @ min rl.> ! 1 ;
 
+( Assuming the VT cursor is at rl.>save, )
+( redraw from there to rl.n, )
+( and reposition VT cursor at rl.> . )
+: rl.redraw
+  rl.>save @ rl.> @
+  - dup                         ( n n )
+  0 > if
+    ( new cursor is behind old one )
+    begin
+      8 emit
+      1-                        ( n )
+      dup
+      0=
+    until
+    drop
+    ( :todo: redraw )
+  else
+    ( new cursor is forward of old one )
+    negate                      ( n )
+    ( type out text from old cursor pos to new cursor pos )
+    rl.a rl.>save @ +         ( n addr )
+    swap type                   ( )
+    ( save cursor pos )
+    s" [s" type
+    ( type out rest of text )
+    rl.a rl.> @ +             ( addr )
+    rl.n @ rl.> @ -             ( addr n )
+    type
+    ( clear rest of screen and return cursor )
+    s" [J[u" type
+  then
+;
+
 : rl
   0 tty.store
   0 tty.keypress
@@ -229,13 +263,18 @@ variable rl.fixk        ( small buffer used for findword )
     if
       drop 0                    ( negative: EOF or error )
     else
+      ( save current cursor position )
+      rl.> @ rl.>save !
       rl.k !
-      rl.fix over over type findword
+      rl.fix
+      findword
       0= if rl.k 1 rl.insert else execute then
+      rl.redraw
     then
     while
   repeat
   drop
+  13 emit 10 emit
 
   0 tty.restore
 ;
