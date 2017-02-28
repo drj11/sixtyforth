@@ -56,6 +56,8 @@
 
 : 2drop drop drop ;
 
+: max over over < if swap then drop ;
+
 : .( [char] ) parse type ; immediate
 
 ( *fix-cfa )
@@ -216,6 +218,9 @@ variable rl.fixk        ( small buffer used for findword )
 
 ( beginning-of-line )
 : ^A 0 rl.> ! 1 ;
+
+( backward-char )
+: ^B rl.> @ 1- 0 max rl.> ! 1 ;
 
 ( forward-char )
 : ^F rl.> @ 1 + rl.n @ min rl.> ! 1 ;
