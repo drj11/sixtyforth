@@ -222,6 +222,24 @@ variable rl.fixk        ( small buffer used for findword )
 ( backward-char )
 : ^B rl.> @ 1- 0 max rl.> ! 1 ;
 
+( erase-forward-char )
+: ^D
+  ( test if there are any characters ahead of cursor to erase )
+  rl.n @                        ( n )
+  rl.> @                        ( n > )
+  -                             ( u )
+  if
+    ( copy down characters )
+    rl.a rl.> @ +               ( to )
+    dup 1+ swap                 ( from to )
+    rl.n @ rl.> @ - 1-          ( from to n )
+    cmove
+    ( shrink buffer )
+    -1 rl.n +!
+  then
+  1
+;
+
 ( forward-char )
 : ^F rl.> @ 1 + rl.n @ min rl.> ! 1 ;
 
