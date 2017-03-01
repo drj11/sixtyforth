@@ -240,6 +240,9 @@ variable rl.fixk        ( small buffer used for findword )
   1
 ;
 
+( end-of-line )
+: ^E rl.n @ rl.> ! 1 ;
+
 ( forward-char )
 : ^F rl.> @ 1 + rl.n @ min rl.> ! 1 ;
 
