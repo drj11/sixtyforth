@@ -2012,14 +2012,12 @@ FIND:
 EVALUATE:
         DQ stdexe
         ; EVALUATE ( c-addr u -- ) also side effects
-        DQ IB
-        DQ fetch
+        ; Push ib >in #ib onto return stack.
+        DQ IB, fetch
         DQ toR
-        DQ toIN
-        DQ fetch
+        DQ toIN, fetch
         DQ toR
-        DQ numberIB
-        DQ fetch
+        DQ numberIB, fetch
         DQ toR
 
         ; u > #ib
@@ -2034,15 +2032,13 @@ EVALUATE:
         DQ store
         DQ INTERPRETLINE
 
+        ; pop ib >in #ib from return stack
         DQ Rfrom
-        DQ numberIB
-        DQ store
+        DQ numberIB, store
         DQ Rfrom
-        DQ toIN
-        DQ store
+        DQ toIN, store
         DQ Rfrom
-        DQ IB
-        DQ store
+        DQ IB, store
         DQ EXIT
         CtoL(EVALUATE)
 
