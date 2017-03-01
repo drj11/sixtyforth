@@ -160,12 +160,17 @@ create fstatbuf 144 allot
 create rl.a rl.z allot  ( address )
 variable rl.>           ( point )
 variable rl.n           ( validity )
-0 rl.> !
-0 rl.n !
 variable rl.>save
-0 rl.>save !
 variable rl.k           ( small buffer for key input )
 variable rl.fixk        ( small buffer used for findword )
+
+( reset key variables to create a fresh buffer )
+: rl.fresh
+  0 rl.> !
+  0 rl.n !
+  0 rl.>save !
+;
+rl.fresh
 
 : rl.input rl.a rl.n @ ;
 
@@ -281,7 +286,7 @@ variable rl.fixk        ( small buffer used for findword )
   then
 ;
 
-: rl
+: rl.edit
   0 tty.store
   0 tty.keypress
 
@@ -305,6 +310,11 @@ variable rl.fixk        ( small buffer used for findword )
   13 emit 10 emit
 
   0 tty.restore
+;
+
+: rl
+  rl.fresh
+  rl.edit
 ;
 
 : rc.defined true ;
