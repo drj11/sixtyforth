@@ -257,6 +257,9 @@ ki.fresh
 ( forward-char )
 : k:^F ki.> @ 1 + ki.n @ min ki.> ! 1 ;
 
+( kill-to-end )
+: k:^K ki.> @ ki.n ! 1 ;
+
 ( Assuming the VT cursor is at ki.>save, )
 ( redraw from there to ki.n, )
 ( and reposition VT cursor at ki.> . )
