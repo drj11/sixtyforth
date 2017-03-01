@@ -2096,7 +2096,7 @@ READLOOP:
         DQ vRESET
 .line:
         DQ qPROMPT
-        DQ filbuf       ; basically QUERY from std
+        DQ REFILL
         DQ ZEROBRANCH
         DQ (.x-$)
         DQ INTERPRETLINE
@@ -2428,9 +2428,10 @@ BUMPIB:
 .then:
         DQ EXIT
 
-filbuf:
+REFILL:
         DQ stdexe
-        ; REFILL ( -- flag )
+        ; REFILL ( -- false ) no more input / end of file
+        ;        ( -- true ) input available, see SOURCE
         ; see numberIB for description.
         DQ BUMPIB
         DQ SCAN         ; p flag
