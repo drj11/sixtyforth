@@ -2440,10 +2440,8 @@ filbuf:
         DQ COPYDOWN
         DQ READIB1
         ; If empty after reading, can't refill.
-        DQ IBLIMIT
-        DQ fetch        ; iblimit
-        DQ IB
-        DQ fetch        ; iblimit ib
+        DQ IBLIMIT, fetch       ; iblimit
+        DQ IB, fetch            ; iblimit ib
         DQ equals
         DQ ZEROBRANCH
         DQ .then - $
@@ -2463,10 +2461,9 @@ filbuf:
         DQ DROP         ; p
 .scanned:
         ; p marks next newline (or one past the end of the block)
-        DQ IB           ; p &ib
-        DQ fetch        ; p ib
-        DQ MINUS        ; u
-        DQ numberIB     ; u &#ib
+        DQ IB, fetch            ; p ib
+        DQ MINUS                ; u
+        DQ numberIB             ; u &#ib
         DQ store
         DQ TRUE
         DQ EXIT
