@@ -207,32 +207,34 @@ ki.fresh
 ;
 
 ( fix-up the single character in ki.k )
-( Convert Control Chars to ^J form )
+( Convert Control Chars to ^J form,
+( and prefix everything with k: )
 : ki.fix
+  s" k:" ki.fixk swap cmove
   ki.k c@
   32 <
   if
-    [char] ^ ki.fixk c!
+    [char] ^ ki.fixk 2 + c!
     ki.k c@
-    64 or ki.fixk 1+ c!
-    ki.fixk 2
+    64 or ki.fixk 3 + c!
+    ki.fixk 4
   else
-    ki.k c@ ki.fixk c!
-    ki.fixk 1
+    ki.k c@ ki.fixk 2 + c!
+    ki.fixk 3
   then
 ;
 
 ( Makes LF exit the RL loop )
-: ^J 0 ;
+: k:^J 0 ;
 
 ( beginning-of-line )
-: ^A 0 ki.> ! 1 ;
+: k:^A 0 ki.> ! 1 ;
 
 ( backward-char )
-: ^B ki.> @ 1- 0 max ki.> ! 1 ;
+: k:^B ki.> @ 1- 0 max ki.> ! 1 ;
 
 ( erase-forward-char )
-: ^D
+: k:^D
   ( test if there are any characters ahead of point to erase )
   ki.n @                        ( n )
   ki.> @                        ( n > )
@@ -250,10 +252,10 @@ ki.fresh
 ;
 
 ( end-of-line )
-: ^E ki.n @ ki.> ! 1 ;
+: k:^E ki.n @ ki.> ! 1 ;
 
 ( forward-char )
-: ^F ki.> @ 1 + ki.n @ min ki.> ! 1 ;
+: k:^F ki.> @ 1 + ki.n @ min ki.> ! 1 ;
 
 ( Assuming the VT cursor is at ki.>save, )
 ( redraw from there to ki.n, )
