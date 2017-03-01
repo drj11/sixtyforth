@@ -158,7 +158,7 @@ create fstatbuf 144 allot
 
 : rl.z 96 ;             ( size )
 create rl.a rl.z allot  ( address )
-variable rl.>           ( cursor )
+variable rl.>           ( point )
 variable rl.n           ( validity )
 0 rl.> !
 0 rl.n !
@@ -169,6 +169,8 @@ variable rl.fixk        ( small buffer used for findword )
 
 : rl.input rl.a rl.n @ ;
 
+( Insert the text into the buffer at the current point, )
+( and advance the point past the inserted text. )
 : rl.insert ( addr u -- 1 )
   dup rl.n @ +
   rl.z >
@@ -178,7 +180,7 @@ variable rl.fixk        ( small buffer used for findword )
     0
   else
     ( addr u )
-    ( copy text to right of cursor up to make room )
+    ( copy text to right of point up to make room )
     rl.a rl.> @ +       ( addr u from )
     over                ( addr u from u )
     rl.> @ + rl.a +     ( addr u from to )
@@ -186,7 +188,7 @@ variable rl.fixk        ( small buffer used for findword )
     cmove>              ( addr u )
     ( increment length )
     dup rl.n +!         ( addr u )
-    ( copy new input into cursor )
+    ( copy new input at point )
     rl.a rl.> @ +       ( addr u > )
     over                ( addr u > u )
     ( bump rl.> )
@@ -224,7 +226,7 @@ variable rl.fixk        ( small buffer used for findword )
 
 ( erase-forward-char )
 : ^D
-  ( test if there are any characters ahead of cursor to erase )
+  ( test if there are any characters ahead of point to erase )
   rl.n @                        ( n )
   rl.> @                        ( n > )
   -                             ( u )
@@ -253,7 +255,7 @@ variable rl.fixk        ( small buffer used for findword )
   rl.>save @ rl.> @
   - dup                         ( n n )
   0 > if
-    ( new cursor is behind old one )
+    ( new point is behind old one )
     begin
       8 emit
       1-                        ( n )
@@ -263,15 +265,15 @@ variable rl.fixk        ( small buffer used for findword )
     drop
     ( :todo: redraw )
   else
-    ( new cursor is forward of old one )
+    ( new point is forward of old one )
     negate                      ( n )
-    ( type out text from old cursor pos to new cursor pos )
-    rl.a rl.>save @ +         ( n addr )
+    ( type out text from old point pos to new point pos )
+    rl.a rl.>save @ +           ( n addr )
     swap type                   ( )
     ( save cursor pos )
     s" [s" type
     ( type out rest of text )
-    rl.a rl.> @ +             ( addr )
+    rl.a rl.> @ +               ( addr )
     rl.n @ rl.> @ -             ( addr n )
     type
     ( clear rest of screen and return cursor )
@@ -289,7 +291,7 @@ variable rl.fixk        ( small buffer used for findword )
     if
       drop 0                    ( negative: EOF or error )
     else
-      ( save current cursor position )
+      ( save current point )
       rl.> @ rl.>save !
       rl.k !
       rl.fix
