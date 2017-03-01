@@ -56,6 +56,8 @@
 
 : 2drop drop drop ;
 
+: max over over < if swap then drop ;
+
 : .( [char] ) parse type ; immediate
 
 ( *fix-cfa )
@@ -154,66 +156,144 @@ create fstatbuf 144 allot
 
 : rc4 4 fmapr ?dup if evaluate else drop then ;
 
-: rl.z 96 ;             ( size )
-create rl.a rl.z allot  ( address )
-variable rl.>           ( cursor )
-variable rl.n           ( validity )
-0 rl.> !
-0 rl.n !
-variable rl.k           ( small buffer for key input )
-variable rl.fixk        ( small buffer used for findword )
+( Key Input )
 
-: rl.input rl.a rl.n @ ;
+: ki.z 96 ;             ( size )
+create ki.a ki.z allot  ( address )
+variable ki.>           ( point )
+variable ki.n           ( validity )
+variable ki.>save
+variable ki.k           ( small buffer for key input )
+variable ki.fixk        ( small buffer used for findword )
 
-: rl.insert ( addr u -- 1 )
-  dup rl.n @ +
-  rl.z >
+( reset key variables to create a fresh buffer )
+: ki.fresh
+  0 ki.> !
+  0 ki.n !
+  0 ki.>save !
+;
+ki.fresh
+
+: ki.input ki.a ki.n @ ;
+
+( Insert the text into the buffer at the current point, )
+( and advance the point past the inserted text. )
+: ki.insert ( addr u -- 1 )
+  dup ki.n @ +
+  ki.z >
   if
     ( buffer full )
     s" #%#" type
     0
   else
     ( addr u )
-    ( copy text to right of cursor up to make room )
-    rl.a rl.> @ +       ( addr u from )
+    ( copy text to right of point up to make room )
+    ki.a ki.> @ +       ( addr u from )
     over                ( addr u from u )
-    rl.> @ + rl.a +     ( addr u from to )
-    rl.n @ rl.> @ -     ( addr u from to n )
+    ki.> @ + ki.a +     ( addr u from to )
+    ki.n @ ki.> @ -     ( addr u from to n )
     cmove>              ( addr u )
     ( increment length )
-    dup rl.n +!         ( addr u )
-    ( copy new input into cursor )
-    rl.a rl.> @ +       ( addr u > )
+    dup ki.n +!         ( addr u )
+    ( copy new input at point )
+    ki.a ki.> @ +       ( addr u > )
     over                ( addr u > u )
-    ( bump rl.> )
-    rl.> +!             ( addr u > )
+    ( bump ki.> )
+    ki.> +!             ( addr u > )
     swap cmove          ( )
 
-    rl.input type
     1
   then
 ;
 
-( fix-up the single character in rl.k )
-( Convert Control Chars to ^J form )
-: rl.fix
-  rl.k c@
+( fix-up the single character in ki.k )
+( Convert Control Chars to ^J form,
+( and prefix everything with k: )
+: ki.fix
+  s" k:" ki.fixk swap cmove
+  ki.k c@
   32 <
   if
-    [char] ^ rl.fixk c!
-    rl.k c@
-    64 or rl.fixk 1+ c!
-    rl.fixk 2
+    [char] ^ ki.fixk 2 + c!
+    ki.k c@
+    64 or ki.fixk 3 + c!
+    ki.fixk 4
   else
-    rl.k c@ rl.fixk c!
-    rl.fixk 1
+    ki.k c@ ki.fixk 2 + c!
+    ki.fixk 3
   then
 ;
 
 ( Makes LF exit the RL loop )
-: ^J 0 ;
+: k:^J 0 ;
 
-: rl
+( beginning-of-line )
+: k:^A 0 ki.> ! 1 ;
+
+( backward-char )
+: k:^B ki.> @ 1- 0 max ki.> ! 1 ;
+
+( erase-forward-char )
+: k:^D
+  ( test if there are any characters ahead of point to erase )
+  ki.n @                        ( n )
+  ki.> @                        ( n > )
+  -                             ( u )
+  if
+    ( copy down characters )
+    ki.a ki.> @ +               ( to )
+    dup 1+ swap                 ( from to )
+    ki.n @ ki.> @ - 1-          ( from to n )
+    cmove
+    ( shrink buffer )
+    -1 ki.n +!
+  then
+  1
+;
+
+( end-of-line )
+: k:^E ki.n @ ki.> ! 1 ;
+
+( forward-char )
+: k:^F ki.> @ 1 + ki.n @ min ki.> ! 1 ;
+
+( kill-to-end )
+: k:^K ki.> @ ki.n ! 1 ;
+
+( Assuming the VT cursor is at ki.>save, )
+( redraw from there to ki.n, )
+( and reposition VT cursor at ki.> . )
+: ki.redraw
+  ki.>save @ ki.> @
+  - dup                         ( n n )
+  0 > if
+    ( new point is behind old one )
+    begin
+      8 emit
+      1-                        ( n )
+      dup
+      0=
+    until
+    drop
+    ( :todo: redraw )
+  else
+    ( new point is forward of old one )
+    negate                      ( n )
+    ( type out text from old point pos to new point pos )
+    ki.a ki.>save @ +           ( n addr )
+    swap type                   ( )
+    ( save cursor pos )
+    s" [s" type
+    ( type out rest of text )
+    ki.a ki.> @ +               ( addr )
+    ki.n @ ki.> @ -             ( addr n )
+    type
+    ( clear rest of screen and return cursor )
+    s" [J[u" type
+  then
+;
+
+: ki.edit
   0 tty.store
   0 tty.keypress
 
@@ -223,15 +303,25 @@ variable rl.fixk        ( small buffer used for findword )
     if
       drop 0                    ( negative: EOF or error )
     else
-      rl.k !
-      rl.fix over over type findword
-      0= if rl.k 1 rl.insert else execute then
+      ( save current point )
+      ki.> @ ki.>save !
+      ki.k !
+      ki.fix
+      findword
+      0= if ki.k 1 ki.insert else execute then
+      ki.redraw
     then
     while
   repeat
   drop
+  13 emit 10 emit
 
   0 tty.restore
+;
+
+: ki
+  ki.fresh
+  ki.edit
 ;
 
 : rc.defined true ;
