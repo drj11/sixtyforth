@@ -2095,7 +2095,7 @@ READLOOP:
         DQ stdexe
         DQ vRESET
 .line:
-        DQ QPROMPT
+        DQ qPROMPT
         DQ filbuf       ; basically QUERY from std
         DQ ZEROBRANCH
         DQ (.x-$)
@@ -2490,7 +2490,7 @@ sysEXIT:
         mov rax, 60
         syscall
 
-QPROMPT:
+qPROMPT:
         DQ stdexe
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
