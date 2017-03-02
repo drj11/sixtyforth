@@ -98,11 +98,11 @@ variable chbuf
        ( -- -ve         / on os error )
   0 fgetc ;
 
-create rltcgetsv 36 allot
+create tty.buffer 36 allot
 
 ( Store TTY settings. )
 : tty.store ( fd -- )
-  rltcgetsv tcgets drop
+  tty.buffer tcgets drop
 ;
 
 ( Put TTY in keypress mode )
@@ -116,7 +116,7 @@ create rltcgetsv 36 allot
 
 ( Restore TTY settings. )
 : tty.restore ( fd -- )
-  rltcgetsv tcsets drop
+  tty.buffer tcsets drop
 ;
 
 ( Put the TTY into keypress mode to get a single keypress )
