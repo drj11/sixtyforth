@@ -220,7 +220,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 
 ( Makes LF exit the RL loop )
-: k:^J 0 ;
+: k:^J ki.k 1 ki.insert 0 ;
 
 ( beginning-of-line )
 : k:^A 0 ki.> ! 1 ;
