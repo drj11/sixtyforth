@@ -1270,10 +1270,12 @@ MIN:
         DQ EXIT
         CtoL(MIN)
 
-        DQ 6
-        DQ 'create'     ; std1983
-CREATE: DQ stdexe
-        DQ PARSEWORD    ; ( addr u )
+        DQ 7
+        DQ '*create'
+starCREATE:
+        DQ stdexe
+        ; *CREATE ( addr u -- )
+        ; Create dictionary entry for word left on stack.
         ; Link Field Address
         DQ HERE         ; ( addr u lfa)
         ; Rotate the LFA out of the way for now
@@ -1303,6 +1305,15 @@ CREATE: DQ stdexe
         ; Update Dictionary pointer
         DQ LIT, DICT    ; ( lfa &dict )
         DQ store
+        DQ EXIT
+        CtoL(starCREATE)
+
+        DQ 6
+        DQ 'create'
+CREATE:
+        DQ stdexe
+        DQ PARSEWORD    ; ( addr u )
+        DQ starCREATE
         DQ EXIT
         CtoL(CREATE)
 
