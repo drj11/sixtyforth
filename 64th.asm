@@ -2085,6 +2085,15 @@ ZEROBRANCH:
         CtoL(ZEROBRANCH)
 
         DQ 7
+        DQ '*stdexe'
+starSTDEXE:
+        DQ stdexe
+        ; Push the address of `stdexe`
+        DQ LIT, stdexe
+        DQ EXIT
+        CtoL(starSTDEXE)
+
+        DQ 7
         DQ 'useless'
 USELESS:
         DQ stdvar

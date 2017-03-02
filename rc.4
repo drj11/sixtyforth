@@ -224,6 +224,27 @@ ki.fresh
   then
 ;
 
+: erase-backward-char
+  ki.> @
+  if
+    ( copy down characters )
+    ki.a ki.> @ +               ( from )
+    dup 1-                      ( from to )
+    ki.n @ ki.> @ -             ( from to n )
+    cmove
+    ( shrink buffer )
+    -1 ki.> +!
+    -1 ki.n +!
+  then
+;
+
+( Create a binding for the current stty erase key )
+0 tty.store
+tty.buffer 19 + c@
+ki.k c!
+ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
+
+
 ( Makes LF exit the RL loop )
 : k:^J 0 ;
 
@@ -260,6 +281,21 @@ ki.fresh
 ( kill-to-end )
 : k:^K ki.> @ ki.n ! 1 ;
 
+( Assume point and VT cursor are together, )
+( save VT cursor, type out rest of line, )
+( and return VT cursor here. )
+( Factor of ki.redraw )
+: ki.savetype ( -- )
+  ( save cursor pos )
+  s" [s" type
+  ( type out rest of text )
+  ki.a ki.> @ +               ( addr )
+  ki.n @ ki.> @ -             ( addr n )
+  type
+  ( clear rest of screen and return cursor )
+  s" [J[u" type
+;
+
 ( Assuming the VT cursor is at ki.>save, )
 ( redraw from there to ki.n, )
 ( and reposition VT cursor at ki.> . )
@@ -275,21 +311,14 @@ ki.fresh
       0=
     until
     drop
-    ( :todo: redraw )
+    ki.savetype
   else
     ( new point is forward of old one )
     negate                      ( n )
     ( type out text from old point pos to new point pos )
     ki.a ki.>save @ +           ( n addr )
     swap type                   ( )
-    ( save cursor pos )
-    s" [s" type
-    ( type out rest of text )
-    ki.a ki.> @ +               ( addr )
-    ki.n @ ki.> @ -             ( addr n )
-    type
-    ( clear rest of screen and return cursor )
-    s" [J[u" type
+    ki.savetype
   then
 ;
 
