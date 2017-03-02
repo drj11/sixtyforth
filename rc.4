@@ -130,32 +130,6 @@ create tty.buffer 36 allot
   0 tty.restore
 ;
 
-( see note/fstat.md )
-create fstatbuf 144 allot
-
-: fstat* ( n -- res )
-  ( leaves result in `fstatbuf` )
-  fstatbuf 0 5 syscall3 ;
-
-: flen ( n -- sz/err )
-  ( Length of file opened on fildes n )
-  ( -ve if there is an error )
-  fstat* ?dup if else fstatbuf 48 + @ then ;
-
-
-: fmapr ( n -- addr u )
-  ( Map fildes n into memory for reading )
-  ( address and length of mapping are left on stack )
-  dup flen dup 1 < if drop drop 0 0 else
-  ( n sz )
-  swap over                     ( sz n sz )
-  0 rot rot swap                ( sz 0 sz n )
-  1 2 rot                       ( sz 0 sz 1 2 n )
-  0 9 syscall6                  ( sz addr )
-  swap then ;
-
-: rc4 4 fmapr ?dup if evaluate else drop then ;
-
 ( Key Input )
 
 : ki.z 96 ;             ( size )
@@ -352,5 +326,31 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   ki.fresh
   ki.edit
 ;
+
+( see note/fstat.md )
+create fstatbuf 144 allot
+
+: fstat* ( n -- res )
+  ( leaves result in `fstatbuf` )
+  fstatbuf 0 5 syscall3 ;
+
+: flen ( n -- sz/err )
+  ( Length of file opened on fildes n )
+  ( -ve if there is an error )
+  fstat* ?dup if else fstatbuf 48 + @ then ;
+
+
+: fmapr ( n -- addr u )
+  ( Map fildes n into memory for reading )
+  ( address and length of mapping are left on stack )
+  dup flen dup 1 < if drop drop 0 0 else
+  ( n sz )
+  swap over                     ( sz n sz )
+  0 rot rot swap                ( sz 0 sz n )
+  1 2 rot                       ( sz 0 sz 1 2 n )
+  0 9 syscall6                  ( sz addr )
+  swap then ;
+
+: rc4 4 fmapr ?dup if evaluate else drop then ;
 
 : rc.defined true ;
