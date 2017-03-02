@@ -230,6 +230,13 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 ( erase-forward-char )
 : k:^D
+  ( if entire line is empty, terminate )
+  ki.n @ 0= ki.> @ 0=
+  and
+  if
+    0
+    exit
+  then
   ( test if there are any characters ahead of point to erase )
   ki.n @                        ( n )
   ki.> @                        ( n > )
