@@ -324,7 +324,6 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
     while
   repeat
   drop
-  13 emit 10 emit
 
   0 tty.restore
 ;
@@ -359,5 +358,20 @@ create fstatbuf 144 allot
   swap then ;
 
 : rc4 4 fmapr ?dup if evaluate else drop then ;
+
+: kipl
+  begin
+    ki
+    ki.input
+    ?dup
+    if
+      evaluate
+      0
+    else
+      drop
+      1
+    then
+  until
+;
 
 : rc.defined true ;
