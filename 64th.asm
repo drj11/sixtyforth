@@ -1273,14 +1273,15 @@ MIN:
         DQ 6
         DQ 'create'     ; std1983
 CREATE: DQ stdexe
-        ; Link Field Address, used much later
-        DQ HERE         ; (lfa)
+        DQ PARSEWORD    ; ( addr u )
+        ; Link Field Address
+        DQ HERE         ; ( addr u lfa)
+        ; Rotate the LFA out of the way for now
+        DQ ROT, ROT     ; ( lfa addr u )
         ; Compile Link Field
         DQ LIT, DICT
         DQ fetch
         DQ comma
-
-        DQ PARSEWORD    ; ( lfa addr u )
 
         ; Compile Name Field.
         ; Name Length.
