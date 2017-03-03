@@ -1,0 +1,7 @@
+before_install:
+  - sudo apt-get install nasm
+install:
+  - npm install urchin
+script:
+ - make
+ - make test
