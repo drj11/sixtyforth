@@ -2094,6 +2094,15 @@ starSTDEXE:
         CtoL(starSTDEXE)
 
         DQ 7
+        DQ '*vreset'
+starVRESET:
+        DQ stdexe
+        ; Push the address of the RESET vector.
+        DQ LIT, avRESET
+        DQ EXIT
+        CtoL(starVRESET)
+
+        DQ 7
         DQ 'useless'
 USELESS:
         DQ stdvar
