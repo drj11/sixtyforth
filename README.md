@@ -1,5 +1,7 @@
 # SixtyForth
 
+[![Build Status](https://travis-ci.org/drj11/sixtyforth.svg?branch=master)](https://travis-ci.org/drj11/sixtyforth)
+
 Welcome to SixtyForth, `64th` for short.
 
 SixtyForth a 64-bit implementation of FORTH
