@@ -2151,20 +2151,18 @@ ipl:    DQ stdexe
         DQ sysEXIT
 
 qEXECUTE:
+        DQ stdexe
         ; ( c-addr u 0 -- n ) push number
         ; ( c-addr u xt n -- ... ) execute word
-        ; addr and flag are typically left by FIND.
-        ; if flag is non zero then EXECUTE addr;
+        ; xt (execution token) is typically left by FINDWORD.
+        ; if n is non zero then EXECUTE/COMPILE xt;
         ; otherwise try and handle number.
-        DQ stdexe
         DQ qDUP
         DQ ZEROBRANCH
         DQ (.n-$)
         ; c-addr u addr +-1
-        DQ ROT
-        DQ DROP         ; c-addr addr +-1
-        DQ ROT
-        DQ DROP         ; addr +-1
+        DQ ROT, DROP    ; c-addr addr +-1
+        DQ ROT, DROP    ; addr +-1
         ; immediate=1; non-immediate=-1
         DQ LIT, 1
         DQ PLUS         ; (addr 0/2)
@@ -2180,13 +2178,14 @@ qEXECUTE:
 .comp:  ; (addr)
         DQ comma
         DQ EXIT
-.n:     ; (c-addr u)
+.n:
+        ; Handle as number.
+        ; (c-addr u)
         DQ qNUMBER
         DQ ZEROBRANCH
         DQ (.abort-$)
         ; (n)
-        DQ STATE
-        DQ fetch        ; n compiling?
+        DQ STATE, fetch ; n compiling?
         DQ ZEROBRANCH
         DQ (.x-$)
         DQ LITERAL
