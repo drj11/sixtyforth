@@ -1,5 +1,8 @@
 # Readline
 
+(It's now called Key Line in the code,
+using a `ki` prefix)
+
 By running `stty` from another terminal
 we can inspect how bash/readline uses the various tty modes.
 
@@ -45,7 +48,11 @@ But they appear to work on Gnome Terminal.
 
 # Buffer state
 
-- rl.a address of beginning of buffer
-- rl.z size of buffer
-- rl.> position of cursor
-- rl.n number of valid input characters
+- ki.a address of beginning of buffer
+- ki.z size of buffer
+- ki.> position of cursor
+- ki.n number of valid input characters
+
+## Further Reading
+
+https://github.com/antirez/linenoise/ is fun
