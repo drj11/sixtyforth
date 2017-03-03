@@ -2110,7 +2110,6 @@ DICT:   CtoL(USELESS)
 ;   interpret line
 READLOOP:
         DQ stdexe
-        DQ vRESET
 .line:
         DQ qPROMPT
         DQ REFILL
@@ -2147,7 +2146,7 @@ INTERPRETLINE:
         DQ EXIT
 
 ipl:    DQ stdexe
-        DQ READLOOP
+        DQ vRESET
         DQ sysEXIT
 
 qEXECUTE:
@@ -2323,7 +2322,7 @@ reset:  ; QUIT jumps here
 
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
         ; so as to fake executing the Forth word IPL.
-        mov rdx, READLOOP
+        mov rdx, vRESET
         mov rbx, ipl+16
 
 stdexe:
@@ -2544,11 +2543,13 @@ RC:
 
 RUNRC:
         DQ stdexe
-        DQ LIT, EXIT
+        DQ LIT, READLOOP
         DQ LIT, avRESET
         DQ store
         DQ RC
         DQ EVALUATE
-        DQ EXIT
+        ; We just changed the vectored reset to point to READLOOP,
+        ; so this jumps to the READLOOP.
+        DQ QUIT
 
 
