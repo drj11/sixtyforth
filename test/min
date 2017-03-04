@@ -1,0 +1,14 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+
+out=$(echo '-1 1 min .
+-9223372036854775808 -9223372036854775807 min .
+99 99 min .
+9223372036854775806 9223372036854775807 min .
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("-1 -9223372036854775808 99 9223372036854775806 ") exit 0;;
+esac
+exit 2

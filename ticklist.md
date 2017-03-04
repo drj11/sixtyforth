@@ -52,7 +52,7 @@ FILL    i
 I
 J
 MAX
-MIN     p (not directly tested)
+MIN     i
 MOD
 NEGATE  i
 NOT
