@@ -671,29 +671,51 @@ fBL:    DQ stdexe
         DQ EXIT
         CtoL(fBL)
 
+        DQ 5
+        DQ 'ftype'
+FTYPE:
+        DQ stdexe
+        ; FTYPE ( addr +n fd -- )
+        ; Type out string on file descriptor fd.
+        DQ ROT, ROT     ; fd addr n
+        DQ LIT, sys_write
+        DQ SYSCALL3
+        DQ DROP
+        DQ EXIT
+        CtoL(FTYPE)
+
         DQ 4
         DQ 'type'       ; std1983
 TYPE:   DQ stdexe
         ; TYPE ( addr +n -- )
         DQ LIT, 1       ; addr n 1      ; stdout
-        DQ ROT
-        DQ ROT          ; 1 addr n
-        DQ LIT, sys_write
-        DQ SYSCALL3
-        DQ DROP
+        DQ FTYPE
         DQ EXIT
         CtoL(TYPE)
+
+        DQ 5
+        DQ 'femit'
+FEMIT:
+        DQ stdexe
+        ; FEMIT ( ch fd -- )
+        ; Emit character on file descriptor fd.
+        DQ SWAP         ; fd ch
+        DQ LIT, emitbuf ; fd ch addr
+        DQ Cstore
+        DQ LIT, emitbuf ; fd addr
+        DQ LIT, 1       ; fd addr 1
+        DQ ROT
+        DQ FTYPE
+        DQ EXIT
+        CtoL(FEMIT)
 
         DQ 4
         DQ 'emit'       ; std1994
 EMIT:
         DQ stdexe
         ; EMIT ( ch -- )
-        DQ LIT, emitbuf ; ch addr
-        DQ Cstore
-        DQ LIT, emitbuf ; addr
-        DQ LIT, 1       ; addr n
-        DQ TYPE
+        DQ LIT, 1       ; ch 1
+        DQ FEMIT
         DQ EXIT
         CtoL(EMIT)
 
