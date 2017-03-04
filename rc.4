@@ -132,6 +132,13 @@ create tty.buffer 36 allot
 
 ( Key Input )
 
+( type on stderr )
+: etype ( addr u -- )
+  2 ftype ;
+
+: eemit ( ch -- )
+  2 femit ;
+
 : ki.z 96 ;             ( size )
 create ki.a ki.z allot  ( address )
 variable ki.>           ( point )
@@ -157,7 +164,7 @@ ki.fresh
   ki.z >
   if
     ( buffer full )
-    s" #%#" type
+    s" #%#" etype
     0
   else
     ( addr u )
@@ -276,13 +283,13 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( Factor of ki.redraw )
 : ki.savetype ( -- )
   ( save cursor pos )
-  s" [s" type
+  s" [s" etype
   ( type out rest of text )
   ki.a ki.> @ +               ( addr )
   ki.n @ ki.> @ -             ( addr n )
-  type
+  etype
   ( clear rest of screen and return cursor )
-  s" [J[u" type
+  s" [J[u" etype
 ;
 
 ( Assuming the VT cursor is at ki.>save, )
@@ -294,7 +301,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   0 > if
     ( new point is behind old one )
     begin
-      8 emit
+      8 eemit
       1-                        ( n )
       dup
       0=
@@ -306,7 +313,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
     negate                      ( n )
     ( type out text from old point pos to new point pos )
     ki.a ki.>save @ +           ( n addr )
-    swap type                   ( )
+    swap etype                  ( )
     ki.savetype
   then
 ;
@@ -336,7 +343,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
         depth r>                ( flag depth1 depth0 )
         -
         if
-          s" stack imbalance" type
+          s" stack imbalance" etype
         then
       then
       ki.redraw
@@ -385,7 +392,7 @@ create fstatbuf 144 allot
     ?dup
     if
       evaluate
-      s"  ok" type 10 emit
+      s"  ok" etype 10 eemit
       0
     else
       drop
