@@ -51,7 +51,7 @@ EXIT    i
 FILL    i
 I
 J
-MAX
+MAX     i
 MIN     i
 MOD
 NEGATE  i
