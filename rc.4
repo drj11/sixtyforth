@@ -403,3 +403,8 @@ create fstatbuf 144 allot
 ;
 
 : rc.defined true ;
+
+( Modify reset vector to point to kipl ... )
+' kipl *vreset ! ( )
+( ... and jump through vector to continue at kipl )
+quit
