@@ -38,7 +38,7 @@ AND     i
 C!      i
 C@      i
 CMOVE   i
-CMOVE>
+CMOVE>  i
 COUNT   m
 D+      i
 D<
