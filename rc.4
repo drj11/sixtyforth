@@ -218,9 +218,15 @@ tty.buffer 19 + c@
 ki.k c!
 ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
+: end-of-line
+  ki.n @ ki.> ! ;
 
 ( Makes LF exit the RL loop )
-: k:^J 0 ;
+: k:^J
+  end-of-line
+  s"  " ki.insert drop
+  0
+;
 
 ( beginning-of-line )
 : k:^A 0 ki.> ! 1 ;
@@ -254,7 +260,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ;
 
 ( end-of-line )
-: k:^E ki.n @ ki.> ! 1 ;
+: k:^E
+  end-of-line 1
+;
 
 ( forward-char )
 : k:^F ki.> @ 1 + ki.n @ min ki.> ! 1 ;
