@@ -2202,10 +2202,12 @@ qEXECUTE:
 .abort:
         DQ TYPE
         DQ LIT, .error
-        DQ LIT, 2
+        DQ LIT, .errorlen
         DQ TYPE
         DQ QUIT
-.error: DQ ' ?'
+.error: DB ' ?', 10
+.errorlen EQU $-.error
+
 
 qNUMBER:
         DQ stdexe
