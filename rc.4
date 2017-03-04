@@ -309,21 +309,32 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
   begin
     getc
-    dup 0 <
+    dup 0 <                     ( ch flag )
     if
-      drop 0                    ( negative: EOF or error )
+      ( negative: EOF or error )
+      drop 0                    ( 0 )
     else
+      ( save input byte )
+      ki.k !                    ( )
       ( save current point )
-      ki.> @ ki.>save !
-      ki.k !
-      ki.fix
-      findword
-      0= if ki.k 1 ki.insert else execute then
+      ki.> @ ki.>save !         ( )
+      ki.fix                    ( addr u )
+      findword                  ( addr fl | 0 )
+      0= if
+        ki.k 1 ki.insert
+      else
+        depth >r
+        execute
+        depth r>                ( flag depth1 depth0 )
+        -
+        if
+          s" stack imbalance" type
+        then
+      then
       ki.redraw
     then
     while
   repeat
-  drop
 
   0 tty.restore
 ;
