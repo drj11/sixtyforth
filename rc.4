@@ -55,6 +55,9 @@
   -1 1 m*/ ;
 
 : 2drop drop drop ;
+: 2dup over over ;
+: tuck ( a b -- b a b )
+  swap over ;
 
 : max over over < if swap then drop ;
 
@@ -277,45 +280,97 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( kill-to-end )
 : k:^K ki.> @ ki.n ! 1 ;
 
+( Fix cursor position if it is at end of row )
+: ki.curfix
+  ki.n @
+  s>d
+  80
+  um/mod                        ( col row )
+  0> swap 0= and
+  if
+    10 eemit
+  then
+;
+
+( Emit ANSI codes to move VT cursor,
+( from location from to location to. )
+( `from` and `to` are byte positions in the ki.a input string. )
+: ki.motion ( from to -- )
+  80 >r
+  s>d r@ um/mod                 ( from to-col to-row )
+  rot                           ( to-col to-row from )
+  s>d r> um/mod                 ( to-col to-row from-col from-row )
+  rot                           ( to-col from-col from-row to-row )
+  ( vertical motion )
+  2dup                          ( t-col f-col f-row t-row f-row t-row )
+  > if
+    ( upward motion )
+    - s>d                       ( t-col f-col dn )
+    <# [char] A hold #s [char] [ hold 27 hold #>
+    etype                       ( t-col f-col )
+  else
+    2dup <                      ( t-col f-col f-row t-row flag )
+    if
+      ( downward motion )
+      - negate s>d              ( t-col f-col dn )
+      <# [char] B hold #s [char] [ hold 27 hold #>
+      etype                     ( t-col f-col )
+    else
+      2drop
+    then
+  then
+  drop                          ( t-col )
+  1+ s>d <# [char] G hold #s [char] [ hold 27 hold #>
+  etype                         ( )
+;
+
 ( Assume point and VT cursor are together, )
-( save VT cursor, type out rest of line, )
+( type out rest of line, )
 ( and return VT cursor here. )
 ( Factor of ki.redraw )
-: ki.savetype ( -- )
-  ( save cursor pos )
-  s" [s" etype
+: ki.heretype ( -- )
   ( type out rest of text )
-  ki.a ki.> @ +               ( addr )
-  ki.n @ ki.> @ -             ( addr n )
-  etype
-  ( clear rest of screen and return cursor )
-  s" [J[u" etype
+  ki.a ki.> @ +                 ( addr )
+  ki.n @ ki.> @ -               ( addr n )
+  tuck                          ( n addr n )
+  etype                         ( n )
+  if
+    ki.curfix
+  then
+  ( clear rest of screen )
+  s" [J" etype
+  ki.n @ ki.> @
+  ki.motion
 ;
 
 ( Assuming the VT cursor is at ki.>save, )
-( redraw from there to ki.n, )
+( redraw from whichever of ki.>save and ki.> is leftmost, )
 ( and reposition VT cursor at ki.> . )
 : ki.redraw
-  ki.>save @ ki.> @
-  - dup                         ( n n )
-  0 > if
+  ki.>save @ ki.> @             ( old new )
+  > if
     ( new point is behind old one )
-    begin
-      8 eemit
-      1-                        ( n )
-      dup
-      0=
-    until
-    drop
-    ki.savetype
+    ki.>save @ ki.> @           ( from to )
+    ki.motion                   ( )
+    ki.> @                      ( p )
   else
     ( new point is forward of old one )
-    negate                      ( n )
-    ( type out text from old point pos to new point pos )
-    ki.a ki.>save @ +           ( n addr )
-    swap etype                  ( )
-    ki.savetype
+    ki.>save @                  ( p )
   then
+  ( position of current VT on stack )
+  ( type out text to end )
+  ki.n @                        ( p n )
+  over -                        ( p u )
+  ki.a                          ( p u a )
+  rot +                         ( u addr )
+  over                          ( u addr u )
+  etype                         ( u )
+  if
+    ki.curfix
+  then
+  s" [J" etype
+  ki.n @ ki.> @
+  ki.motion
 ;
 
 : ki.edit
