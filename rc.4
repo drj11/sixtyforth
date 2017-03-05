@@ -466,6 +466,7 @@ create fstatbuf 144 allot
 
 : fmapr ( fd -- addr u )
   ( Map fildes fd into memory for reading. )
+  ( File Map for Reading )
   ( Address and length of mapping are left on stack. )
   dup flen                      ( fd sz )
   dup 1 <
@@ -478,12 +479,23 @@ create fstatbuf 144 allot
     0 rot rot swap              ( sz 0 sz n )
     ( For #defines, see /usr/include/asm-generic/mman-common.h )
     ( PROT_READ 1 )
+    ( PROT_WRITE 2 )
     ( MAP_PRIVATE 2 )
+    ( MAP_ANONYMOUS 32 )
     1 2 rot                     ( sz 0 sz 1 2 n )
     0                           ( sz 0 sz 1 2 n 0 )
     9 syscall6                  ( sz addr )
     swap
   then
+;
+
+: amapw ( sz -- addr )
+  ( Request freshly allocated memory. )
+  ( Anonymous Map for Writing. )
+  0 swap                        ( 0 sz )
+  3 34 ( prot flags )           ( 0 sz 3 34 )
+  -1 0 ( fd offset )            ( 0 sz 3 34 -1 0 )
+  9 syscall6                    ( addr )
 ;
 
 : rc4 4 fmapr ?dup if evaluate else drop then ;
