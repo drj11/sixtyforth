@@ -185,5 +185,6 @@ S"      i
 S>D     i
 SM/REM  i
 TRUE    i
+TUCK    i
 WITHIN  i
 [CHAR]  i
