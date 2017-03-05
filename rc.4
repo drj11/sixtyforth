@@ -308,6 +308,15 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( kill-to-end )
 : k:^K ki.> @ ki.n ! 1 ;
 
+( previous )
+: k:^P
+  s" bob" tuck ki.a swap        ( u from to u )
+  cmove                         ( u )
+  ki.n !
+  0 ki.> !
+  1
+;
+
 ( Fix cursor position if it is at end of row )
 : ki.curfix
   ki.n @
