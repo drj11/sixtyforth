@@ -464,16 +464,27 @@ create fstatbuf 144 allot
   fstat* ?dup if else fstatbuf 48 + @ then ;
 
 
-: fmapr ( n -- addr u )
-  ( Map fildes n into memory for reading )
-  ( address and length of mapping are left on stack )
-  dup flen dup 1 < if drop drop 0 0 else
-  ( n sz )
-  swap over                     ( sz n sz )
-  0 rot rot swap                ( sz 0 sz n )
-  1 2 rot                       ( sz 0 sz 1 2 n )
-  0 9 syscall6                  ( sz addr )
-  swap then ;
+: fmapr ( fd -- addr u )
+  ( Map fildes fd into memory for reading. )
+  ( Address and length of mapping are left on stack. )
+  dup flen                      ( fd sz )
+  dup 1 <
+  if
+    drop drop
+    0 0
+  else
+    ( n sz )
+    swap over                   ( sz n sz )
+    0 rot rot swap              ( sz 0 sz n )
+    ( For #defines, see /usr/include/asm-generic/mman-common.h )
+    ( PROT_READ 1 )
+    ( MAP_PRIVATE 2 )
+    1 2 rot                     ( sz 0 sz 1 2 n )
+    0                           ( sz 0 sz 1 2 n 0 )
+    9 syscall6                  ( sz addr )
+    swap
+  then
+;
 
 : rc4 4 fmapr ?dup if evaluate else drop then ;
 
