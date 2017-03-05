@@ -122,6 +122,34 @@ create tty.buffer 36 allot
   tty.buffer tcsets drop
 ;
 
+create tty.szbuf 8 allot
+
+: tiocgwinsz ( fd p -- res )
+  ( 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h )
+  21523                 ( fd p 0x5413 )
+  swap                  ( fd 0x5413 p )
+  ( ioctl )
+  16 syscall3           ( res )
+;
+
+variable tty.vbuf
+-1 tty.vbuf !
+
+( Number of columns in TTY )
+: tty.cols ( -- cols )
+  0 tty.szbuf
+  tiocgwinsz
+  0= if
+    tty.szbuf 2+        ( a+2 )
+    dup 1+              ( a+2 a+3 )
+    c@ swap c@          ( b1 b0 )
+    swap                ( b0 b1 )
+    256 * +             ( cols )
+    tty.vbuf !
+  then
+  tty.vbuf @
+;
+
 ( Put the TTY into keypress mode to get a single keypress )
 : getch
 
@@ -284,7 +312,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : ki.curfix
   ki.n @
   s>d
-  80
+  tty.cols
   um/mod                        ( col row )
   0> swap 0= and
   if
@@ -296,7 +324,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( from location from to location to. )
 ( `from` and `to` are byte positions in the ki.a input string. )
 : ki.motion ( from to -- )
-  80 >r
+  tty.cols >r
   s>d r@ um/mod                 ( from to-col to-row )
   rot                           ( to-col to-row from )
   s>d r> um/mod                 ( to-col to-row from-col from-row )
