@@ -75,6 +75,10 @@
   here over allot                       ( from n to )
   swap cmove ; immediate
 
+( CONSTANT      std1983 )
+: constant ( x -- / -- x )
+  variable last name> >body ! does> @ ;
+
 ( see note/fstat.md )
 create fstatbuf 144 allot
 
