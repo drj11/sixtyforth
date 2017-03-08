@@ -240,6 +240,56 @@ ki.fresh
 
 : ki.input ki.a ki.n @ ;
 
+( Key Input History )
+
+( memory block for all strings in history )
+variable ki.strings
+1000000000 amapw ki.strings !
+
+3 constant ki.nlines
+create ki.lines ki.nlines cells allot
+
+( history-cursor - which history element we are currently showing )
+( oldest-history - number of oldest history element )
+( next-history - number of next history element to be created )
+( oldest-history and next-history only ever increment )
+
+( ^P and ^N move the history cursor up and down, )
+( and as long as there is a history element in memory, )
+( it is copied to the ki buffer. )
+
+( History is a copy on write affair. )
+
+( Modifying the ki buffer marks it as modified, )
+
+( ^J saves the ki buffer to history, and marks it as frozen. )
+( ^N, or ^P saves the ki buffer to history only if )
+( the ki buffer is modified. )
+
+( The most recent history element has associated with it, )
+( a "frozen" flag, which is unset until enter is pressed. )
+( It is used to control saving. )
+( When the ki buffer is saved to history, )
+( if the most recent history element is frozen, )
+( a new history element is created; )
+( otherwise, the most recent history element is used, then )
+( marked as frozen. )
+
+( The history list is only ever appended to. )
+( Only the oldest history element can be removed, )
+( and it is removed to make room for new ones. )
+
+( The following behaviours are observed: )
+( ^P and ^N scroll through history. )
+( Executing a line creates a new history element. )
+( Modifying a line creates a new history element, )
+( but one which can be subsequently re-edited without creating )
+( further new history elements. )
+( ^P ... edits ... ^P ... edits ... will lose the first set of edits. )
+
+
+( Key Input Commands )
+
 ( Insert the text into the buffer at the current point, )
 ( and advance the point past the inserted text. )
 : ki.insert ( addr u -- 1 )
