@@ -93,6 +93,8 @@
   swap cmove ; immediate
 
 ( CONSTANT      std1983 )
+( buggy: appears to exit the word that called a routine defined with constant )
+( 3 constant pi : foo pi s" foo" type ; )
 : constant ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
