@@ -326,9 +326,8 @@ variable next-history
     <                           ( i bf )
   while
     dup .
-    depth .
     dup hl@                     ( i addr u )
-    . . cr                      ( i )
+    type cr                     ( i )
     1+                          ( i+1 )
   repeat
   drop
