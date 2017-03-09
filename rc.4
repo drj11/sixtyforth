@@ -270,8 +270,38 @@ hl.block @ hl.p !
 : hl.n 3 ;
 create hl.array 2 hl.n * cells allot
 
-variable next-history
-0 next-history !
+variable hl.next
+0 hl.next !
+variable hl.cursor
+0 hl.cursor !
+
+: hl.base ( -- base )
+  ( Index of earliest history element )
+  hl.n hl.next @ max
+  hl.n -
+;
+
+: hl.curprev ( -- bf )
+  hl.cursor @ hl.base            ( c base )
+  >
+  if
+    -1 hl.cursor +!
+    true
+  else
+    0
+  then
+;
+
+: hl.curnext ( -- bf )
+  hl.cursor @ hl.next @ 1-      ( c end )
+  <
+  if
+    1 hl.cursor +!
+    true
+  else
+    0
+  then
+;
 
 : hl.a! ( u addr i -- )
   ( store addr u into the ith double-world entry in hl.array )
@@ -289,23 +319,17 @@ variable next-history
   hl.p @                        ( u hp )
   over hl.p                     ( u hp u &hp )
   +!                            ( u hp )
-  next-history @ hl.n           ( u hp h n )
+  hl.next @ hl.n                ( u hp h n )
   mod                           ( u hp i )
   hl.a!                         ( )
-  1 next-history +!
-;
-
-: hl.base ( -- base )
-  ( Index of earliest history element )
-  hl.n next-history @ max
-  hl.n -
+  1 hl.next +!
 ;
 
 : hl@ ( i -- addr u )
   ( Fetch string from history; 0 0 if invalid index )
   dup                           ( i i )
   hl.base                       ( i i base )
-  next-history @                ( i i base limit )
+  hl.next @                     ( i i base limit )
   within                        ( i bf )
   if
     hl.n mod                    ( array-index )
@@ -322,7 +346,7 @@ variable next-history
 : hl.
   hl.base                       ( i )
   begin
-    dup next-history @          ( i i n )
+    dup hl.next @               ( i i n )
     <                           ( i bf )
   while
     dup .
@@ -333,10 +357,12 @@ variable next-history
   drop
 ;
 
-( history-cursor - which history element we are currently showing )
-( oldest-history - number of oldest history element )
-( next-history - number of next history element to be created )
-( oldest-history and next-history only ever increment )
+( hl.cursor     - which history element we are currently showing )
+( hl.next       - number of next history element to be created )
+( hl.next only ever increments )
+( The counterpart, hl.earliest, the earliest history element, )
+( is not explicitly stored. It is computed by hl.base. )
+
 
 ( ^P and ^N move the history cursor up and down, )
 ( and as long as there is a history element in memory, )
@@ -449,6 +475,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : k:^J
   end-of-line
   ki.input hl.save
+  hl.next @ hl.cursor !
   s"  " ki.insert drop
   0
 ;
@@ -495,12 +522,29 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( kill-to-end )
 : k:^K ki.> @ ki.n ! 1 ;
 
+( next )
+: k:^N
+  hl.curnext
+  if
+    hl.cursor @ hl@             ( from u )
+    tuck ki.a swap              ( u from to u )
+    cmove                       ( u )
+    ki.n !
+    0 ki.> !
+  then
+  1
+;
+
 ( previous )
 : k:^P
-  s" bob" tuck ki.a swap        ( u from to u )
-  cmove                         ( u )
-  ki.n !
-  0 ki.> !
+  hl.curprev
+  if
+    hl.cursor @ hl@             ( from u )
+    tuck ki.a swap              ( u from to u )
+    cmove                       ( u )
+    ki.n !
+    0 ki.> !
+  then
   1
 ;
 
