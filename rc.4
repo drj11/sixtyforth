@@ -264,9 +264,75 @@ ki.fresh
 ( memory block for all strings in history )
 variable ki.strings
 1000000000 amapw ki.strings !
+variable ki.hp                  ( history-pointer )
+ki.strings @ ki.hp !
 
-3 constant ki.nlines
-create ki.lines ki.nlines cells allot
+: ki.nlines 3 ;
+create ki.lines 2 ki.nlines * cells allot
+
+variable next-history
+0 next-history !
+
+: ki.lstore ( u addr i -- )
+  ( store addr u into the ith double-world entry in ki.lines )
+  2 * cells                     ( u addr offset )
+  ki.lines                      ( u addr offset ki.lines )
+  +                             ( u addr ak )
+  2!                            ( )
+;
+
+: ki.hsave ( addr u -- )
+  ( save the string into history )
+  tuck                          ( u addr u )
+  ki.hp @ swap                  ( u addr to u )
+  cmove                         ( u )
+  ki.hp @                       ( u hp )
+  over ki.hp                    ( u hp u &hp )
+  +!                            ( u hp )
+  next-history @ ki.nlines      ( u hp h n )
+  mod                           ( u hp i )
+  ki.lstore                     ( )
+  1 next-history +!
+;
+
+: himin ( -- base )
+  ( Index of minimal -- earliest -- history element )
+  ki.nlines next-history @ max
+  ki.nlines -
+;
+
+: ki@ ( i -- addr u )
+  ( Fetch string from history; 0 0 if invalid index )
+  dup                           ( i i )
+  himin                         ( i i base )
+  next-history @                ( i i base limit )
+  within                        ( i bf )
+  if
+    ki.nlines mod               ( array-index )
+    2 * cells                   ( o )
+    ki.lines +                  ( addr )
+    2@                          ( u a )
+    swap                        ( a u )
+  else
+    drop
+    0 0
+  then
+;
+
+: ki.hist
+  himin                         ( i )
+  begin
+    dup next-history @          ( i i n )
+    <                           ( i bf )
+  while
+    dup .
+    depth .
+    dup ki@                     ( i addr u )
+    . . cr                      ( i )
+    1+                          ( i+1 )
+  repeat
+  drop
+;
 
 ( history-cursor - which history element we are currently showing )
 ( oldest-history - number of oldest history element )
