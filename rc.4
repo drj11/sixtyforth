@@ -58,8 +58,25 @@
 : 2dup over over ;
 : tuck ( a b -- b a b )
   swap over ;
+: >= ( a b -- bf )
+  < invert ;
 
 : max over over < if swap then drop ;
+
+: mod ( n1 n2 -- n3 )
+  ( Implementation as per [std1994] )
+  >r s>d r> sm/rem drop
+;
+
+: 2! ( x1 x2 addr -- )
+  swap over !
+  cell+ !
+;
+
+: 2@ ( addr -- x1 x2 )
+  dup cell+ @
+  swap @
+;
 
 : .( [char] ) parse type ; immediate
 
@@ -76,6 +93,8 @@
   swap cmove ; immediate
 
 ( CONSTANT      std1983 )
+( buggy: appears to exit the word that called a routine defined with constant )
+( 3 constant pi : foo pi s" foo" type ; )
 : constant ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
@@ -240,6 +259,147 @@ ki.fresh
 
 : ki.input ki.a ki.n @ ;
 
+( Historic Lines )
+
+( memory block for all strings in history )
+variable hl.block
+1000000000 amapw hl.block !
+variable hl.p                   ( history-pointer )
+hl.block @ hl.p !
+
+: hl.n 3 ;
+create hl.array 2 hl.n * cells allot
+
+variable hl.next
+0 hl.next !
+variable hl.cursor
+0 hl.cursor !
+
+: hl.base ( -- base )
+  ( Index of earliest history element )
+  hl.n hl.next @ max
+  hl.n -
+;
+
+: hl.curprev ( -- bf )
+  hl.cursor @ hl.base            ( c base )
+  >
+  if
+    -1 hl.cursor +!
+    true
+  else
+    0
+  then
+;
+
+: hl.curnext ( -- bf )
+  hl.cursor @ hl.next @ 1-      ( c end )
+  <
+  if
+    1 hl.cursor +!
+    true
+  else
+    0
+  then
+;
+
+: hl.a! ( u addr i -- )
+  ( store addr u into the ith double-world entry in hl.array )
+  2 * cells                     ( u addr offset )
+  hl.array                      ( u addr offset hl.array )
+  +                             ( u addr ak )
+  2!                            ( )
+;
+
+: hl.save ( addr u -- )
+  ( save the string into history )
+  tuck                          ( u addr u )
+  hl.p @ swap                   ( u addr to u )
+  cmove                         ( u )
+  hl.p @                        ( u hp )
+  over hl.p                     ( u hp u &hp )
+  +!                            ( u hp )
+  hl.next @ hl.n                ( u hp h n )
+  mod                           ( u hp i )
+  hl.a!                         ( )
+  1 hl.next +!
+;
+
+: hl@ ( i -- addr u )
+  ( Fetch string from history; 0 0 if invalid index )
+  dup                           ( i i )
+  hl.base                       ( i i base )
+  hl.next @                     ( i i base limit )
+  within                        ( i bf )
+  if
+    hl.n mod                    ( array-index )
+    2 * cells                   ( o )
+    hl.array +                  ( addr )
+    2@                          ( u a )
+    swap                        ( a u )
+  else
+    drop
+    0 0
+  then
+;
+
+: hl.
+  hl.base                       ( i )
+  begin
+    dup hl.next @               ( i i n )
+    <                           ( i bf )
+  while
+    dup .
+    dup hl@                     ( i addr u )
+    type cr                     ( i )
+    1+                          ( i+1 )
+  repeat
+  drop
+;
+
+( hl.cursor     - which history element we are currently showing )
+( hl.next       - number of next history element to be created )
+( hl.next only ever increments )
+( The counterpart, hl.earliest, the earliest history element, )
+( is not explicitly stored. It is computed by hl.base. )
+
+
+( ^P and ^N move the history cursor up and down, )
+( and as long as there is a history element in memory, )
+( it is copied to the ki buffer. )
+
+( History is a copy on write affair. )
+
+( Modifying the ki buffer marks it as modified, )
+
+( ^J saves the ki buffer to history, and marks it as frozen. )
+( ^N, or ^P saves the ki buffer to history only if )
+( the ki buffer is modified. )
+
+( The most recent history element has associated with it, )
+( a "frozen" flag, which is unset until enter is pressed. )
+( It is used to control saving. )
+( When the ki buffer is saved to history, )
+( if the most recent history element is frozen, )
+( a new history element is created; )
+( otherwise, the most recent history element is used, then )
+( marked as frozen. )
+
+( The history list is only ever appended to. )
+( Only the oldest history element can be removed, )
+( and it is removed to make room for new ones. )
+
+( The following behaviours are observed: )
+( ^P and ^N scroll through history. )
+( Executing a line creates a new history element. )
+( Modifying a line creates a new history element, )
+( but one which can be subsequently re-edited without creating )
+( further new history elements. )
+( ^P ... edits ... ^P ... edits ... will lose the first set of edits. )
+
+
+( Key Input Commands )
+
 ( Insert the text into the buffer at the current point, )
 ( and advance the point past the inserted text. )
 : ki.insert ( addr u -- 1 )
@@ -314,6 +474,8 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( Makes LF exit the RL loop )
 : k:^J
   end-of-line
+  ki.input hl.save
+  hl.next @ hl.cursor !
   s"  " ki.insert drop
   0
 ;
@@ -360,12 +522,29 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( kill-to-end )
 : k:^K ki.> @ ki.n ! 1 ;
 
+( next )
+: k:^N
+  hl.curnext
+  if
+    hl.cursor @ hl@             ( from u )
+    tuck ki.a swap              ( u from to u )
+    cmove                       ( u )
+    ki.n !
+    0 ki.> !
+  then
+  1
+;
+
 ( previous )
 : k:^P
-  s" bob" tuck ki.a swap        ( u from to u )
-  cmove                         ( u )
-  ki.n !
-  0 ki.> !
+  hl.curprev
+  if
+    hl.cursor @ hl@             ( from u )
+    tuck ki.a swap              ( u from to u )
+    cmove                       ( u )
+    ki.n !
+    0 ki.> !
+  then
   1
 ;
 
