@@ -449,6 +449,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ( Makes LF exit the RL loop )
 : k:^J
   end-of-line
+  ki.input hl.save
   s"  " ki.insert drop
   0
 ;
