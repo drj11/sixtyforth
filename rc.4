@@ -259,58 +259,58 @@ ki.fresh
 
 : ki.input ki.a ki.n @ ;
 
-( Key Input History )
+( Historic Lines )
 
 ( memory block for all strings in history )
-variable ki.strings
-1000000000 amapw ki.strings !
-variable ki.hp                  ( history-pointer )
-ki.strings @ ki.hp !
+variable hl.block
+1000000000 amapw hl.block !
+variable hl.p                   ( history-pointer )
+hl.block @ hl.p !
 
-: ki.nlines 3 ;
-create ki.lines 2 ki.nlines * cells allot
+: hl.n 3 ;
+create hl.array 2 hl.n * cells allot
 
 variable next-history
 0 next-history !
 
-: ki.lstore ( u addr i -- )
-  ( store addr u into the ith double-world entry in ki.lines )
+: hl.a! ( u addr i -- )
+  ( store addr u into the ith double-world entry in hl.array )
   2 * cells                     ( u addr offset )
-  ki.lines                      ( u addr offset ki.lines )
+  hl.array                      ( u addr offset hl.array )
   +                             ( u addr ak )
   2!                            ( )
 ;
 
-: ki.hsave ( addr u -- )
+: hl.save ( addr u -- )
   ( save the string into history )
   tuck                          ( u addr u )
-  ki.hp @ swap                  ( u addr to u )
+  hl.p @ swap                   ( u addr to u )
   cmove                         ( u )
-  ki.hp @                       ( u hp )
-  over ki.hp                    ( u hp u &hp )
+  hl.p @                        ( u hp )
+  over hl.p                     ( u hp u &hp )
   +!                            ( u hp )
-  next-history @ ki.nlines      ( u hp h n )
+  next-history @ hl.n           ( u hp h n )
   mod                           ( u hp i )
-  ki.lstore                     ( )
+  hl.a!                         ( )
   1 next-history +!
 ;
 
-: himin ( -- base )
-  ( Index of minimal -- earliest -- history element )
-  ki.nlines next-history @ max
-  ki.nlines -
+: hl.base ( -- base )
+  ( Index of earliest history element )
+  hl.n next-history @ max
+  hl.n -
 ;
 
-: ki@ ( i -- addr u )
+: hl@ ( i -- addr u )
   ( Fetch string from history; 0 0 if invalid index )
   dup                           ( i i )
-  himin                         ( i i base )
+  hl.base                       ( i i base )
   next-history @                ( i i base limit )
   within                        ( i bf )
   if
-    ki.nlines mod               ( array-index )
+    hl.n mod                    ( array-index )
     2 * cells                   ( o )
-    ki.lines +                  ( addr )
+    hl.array +                  ( addr )
     2@                          ( u a )
     swap                        ( a u )
   else
@@ -319,15 +319,15 @@ variable next-history
   then
 ;
 
-: ki.hist
-  himin                         ( i )
+: hl.
+  hl.base                       ( i )
   begin
     dup next-history @          ( i i n )
     <                           ( i bf )
   while
     dup .
     depth .
-    dup ki@                     ( i addr u )
+    dup hl@                     ( i addr u )
     . . cr                      ( i )
     1+                          ( i+1 )
   repeat
