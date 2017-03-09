@@ -58,8 +58,25 @@
 : 2dup over over ;
 : tuck ( a b -- b a b )
   swap over ;
+: >= ( a b -- bf )
+  < invert ;
 
 : max over over < if swap then drop ;
+
+: mod ( n1 n2 -- n3 )
+  ( Implementation as per [std1994] )
+  >r s>d r> sm/rem drop
+;
+
+: 2! ( x1 x2 addr -- )
+  swap over !
+  cell+ !
+;
+
+: 2@ ( addr -- x1 x2 )
+  dup cell+ @
+  swap @
+;
 
 : .( [char] ) parse type ; immediate
 
