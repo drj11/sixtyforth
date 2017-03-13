@@ -59,7 +59,7 @@
 : tuck ( a b -- b a b )
   swap over ;
 : >= ( a b -- bf )
-  < invert ;
+  < 0= ;
 
 : max over over < if swap then drop ;
 
