@@ -303,11 +303,16 @@ variable hl.cursor
   then
 ;
 
+: hl.a& ( i -- addr )
+  ( return address of ith double-world entry in hl.array )
+  2 * cells                     ( byte-offset )
+  hl.array                      ( byte-offset hl.array )
+  +                             ( array-address )
+;
+
 : hl.a! ( u addr i -- )
   ( store addr u into the ith double-world entry in hl.array )
-  2 * cells                     ( u addr offset )
-  hl.array                      ( u addr offset hl.array )
-  +                             ( u addr ak )
+  hl.a&                         ( u addr array-addr )
   2!                            ( )
 ;
 
@@ -325,8 +330,10 @@ variable hl.cursor
   1 hl.next +!
 ;
 
-: hl@ ( i -- addr u )
-  ( Fetch string from history; 0 0 if invalid index )
+: hl& ( i -- addr )
+  ( Replace i with the address of the double word )
+  ( for history element i; )
+  ( 0 if invalid index. )
   dup                           ( i i )
   hl.base                       ( i i base )
   hl.next @                     ( i i base limit )
@@ -335,6 +342,16 @@ variable hl.cursor
     hl.n mod                    ( array-index )
     2 * cells                   ( o )
     hl.array +                  ( addr )
+  else
+    drop
+    0
+  then
+;
+
+: hl@ ( i -- addr u )
+  ( Fetch string from history; 0 0 if invalid index )
+  hl&                           ( addr )
+  dup if
     2@                          ( u a )
     swap                        ( a u )
   else
@@ -342,6 +359,26 @@ variable hl.cursor
     0 0
   then
 ;
+
+: _hl.save ( from u -- )
+  ( save the string into most recent element of history; )
+  ( modifying it )
+  hl.next @ 1-                  ( from u i )
+  hl&                           ( from u h-addr )
+  dup 0= if
+    abort" hl.save problem"
+  then
+  ( :todo: check lengths here )
+  2dup                          ( from u h-addr u h-addr )
+  cell+ !                       ( from u h-addr )
+  @                             ( from u to )
+  ( calculate a new value for hl.p )
+  2dup                          ( from u to u to )
+  +                             ( from u to p )
+  hl.p !                        ( from u to )
+  swap cmove
+;
+
 
 : hl.
   hl.base                       ( i )
