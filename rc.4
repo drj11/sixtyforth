@@ -316,20 +316,6 @@ variable hl.cursor
   2!                            ( )
 ;
 
-: hl.save ( addr u -- )
-  ( save the string into history )
-  tuck                          ( u addr u )
-  hl.p @ swap                   ( u addr to u )
-  cmove                         ( u )
-  hl.p @                        ( u hp )
-  over hl.p                     ( u hp u &hp )
-  +!                            ( u hp )
-  hl.next @ hl.n                ( u hp h n )
-  mod                           ( u hp i )
-  hl.a!                         ( )
-  1 hl.next +!
-;
-
 : hl& ( i -- addr )
   ( Replace i with the address of the double word )
   ( for history element i; )
@@ -360,7 +346,7 @@ variable hl.cursor
   then
 ;
 
-: _hl.save ( from u -- )
+: hl.save ( from u -- )
   ( save the string into most recent element of history; )
   ( modifying it )
   hl.next @ 1-                  ( from u i )
@@ -374,11 +360,22 @@ variable hl.cursor
   @                             ( from u to )
   ( calculate a new value for hl.p )
   2dup                          ( from u to u to )
-  +                             ( from u to p )
+  +                             ( from u to new-p )
   hl.p !                        ( from u to )
   swap cmove
 ;
 
+: hl.new ( -- )
+  ( Create a new history entry )
+  0 hl.p @                      ( 0 p )
+  hl.next @                     ( 0 p i )
+  ( increment hl.next )
+  1 hl.next +!                  ( 0 p i )
+  ( set cursor )
+  dup hl.cursor !               ( 0 p i )
+  hl&                           ( 0 p addr )
+  2!
+;
 
 : hl.
   hl.base                       ( i )
@@ -508,11 +505,10 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : end-of-line
   ki.n @ ki.> ! ;
 
-( Makes LF exit the RL loop )
+( Makes LF exit the KI loop )
 : k:^J
   end-of-line
   ki.input hl.save
-  hl.next @ hl.cursor !
   s"  " ki.insert drop
   0
 ;
@@ -715,6 +711,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ;
 
 : ki
+  hl.new
   ki.fresh
   ki.edit
 ;
