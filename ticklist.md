@@ -53,7 +53,7 @@ I
 J
 MAX     i
 MIN     i
-MOD     p
+MOD     i
 NEGATE  i
 NOT
 OR      i
