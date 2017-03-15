@@ -1,0 +1,17 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$(echo 'here
+9876543210
+-123456789
+here
+2 cells allot
+2!
+dup @ .
+cell+ @ .
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("-123456789 9876543210 ") exit 0;;
+esac
+exit 2
