@@ -58,8 +58,6 @@
 : 2dup over over ;
 : tuck ( a b -- b a b )
   swap over ;
-: >= ( a b -- bf )
-  < 0= ;
 
 : max over over < if swap then drop ;
 
