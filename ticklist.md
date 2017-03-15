@@ -53,7 +53,7 @@ I
 J
 MAX     i
 MIN     i
-MOD
+MOD     p
 NEGATE  i
 NOT
 OR      i
@@ -135,7 +135,7 @@ WORD    x
 ABORT"  i
 ALLOT   i
 BEGIN   i
-COMPILE
+COMPILE p
 CONSTANT
 CREATE  i
 DO
@@ -162,6 +162,8 @@ WHILE   i
 
 <>      i
 >NUMBER i
+2!      p
+2@      p
 2DROP   i
 2DUP    i
 2OVER   i
