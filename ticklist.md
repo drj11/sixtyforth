@@ -163,7 +163,7 @@ WHILE   i
 <>      i
 >NUMBER i
 2!      i
-2@      p
+2@      i
 2DROP   i
 2DUP    i
 2OVER   i
