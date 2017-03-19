@@ -2359,8 +2359,10 @@ reset:  ; QUIT jumps here
         mov rbx, ipl+16
 
 stdexe:
+        ; Stack CODEPOINTER onto continuation stack, then
         mov [r12], rbx
         add r12, 8
+        ; Fetch new CODEPOINTER from THIS.
         lea rbx, [rdx+8]
 next:
         mov rdx, [rbx]
