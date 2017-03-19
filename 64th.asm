@@ -1352,6 +1352,10 @@ CODEDOES:
         DQ LIT, doestargetlen
         DQ EXIT
 doestarget:
+        ; This sequence, doestarget, has the property that
+        ; it is _absolute_.
+        ; Meaning that it can be copied anywhere, and
+        ; still has the same behaviour.
         jmp [.n+0]
 .n:
         DQ pushparam
