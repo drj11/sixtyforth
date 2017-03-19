@@ -1369,6 +1369,10 @@ pushparam:
         ; the absolute relocatable sequence `doestarget`.
         ; It transfers control to the threaded code following
         ; the call to this code.
+        ; Push CODEPOINTER.
+        mov [r12], rbx
+        add r12, 8
+        ; Fix THIS.
         add rdx, 8
         mov [rbp], rdx
         add rbp, 8

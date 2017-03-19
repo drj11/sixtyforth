@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$(echo '
+3 constant pi
+: foo pi s" foo " type ;
+foo .
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("foo 3 ") exit 0;;
+esac
+exit 2
