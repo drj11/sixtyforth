@@ -78,6 +78,15 @@
 
 : .( [char] ) parse type ; immediate
 
+: amapw ( sz -- addr )
+  ( Request freshly allocated memory. )
+  ( Anonymous Map for Writing. )
+  0 swap                        ( 0 sz )
+  3 34 ( prot flags )           ( 0 sz 3 34 )
+  -1 0 ( fd offset )            ( 0 sz 3 34 -1 0 )
+  9 syscall6                    ( addr )
+;
+
 ( *fix-cfa )
 ( Fixes the CFA of the last defined word )
 ( to point to address following call to *fix-cfa )
@@ -132,15 +141,6 @@ create fstatbuf 144 allot
     9 syscall6                  ( sz addr )
     swap
   then
-;
-
-: amapw ( sz -- addr )
-  ( Request freshly allocated memory. )
-  ( Anonymous Map for Writing. )
-  0 swap                        ( 0 sz )
-  3 34 ( prot flags )           ( 0 sz 3 34 )
-  -1 0 ( fd offset )            ( 0 sz 3 34 -1 0 )
-  9 syscall6                    ( addr )
 ;
 
 
