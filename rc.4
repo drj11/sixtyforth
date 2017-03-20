@@ -19,6 +19,11 @@
 ( [CHAR]        std1994 )
 ( (             std1983 )
 
+create begin-token
+: begin ( -- token begin-token / at compile time )
+  here begin-token
+; immediate
+
 ( COMPILE       std1983 )
 ( Using the definition in [FORTH1994] A.6.1.2033 )
 : compile r> dup @ , cell+ >r ;

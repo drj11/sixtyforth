@@ -1721,16 +1721,6 @@ CELLplus:
         CtoL(CELLplus)
 
         DQ 5 | Immediate
-        DQ 'begin'      ; std1983
-BEGIN:
-        DQ stdexe
-        ; BEGIN ( -- token 'BEGIN )     at compile time
-        DQ HERE
-        DQ LIT, BEGIN
-        DQ EXIT
-        CtoL(BEGIN)
-
-        DQ 5 | Immediate
         DQ 'until'      ; std1983
 UNTIL:
         DQ stdexe
