@@ -37,6 +37,16 @@ create begin-token
   ,
 ; immediate
 
+create while-token
+
+: while ( token begin-token -- w-token while-token )
+  compile 0branch
+  ( todo: check token )
+  here          ( token begin-token w-token )
+  while-token   ( token begin-token w-token while-token )
+  true ,
+; immediate
+
 ( IF            std1983 )
 : if ( -- token    / at compile time )
   compile 0branch

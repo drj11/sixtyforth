@@ -1720,21 +1720,6 @@ CELLplus:
         DQ EXIT
         CtoL(CELLplus)
 
-        DQ 5 | Immediate
-        DQ 'while'      ; std1983
-WHILE:
-        DQ stdexe
-        ; WHILE ( token 'BEGIN -- token 'BEGIN w-token 'WHILE )
-        DQ LIT, ZEROBRANCH
-        DQ comma
-        ; :todo: safety check 'BEGIN
-        DQ HERE
-        DQ LIT, WHILE
-        DQ TRUE
-        DQ comma
-        DQ EXIT
-        CtoL(WHILE)
-
         DQ 6 | Immediate
         DQ 'repeat'     ; std1983
 REPEAT:
