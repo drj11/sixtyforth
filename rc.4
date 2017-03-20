@@ -19,14 +19,23 @@
 ( [CHAR]        std1994 )
 ( (             std1983 )
 
+( COMPILE       std1983 )
+( Using the definition in [FORTH1994] A.6.1.2033 )
+: compile r> dup @ , cell+ >r ;
+
 create begin-token
+
 : begin ( -- token begin-token / at compile time )
   here begin-token
 ; immediate
 
-( COMPILE       std1983 )
-( Using the definition in [FORTH1994] A.6.1.2033 )
-: compile r> dup @ , cell+ >r ;
+: until ( token begin-token -- / at compile time )
+  drop ( todo: check token )
+  compile 0branch
+  here          ( token here )
+  -             ( byte-offset )
+  ,
+; immediate
 
 ( IF            std1983 )
 : if ( -- token    / at compile time )

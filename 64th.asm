@@ -1721,20 +1721,6 @@ CELLplus:
         CtoL(CELLplus)
 
         DQ 5 | Immediate
-        DQ 'until'      ; std1983
-UNTIL:
-        DQ stdexe
-        ; UNTIL ( token 'BEGIN -- )     at compile time
-        DQ DROP         ; :todo: safety check 'BEGIN
-        DQ LIT, ZEROBRANCH
-        DQ comma
-        DQ HERE         ; ( token here )
-        DQ MINUS        ; ( byteoffset )
-        DQ comma
-        DQ EXIT
-        CtoL(UNTIL)
-
-        DQ 5 | Immediate
         DQ 'while'      ; std1983
 WHILE:
         DQ stdexe
