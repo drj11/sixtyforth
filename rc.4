@@ -127,6 +127,8 @@ create while-token
 : constant ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
+rsp constant argc
+
 ( see note/fstat.md )
 create fstatbuf 144 allot
 
