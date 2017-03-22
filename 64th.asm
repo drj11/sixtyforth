@@ -152,6 +152,15 @@ EXECUTE:
         CtoL(EXECUTE)
 
         DQ 3
+        DQ 'rsp'
+fRSP:
+        DQ $+8
+        ; Push the RSP register onto the Forth stack.
+        mov rax, rsp
+        jmp pushrax
+        CtoL(fRSP)
+
+        DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
         ; DUP ( a -- a a )
