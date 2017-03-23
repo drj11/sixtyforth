@@ -127,7 +127,14 @@ create while-token
 : constant ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
+( ARGC and ARG modelled after gforth implementation )
 rsp constant argc
+: arg ( i -- ith-argument )
+  1+ cells
+  argc
+  + @
+  ( :todo: also need to find and push length )
+;
 
 ( see note/fstat.md )
 create fstatbuf 144 allot
