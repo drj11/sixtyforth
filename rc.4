@@ -180,6 +180,33 @@ create while-token
 : constant ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
+( Convert from C string, by pushing its length )
+: c> ( addr -- addr u )
+  -1            ( addr i )
+  begin
+    1+          ( addr i )
+    2dup +      ( addr i p )
+    c@          ( addr i ch )
+    0=          ( addr i bf )
+  until
+;
+
+( ARGC and ARG modelled after gforth implementation )
+( The initial RSP register is the address of ARGC )
+rsp constant argc
+: arg ( i -- i-addr i-len )
+  1+ cells
+  ( Following ARGC are the pointers to C strings )
+  argc
+  + @           ( addr )
+  dup
+  if
+    c>          ( addr u )
+  else
+    0           ( 0 0 )
+  then
+;
+
 ( see note/fstat.md )
 create fstatbuf 144 allot
 
