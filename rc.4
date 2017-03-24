@@ -124,6 +124,11 @@ create while-token
   compile r> compile r> compile 2drop
 ; immediate
 
+( I             std1983 )
+: i ( -- index )
+  2r@ drop
+;
+
 ( VARIABLE      std1983 )
 : variable create 1 cells allot ;
 
