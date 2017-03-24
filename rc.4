@@ -146,7 +146,12 @@ rsp constant argc
   ( Following ARGC are the pointers to C strings )
   argc
   + @           ( addr )
-  c>            ( addr u )
+  dup
+  if
+    c>          ( addr u )
+  else
+    0           ( 0 0 )
+  then
 ;
 
 ( see note/fstat.md )
