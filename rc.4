@@ -139,6 +139,7 @@ create while-token
 ;
 
 ( ARGC and ARG modelled after gforth implementation )
+( The initial RSP register is the address of ARGC )
 rsp constant argc
 : arg ( i -- ith-argument )
   1+ cells
