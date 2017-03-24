@@ -71,17 +71,65 @@ create while-token
 : then
   here over - swap ! ; immediate
 
+: 2drop drop drop ;
+: 2dup over over ;
+: tuck ( a b -- b a b )
+  swap over ;
+
+( 2>R           std1994 )
+( Care taken to preserve return address on top of return stack. )
+: 2>r ( x1 x2 -- ) ( R: -- x1 x2 )
+  swap          ( x2 x1 )
+  r>            ( x2 x1 ret )
+  swap >r       ( x2 ret )
+  swap >r       ( ret )
+  >r
+;
+
+( 2R@           std1994 )
+: 2r@ ( -- x1 x2 ) ( R: x1 x2 -- x1 x2 )
+  r> r> r>      ( ret x2 x1 )
+  dup >r
+  over >r
+  rot >r        ( x2 x1 )
+  swap          ( x1 x2 )
+;
+
+( DO            std1983 )
+: do ( limit base --    / C: -- token )
+  compile 2>r
+  here          ( token )
+; immediate
+
+( LOOPTEST )
+( implements the test part of a DO LOOP, )
+( leaving a flag on the stack. )
+: looptest ( -- bf      / R: limit index -- limit index+1 )
+  r>            ( ret )
+  2r@           ( ret limit index )
+  1+            ( ret limit new-index )
+  r> drop
+  dup >r
+  =             ( ret bf )
+  swap >r       ( bf )
+;
+
+( LOOP          std1983 )
+: loop ( R: limit base -- limit base+1 |        / C: do-token -- )
+  compile looptest
+  compile 0branch
+  here          ( do-token here )
+  -             ( byte-offset )
+  ,
+  compile r> compile r> compile 2drop
+; immediate
+
 ( VARIABLE      std1983 )
 : variable create 1 cells allot ;
 
 ( DNEGATE       std1983 )
 : dnegate ( d1 -- -d1 )
   -1 1 m*/ ;
-
-: 2drop drop drop ;
-: 2dup over over ;
-: tuck ( a b -- b a b )
-  swap over ;
 
 : max over over < if swap then drop ;
 
