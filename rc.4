@@ -245,6 +245,25 @@ create fstatbuf 144 allot
   then
 ;
 
+4096 amapw
+constant openbuf        ( buffer for open pathname )
+
+( OPENR )
+( Open file for reading )
+: openr ( f-addr sz -- fd )
+  swap over                     ( sz f-addr sz )
+  openbuf swap                  ( sz f-addr path sz )
+  cmove                         ( sz )
+  0 swap                        ( 0 sz )
+  openbuf 1 + +                 ( 0 p )
+  !
+  openbuf                       ( openbuf )
+  ( /usr/include/asm-generic/fcntl.h defines O_RDONLY )
+  0 0                           ( openbuf 0 0 )
+  ( http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/ for syscall numbers )
+  2 syscall3                    ( fd )
+;
+
 
 ( fetch byte C from addr, )
 ( then compute C M AND X XOR )
