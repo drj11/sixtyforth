@@ -140,6 +140,15 @@ SYSREAD:
         CtoL(SYSREAD)
 
         DQ 7
+        DQ 'sysexit'
+sysEXIT:
+        DQ $+8
+        mov rdi, 0
+        mov rax, 60
+        syscall
+        CtoL(sysEXIT)
+
+        DQ 7
         DQ 'execute'
 EXECUTE:
         DQ $+8          ; std1983
@@ -2509,12 +2518,6 @@ READIB1:
         DQ IBLIMIT
         DQ plusstore
         DQ EXIT
-
-sysEXIT:
-        DQ $+8
-        mov rdi, 0
-        mov rax, 60
-        syscall
 
 qPROMPT:
         DQ stdexe

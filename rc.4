@@ -23,6 +23,9 @@
 ( Using the definition in [FORTH1994] A.6.1.2033 )
 : compile r> dup @ , cell+ >r ;
 
+( [']           std1983 )
+: ['] ' [compile] literal ; immediate
+
 create begin-token
 
 : begin ( -- token begin-token / at compile time )
@@ -856,7 +859,37 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 : rc.defined true ;
 
-( Modify reset vector to point to kipl ... )
-' kipl *vreset ! ( )
-( ... and jump through vector to continue at kipl )
-quit
+( 3 valued: )
+( -1 always interactive )
+( 0 not interactive )
+( 1 interactive unless args provided )
+variable interactive
+1 interactive !
+
+: adjust-interactive
+  1 argc @ < if
+    -1 interactive +!
+  then
+;
+adjust-interactive
+
+: adjust-vector
+  interactive @ if
+    ( Modify reset vector to point to kipl ... )
+    ['] kipl *vreset ! ( )
+    ( ... The QUIT in the assembly routine RUNRC will )
+    ( jump through this vector to continue at kipl )
+  else
+    ['] sysexit *vreset !
+  then
+;
+adjust-vector
+
+: run-args
+  1 argc @ < if
+    1 arg openr
+    fmapr
+    evaluate
+  then
+;
+run-args
