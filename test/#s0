@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# Note that #s emits at least one digit.
+out=$(echo '37 0 <# # # # 44 hold #s #> type' | $FORTH)
+printf "%s\n" "$out"
+case $out in
+    ('0,037') exit 0;;
+esac
+exit 2
