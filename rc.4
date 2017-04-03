@@ -885,10 +885,39 @@ adjust-interactive
 ;
 adjust-vector
 
+( SHEBANG )
+( adjust addr u pair for initial shebang line. )
+: shebang ( addr u -- n-addr n-u )
+  over c@               ( addr u c )
+  [char] #
+  <>                    ( addr u bf )
+  if
+    exit
+  then
+  ( addr u )
+  swap over dup         ( u addr u u )
+  0 do
+    over                ( u addr l addr )
+    i +
+    c@                  ( u addr l ch )
+    10 =
+    if
+      ( :todo: reimplement using `leave` )
+      i min
+    then
+  loop
+  ( u addr l )
+  ( need to add l to addr, and subtract it from u )
+  tuck +                ( u l n-addr )
+  rot rot               ( n-addr u l )
+  -                     ( n-addr n- )
+;
+
 : run-args
   1 argc @ < if
     1 arg openr
     fmapr
+    shebang
     evaluate
   then
 ;
