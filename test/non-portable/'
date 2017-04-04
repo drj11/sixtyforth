@@ -1,12 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '
-: seven 7 ;
-5 '\'' seven execute
-. .' | $FORTH)
+out=$(echo create magic magic \' magic negate + . | $FORTH | sed 's/ *$//')
 printf "%s\n" "$out"
 case $out in
-    ('7 5 ') exit 0;;
+    (8) exit 0;;
 esac
 exit 2
