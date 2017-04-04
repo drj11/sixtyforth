@@ -715,6 +715,15 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   then
 ;
 
+( #D )
+( Like #s, but always in decimal )
+: #d
+  base @ >r
+  10 base !
+  #s
+  r> base !
+;
+
 ( Emit ANSI codes to move VT cursor,
 ( from location from to location to. )
 ( `from` and `to` are byte positions in the ki.a input string. )
@@ -729,21 +738,21 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   > if
     ( upward motion )
     - s>d                       ( t-col f-col dn )
-    <# [char] A hold #s [char] [ hold 27 hold #>
+    <# [char] A hold #d [char] [ hold 27 hold #>
     etype                       ( t-col f-col )
   else
     2dup <                      ( t-col f-col f-row t-row flag )
     if
       ( downward motion )
       - negate s>d              ( t-col f-col dn )
-      <# [char] B hold #s [char] [ hold 27 hold #>
+      <# [char] B hold #d [char] [ hold 27 hold #>
       etype                     ( t-col f-col )
     else
       2drop
     then
   then
   drop                          ( t-col )
-  1+ s>d <# [char] G hold #s [char] [ hold 27 hold #>
+  1+ s>d <# [char] G hold #d [char] [ hold 27 hold #>
   etype                         ( )
 ;
 
