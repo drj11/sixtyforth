@@ -1,10 +1,11 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': s ( drop drop drop ) ( ) 7 ( ) ;
-  9 s . .' | $FORTH)
+# Check that () is a valid token.
+out=$(echo ': () 7 ( 9 ) ;
+  5 () . .' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in
-    ("7 9 ") exit 0;;
+    ("7 5 ") exit 0;;
 esac
 exit 2
