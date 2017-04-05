@@ -596,14 +596,30 @@ lesssharp:
         DQ EXIT
         CtoL(lesssharp)
 
+        DQ 6
+        DQ 'ud/mod'
+UDslashMOD:
+        ; ud/mod ( ud1 u1 -- r ud2 )
+        DQ stdexe
+        DQ toR          ; ( ud1 )       ( R: u1 )
+        DQ z
+        DQ Rfetch       ; ( ul uu 0 u1 )
+        DQ UMslashMOD   ; ( ul up uqu )
+        DQ Rfrom        ; ( ul up uqu u1 )
+        DQ SWAP, toR    ; ( ul up u1 )  ( R: uqu )
+        DQ UMslashMOD   ; ( r uql )
+        DQ Rfrom        ; ( r ud2 )
+        DQ EXIT
+        CtoL(UDslashMOD)
+
         DQ 1
         DQ '#'          ; std1983
 sharp:  DQ stdexe
         ; # ( ud1 -- ud2 )
-        DQ LIT, 1       ; (ud 1)
         DQ BASE
         DQ fetch        ; (ud 1 b)
-        DQ UMstarslashMOD   ; (ud r)
+        DQ UDslashMOD   ; (r ud)
+        DQ ROT          ; (ud r)
         DQ DIGIT        ; (ud ascii)
         DQ HOLD         ; (ud)
         DQ EXIT
