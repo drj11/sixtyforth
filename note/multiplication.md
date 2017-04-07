@@ -26,7 +26,7 @@ m*/     ( d1 n1 +n2 -- d2 )
 
 Note that `*` (which is single × single → single)
 can be used for either signed or unsigned integers.
-This works because signed multiplcation can be used
+This works because signed multiplication can be used
 to multiply unsigned numbers as long as the numbers are
 not greater than `MAX-N`;
 for unsigned numbers larger than `MAX-N`,
