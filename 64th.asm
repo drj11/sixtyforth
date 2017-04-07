@@ -1653,6 +1653,21 @@ StoD:   DQ stdexe
         DQ EXIT
         CtoL(StoD)
 
+        DQ 2
+        DQ 'm*'         ; std1994
+Mstar:
+        DQ $+8
+        ; m* ( n1 n2 -- d )
+        mov rax, [rbp-16]       ; multiplier
+        mov rdx, [rbp-8]        ; multiplicand
+
+        imul rdx
+
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(Mstar)
+
         DQ 1
         DQ '*'          ; std1983
 ftimes: DQ stdexe
