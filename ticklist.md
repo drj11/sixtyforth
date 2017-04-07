@@ -180,6 +180,7 @@ DABS    i
 EVALUATE        i
 FALSE   i
 INVERT  i
+M*      i
 M*/     i
 NIP     i
 PARSE   i
