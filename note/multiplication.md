@@ -6,7 +6,7 @@ From ANSI [std 1994]
 
 */      ( n1 n2 n3 -- n4 )
 
-*/mod   ( n1 n2 n3 -- n4 n5 )
+*/mod   ( n1 n2 n3 -- rem quot )
 
 /       ( n1 n2 -- n3 )
 
