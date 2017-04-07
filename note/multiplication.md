@@ -10,13 +10,13 @@ From ANSI [std 1994]
 
 /       ( n1 n2 -- n3 )
 
-/mod    ( n1 n2 -- n3 n4 )
+/mod    ( n1 n2 -- rem quot )
 
 m*      ( n1 n2 -- d )
 
 um*     ( u1 u2 -- ud )
 
-um/mod  ( ud u1 -- u2 u3 )
+um/mod  ( ud u1 -- rem quot )
 
 From ANSI DOUBLE extension
 
