@@ -1672,11 +1672,8 @@ Mstar:
         DQ '*'          ; std1983
 ftimes: DQ stdexe
         ; * ( n1 n2 -- n3 )
-        DQ StoD         ; (n1 d2)
-        DQ ROT          ; (d2 n1)
-        DQ LIT, 1       ; (d2 n1 1)
-        DQ Mstarslash   ; (d)
-        DQ DtoS         ; (n)
+        DQ Mstar
+        DQ DROP
         DQ EXIT
         CtoL(ftimes)
 
