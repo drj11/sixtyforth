@@ -239,7 +239,7 @@ toNUMBER:
         DQ toR          ; ud c-addr u
         DQ twoSWAP      ; c-addr u ud
         DQ BASE, fetch  ; c-addr u ud base
-        DQ UMstar       ; c-addr u ud
+        DQ UDstar       ; c-addr u ud
         DQ Rfrom        ; c-addr u ud n
         DQ z            ; c-addr u ud n 0
         DQ Dplus        ; c-addr u ud
@@ -320,15 +320,15 @@ Mstarslash:
         CtoL(Mstarslash)
 
         DQ 3
-        DQ 'um*'
-UMstar:
+        DQ 'ud*'
+UDstar:
         DQ stdexe
-        ; UM* ( ud u -- ud-product )
+        ; UD* ( ud u -- ud-product )
         DQ LIT, 1       ; ud u 1
         DQ UMstarslashMOD       ; ud u-r
         DQ DROP         ; ud
         DQ EXIT
-        CtoL(UMstar)
+        CtoL(UDstar)
 
         DQ 7
         DQ 'um*/mod'
