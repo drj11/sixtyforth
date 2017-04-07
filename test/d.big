@@ -2,21 +2,8 @@
 # Largest signed double.
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': msq over um* ;
-2 0
-msq
-msq
-msq
-msq
-msq
-msq
-1 0 d+
-over over
--2 -1 d+
-drop
-2
-um*/mod
-drop
+out=$(echo '
+-1 -1 0 2 um/mod swap drop
 d.
 ' | $FORTH)
 printf "%s\n" "$out"
