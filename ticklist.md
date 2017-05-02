@@ -65,7 +65,7 @@ ROLL
 ROT     i
 SWAP    i
 U<      i
-UM*
+UM*     i
 UM/MOD  i
 XOR     i
 
