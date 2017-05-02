@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# (2**64-1)**2
+out=$(echo ': ud. <# bl hold #s #> type ;
+-1 -1 um* ud.
+16000000000000000000 16000000000000000000 um* ud.
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("340282366920938463426481119284349108225 256000000000000000000000000000000000000 ") exit 0;;
+esac
+exit 2

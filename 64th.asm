@@ -1668,6 +1668,21 @@ Mstar:
         jmp next
         CtoL(Mstar)
 
+        DQ 3
+        DQ 'um*'        ; std1994
+UMstar:
+        DQ $+8
+        ; um* ( u1 u2 -- ud )
+        mov rax, [rbp-16]       ; multiplier
+        mov rdx, [rbp-8]        ; multiplicand
+
+        mul rdx
+
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(UMstar)
+
         DQ 1
         DQ '*'          ; std1983
 ftimes: DQ stdexe
