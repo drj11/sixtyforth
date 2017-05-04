@@ -7,29 +7,27 @@ Welcome to SixtyForth, `64th` for short.
 SixtyForth a 64-bit implementation of FORTH
 written in 64-bit Intel assembler.
 
-The SixtyForth language is inspired by the FORTH-83 standard,
+The SixtyForth language is
+inspired by the ANSI Forth standard (1994 edition),
 but since it does not follow the standard exactly,
 it should probably be more accurately described as
-a FORTH-like language.
+a Forth-like language.
 
-The major departure is that a cell is not 16 bits wide,
-but 64 bits wide.
-A further departure is that _counted strings_
-do not begin with
-a byte length, but with
-a 64-bit length.
-`count` is suitably modified for this convention.
+In this implementation a cell is 64-bits wide,
+and signed integers are represented in 2's complement.
 
 Input is mostly assumed to be in lower case.
 Due to a whimsical quirk and
 a fondness for 1980s style documentation,
 various documents will use upper case
-to refer to FORTH words.
+to refer to Forth words.
 For example, `CREATE`.
 But generally these should be
 typed in lower case
 in order to be
-recognised by the SixtyForth system.
+recognised by the SixtyForth system
+(The standard requires that the uppercase forms are accepted,
+but this is not yet implemented).
 
 ## Building SixtyForth and running it
 
