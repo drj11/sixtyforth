@@ -139,6 +139,7 @@ create while-token
 : dnegate ( d1 -- -d1 )
   -1 1 m*/ ;
 
+( MAX           std1983 )
 : max over over < if swap then drop ;
 
 : mod ( n1 n2 -- n3 )
@@ -146,16 +147,19 @@ create while-token
   >r s>d r> sm/rem drop
 ;
 
+( 2!            std1994 )
 : 2! ( x1 x2 addr -- )
   swap over !
   cell+ !
 ;
 
+( 2@            std1994 )
 : 2@ ( addr -- x1 x2 )
   dup cell+ @
   swap @
 ;
 
+( .(            std1983 )
 : .( [char] ) parse type ; immediate
 
 : amapw ( sz -- addr )
