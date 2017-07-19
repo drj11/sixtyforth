@@ -26,10 +26,14 @@ m*/     ( d1 n1 +n2 -- d2 )
 
 Note that `*` (which is single × single → single)
 can be used for either signed or unsigned integers.
-This works because signed multiplication can be used
-to multiply unsigned numbers as long as the numbers are
-not greater than `MAX-N`;
-for unsigned numbers larger than `MAX-N`,
-only one operand can be greater than `MAX-N`,
-the other must be 0 or 1.
+Signed multiplication can be used regardless.
+This works because
+the results are only defined when the result fits in a single cell.
+The operation is only problematic if one of the inputs
+is an unsigned integer larger than `MAX-N`.
+In this case, if the result is to fit in a single cell,
+hence be defined,
+the other input must be 0 or 1
+(any number larger than 1 will yield a mathemetical result
+that is out of the defined range).
 Signed multiply works in that case too.
