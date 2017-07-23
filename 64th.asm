@@ -1593,7 +1593,7 @@ ABORT:  DQ dreset
         DQ 'sm/rem'     ; std1994
 SMslashREM:
         DQ $+8
-        ; SM/MOD ( d-dividend n-divisor -- n-quotient n-remainder )
+        ; SM/REM ( d-dividend n-divisor -- n-quotient n-remainder )
         mov rax, [rbp-24]
         mov rdx, [rbp-16]
         mov rcx, [rbp-8]
