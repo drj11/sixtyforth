@@ -83,7 +83,7 @@ Making it a little problematic to implement `#`.
 
 Ideally, we'd have a word:
 
-`m/mod ( ud u -- ud-quot u-rem )`
+`uml/mod ( ud u -- u-rem ud-quot )`
 
 We can use long division.
 
@@ -95,8 +95,8 @@ u/mod  ( L Mrem Mquot )
 \ Mquot is the M part of the ud-quot
 r> swap >r      ( L Mrem u )
 um/mod          ( Lrem Lquot )
-r> rot          ( Lquot Mquot Lrem )
-                ( ud-quot u-rem )
+r>              ( Lrem Lquot Mquot )
+                ( u-rem ud-quot )
 ```
 
 Note that I has to invent `u/mod`;
