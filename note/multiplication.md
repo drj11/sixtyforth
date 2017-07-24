@@ -105,3 +105,15 @@ it's `: u/mod 0 swap um/mod ;`.
 the first division conveniently leaves `L Mrem` on the stack,
 which is the double cell dividend that
 enters the next round of long division.
+
+## SixtyForth
+
+>number -> ud*
+
+m*/ -> um*/mod
+ud* -> um*/mod
+
+* -> m*
+
+m* primitive
+um* primitive
