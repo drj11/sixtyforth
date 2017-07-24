@@ -44,6 +44,12 @@ the other input must be 0 or 1
 that is out of the defined range).
 Signed multiply works in that case too.
 
+Thus we can define:
+
+`: * m* drop`
+
+## `fm/mod` as a primitive.
+
 The Standard commentary provides a reasonable strategy of
 implementing most of these in terms of `fm/mod`
 (or, structurally equivalently, `sm/rem`).
@@ -65,8 +71,6 @@ Then `/` and `*/` just drop the remainder parts:
 
 The multiplication operators,
 `m*` and `um*` are, in Intel-64, convenient primitives.
-
-`*` can be `: * m* drop` (see earlier discussion).
 
 Does that leave
 `um/mod` as a primitive?
