@@ -28,7 +28,7 @@ From ANSI DOUBLE extension
 
 m*/     ( d1 n1 +n2 -- d2 )
 
-# commentary
+## Polymorphism of `*`
 
 Note that `*` (which is single × single → single)
 can be used for either signed or unsigned integers.
