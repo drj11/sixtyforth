@@ -99,6 +99,8 @@ r>              ( Lrem Lquot Mquot )
                 ( u-rem ud-quot )
 ```
 
+(there is already a TIL version of this on 64th.asm called ud/mod.)
+
 Note that I has to invent `u/mod`;
 it's `: u/mod 0 swap um/mod ;`.
 
@@ -108,12 +110,49 @@ enters the next round of long division.
 
 ## SixtyForth
 
+The thrust of this proposal is the following observations:
+
+- `>number` requires double × single → double multiplication;
+- `#` requires double × single → double division;
+- both of those operations are unusual (not standard);
+- `#` is not required in the ASM core;
+- may be able to reduce functionality of `>number` in ASM core.
+
+Therefore we can move `#`, and possible `>number`,
+out of ASM and into Forth code.
+And in doing so, move a bunch of
+annoying long division and multiplication out of ASM.
+
+
+. u. d. -> <# #s #>
+
 >number -> ud*
 
 m*/ -> um*/mod
 ud* -> um*/mod
 
+um*/mod 64th primitive
+
+um*/mod used only by m*/ and ud*
+
+ud* used solely by >number
+
+ud* can be written in terms of um* and d+ (rather than this
+weirdly huge um*/mod).
+
+m*/ not used
+
+# -> ud/mod
+
+ud/mod -> um/mod
+
+ud/mod solely used by #
+
+um/mod ANSI primitive
+
 * -> m*
 
-m* primitive
-um* primitive
+m* ANSI primitive
+um* ANSI primitive
+
+sm/rem ANSI primitive
