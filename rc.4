@@ -159,6 +159,86 @@ create while-token
   swap @
 ;
 
+( ## number printing package )
+
+( double to double division )
+( used in printing numbers )
+: uml/mod ( ud u -- u-rem ud-quot )
+  >r r@
+  0 swap um/mod ( L Mrem Mquot )
+  r> swap >r    ( L Mrem u )
+  um/mod        ( Lrem Lquot )
+  r>            ( Lrem ud-quot )
+;
+
+: <# ( -- )
+  picend
+  pic !
+;
+
+: # ( ud1 -- ud2 )
+  base @
+  uml/mod       ( r ud )
+  rot           ( ud r )
+  digit hold    ( ud )
+;
+
+: #s ( ud -- )
+  begin
+    #
+    2dup        ( ud ud )
+    or          ( ud s )
+    0=          ( ud bf )
+  until
+;
+
+: hold ( ch -- )
+  pic @         ( ch addr )
+  1-            ( ch addr )
+  swap over     ( addr ch addr )
+  c!            ( addr )
+  pic !
+;
+
+: #> ( ud -- addr u )
+  2drop
+  pic @
+  picend over   ( addr end addr )
+  -             ( addr u )
+;
+
+( U.            std1983 )
+: u. ( u -- )
+  0
+  <# bl hold #s #>
+  type
+;
+
+( .             std1983 )
+: . ( x -- )
+  dup abs 0     ( x |x| 0 )
+  <#
+    bl hold
+    #s
+    rot sign
+  #>
+  type
+;
+
+( d.            std1994 )
+: d. ( d -- )
+  dup rot rot   ( n d ) ( n same sign as d )
+  dabs          ( n |d| )
+  <#
+    bl hold
+    #s
+    rot sign
+  #>
+  type
+;
+
+( ## )
+
 ( .(            std1983 )
 : .( [char] ) parse type ; immediate
 

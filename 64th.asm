@@ -525,55 +525,6 @@ ISATTY:
         DQ EXIT
         CtoL(ISATTY)
 
-        DQ 2
-        DQ 'u.'         ; std1983
-Udot:   DQ stdexe
-        DQ z
-        DQ lesssharp
-        DQ fBL
-        DQ HOLD
-        DQ sharpS
-        DQ sharpgreater
-        DQ TYPE
-        DQ EXIT
-        CtoL(Udot)
-
-        DQ 1
-        DQ '.'          ; std1983
-dot:    DQ stdexe
-        DQ DUP          ; (n n)
-        DQ fABS         ; (n +n)
-        DQ z            ; (n +n 0)
-        DQ lesssharp
-        DQ fBL
-        DQ HOLD
-        DQ sharpS
-        DQ ROT
-        DQ SIGN
-        DQ sharpgreater
-        DQ TYPE
-        DQ EXIT
-        CtoL(dot)
-
-        DQ 2
-        DQ 'd.'         ; std1994
-Ddot:   DQ stdexe
-        ; D. ( d -- )
-        DQ DUP          ; ( d n ) n same sign as d
-        DQ ROT
-        DQ ROT          ; ( n d )
-        DQ DABS         ; ( n +d )
-        DQ lesssharp
-        DQ fBL
-        DQ HOLD
-        DQ sharpS
-        DQ ROT
-        DQ SIGN
-        DQ sharpgreater
-        DQ TYPE
-        DQ EXIT
-        CtoL(Ddot)
-
         DQ 4
         DQ 'base'       ; std1983
 BASE:   DQ stdvar
@@ -586,11 +537,18 @@ PIC:    DQ stdvar
         DQ 0
         CtoL(PIC)
 
+        DQ 6
+        DQ 'picend'
+PICEND: DQ stdexe
+        DQ LIT, picend
+        DQ EXIT
+        CtoL(PICEND)
+
         DQ 2
         DQ '<#'         ; std1983
 lesssharp:
         DQ stdexe
-        DQ LIT, picend
+        DQ PICEND
         DQ PIC
         DQ store
         DQ EXIT
@@ -648,7 +606,7 @@ sharpgreater:
         DQ DROP
         DQ PIC
         DQ fetch        ; (addr)
-        DQ LIT, picend  ; (addr end)
+        DQ PICEND       ; (addr end)
         DQ OVER         ; (addr end addr)
         DQ MINUS        ; (addr +n)
         DQ EXIT
