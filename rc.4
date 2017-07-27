@@ -378,6 +378,31 @@ variable chbuf
        ( -- -ve         / on os error )
   0 fgetc ;
 
+( Fetch and print 8 hex digits )
+: @.8 ( addr -- )
+  @ 4294967295 ( 2**32 - 1 ) and        ( w )
+  base @ >r
+  16 base !
+  0                     ( ud )
+  <# bl hold
+    # # # # # # # #
+  #>
+  type
+  r> base !
+;
+
+( Get TTY settings, from TCGETS ioctl, and dump to stdout )
+: tcgets. ( fd -- res )
+  tcgetsv tcgets        ( res )
+  tcgetsv @.8
+  tcgetsv 4 + @.8
+  tcgetsv 8 + @.8
+  tcgetsv 12 + @.8
+  cr
+  tcgetsv 16 +
+  20 dump               ( res )
+;
+
 create tty.buffer 36 allot
 
 ( Store TTY settings. )

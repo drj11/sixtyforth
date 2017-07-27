@@ -449,62 +449,6 @@ TCSETS:
         DQ EXIT
         CtoL(TCSETS)
 
-        DQ 3
-        DQ '@.8'
-fetchdot8:
-        DQ stdexe
-        ; @.8 ( addr -- )
-        ; print 8 hex digits from word at addr
-        DQ fetch
-        DQ LIT, 0xffffffff
-        DQ AND          ; qw
-        DQ BASE
-        DQ fetch
-        DQ SWAP         ; r qw
-        DQ LIT, 16
-        DQ BASE
-        DQ store
-        DQ z
-        DQ lesssharp
-        DQ fBL
-        DQ HOLD
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharp
-        DQ sharpgreater
-        DQ TYPE
-        DQ BASE
-        DQ store
-        DQ EXIT
-        CtoL(fetchdot8)
-
-        DQ 7
-        DQ 'tcgets.'
-TCGETSdot:
-        DQ stdexe
-        ; TCGETS. ( fd -- res ) printout
-        DQ LIT, TCGETSV.b      ; fd p
-        DQ TCGETS
-        DQ LIT, TCGETSV.b      ; res p
-        DQ fetchdot8
-        DQ LIT, TCGETSV.b + 4  ; res p
-        DQ fetchdot8
-        DQ LIT, TCGETSV.b + 8  ; res p
-        DQ fetchdot8
-        DQ LIT, TCGETSV.b + 12 ; res p
-        DQ fetchdot8
-        DQ CR
-        DQ LIT, TCGETSV.b + 16 ; res p
-        DQ LIT, 20      ; res p u
-        DQ DUMP         ; res
-        DQ EXIT
-        CtoL(TCGETSdot)
-
         DQ 7
         DQ 'tcgetsv'
 TCGETSV:
