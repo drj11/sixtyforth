@@ -378,21 +378,11 @@ UMstarslashMOD:
 dotx2:
         DQ stdexe
         ; .x2 ( u -- ) print 2 hex digits
-        DQ BASE
-        DQ fetch
-        DQ SWAP         ; base u
-        DQ LIT, 16
-        DQ BASE
-        DQ store
-        DQ z
-        DQ lesssharp
-        DQ fBL
-        DQ HOLD
-        DQ sharp, sharp
-        DQ sharpgreater
-        DQ TYPE
-        DQ BASE
-        DQ store
+        DQ z, LIT, 16   ; ud 16
+        DQ UMslashMOD   ; lsd msd
+        DQ DIGIT, EMIT
+        DQ DIGIT, EMIT
+        DQ fBL, EMIT
         DQ EXIT
         CtoL(dotx2)
 
