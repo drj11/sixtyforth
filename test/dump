@@ -1,0 +1,11 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# Assumes ASCII
+out=$(echo ': p s" foo" ; p dump
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("66 6F 6F ") exit 0;;
+esac
+exit 2
