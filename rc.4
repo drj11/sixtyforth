@@ -235,7 +235,7 @@ create while-token
 
 ( d.            std1994 )
 : d. ( d -- )
-  dup rot rot   ( n d ) ( n same sign as d )
+  swap over     ( n d ) ( n same sign as d )
   dabs          ( n |d| )
   <#
     bl hold
