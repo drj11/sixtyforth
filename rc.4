@@ -171,6 +171,14 @@ create while-token
   r>            ( Lrem ud-quot )
 ;
 
+: hold ( ch -- )
+  pic @         ( ch addr )
+  1-            ( ch addr )
+  swap over     ( addr ch addr )
+  c!            ( addr )
+  pic !
+;
+
 : <# ( -- )
   picend
   pic !
@@ -192,12 +200,12 @@ create while-token
   until
 ;
 
-: hold ( ch -- )
-  pic @         ( ch addr )
-  1-            ( ch addr )
-  swap over     ( addr ch addr )
-  c!            ( addr )
-  pic !
+: sign ( n -- )
+  0<
+  if
+    [char] -
+    hold
+  then
 ;
 
 : #> ( ud -- addr u )
