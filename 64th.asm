@@ -478,45 +478,6 @@ PICEND: DQ stdexe
         DQ EXIT
         CtoL(PICEND)
 
-        DQ 2
-        DQ '<#'         ; std1983
-lesssharp:
-        DQ stdexe
-        DQ PICEND
-        DQ PIC
-        DQ store
-        DQ EXIT
-        CtoL(lesssharp)
-
-        DQ 6
-        DQ 'ud/mod'
-UDslashMOD:
-        ; ud/mod ( ud1 u1 -- r ud2 )
-        DQ stdexe
-        DQ toR          ; ( ud1 )       ( R: u1 )
-        DQ z
-        DQ Rfetch       ; ( ul uu 0 u1 )
-        DQ UMslashMOD   ; ( ul up uqu )
-        DQ Rfrom        ; ( ul up uqu u1 )
-        DQ SWAP, toR    ; ( ul up u1 )  ( R: uqu )
-        DQ UMslashMOD   ; ( r uql )
-        DQ Rfrom        ; ( r ud2 )
-        DQ EXIT
-        CtoL(UDslashMOD)
-
-        DQ 1
-        DQ '#'          ; std1983
-sharp:  DQ stdexe
-        ; # ( ud1 -- ud2 )
-        DQ BASE
-        DQ fetch        ; (ud 1 b)
-        DQ UDslashMOD   ; (r ud)
-        DQ ROT          ; (ud r)
-        DQ DIGIT        ; (ud ascii)
-        DQ HOLD         ; (ud)
-        DQ EXIT
-        CtoL(sharp)
-
         DQ 4
         DQ 'hold'       ; std1983
 HOLD:   DQ stdexe
@@ -530,35 +491,6 @@ HOLD:   DQ stdexe
         DQ store
         DQ EXIT
         CtoL(HOLD)
-
-        DQ 2
-        DQ '#>'         ; std1983
-sharpgreater:
-        DQ stdexe
-        ; #> ( d+ -- addr +n )
-        DQ DROP
-        DQ DROP
-        DQ PIC
-        DQ fetch        ; (addr)
-        DQ PICEND       ; (addr end)
-        DQ OVER         ; (addr end addr)
-        DQ MINUS        ; (addr +n)
-        DQ EXIT
-        CtoL(sharpgreater)
-
-        DQ 2
-        DQ '#s'         ; std1983
-sharpS:
-        DQ stdexe
-.l:     DQ sharp        ; (d+)
-        DQ OVER
-        DQ OVER         ; (d+ d+)
-        DQ OR           ; (d+ n)
-        DQ zequals
-        DQ ZEROBRANCH
-        DQ -($-.l)
-        DQ EXIT
-        CtoL(sharpS)
 
         DQ 4
         DQ 'sign'       ; std1983
