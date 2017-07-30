@@ -478,31 +478,6 @@ PICEND: DQ stdexe
         DQ EXIT
         CtoL(PICEND)
 
-        DQ 4
-        DQ 'hold'       ; std1983
-HOLD:   DQ stdexe
-        DQ PIC
-        DQ fetch        ; (ascii pic)
-        DQ oneminus     ; (ascii addr)
-        DQ SWAP         ; (addr ascii)
-        DQ OVER         ; (addr ascii addr)
-        DQ Cstore       ; (addr)
-        DQ PIC
-        DQ store
-        DQ EXIT
-        CtoL(HOLD)
-
-        DQ 4
-        DQ 'sign'       ; std1983
-SIGN:   DQ stdexe
-        DQ zless
-        DQ ZEROBRANCH
-        DQ (.pos-$)
-        DQ LIT, '-'
-        DQ HOLD
-.pos:   DQ EXIT
-        CtoL(SIGN)
-
         DQ 5
         DQ 'digit'
 DIGIT:  DQ stdexe

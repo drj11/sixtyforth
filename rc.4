@@ -200,6 +200,14 @@ create while-token
   pic !
 ;
 
+: sign ( n -- )
+  0<
+  if
+    [char] -
+    hold
+  then
+;
+
 : #> ( ud -- addr u )
   2drop
   pic @
