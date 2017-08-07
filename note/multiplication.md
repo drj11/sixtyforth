@@ -48,20 +48,23 @@ Thus we can define:
 
 `: * m* drop`
 
-## `fm/mod` as a primitive.
+## `fm/mod` or `sm/rem` as a primitive.
 
-The Standard commentary provides a reasonable strategy of
-implementing most of these in terms of `fm/mod`
-(or, structurally equivalently, `sm/rem`).
+The Standard expects that
+either `sm/rem` or `fm/mod` will be a primitive,
+and that other operators can be defined
+in terms of that primitive.
+
+The Standard commentary provides a reasonable strategy:
 
 Define `/mod` and `*/mod`:
 
-`: /mod >r s>d r> fm/mod ;`
+`: /mod >r s>d r> sm/rem ;`
 
-`: */mod >r m* r> fm/mod ;`
+`: */mod >r m* r> sm/rem ;`
 
 Note the similarity, both produce a double
-(either via `s>d` or `m*`), then invoke `fm/mod`.
+(either via `s>d` or `m*`), then invoke `sm/rem`.
 
 Then `/` and `*/` just drop the remainder parts:
 
@@ -69,18 +72,19 @@ Then `/` and `*/` just drop the remainder parts:
 
 `: */ */mod nip`.
 
-Note: On Intel-64, `sm/rem` is the more natural primitive
-(the word has the same operation as `idiv`).
+## Primitives on Intel-64
 
-## `m*` and `um*`
+`sm/rem` is primitive.
+Corresponds to `idiv`
 
-The multiplication operators,
-`m*` and `um*` are, in Intel-64, convenient primitives.
+`um/mod` is primitive.
+Corresponds to `div`.
 
-## `um/mod`
+`m*` is primitive.
+Corresponds to `imul`.
 
-`um/mod` is a convenient priitive on Intel-64
-(the word has the same operation as `div`).
+`um*` is primitive.
+Corresponds to `mul`.
 
 ## The problem of #
 
