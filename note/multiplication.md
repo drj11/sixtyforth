@@ -110,7 +110,9 @@ r>              ( Lrem Lquot Mquot )
                 ( u-rem ud-quot )
 ```
 
-(there is already a TIL version of this on 64th.asm called ud/mod.)
+(Historical note: there was a TIL version of this
+in `64th.asm` called `ud/mod`,
+but we have replaced it with the above definition in Forth.)
 
 Note that I has to invent `u/mod`;
 it's `: u/mod 0 swap um/mod ;`.
