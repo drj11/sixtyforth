@@ -163,13 +163,17 @@ ud* used solely by >number
 ud* should be written in terms of `um*` and `d+`
 (rather than this weirdly huge `um*/mod`).
 
+: ud* ( ud u -- ud )
+   ( ul um u )
+   swap over    ( ul u um u )
+   *            ( ul u mprod )
+   >r           ( ul u )
+   um*          ( ud )
+   0 r>         ( ud 0 mprod )
+   d+           ( udprod )
+;
+
 m*/ not used
-
-# -> ud/mod
-
-ud/mod -> um/mod
-
-ud/mod solely used by #
 
 um/mod ANSI primitive
 
@@ -177,3 +181,11 @@ m* ANSI primitive
 um* ANSI primitive
 
 sm/rem ANSI primitive
+
+`#` and following moved into Forth
+
+# -> uml/mod
+
+uml/mod -> um/mod
+
+uml/mod solely used by #
