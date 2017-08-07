@@ -117,9 +117,12 @@ but we have replaced it with the above definition in Forth.)
 Note that I has to invent `u/mod`;
 it's `: u/mod 0 swap um/mod ;`.
 
-the first division conveniently leaves `L Mrem` on the stack,
-which is the double cell dividend that
-enters the next round of long division.
+The first division leaves `L Mrem` on the stack.
+In long division,
+the remainder of one division forms the most significant part
+of the dividend that enters the next round of long division.
+`L Mrem` is, conveniently,
+the 2 cells that make up the double cell dividend.
 
 ## SixtyForth
 
