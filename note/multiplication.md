@@ -147,7 +147,12 @@ annoying long division and multiplication out of ASM.
 
 . u. d. -> <# #s #>
 
+Interpreter `qNUMBER` word -> `>number`
+
 >number -> ud*
+
+`>number` is really horrifically large.
+Good idea to factor it, and/or implement in Forth.
 
 * -> m*
 
