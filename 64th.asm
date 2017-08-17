@@ -324,9 +324,12 @@ Mstarslash:
 UDstar:
         DQ stdexe
         ; UD* ( ud u -- ud-product )
-        DQ LIT, 1       ; ud u 1
-        DQ UMstarslashMOD       ; ud u-r
-        DQ DROP         ; ud
+        DQ SWAP, OVER   ; ul u um u
+        DQ ftimes       ; ul u mprod
+        DQ toR          ; ul u
+        DQ UMstar       ; ud
+        DQ z, Rfrom     ; ud 0 mprod
+        DQ Dplus        ; udprod
         DQ EXIT
         CtoL(UDstar)
 
