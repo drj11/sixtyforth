@@ -1012,7 +1012,7 @@ adjust-interactive
 adjust-vector
 
 ( SHEBANG )
-( adjust addr u pair for initial shebang line. )
+( adjust addr u pair to skip past an initial shebang line. )
 : shebang ( addr u -- n-addr n-u )
   over c@               ( addr u c )
   [char] #
@@ -1039,6 +1039,8 @@ adjust-vector
   -                     ( n-addr n- )
 ;
 
+( If there is a command line argument, )
+( run it as Forth. )
 : run-args
   1 argc @ < if
     1 arg openr
