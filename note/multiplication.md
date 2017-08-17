@@ -156,41 +156,42 @@ Good idea to factor it, and/or implement in Forth.
 
 * -> m*
 
-m*/ -> um*/mod
-ud* -> um*/mod
+`m*/` -> `um*/mod`
 
-um*/mod 64th primitive
+`ud*` -> `um*/mod`
 
-um*/mod used only by m*/ and ud*
+`um*/mod` 64th primitive
 
-ud* used solely by >number
+`um*/mod` used only by `m*/` and `ud*`
 
-ud* should be written in terms of `um*` and `d+`
+`ud*` used solely by `>number`
+
+`ud*` should be written in terms of `um*` and `d+`
 (rather than this weirdly huge `um*/mod`).
 
-: ud* ( ud u -- ud )
-   ( ul um u )
-   swap over    ( ul u um u )
-   *            ( ul u mprod )
-   >r           ( ul u )
-   um*          ( ud )
-   0 r>         ( ud 0 mprod )
-   d+           ( udprod )
-;
+    : ud* ( ud u -- ud )
+       ( ul um u )
+       swap over    ( ul u um u )
+       *            ( ul u mprod )
+       >r           ( ul u )
+       um*          ( ud )
+       0 r>         ( ud 0 mprod )
+       d+           ( udprod )
+    ;
 
-m*/ not used
+`m*/` not used
 
-um/mod ANSI primitive
+`um/mod` ANSI primitive
 
-m* ANSI primitive
-um* ANSI primitive
+`m*` ANSI primitive
+`um*` ANSI primitive
 
-sm/rem ANSI primitive
+`sm/rem` ANSI primitive
 
 `#` and following moved into Forth
 
-# -> uml/mod
+`#` -> `uml/mod`
 
-uml/mod -> um/mod
+`uml/mod` -> `um/mod`
 
-uml/mod solely used by #
+`uml/mod` solely used by `#`
