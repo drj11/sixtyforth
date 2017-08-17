@@ -325,7 +325,7 @@ UDstar:
         DQ stdexe
         ; UD* ( ud u -- ud-product )
         DQ SWAP, OVER   ; ul u um u
-        DQ ftimes       ; ul u mprod
+        DQ star         ; ul u mprod
         DQ toR          ; ul u
         DQ UMstar       ; ud
         DQ z, Rfrom     ; ud 0 mprod
@@ -1487,12 +1487,12 @@ UMstar:
 
         DQ 1
         DQ '*'          ; std1983
-ftimes: DQ stdexe
+star: DQ stdexe
         ; * ( n1 n2 -- n3 )
         DQ Mstar
         DQ DROP
         DQ EXIT
-        CtoL(ftimes)
+        CtoL(star)
 
         DQ 2
         DQ '0>'         ; std1983
@@ -1569,7 +1569,7 @@ LAST:   DQ stdexe
         DQ 'cells'      ; std1994
 CELLS:  DQ stdexe
         DQ LIT, 8
-        DQ ftimes
+        DQ star
         DQ EXIT
         CtoL(CELLS)
 
