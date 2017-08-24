@@ -43,6 +43,13 @@
   >r
 ;
 
+( 2R>           std1994 )
+: 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
+  r> r> r>      ( ret x2 x1 )
+  rot >r        ( x2 x1 )
+  swap          ( x1 x2 )
+;
+
 ( 2R@           std1994 )
 : 2r@ ( -- x1 x2 ) ( R: x1 x2 -- x1 x2 )
   r> r> r>      ( ret x2 x1 )
