@@ -118,8 +118,8 @@ create while-token
   r>            ( ret )
   2r@           ( ret limit index )
   1+            ( ret limit new-index )
-  r> drop
-  dup >r
+  r> drop       ( r: limit )
+  dup >r        ( r: limit index+1 )
   =             ( ret flag )
   swap >r       ( flag )
 ;
