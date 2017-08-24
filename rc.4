@@ -114,14 +114,14 @@ create while-token
 ( LOOPTEST )
 ( implements the test part of a DO LOOP, )
 ( leaving a flag on the stack. )
-: looptest ( -- bf      / R: limit index -- limit index+1 )
+: looptest ( -- flag    / R: limit index -- limit index+1 )
   r>            ( ret )
   2r@           ( ret limit index )
   1+            ( ret limit new-index )
   r> drop
   dup >r
-  =             ( ret bf )
-  swap >r       ( bf )
+  =             ( ret flag )
+  swap >r       ( flag )
 ;
 
 ( LOOP          std1983 )
@@ -205,7 +205,7 @@ create while-token
     #
     2dup        ( ud ud )
     or          ( ud s )
-    0=          ( ud bf )
+    0=          ( ud flag )
   until
 ;
 
@@ -291,7 +291,7 @@ create while-token
     1+          ( addr i )
     2dup +      ( addr i p )
     c@          ( addr i ch )
-    0=          ( addr i bf )
+    0=          ( addr i flag )
   until
 ;
 
@@ -529,7 +529,7 @@ variable hl.cursor
   hl.n -
 ;
 
-: hl.curprev ( -- bf )
+: hl.curprev ( -- flag )
   hl.cursor @ hl.base            ( c base )
   >
   if
@@ -540,7 +540,7 @@ variable hl.cursor
   then
 ;
 
-: hl.curnext ( -- bf )
+: hl.curnext ( -- flag )
   hl.cursor @ hl.next @ 1-      ( c end )
   <
   if
@@ -571,7 +571,7 @@ variable hl.cursor
   dup                           ( i i )
   hl.base                       ( i i base )
   hl.next @                     ( i i base limit )
-  within                        ( i bf )
+  within                        ( i flag )
   if
     hl.n mod                    ( array-index )
     2 * cells                   ( o )
@@ -629,7 +629,7 @@ variable hl.cursor
   hl.base                       ( i )
   begin
     dup hl.next @               ( i i n )
-    <                           ( i bf )
+    <                           ( i flag )
   while
     dup .
     dup hl@                     ( i addr u )
@@ -1023,7 +1023,7 @@ adjust-vector
 : shebang ( addr u -- n-addr n-u )
   over c@               ( addr u c )
   [char] #
-  <>                    ( addr u bf )
+  <>                    ( addr u flag )
   if
     exit
   then
