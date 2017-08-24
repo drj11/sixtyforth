@@ -37,9 +37,8 @@
 ( 2>R           std1994 )
 ( Care taken to preserve return address on top of return stack. )
 : 2>r ( x1 x2 -- ) ( R: -- x1 x2 )
-  swap          ( x2 x1 )
-  r>            ( x2 x1 ret )
-  swap >r       ( x2 ret )
+  r>            ( x1 x2 ret )
+  rot >r        ( x2 ret )
   swap >r       ( ret )
   >r
 ;
