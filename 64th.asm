@@ -1656,16 +1656,12 @@ Squote:
         DQ 'abort"'     ; std1983
 ABORTquote:
         DQ stdexe
-        DQ LIT, ZEROBRANCH
-        DQ comma
+        DQ LIT, ZEROBRANCH, comma
         DQ HERE         ; ( here )
-        DQ TRUE
-        DQ comma
+        DQ TRUE, comma
         DQ Squote
-        DQ LIT, TYPE
-        DQ comma
-        DQ LIT, ABORT
-        DQ comma
+        DQ LIT, TYPE, comma
+        DQ LIT, ABORT, comma
         DQ HERE         ; ( addr here )
         DQ OVER         ; ( addr here addr )
         DQ MINUS        ; ( addr offset )
