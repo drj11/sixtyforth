@@ -164,8 +164,7 @@ create while-token
 
 \ std1994
 : 2! ( x1 x2 addr -- )
-  swap over !
-  cell+ !
+  tuck !   cell+ !
 ;
 
 \ std1994
@@ -190,7 +189,7 @@ create while-token
 : hold ( ch -- )
   pic @         ( ch addr )
   1-            ( ch addr )
-  swap over     ( addr ch addr )
+  tuck          ( addr ch addr )
   c!            ( addr )
   pic !
 ;
@@ -256,7 +255,7 @@ create while-token
 
 \ std1994
 : d. ( d -- )
-  swap over     ( n d ) ( n same sign as d )
+  tuck          ( n d ) \ n same sign as d
   dabs          ( n |d| )
   <#
     bl hold
@@ -346,7 +345,7 @@ create fstatbuf 144 allot
     0 0
   else
     ( n sz )
-    swap over                   ( sz n sz )
+    tuck                        ( sz n sz )
     0 rot rot swap              ( sz 0 sz n )
     \ For #defines, see /usr/include/asm-generic/mman-common.h
     \ PROT_READ 1
@@ -365,7 +364,7 @@ constant openbuf        ( buffer for open pathname )
 
 \ Open file for reading.
 : openr ( f-addr sz -- fd )
-  swap over                     ( sz f-addr sz )
+  tuck                          ( sz f-addr sz )
   openbuf swap                  ( sz f-addr path sz )
   cmove                         ( sz )
   0 swap                        ( 0 sz )
@@ -1031,7 +1030,7 @@ adjust-vector
     exit
   then
   ( addr u )
-  swap over dup         ( u addr u u )
+  tuck dup              ( u addr u u )
   0 do
     over                ( u addr l addr )
     i +
