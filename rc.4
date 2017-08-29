@@ -362,22 +362,31 @@ create fstatbuf 144 allot
 4096 amapw
 constant openbuf        ( buffer for open pathname )
 
-\ Open file for reading.
-: openr ( f-addr sz -- fd )
-  tuck                          ( sz f-addr sz )
-  openbuf swap                  ( sz f-addr path sz )
-  cmove                         ( sz )
-  0 swap                        ( 0 sz )
-  openbuf 1 + +                 ( 0 p )
+\ std1994
+: r/o
+  \ Modelled after the `flags` argument to open()
+  \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
+  0 ;
+
+\ std1994 file
+: open-file  ( c-addr u fam -- fileid ior )
+  >r >r                         ( c-addr )      ( r: fam u )
+  openbuf r@                    ( c-addr path u )
+  cmove                         ( )
+  0 r>                          ( 0 u )         ( r: fam )
+  openbuf 1+ +                  ( 0 p )
   !
   openbuf                       ( openbuf )
-  \ /usr/include/asm-generic/fcntl.h defines O_RDONLY
-  0 0                           ( openbuf 0 0 )
+  r> 0                          ( openbuf fam 0 )
   \ For syscall numbers, see
   \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
-  2 syscall3                    ( fd )
+  2 syscall3                    ( fileid )
+  dup 0 min                     ( fileid 0 | ior ior )
 ;
 
+\ Open file for reading.
+: openr ( c-addr u -- fileid ior )
+  r/o open-file ;
 
 \ Fetch byte C from addr,
 \ then compute C M AND X XOR
@@ -1052,8 +1061,9 @@ adjust-vector
 \ run it as Forth.
 : run-args
   1 argc @ < if
-    1 arg openr
-    fmapr
+    1 arg openr         ( fileid ior )
+    drop                ( fileid )
+    fmapr               ( addr u )
     shebang
     evaluate
   then
