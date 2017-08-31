@@ -25,6 +25,8 @@
 : 2dup   over over ;
 : tuck  ( a b -- b a b )
   swap over ;
+\ std1983
+: .(  [char] ) parse type ; immediate
 
 \ std1994
 : 2>r  ( x1 x2 -- ) ( R: -- x1 x2 )
@@ -140,28 +142,28 @@ create while-token
 \ ##
 
 \ std1983
-: variable create 1 cells allot ;
+: variable    create 1 cells allot ;
 
 \ std1983
-: dnegate ( d1 -- -d1 )
+: dnegate  ( d -- -d )
   -1 1 m*/ ;
 
 \ std1983
 : max   2dup < if swap then drop ;
 
 \ std1994
-: mod ( n1 n2 -- n3 )
+: mod  ( n1 n2 -- n3 )
   ( Implementation as per [std1994] )
   >r s>d r> sm/rem drop
 ;
 
 \ std1994
-: 2! ( x1 x2 addr -- )
+: 2!  ( x1 x2 addr -- )
   tuck !   cell+ !
 ;
 
 \ std1994
-: 2@ ( addr -- x1 x2 )
+: 2@  ( addr -- x1 x2 )
   dup cell+ @
   swap @
 ;
@@ -170,7 +172,7 @@ create while-token
 
 \ double to double division
 \ used in printing numbers
-: uml/mod ( ud u -- u-rem ud-quot )
+: uml/mod  ( ud u -- u-rem ud-quot )
   >r r@
   0 swap um/mod ( L Mrem Mquot )
   r> swap >r    ( L Mrem u )
@@ -179,22 +181,22 @@ create while-token
 ;
 
 \ std1994
-: hold ( ch -- )
+: hold  ( ch -- )
   pic @         ( ch addr )
-  1-            ( ch addr )
-  tuck          ( addr ch addr )
-  c!            ( addr )
+  1-            ( ch addr' )
+  tuck          ( addr' ch addr' )
+  c!            ( addr' )
   pic !
 ;
 
 \ std1994
-: <# ( -- )
+: <#  ( -- )
   picend
   pic !
 ;
 
 \ std1994
-: # ( ud1 -- ud2 )
+: #  ( ud -- ud' )
   base @
   uml/mod       ( r ud )
   rot           ( ud r )
@@ -202,17 +204,17 @@ create while-token
 ;
 
 \ std1994
-: #s ( ud -- )
+: #s  ( ud -- )
   begin
     #
     2dup        ( ud ud )
-    or          ( ud s )
+    or          ( ud u )
     0=          ( ud flag )
   until
 ;
 
 \ std1994
-: sign ( n -- )
+: sign  ( n -- )
   0<
   if
     [char] -
@@ -221,23 +223,23 @@ create while-token
 ;
 
 \ std1994
-: #> ( ud -- addr u )
+: #>  ( ud -- addr u )
   2drop
   pic @
-  picend over   ( addr end addr )
-  -             ( addr u )
+  picend        ( addr end )
+  over -        ( addr u )
 ;
 
 \ std1983
-: u. ( u -- )
+: u.  ( u -- )
   0
   <# bl hold #s #>
   type
 ;
 
 \ std1983
-: . ( x -- )
-  dup abs 0     ( x |x| 0 )
+: .  ( n -- )
+  dup abs 0     ( n du )
   <#
     bl hold
     #s
@@ -247,9 +249,8 @@ create while-token
 ;
 
 \ std1994
-: d. ( d -- )
-  tuck          ( n d ) \ n same sign as d
-  dabs          ( n |d| )
+: d.  ( d -- )
+  tuck dabs     ( n du )        \ n same sign as d
   <#
     bl hold
     #s
@@ -259,9 +260,6 @@ create while-token
 ;
 
 \ ##
-
-\ std1983
-: .( [char] ) parse type ; immediate
 
 \ Anonymous Map for Writing.
 \ Request freshly allocated memory.
