@@ -1,12 +1,12 @@
-: ' parse-word findword dup 0= ?dup drop drop ;
+: '  parse-word findword dup 0= ?dup drop drop ;
 
-: [compile] ' , ; immediate
+: [compile]  ' , ; immediate
 
-: char parse-word drop c@ ;
+: char  parse-word drop c@ ;
 
-: [char] char [compile] literal ; immediate
+: [char]  char [compile] literal ; immediate
 
-: ( [char] ) parse drop drop ; immediate
+: (  [char] ) parse drop drop ; immediate
 
 ( --- We have now defined comments, so we can use them. --- )
 
