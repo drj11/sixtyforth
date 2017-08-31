@@ -1062,7 +1062,8 @@ adjust-vector
 : run-args
   1 argc @ < if
     1 arg openr         ( fileid ior )
-    drop                ( fileid )
+    abort" File not found
+"
     fmapr               ( addr u )
     shebang
     evaluate
