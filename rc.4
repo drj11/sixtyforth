@@ -1027,6 +1027,12 @@ adjust-interactive
 ;
 adjust-vector
 
+\ std1994
+: /string  ( addr u n -- addr' u' )
+  tuck -                ( addr n u' )
+  >r + r>               ( addr' u' )
+;
+
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
   over c@               ( addr u c )
@@ -1049,9 +1055,7 @@ adjust-vector
   loop
   ( addr l )
   r> swap               ( addr u l )
-  \ need to add l to addr, and subtract it from u.
-  tuck -                ( addr l u' )
-  >r + r>               ( addr' u' )
+  /string
 ;
 
 \ If there is a command line argument,
