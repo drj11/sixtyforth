@@ -1036,22 +1036,22 @@ adjust-vector
     exit
   then
   ( addr u )
-  tuck dup              ( u addr u u )
+  dup dup >r            ( addr u u ) ( r: u )
   0 do
-    over                ( u addr l addr )
-    i +
-    c@                  ( u addr l ch )
+    \ l is, or will be, the index of the earliest NL
+    over                ( addr l addr )
+    i + c@              ( addr l ch )
     10 =
     if
       \ :todo: reimplement using `leave`
       i min
     then
   loop
-  ( u addr l )
+  ( addr l )
+  r> swap               ( addr u l )
   \ need to add l to addr, and subtract it from u.
-  tuck +                ( u l n-addr )
-  rot rot               ( n-addr u l )
-  -                     ( n-addr n- )
+  tuck -                ( addr l u' )
+  >r + r>               ( addr' u' )
 ;
 
 \ If there is a command line argument,
