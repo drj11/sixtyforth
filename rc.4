@@ -323,16 +323,24 @@ create fstatbuf 144 allot
   \ Leaves result in `fstatbuf`
   fstatbuf 0 5 syscall3 ;
 
-: flen ( n -- sz/err )
-  \ Length of file opened on fildes n
-  \ -ve if there is an error
-  fstat* ?dup if else fstatbuf 48 + @ then ;
+\ std1994 file
+: file-size  ( fileid -- ud ior )
+  fstat*
+  ?dup if
+    0 0 rot             ( 0. ior )
+  else
+    fstatbuf 48 + @
+    0 0                 ( ud 0 )
+  then
+;
 
 \ File Map for Reading
 \ Map fildes fd into memory for reading.
 \ Address and length of mapping are left on stack.
 : fmapr ( fd -- addr u )
-  dup flen                      ( fd sz )
+  dup file-size                 ( fd ud ior )
+  abort" File cannot be mapped" ( fd ud )
+  d>s                           ( fd u )
   dup 1 <
   if
     drop drop
