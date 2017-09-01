@@ -53,6 +53,9 @@
   swap          ( x1 x2 )
 ;
 
+\ std1994
+: 2*  ( x -- x' )  2 * ;
+
 \ ## Control Flow package
 
 create begin-token
@@ -518,7 +521,7 @@ variable hl.p                   ( history-pointer )
 hl.block @ hl.p !
 
 : hl.n   999 ;
-create hl.array 2 hl.n * cells allot
+create hl.array hl.n 2* cells allot
 
 variable hl.next
 0 hl.next !
@@ -553,9 +556,9 @@ variable hl.cursor
   then
 ;
 
-\ Return address of ith double-world entry in hl.array.
-: hl.a&  ( i -- addr )
-  2 * cells                     ( byte-offset )
+\ Return address of uth double-world entry in hl.array.
+: hl.a&  ( u -- addr )
+  2* cells                      ( byte-offset )
   hl.array                      ( byte-offset hl.array )
   +                             ( array-address )
 ;
@@ -576,7 +579,7 @@ variable hl.cursor
   within                        ( i flag )
   if
     hl.n mod                    ( array-index )
-    2 * cells                   ( o )
+    2* cells                    ( o )
     hl.array +                  ( addr )
   else
     drop
