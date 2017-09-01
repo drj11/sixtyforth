@@ -76,7 +76,7 @@ create while-token
 \ std1983
 : while  ( token begin-token -- w-token while-token )
   compile 0branch
-  ( todo: check token )
+  \ todo: check token
   here          ( token begin-token w-token )
   while-token   ( token begin-token w-token while-token )
   true ,
@@ -86,7 +86,7 @@ create while-token
 : if  ( -- token    / at compile time )
   compile 0branch
   here          ( token )
-  ( compile dummy offset )
+  \ compile dummy offset
   true ,
 ; immediate
 
@@ -153,7 +153,7 @@ create while-token
 
 \ std1994
 : mod  ( n1 n2 -- n3 )
-  ( Implementation as per [std1994] )
+  \ Implementation as per [std1994]
   >r s>d r> sm/rem drop
 ;
 
@@ -263,7 +263,7 @@ create while-token
 
 \ Anonymous Map for Writing.
 \ Request freshly allocated memory.
-: amapw ( sz -- addr )
+: amapw  ( sz -- addr )
   0 swap                        ( 0 sz )
   3 34                          ( 0 sz prot flags )
   -1 0                          ( 0 sz prot flags fd offset )
@@ -274,19 +274,19 @@ create while-token
 \ to point to address following call to *fix-cfa
 \ in the calling word;
 \ and terminate excution of calling word.
-: *fix-cfa r> last name> ! ;
+: *fix-cfa   r> last name> ! ;
 
 \ std1983
-: does> compile *fix-cfa codedoes       ( addr n )
+: does>   compile *fix-cfa codedoes     ( addr n )
   here over allot                       ( from n to )
   swap cmove ; immediate
 
 \ std1983
-: constant ( x -- / -- x )
+: constant  ( x -- / -- x )
   variable last name> >body ! does> @ ;
 
 \ Convert from C string, by pushing its length.
-: c> ( addr -- addr u )
+: c>  ( addr -- addr u )
   -1            ( addr i )
   begin
     1+          ( addr i )
@@ -300,7 +300,7 @@ create while-token
 \ The initial RSP register is the address of ARGC
 \ (in the Linux ABI).
 rsp constant argc
-: arg ( i -- i-addr i-len )
+: arg  ( i -- i-addr i-len )
   1+ cells
   \ Following ARGC are the pointers to C strings.
   argc
@@ -316,13 +316,13 @@ rsp constant argc
 \ see note/fstat.md
 create fstatbuf 144 allot
 
-: fstat* ( n -- res )
-  ( leaves result in `fstatbuf` )
+: fstat*  ( n -- res )
+  \ Leaves result in `fstatbuf`
   fstatbuf 0 5 syscall3 ;
 
 : flen ( n -- sz/err )
-  ( Length of file opened on fildes n )
-  ( -ve if there is an error )
+  \ Length of file opened on fildes n
+  \ -ve if there is an error
   fstat* ?dup if else fstatbuf 48 + @ then ;
 
 \ File Map for Reading
@@ -376,13 +376,13 @@ constant openbuf        ( buffer for open pathname )
 ;
 
 \ Open file for reading.
-: openr ( c-addr u -- fileid ior )
+: openr  ( c-addr u -- fileid ior )
   r/o open-file ;
 
 \ Fetch byte C from addr,
 \ then compute C M AND X XOR
 \ and store at addr.
-: c!xa ( X M addr -- )
+: c!xa  ( X M addr -- )
   dup >r c@ and xor r> c! ;
 
 variable chbuf
@@ -406,7 +406,7 @@ variable chbuf
   0 fgetc ;
 
 \ Fetch and print 8 hex digits.
-: @.8 ( addr -- )
+: @.8  ( addr -- )
   @ 4294967295 ( 2**32 - 1 ) and        ( w )
   base @ >r
   16 base !
@@ -419,7 +419,7 @@ variable chbuf
 ;
 
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
-: tcgets. ( fd -- res )
+: tcgets.  ( fd -- res )
   tcgetsv tcgets        ( res )
   tcgetsv @.8
   tcgetsv 4 + @.8
@@ -442,18 +442,18 @@ create tty.buffer 36 allot
   \ Fetch and modify TTY settings...
   dup tcgetsv tcgets drop               ( fd )
   \ Clear ICANON and ECHO bits.
-  0 10 invert tcgetsv 12 + c!xa         ( fd )
+  0  10 invert  tcgetsv 12 +  c!xa      ( fd )
   tcgetsv tcsets drop
 ;
 
 \ Restore TTY settings.
-: tty.restore ( fd -- )
+: tty.restore  ( fd -- )
   tty.buffer tcsets drop
 ;
 
 create tty.szbuf 8 allot
 
-: tiocgwinsz ( fd p -- res )
+: tiocgwinsz  ( fd p -- res )
   \ 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h
   21523                 ( fd p 0x5413 )
   swap                  ( fd 0x5413 p )
@@ -490,13 +490,11 @@ variable tty.vbuf
 \ ## Key Input
 
 \ type on stderr.
-: etype ( addr u -- )
-  2 ftype ;
+: etype  ( addr u -- )  2 ftype ;
+\ emit on stderr.
+: eemit  ( ch -- )  2 femit ;
 
-: eemit ( ch -- )
-  2 femit ;
-
-: ki.z 96 ;             ( size )
+: ki.z  96 ;            ( size )
 create ki.a ki.z allot  ( address )
 variable ki.>           ( point )
 variable ki.n           ( validity )
@@ -506,13 +504,10 @@ variable ki.fixk        ( small buffer used for findword )
 
 \ Reset key variables to create a fresh buffer
 : ki.fresh
-  0 ki.> !
-  0 ki.n !
-  0 ki.>save !
-;
+  0 ki.> !   0 ki.n !   0 ki.>save ! ;
 ki.fresh
 
-: ki.input ki.a ki.n @ ;
+: ki.input  ( -- addr u )  ki.a ki.n @ ;
 
 \ ## Historic Lines
 
@@ -522,7 +517,7 @@ variable hl.block
 variable hl.p                   ( history-pointer )
 hl.block @ hl.p !
 
-: hl.n 999 ;
+: hl.n   999 ;
 create hl.array 2 hl.n * cells allot
 
 variable hl.next
@@ -531,12 +526,12 @@ variable hl.cursor
 0 hl.cursor !
 
 \ Index of earliest history element.
-: hl.base ( -- base )
+: hl.base  ( -- base )
   hl.n hl.next @ max
   hl.n -
 ;
 
-: hl.curprev ( -- flag )
+: hl.curprev  ( -- flag )
   hl.cursor @ hl.base            ( c base )
   >
   if
@@ -547,7 +542,7 @@ variable hl.cursor
   then
 ;
 
-: hl.curnext ( -- flag )
+: hl.curnext  ( -- flag )
   hl.cursor @ hl.next @ 1-      ( c end )
   <
   if
@@ -559,14 +554,14 @@ variable hl.cursor
 ;
 
 \ Return address of ith double-world entry in hl.array.
-: hl.a& ( i -- addr )
+: hl.a&  ( i -- addr )
   2 * cells                     ( byte-offset )
   hl.array                      ( byte-offset hl.array )
   +                             ( array-address )
 ;
 
 \ Store addr u into the ith double-world entry in hl.array.
-: hl.a! ( u addr i -- )
+: hl.a!  ( u addr i -- )
   hl.a&                         ( u addr array-addr )
   2!                            ( )
 ;
@@ -574,7 +569,7 @@ variable hl.cursor
 \ Replace i with the address of the double word
 \ for history element i;
 \ 0 if invalid index.
-: hl& ( i -- addr )
+: hl&  ( i -- addr )
   dup                           ( i i )
   hl.base                       ( i i base )
   hl.next @                     ( i i base limit )
@@ -590,7 +585,7 @@ variable hl.cursor
 ;
 
 \ Fetch string from history; 0 0 if invalid index.
-: hl@ ( i -- addr u )
+: hl@  ( i -- addr u )
   hl&                           ( addr )
   dup if
     2@                          ( u a )
@@ -603,7 +598,7 @@ variable hl.cursor
 
 \ Save the string into most recent element of history;
 \ modifying it.
-: hl.save ( from u -- )
+: hl.save  ( from u -- )
   hl.next @ 1-                  ( from u i )
   hl&                           ( from u h-addr )
   dup 0= if
@@ -621,7 +616,7 @@ variable hl.cursor
 ;
 
 \ Create a new history entry.
-: hl.new ( -- )
+: hl.new  ( -- )
   0 hl.p @                      ( 0 p )
   hl.next @                     ( 0 p i )
   \ increment hl.next
@@ -689,7 +684,7 @@ variable hl.cursor
 
 \ Insert the text into the buffer at the current point,
 \ and advance the point past the inserted text.
-: ki.insert ( addr u -- 1 )
+: ki.insert  ( addr u -- 1 )
   dup ki.n @ +
   ki.z >
   if
@@ -856,7 +851,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Emit ANSI codes to move VT cursor,
 \ from location `from` to location `to`.
 \ `from` and `to` are byte positions in the ki.a input string.
-: ki.motion ( from to -- )
+: ki.motion  ( from to -- )
   tty.cols >r
   s>d r@ um/mod                 ( from to-col to-row )
   rot                           ( to-col to-row from )
@@ -889,7 +884,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ type out rest of line,
 \ and return VT cursor here.
 \ Factor of ki.redraw.
-: ki.heretype ( -- )
+: ki.heretype  ( -- )
   \ type out rest of text
   ki.a ki.> @ +                 ( addr )
   ki.n @ ki.> @ -               ( addr n )
@@ -918,8 +913,8 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
     \ new point is forward of old one
     ki.>save @                  ( p )
   then
-  \ position of current VT on stack
-  \ type out text to end
+  \ Position of current VT on stack;
+  \ type out text to end.
   ki.n @                        ( p n )
   over -                        ( p u )
   ki.a                          ( p u a )
@@ -1022,7 +1017,7 @@ adjust-interactive
 adjust-vector
 
 \ Adjust addr u pair to skip past an initial shebang line.
-: shebang ( addr u -- n-addr n-u )
+: shebang  ( addr u -- n-addr n-u )
   over c@               ( addr u c )
   [char] #
   <>                    ( addr u flag )
