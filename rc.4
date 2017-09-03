@@ -117,12 +117,12 @@ create while-token
 
 \ Implements the test part of a DO LOOP,
 \ leaving a flag on the stack.
-: looptest  ( -- flag    / R: limit index -- limit index+1 )
+: looptest  ( -- flag    / R: limit index -- limit index' )
    r>           ( ret )
    2r@          ( ret limit index )
-   1+           ( ret limit new-index )
+   1+           ( ret limit index' )
    r> drop      ( r: limit )
-   dup >r       ( r: limit index+1 )
+   dup >r       ( r: limit index' )
    =            ( ret flag )
    swap >r      ( flag )
 ;
