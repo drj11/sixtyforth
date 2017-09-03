@@ -208,12 +208,11 @@ create while-token
 ;
 
 \ std1994
-: #s  ( ud -- )
+: #s  ( ud -- 0. )
    begin
       #
       2dup      ( ud ud )
-      or        ( ud u )
-      0=        ( ud flag )
+      or 0=     ( ud flag )
    until
 ;
 
