@@ -218,8 +218,7 @@ create while-token
 
 \ std1994
 : sign  ( n -- )
-  0<
-  if
+  0< if
     [char] -
     hold
   then
@@ -308,8 +307,7 @@ rsp constant argc
   \ Following ARGC are the pointers to C strings.
   argc
   + @           ( addr )
-  dup
-  if
+  dup if
     c>          ( addr u )
   else
     0           ( 0 0 )
@@ -341,8 +339,7 @@ create fstatbuf 144 allot
   dup file-size                 ( fd ud ior )
   abort" File cannot be mapped" ( fd ud )
   d>s                           ( fd u )
-  dup 1 <
-  if
+  dup 1 < if
     drop drop
     0 0
   else
@@ -543,9 +540,7 @@ variable hl.cursor
 ;
 
 : hl.curprev  ( -- flag )
-  hl.cursor @ hl.base            ( c base )
-  >
-  if
+  hl.cursor @  hl.base  >  if
     -1 hl.cursor +!
     true
   else
@@ -554,9 +549,8 @@ variable hl.cursor
 ;
 
 : hl.curnext  ( -- flag )
-  hl.cursor @ hl.next @ 1-      ( c end )
-  <
-  if
+  hl.cursor @  hl.next @ 1-      ( c end )
+  < if
     1 hl.cursor +!
     true
   else
@@ -584,8 +578,7 @@ variable hl.cursor
   dup                           ( i i )
   hl.base                       ( i i base )
   hl.next @                     ( i i base limit )
-  within                        ( i flag )
-  if
+  within  if
     hl.n mod                    ( array-index )
     2* cells                    ( o )
     hl.array +                  ( addr )
@@ -696,9 +689,7 @@ variable hl.cursor
 \ Insert the text into the buffer at the current point,
 \ and advance the point past the inserted text.
 : ki.insert  ( addr u -- 1 )
-  dup ki.n @ +
-  ki.z >
-  if
+  dup ki.n @ +  ki.z  >  if
     \ buffer full
     s" #%#" etype
     0
@@ -727,9 +718,7 @@ variable hl.cursor
 \ and prefix everything with k:
 : ki.fix
   s" k:" ki.fixk swap cmove
-  ki.k c@
-  32 <
-  if
+  ki.k c@  32  <  if
     [char] ^ ki.fixk 2 + c!
     ki.k c@
     64 or ki.fixk 3 + c!
@@ -741,8 +730,7 @@ variable hl.cursor
 ;
 
 : erase-backward-char
-  ki.> @
-  if
+  ki.> @  if
     \ copy down characters
     ki.a ki.> @ +               ( from )
     dup 1-                      ( from to )
@@ -780,17 +768,11 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ erase-forward-char
 : k:^D
   \ if entire line is empty, terminate
-  ki.n @ 0= ki.> @ 0=
-  and
-  if
-    0
-    exit
+  ki.n @ 0=  ki.> @ 0=  and  if
+    0  exit
   then
   \ Test if there are any characters ahead of point to erase.
-  ki.n @                        ( n )
-  ki.> @                        ( n > )
-  -                             ( u )
-  if
+  ki.n @  ki.> @  -  if
     \ copy down characters
     ki.a ki.> @ +               ( to )
     dup 1+ swap                 ( from to )
@@ -815,8 +797,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ next
 : k:^N
-  hl.curnext
-  if
+  hl.curnext if
     hl.cursor @ hl@             ( from u )
     tuck ki.a swap              ( u from to u )
     cmove                       ( u )
@@ -828,8 +809,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ previous
 : k:^P
-  hl.curprev
-  if
+  hl.curprev if
     hl.cursor @ hl@             ( from u )
     tuck ki.a swap              ( u from to u )
     cmove                       ( u )
@@ -841,20 +821,15 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Fix cursor position if it is at end of row
 : ki.curfix
-  ki.n @
-  s>d
-  tty.cols
-  um/mod                        ( col row )
-  0> swap 0= and
-  if
+  ki.n @ s>d  tty.cols  um/mod  ( col row )
+  0>  swap 0=  and  if
     10 eemit
   then
 ;
 
 \ Like #s, but always in decimal.
 : #d
-  base @ >r
-  10 base !
+  base @ >r  10 base !
   #s
   r> base !
 ;
@@ -869,15 +844,13 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   s>d r> um/mod                 ( to-col to-row from-col from-row )
   rot                           ( to-col from-col from-row to-row )
   \ vertical motion
-  2dup                          ( t-col f-col f-row t-row f-row t-row )
-  > if
+  2dup > if
     \ upward motion
     - s>d                       ( t-col f-col dn )
     <# [char] A hold #d [char] [ hold 27 hold #>
     etype                       ( t-col f-col )
   else
-    2dup <                      ( t-col f-col f-row t-row flag )
-    if
+    2dup < if
       \ downward motion
       - negate s>d              ( t-col f-col dn )
       <# [char] B hold #d [char] [ hold 27 hold #>
@@ -946,8 +919,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
   begin
     getc
-    dup 0 <                     ( ch flag )
-    if
+    dup 0 < if
       \ negative: EOF or error
       drop 0                    ( 0 )
     else
@@ -963,8 +935,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
         depth >r
         execute
         depth r>                ( flag depth1 depth0 )
-        -
-        if
+        - if
           s" stack imbalance" etype
         then
       then
@@ -987,14 +958,11 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
   begin
     ki
     ki.input
-    ?dup
-    if
+    ?dup if
       evaluate
-      s"  ok" etype 10 eemit
-      0
+      s"  ok" etype 10 eemit   0
     else
-      drop
-      1
+      drop   1
     then
   until
 ;
@@ -1036,9 +1004,7 @@ adjust-vector
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
   over c@               ( addr u c )
-  [char] #
-  <>                    ( addr u flag )
-  if
+  [char] # <> if
     exit
   then
   ( addr u )
@@ -1047,8 +1013,7 @@ adjust-vector
     \ l is, or will be, the index of the earliest NL
     over                ( addr l addr )
     i + c@              ( addr l ch )
-    10 =
-    if
+    10 = if
       \ :todo: reimplement using `leave`
       i min
     then
