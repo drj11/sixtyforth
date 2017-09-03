@@ -148,8 +148,7 @@ create while-token
 : variable    create 1 cells allot ;
 
 \ std1983
-: dnegate  ( d -- -d )
-   -1 1 m*/ ;
+: dnegate  ( d -- -d )  -1 1 m*/ ;
 
 \ std1983
 : max   2dup < if swap then drop ;
@@ -161,15 +160,11 @@ create while-token
 ;
 
 \ std1994
-: 2!  ( x1 x2 addr -- )
-   tuck !   cell+ !
-;
+: 2!  ( x1 x2 addr -- )  tuck !   cell+ ! ;
 
 \ std1994
 : 2@  ( addr -- x1 x2 )
-   dup cell+ @
-   swap @
-;
+   dup cell+ @   swap @ ;
 
 \ ## number printing package
 
