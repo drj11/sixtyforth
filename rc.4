@@ -769,7 +769,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : k:^A   0 ki.> !   1 ;
 
 \ backward-char
-: k:^B   ki.> @ 1- 0 max ki.> !   1 ;
+: k:^B   ki.> @ 1-  0  max  ki.> !   1 ;
 
 \ erase-forward-char
 : k:^D
@@ -796,7 +796,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ;
 
 \ forward-char
-: k:^F   ki.> @ 1 + ki.n @ min ki.> !   1 ;
+: k:^F   ki.> @ 1+  ki.n @  min  ki.> !   1 ;
 
 \ kill-to-end
 : k:^K   ki.> @ ki.n !   1 ;
