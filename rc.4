@@ -74,6 +74,8 @@
 : 2@  ( addr -- x1 x2 )
    dup cell+ @   swap @ ;
 
+\ std1994 double
+: d0=  ( xd -- flag )  or 0= ;
 
 \ ## Control Flow package
 
@@ -207,7 +209,7 @@ create while-token
    begin
       #
       2dup      ( ud ud )
-      or 0=     ( ud flag )
+      d0=       ( ud flag )
    until
 ;
 
