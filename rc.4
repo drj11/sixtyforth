@@ -22,9 +22,8 @@
 \ std1983
 : [']   ' [compile] literal ; immediate
 
-: 2dup   over over ;
-: tuck  ( a b -- b a b )
-   swap over ;
+: 2dup  ( x x' -- x x' x x' )  over over ;
+: tuck  ( a b -- b a b )  swap over ;
 \ std1983
 : .(  [char] ) parse type ; immediate
 
