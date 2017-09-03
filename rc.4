@@ -77,6 +77,12 @@
 \ std1994 double
 : d0=  ( xd -- flag )  or 0= ;
 
+\ std1994 string
+: /string  ( addr u n -- addr' u' )
+   tuck -               ( addr n u' )
+   >r + r>              ( addr' u' )
+;
+
 \ ## Control Flow package
 
 create begin-token
@@ -994,12 +1000,6 @@ adjust-interactive
    then
 ;
 adjust-vector
-
-\ std1994 string
-: /string  ( addr u n -- addr' u' )
-   tuck -               ( addr n u' )
-   >r + r>              ( addr' u' )
-;
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
