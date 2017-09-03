@@ -398,7 +398,7 @@ variable chbuf
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
   chbuf 1 sysread
-  dup 0 < if
+  dup 0< if
   else
     0= if -9999999
     else
@@ -919,7 +919,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
   begin
     getc
-    dup 0 < if
+    dup 0< if
       \ negative: EOF or error
       drop 0                    ( 0 )
     else
