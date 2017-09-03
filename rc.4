@@ -3,8 +3,8 @@
 
 \ std1983
 : '
-  \ Avoid using IF, which is not defined yet
-  parse-word findword dup 0= ?dup 2drop ;
+   \ Avoid using IF, which is not defined yet
+   parse-word findword dup 0= ?dup 2drop ;
 \ std1983
 : [compile]   ' , ; immediate
 \ std1994
@@ -24,33 +24,33 @@
 
 : 2dup   over over ;
 : tuck  ( a b -- b a b )
-  swap over ;
+   swap over ;
 \ std1983
 : .(  [char] ) parse type ; immediate
 
 \ std1994
 : 2>r  ( x1 x2 -- ) ( R: -- x1 x2 )
-  \ Care taken to preserve return address on top of return stack.
-  r>            ( x1 x2 ret )
-  rot >r        ( x2 ret )
-  swap >r       ( ret )
-  >r
+   \ Care taken to preserve return address on top of return stack.
+   r>           ( x1 x2 ret )
+   rot >r       ( x2 ret )
+   swap >r      ( ret )
+   >r
 ;
 
 \ std1994
 : 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
-  r> r> r>      ( ret x2 x1 )
-  rot >r        ( x2 x1 )
-  swap          ( x1 x2 )
+   r> r> r>     ( ret x2 x1 )
+   rot >r       ( x2 x1 )
+   swap         ( x1 x2 )
 ;
 
 \ std1994
 : 2r@  ( -- x1 x2 ) ( R: x1 x2 -- x1 x2 )
-  r> r> r>      ( ret x2 x1 )
-  dup >r
-  over >r
-  rot >r        ( x2 x1 )
-  swap          ( x1 x2 )
+   r> r> r>     ( ret x2 x1 )
+   dup >r
+   over >r
+   rot >r       ( x2 x1 )
+   swap         ( x1 x2 )
 ;
 
 \ std1994
@@ -62,84 +62,85 @@ create begin-token
 
 \ std1983
 : begin  ( -- token begin-token / at compile time )
-  here begin-token
+   here begin-token
 ; immediate
 
 \ std1983
 : until  ( token begin-token -- / at compile time )
-  drop ( todo: check token )
-  compile 0branch
-  here          ( token here )
-  -             ( byte-offset )
-  ,
+   \ todo: check token
+   drop
+   compile 0branch
+   here         ( token here )
+   -            ( byte-offset )
+   ,
 ; immediate
 
 create while-token
 
 \ std1983
 : while  ( token begin-token -- w-token while-token )
-  compile 0branch
-  \ todo: check token
-  here          ( token begin-token w-token )
-  while-token   ( token begin-token w-token while-token )
-  true ,
+   compile 0branch
+   \ todo: check token
+   here         ( token begin-token w-token )
+   while-token  ( token begin-token w-token while-token )
+   true ,
 ; immediate
 
 \ std1983
 : if  ( -- token    / at compile time )
-  compile 0branch
-  here          ( token )
-  \ compile dummy offset
-  true ,
+   compile 0branch
+   here         ( token )
+   \ compile dummy offset
+   true ,
 ; immediate
 
 \ std1983
 : else  ( token -- newtoken      / at compile time )
-  compile branch
-  here          ( token newtoken )
-  ( compile dummy offset )
-  true ,
-  swap          ( newtoken token )
-  here over -   ( newtoken token offset )
-  swap          ( newtoken offset token )
-  !             ( newtoken )
+   compile branch
+   here         ( token newtoken )
+   ( compile dummy offset )
+   true ,
+   swap         ( newtoken token )
+   here over -  ( newtoken token offset )
+   swap         ( newtoken offset token )
+   !            ( newtoken )
 ; immediate
 
 \ std1983
 : then
-  here over - swap ! ; immediate
+   here over - swap ! ; immediate
 
 \ std1983
 : do  ( limit base --    / C: -- token )
-  compile 2>r
-  here          ( token )
+   compile 2>r
+   here         ( token )
 ; immediate
 
 \ Implements the test part of a DO LOOP,
 \ leaving a flag on the stack.
 : looptest  ( -- flag    / R: limit index -- limit index+1 )
-  r>            ( ret )
-  2r@           ( ret limit index )
-  1+            ( ret limit new-index )
-  r> drop       ( r: limit )
-  dup >r        ( r: limit index+1 )
-  =             ( ret flag )
-  swap >r       ( flag )
+   r>           ( ret )
+   2r@          ( ret limit index )
+   1+           ( ret limit new-index )
+   r> drop      ( r: limit )
+   dup >r       ( r: limit index+1 )
+   =            ( ret flag )
+   swap >r      ( flag )
 ;
 
 \ std1983
 : loop  ( R: limit base -- limit base+1 |        / C: do-token -- )
-  compile looptest
-  compile 0branch
-  here          ( do-token here )
-  -             ( byte-offset )
-  ,
-  compile 2r> compile 2drop
+   compile looptest
+   compile 0branch
+   here         ( do-token here )
+   -            ( byte-offset )
+   ,
+   compile 2r> compile 2drop
 ; immediate
 
 \ std1983
 : i  ( -- index )
-  2r@ drop
+   2r@ drop
 ;
 
 \ ##
@@ -149,26 +150,26 @@ create while-token
 
 \ std1983
 : dnegate  ( d -- -d )
-  -1 1 m*/ ;
+   -1 1 m*/ ;
 
 \ std1983
 : max   2dup < if swap then drop ;
 
 \ std1994
 : mod  ( n1 n2 -- n3 )
-  \ Implementation as per [std1994]
-  >r s>d r> sm/rem drop
+   \ Implementation as per [std1994]
+   >r s>d r> sm/rem drop
 ;
 
 \ std1994
 : 2!  ( x1 x2 addr -- )
-  tuck !   cell+ !
+   tuck !   cell+ !
 ;
 
 \ std1994
 : 2@  ( addr -- x1 x2 )
-  dup cell+ @
-  swap @
+   dup cell+ @
+   swap @
 ;
 
 \ ## number printing package
@@ -176,89 +177,89 @@ create while-token
 \ double to double division
 \ used in printing numbers
 : uml/mod  ( ud u -- u-rem ud-quot )
-  >r r@
-  0 swap um/mod ( L Mrem Mquot )
-  r> swap >r    ( L Mrem u )
-  um/mod        ( Lrem Lquot )
-  r>            ( Lrem ud-quot )
+   >r r@
+   0 swap um/mod        ( L Mrem Mquot )
+   r> swap >r           ( L Mrem u )
+   um/mod               ( Lrem Lquot )
+   r>                   ( Lrem ud-quot )
 ;
 
 \ std1994
 : hold  ( ch -- )
-  pic @         ( ch addr )
-  1-            ( ch addr' )
-  tuck          ( addr' ch addr' )
-  c!            ( addr' )
-  pic !
+   pic @        ( ch addr )
+   1-           ( ch addr' )
+   tuck         ( addr' ch addr' )
+   c!           ( addr' )
+   pic !
 ;
 
 \ std1994
 : <#  ( -- )
-  picend
-  pic !
+   picend
+   pic !
 ;
 
 \ std1994
 : #  ( ud -- ud' )
-  base @
-  uml/mod       ( r ud )
-  rot           ( ud r )
-  digit hold    ( ud )
+   base @
+   uml/mod      ( r ud )
+   rot          ( ud r )
+   digit hold   ( ud )
 ;
 
 \ std1994
 : #s  ( ud -- )
-  begin
-    #
-    2dup        ( ud ud )
-    or          ( ud u )
-    0=          ( ud flag )
-  until
+   begin
+      #
+      2dup      ( ud ud )
+      or        ( ud u )
+      0=        ( ud flag )
+   until
 ;
 
 \ std1994
 : sign  ( n -- )
-  0< if
-    [char] -
-    hold
-  then
+   0< if
+      [char] -
+      hold
+   then
 ;
 
 \ std1994
 : #>  ( ud -- addr u )
-  2drop
-  pic @
-  picend        ( addr end )
-  over -        ( addr u )
+   2drop
+   pic @
+   picend       ( addr end )
+   over -       ( addr u )
 ;
 
 \ std1983
 : u.  ( u -- )
-  0
-  <# bl hold #s #>
-  type
+   0
+   <# bl hold #s #>
+   type
 ;
 
 \ std1983
 : .  ( n -- )
-  dup abs 0     ( n du )
-  <#
-    bl hold
-    #s
-    rot sign
-  #>
-  type
+   dup abs 0    ( n du )
+   <#
+      bl hold
+      #s
+      rot sign
+   #>
+   type
 ;
 
 \ std1994
 : d.  ( d -- )
-  tuck dabs     ( n du )        \ n same sign as d
-  <#
-    bl hold
-    #s
-    rot sign
-  #>
-  type
+   tuck dabs    ( n du )        \ n same sign as d
+   <#
+      bl hold
+      #s
+      rot sign
+   #>
+   type
 ;
 
 \ ##
@@ -266,10 +267,10 @@ create while-token
 \ Anonymous Map for Writing.
 \ Request freshly allocated memory.
 : amapw  ( sz -- addr )
-  0 swap                        ( 0 sz )
-  3 34                          ( 0 sz prot flags )
-  -1 0                          ( 0 sz prot flags fd offset )
-  9 syscall6                    ( addr )
+   0 swap       ( 0 sz )
+   3 34         ( 0 sz prot flags )
+   -1 0         ( 0 sz prot flags fd offset )
+   9 syscall6   ( addr )
 ;
 
 \ Fixes the CFA of the last defined word
@@ -280,22 +281,22 @@ create while-token
 
 \ std1983
 : does>   compile *fix-cfa codedoes     ( addr n )
-  here over allot                       ( from n to )
-  swap cmove ; immediate
+   here over allot                      ( from n to )
+   swap cmove ; immediate
 
 \ std1983
 : constant  ( x -- / -- x )
-  variable last name> >body ! does> @ ;
+   variable last name> >body ! does> @ ;
 
 \ Convert from C string, by pushing its length.
 : c>  ( addr -- addr u )
-  -1            ( addr i )
-  begin
-    1+          ( addr i )
-    2dup +      ( addr i p )
-    c@          ( addr i ch )
-    0=          ( addr i flag )
-  until
+   -1           ( addr i )
+   begin
+      1+        ( addr i )
+      2dup +    ( addr i p )
+      c@        ( addr i ch )
+      0=        ( addr i flag )
+   until
 ;
 
 \ ARGC and ARG modelled after gforth implementation.
@@ -303,59 +304,59 @@ create while-token
 \ (in the Linux ABI).
 rsp constant argc
 : arg  ( i -- i-addr i-len )
-  1+ cells
-  \ Following ARGC are the pointers to C strings.
-  argc
-  + @           ( addr )
-  dup if
-    c>          ( addr u )
-  else
-    0           ( 0 0 )
-  then
+   1+ cells
+   \ Following ARGC are the pointers to C strings.
+   argc
+   + @          ( addr )
+   dup if
+      c>        ( addr u )
+   else
+      0         ( 0 0 )
+   then
 ;
 
 \ see note/fstat.md
 create fstatbuf 144 allot
 
 : fstat*  ( n -- res )
-  \ Leaves result in `fstatbuf`
-  fstatbuf 0 5 syscall3 ;
+   \ Leaves result in `fstatbuf`
+   fstatbuf 0 5 syscall3 ;
 
 \ std1994 file
 : file-size  ( fileid -- ud ior )
-  fstat*
-  ?dup if
-    0 0 rot             ( 0. ior )
-  else
-    fstatbuf 48 + @
-    0 0                 ( ud 0 )
-  then
+   fstat*
+   ?dup if
+      0 0 rot           ( 0. ior )
+   else
+      fstatbuf 48 + @
+      0 0               ( ud 0 )
+   then
 ;
 
 \ File Map for Reading
 \ Map fildes fd into memory for reading.
 \ Address and length of mapping are left on stack.
 : fmapr ( fd -- addr u )
-  dup file-size                 ( fd ud ior )
-  abort" File cannot be mapped" ( fd ud )
-  d>s                           ( fd u )
-  dup 1 < if
-    drop drop
-    0 0
-  else
-    ( n sz )
-    tuck                        ( sz n sz )
-    0 rot rot swap              ( sz 0 sz n )
-    \ For #defines, see /usr/include/asm-generic/mman-common.h
-    \ PROT_READ 1
-    \ PROT_WRITE 2
-    \ MAP_PRIVATE 2
-    \ MAP_ANONYMOUS 32
-    1 2 rot                     ( sz 0 sz 1 2 n )
-    0                           ( sz 0 sz 1 2 n 0 )
-    9 syscall6                  ( sz addr )
-    swap
-  then
+   dup file-size                        ( fd ud ior )
+   abort" File cannot be mapped"        ( fd ud )
+   d>s                                  ( fd u )
+   dup 1 < if
+      drop drop
+      0 0
+   else
+      ( n sz )
+      tuck                              ( sz n sz )
+      0 rot rot swap                    ( sz 0 sz n )
+      \ For #defines, see /usr/include/asm-generic/mman-common.h
+      \ PROT_READ 1
+      \ PROT_WRITE 2
+      \ MAP_PRIVATE 2
+      \ MAP_ANONYMOUS 32
+      1 2 rot                           ( sz 0 sz 1 2 n )
+      0                                 ( sz 0 sz 1 2 n 0 )
+      9 syscall6                        ( sz addr )
+      swap
+   then
 ;
 
 4096 amapw
@@ -363,110 +364,110 @@ constant openbuf        ( buffer for open pathname )
 
 \ std1994
 : r/o
-  \ Modelled after the `flags` argument to open()
-  \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
-  0 ;
+   \ Modelled after the `flags` argument to open()
+   \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
+   0 ;
 
 \ std1994 file
 : open-file  ( c-addr u fam -- fileid ior )
-  >r >r                         ( c-addr )      ( r: fam u )
-  openbuf r@                    ( c-addr path u )
-  cmove                         ( )
-  0 r>                          ( 0 u )         ( r: fam )
-  openbuf 1+ +                  ( 0 p )
-  !
-  openbuf                       ( openbuf )
-  r> 0                          ( openbuf fam 0 )
-  \ For syscall numbers, see
-  \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
-  2 syscall3                    ( fileid )
-  dup 0 min                     ( fileid 0 | ior ior )
+   >r >r                ( c-addr )      ( r: fam u )
+   openbuf r@           ( c-addr path u )
+   cmove                ( )
+   0 r>                 ( 0 u )         ( r: fam )
+   openbuf 1+ +         ( 0 p )
+   !
+   openbuf              ( openbuf )
+   r> 0                 ( openbuf fam 0 )
+   \ For syscall numbers, see
+   \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
+   2 syscall3           ( fileid )
+   dup 0 min            ( fileid 0 | ior ior )
 ;
 
 \ Open file for reading.
 : openr  ( c-addr u -- fileid ior )
-  r/o open-file ;
+   r/o open-file ;
 
 \ Fetch byte C from addr,
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-  dup >r c@ and xor r> c! ;
+   dup >r c@ and xor r> c! ;
 
 variable chbuf
 
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
-  chbuf 1 sysread
-  dup 0< if
-  else
-    0= if -9999999
-    else
-      chbuf c@
-    then
-  then
+   chbuf 1 sysread
+   dup 0< if
+   else
+      0= if -9999999
+      else
+         chbuf c@
+      then
+   then
 ;
 
 \ Read single byte from stdin
 : getc ( -- c )
        ( -- -9999999    / on End of File )
        ( -- -ve         / on os error )
-  0 fgetc ;
+   0 fgetc ;
 
 \ Fetch and print 8 hex digits.
 : @.8  ( addr -- )
-  @ 4294967295 ( 2**32 - 1 ) and        ( w )
-  base @ >r
-  16 base !
-  0                     ( ud )
-  <# bl hold
-    # # # # # # # #
-  #>
-  type
-  r> base !
+   @ 4294967295 ( 2**32 - 1 ) and       ( w )
+   base @ >r
+   16 base !
+   0                    ( ud )
+   <# bl hold
+      # # # # # # # #
+   #>
+   type
+   r> base !
 ;
 
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
 : tcgets.  ( fd -- res )
-  tcgetsv tcgets        ( res )
-  tcgetsv @.8
-  tcgetsv 4 + @.8
-  tcgetsv 8 + @.8
-  tcgetsv 12 + @.8
-  cr
-  tcgetsv 16 +
-  20 dump               ( res )
+   tcgetsv tcgets       ( res )
+   tcgetsv @.8
+   tcgetsv 4 + @.8
+   tcgetsv 8 + @.8
+   tcgetsv 12 + @.8
+   cr
+   tcgetsv 16 +
+   20 dump              ( res )
 ;
 
 create tty.buffer 36 allot
 
 \ Store TTY settings.
 : tty.store ( fd -- )
-  tty.buffer tcgets drop
+   tty.buffer tcgets drop
 ;
 
 \ Put TTY in keypress mode.
 : tty.keypress ( fd -- )
-  \ Fetch and modify TTY settings...
-  dup tcgetsv tcgets drop               ( fd )
-  \ Clear ICANON and ECHO bits.
-  0  10 invert  tcgetsv 12 +  c!xa      ( fd )
-  tcgetsv tcsets drop
+   \ Fetch and modify TTY settings...
+   dup tcgetsv tcgets drop              ( fd )
+   \ Clear ICANON and ECHO bits.
+   0  10 invert  tcgetsv 12 +  c!xa     ( fd )
+   tcgetsv tcsets drop
 ;
 
 \ Restore TTY settings.
 : tty.restore  ( fd -- )
-  tty.buffer tcsets drop
+   tty.buffer tcsets drop
 ;
 
 create tty.szbuf 8 allot
 
 : tiocgwinsz  ( fd p -- res )
-  \ 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h
-  21523                 ( fd p 0x5413 )
-  swap                  ( fd 0x5413 p )
-  ( ioctl )
-  16 syscall3           ( res )
+   \ 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h
+   21523                ( fd p 0x5413 )
+   swap                 ( fd 0x5413 p )
+   ( ioctl )
+   16 syscall3          ( res )
 ;
 
 variable tty.vbuf
@@ -474,25 +475,25 @@ variable tty.vbuf
 
 \ Number of columns in TTY.
 : tty.cols ( -- cols )
-  0 tty.szbuf
-  tiocgwinsz
-  0= if
-    tty.szbuf 2+        ( a+2 )
-    dup 1+              ( a+2 a+3 )
-    c@ swap c@          ( b1 b0 )
-    swap                ( b0 b1 )
-    256 * +             ( cols )
-    tty.vbuf !
-  then
-  tty.vbuf @
+   0 tty.szbuf
+   tiocgwinsz
+   0= if
+      tty.szbuf 2+      ( a+2 )
+      dup 1+            ( a+2 a+3 )
+      c@ swap c@        ( b1 b0 )
+      swap              ( b0 b1 )
+      256 * +           ( cols )
+      tty.vbuf !
+   then
+   tty.vbuf @
 ;
 
 \ Put the TTY into keypress mode to get a single keypress.
 : getch
-  0 tty.store
-  0 tty.keypress
-  getc
-  0 tty.restore
+   0 tty.store
+   0 tty.keypress
+   getc
+   0 tty.restore
 ;
 
 \ ## Key Input
@@ -502,17 +503,23 @@ variable tty.vbuf
 \ emit on stderr.
 : eemit  ( ch -- )  2 femit ;
 
-: ki.z  96 ;            ( size )
-create ki.a ki.z allot  ( address )
-variable ki.>           ( point )
-variable ki.n           ( validity )
+\ size
+: ki.z  96 ;
+\ address
+create ki.a ki.z allot
+\ point
+variable ki.>
+\ validity
+variable ki.n
 variable ki.>save
-variable ki.k           ( small buffer for key input )
-variable ki.fixk        ( small buffer used for findword )
+\ small buffer for key input
+variable ki.k
+\ small buffer used for findword
+variable ki.fixk
 
 \ Reset key variables to create a fresh buffer
 : ki.fresh
-  0 ki.> !   0 ki.n !   0 ki.>save ! ;
+   0 ki.> !   0 ki.n !   0 ki.>save ! ;
 ki.fresh
 
 : ki.input  ( -- addr u )  ki.a ki.n @ ;
@@ -522,127 +529,126 @@ ki.fresh
 \ Memory block for all strings in history.
 variable hl.block
 1000000000 amapw hl.block !
-variable hl.p                   ( history-pointer )
+\ history-pointer
+variable hl.p
 hl.block @ hl.p !
 
 : hl.n   999 ;
 create hl.array hl.n 2* cells allot
 
-variable hl.next
-0 hl.next !
-variable hl.cursor
-0 hl.cursor !
+variable hl.next   0 hl.next !
+variable hl.cursor   0 hl.cursor !
 
 \ Index of earliest history element.
 : hl.base  ( -- base )
-  hl.n hl.next @ max
-  hl.n -
+   hl.n hl.next @ max
+   hl.n -
 ;
 
 : hl.curprev  ( -- flag )
-  hl.cursor @  hl.base  >  if
-    -1 hl.cursor +!
-    true
-  else
-    0
-  then
+   hl.cursor @  hl.base  >  if
+      -1 hl.cursor +!
+      true
+   else
+      0
+   then
 ;
 
 : hl.curnext  ( -- flag )
-  hl.cursor @  hl.next @ 1-      ( c end )
-  < if
-    1 hl.cursor +!
-    true
-  else
-    0
-  then
+   hl.cursor @  hl.next @ 1-    ( c end )
+   < if
+      1 hl.cursor +!
+      true
+   else
+      0
+   then
 ;
 
 \ Return address of uth double-world entry in hl.array.
 : hl.a&  ( u -- addr )
-  2* cells                      ( byte-offset )
-  hl.array                      ( byte-offset hl.array )
-  +                             ( array-address )
+   2* cells     ( byte-offset )
+   hl.array     ( byte-offset hl.array )
+   +            ( array-address )
 ;
 
 \ Store addr u into the ith double-world entry in hl.array.
 : hl.a!  ( u addr i -- )
-  hl.a&                         ( u addr array-addr )
-  2!                            ( )
+   hl.a&        ( u addr array-addr )
+   2!           ( )
 ;
 
 \ Replace i with the address of the double word
 \ for history element i;
 \ 0 if invalid index.
 : hl&  ( i -- addr )
-  dup                           ( i i )
-  hl.base                       ( i i base )
-  hl.next @                     ( i i base limit )
-  within  if
-    hl.n mod                    ( array-index )
-    2* cells                    ( o )
-    hl.array +                  ( addr )
-  else
-    drop
-    0
-  then
+   dup                  ( i i )
+   hl.base              ( i i base )
+   hl.next @            ( i i base limit )
+   within  if
+      hl.n mod          ( array-index )
+      2* cells          ( o )
+      hl.array +        ( addr )
+   else
+      drop
+      0
+   then
 ;
 
 \ Fetch string from history; 0 0 if invalid index.
 : hl@  ( i -- addr u )
-  hl&                           ( addr )
-  dup if
-    2@                          ( u a )
-    swap                        ( a u )
-  else
-    drop
-    0 0
-  then
+   hl&                  ( addr )
+   dup if
+      2@                ( u a )
+      swap              ( a u )
+   else
+      drop
+      0 0
+   then
 ;
 
 \ Save the string into most recent element of history;
 \ modifying it.
 : hl.save  ( from u -- )
-  hl.next @ 1-                  ( from u i )
-  hl&                           ( from u h-addr )
-  dup 0= if
-    abort" hl.save problem"
-  then
-  \ :todo: check lengths here
-  2dup                          ( from u h-addr u h-addr )
-  cell+ !                       ( from u h-addr )
-  @                             ( from u to )
-  \ calculate a new value for hl.p
-  2dup                          ( from u to u to )
-  +                             ( from u to new-p )
-  hl.p !                        ( from u to )
-  swap cmove
+   hl.next @ 1-         ( from u i )
+   hl&                  ( from u h-addr )
+   dup 0= if
+      abort" hl.save problem"
+   then
+   \ :todo: check lengths here
+   2dup                 ( from u h-addr u h-addr )
+   cell+ !              ( from u h-addr )
+   @                    ( from u to )
+   \ calculate a new value for hl.p
+   2dup                 ( from u to u to )
+   +                    ( from u to new-p )
+   hl.p !               ( from u to )
+   swap cmove
 ;
 
 \ Create a new history entry.
 : hl.new  ( -- )
-  0 hl.p @                      ( 0 p )
-  hl.next @                     ( 0 p i )
-  \ increment hl.next
-  1 hl.next +!                  ( 0 p i )
-  \ set cursor
-  dup hl.cursor !               ( 0 p i )
-  hl&                           ( 0 p addr )
-  2!
+   0 hl.p @             ( 0 p )
+   hl.next @            ( 0 p i )
+   \ increment hl.next
+   1 hl.next +!         ( 0 p i )
+   \ set cursor
+   dup hl.cursor !      ( 0 p i )
+   hl&                  ( 0 p addr )
+   2!
 ;
 
 : hl.
-  hl.base                       ( i )
-  begin
-    dup hl.next @               ( i i n )
-    <                           ( i flag )
-  while
-    dup .
-    dup hl@                     ( i addr u )
-    type cr                     ( i )
-    1+                          ( i+1 )
-  repeat
-  drop
+   hl.base              ( i )
+   begin
+      dup hl.next @     ( i i n )
+      <                 ( i flag )
+   while
+      dup .
+      dup hl@           ( i addr u )
+      type cr           ( i )
+      1+                ( i+1 )
+   repeat
+   drop
 ;
 
 \ hl.cursor     - which history element we are currently showing.
@@ -689,57 +695,57 @@ variable hl.cursor
 \ Insert the text into the buffer at the current point,
 \ and advance the point past the inserted text.
 : ki.insert  ( addr u -- 1 )
-  dup ki.n @ +  ki.z  >  if
-    \ buffer full
-    s" #%#" etype
-    0
-  else
-    ( addr u )
-    \ copy text to right of point up to make room
-    ki.a ki.> @ +       ( addr u from )
-    over                ( addr u from u )
-    ki.> @ + ki.a +     ( addr u from to )
-    ki.n @ ki.> @ -     ( addr u from to n )
-    cmove>              ( addr u )
-    \ increment length
-    dup ki.n +!         ( addr u )
-    \ copy new input at point
-    ki.a ki.> @ +       ( addr u > )
-    over                ( addr u > u )
-    \ bump ki.>
-    ki.> +!             ( addr u > )
-    swap cmove          ( )
-    1
-  then
+   dup ki.n @ +  ki.z  >  if
+      \ buffer full
+      s" #%#" etype
+      0
+   else
+      ( addr u )
+      \ copy text to right of point up to make room
+      ki.a ki.> @ +     ( addr u from )
+      over              ( addr u from u )
+      ki.> @ + ki.a +   ( addr u from to )
+      ki.n @ ki.> @ -   ( addr u from to n )
+      cmove>            ( addr u )
+      \ increment length
+      dup ki.n +!       ( addr u )
+      \ copy new input at point
+      ki.a ki.> @ +     ( addr u > )
+      over              ( addr u > u )
+      \ bump ki.>
+      ki.> +!           ( addr u > )
+      swap cmove        ( )
+      1
+   then
 ;
 
 \ fix-up the single character in ki.k
 \ Convert Control Chars to ^J form,
 \ and prefix everything with k:
 : ki.fix
-  s" k:" ki.fixk swap cmove
-  ki.k c@  32  <  if
-    [char] ^ ki.fixk 2 + c!
-    ki.k c@
-    64 or ki.fixk 3 + c!
-    ki.fixk 4
-  else
-    ki.k c@ ki.fixk 2 + c!
-    ki.fixk 3
-  then
+   s" k:" ki.fixk swap cmove
+   ki.k c@  32  <  if
+      [char] ^ ki.fixk 2 + c!
+      ki.k c@
+      64 or ki.fixk 3 + c!
+      ki.fixk 4
+   else
+      ki.k c@ ki.fixk 2 + c!
+      ki.fixk 3
+   then
 ;
 
 : erase-backward-char
-  ki.> @  if
-    \ copy down characters
-    ki.a ki.> @ +               ( from )
-    dup 1-                      ( from to )
-    ki.n @ ki.> @ -             ( from to n )
-    cmove
-    \ shrink buffer
-    -1 ki.> +!
-    -1 ki.n +!
-  then
+   ki.> @  if
+      \ copy down characters
+      ki.a ki.> @ +     ( from )
+      dup 1-            ( from to )
+      ki.n @ ki.> @ -   ( from to n )
+      cmove
+      \ shrink buffer
+      -1 ki.> +!
+      -1 ki.n +!
+   then
 ;
 
 \ Create a binding for the current stty erase key
@@ -749,14 +755,14 @@ ki.k c!
 ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 : end-of-line
-  ki.n @ ki.> ! ;
+   ki.n @ ki.> ! ;
 
 \ Makes LF exit the KI loop
 : k:^J
-  end-of-line
-  ki.input hl.save
-  s"  " ki.insert drop
-  0
+   end-of-line
+   ki.input hl.save
+   s"  " ki.insert drop
+   0
 ;
 
 \ beginning-of-line
@@ -767,26 +773,26 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ erase-forward-char
 : k:^D
-  \ if entire line is empty, terminate
-  ki.n @ 0=  ki.> @ 0=  and  if
-    0  exit
-  then
-  \ Test if there are any characters ahead of point to erase.
-  ki.n @  ki.> @  -  if
-    \ copy down characters
-    ki.a ki.> @ +               ( to )
-    dup 1+ swap                 ( from to )
-    ki.n @ ki.> @ - 1-          ( from to n )
-    cmove
-    \ shrink buffer
-    -1 ki.n +!
-  then
-  1
+   \ if entire line is empty, terminate
+   ki.n @ 0=  ki.> @ 0=  and  if
+      0  exit
+   then
+   \ Test if there are any characters ahead of point to erase.
+   ki.n @  ki.> @  -  if
+      \ copy down characters
+      ki.a ki.> @ +             ( to )
+      dup 1+ swap               ( from to )
+      ki.n @ ki.> @ - 1-        ( from to n )
+      cmove
+      \ shrink buffer
+      -1 ki.n +!
+   then
+   1
 ;
 
 \ end-of-line
 : k:^E
-  end-of-line   1
+   end-of-line   1
 ;
 
 \ forward-char
@@ -797,71 +803,71 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Move the current historic line into key input.
 : hl.move
-  hl.cursor @ hl@             ( from u )
-  tuck ki.a swap              ( u from to u )
-  cmove                       ( u )
-  ki.n !  0 ki.> !
+   hl.cursor @ hl@              ( from u )
+   tuck ki.a swap               ( u from to u )
+   cmove                        ( u )
+   ki.n !  0 ki.> !
 ;
 
 \ next
 : k:^N
-  hl.curnext if
-    hl.move
-  then
-  1
+   hl.curnext if
+      hl.move
+   then
+   1
 ;
 
 \ previous
 : k:^P
-  hl.curprev if
-    hl.move
-  then
-  1
+   hl.curprev if
+      hl.move
+   then
+   1
 ;
 
 \ Fix cursor position if it is at end of row
 : ki.curfix
-  ki.n @ s>d  tty.cols  um/mod  ( col row )
-  0>  swap 0=  and  if
-    10 eemit
-  then
+   ki.n @ s>d  tty.cols  um/mod ( col row )
+   0>  swap 0=  and  if
+      10 eemit
+   then
 ;
 
 \ Like #s, but always in decimal.
 : #d
-  base @ >r  10 base !
-  #s
-  r> base !
+   base @ >r  10 base !
+   #s
+   r> base !
 ;
 
 \ Emit ANSI codes to move VT cursor,
 \ from location `from` to location `to`.
 \ `from` and `to` are byte positions in the ki.a input string.
 : ki.motion  ( from to -- )
-  tty.cols >r
-  s>d r@ um/mod                 ( from to-col to-row )
-  rot                           ( to-col to-row from )
-  s>d r> um/mod                 ( to-col to-row from-col from-row )
-  rot                           ( to-col from-col from-row to-row )
-  \ vertical motion
-  2dup > if
-    \ upward motion
-    - s>d                       ( t-col f-col dn )
-    <# [char] A hold #d [char] [ hold 27 hold #>
-    etype                       ( t-col f-col )
-  else
-    2dup < if
-      \ downward motion
-      - negate s>d              ( t-col f-col dn )
-      <# [char] B hold #d [char] [ hold 27 hold #>
+   tty.cols >r
+   s>d r@ um/mod                ( from to-col to-row )
+   rot                          ( to-col to-row from )
+   s>d r> um/mod                ( to-col to-row from-col from-row )
+   rot                          ( to-col from-col from-row to-row )
+   \ vertical motion
+   2dup > if
+      \ upward motion
+      - s>d                     ( t-col f-col dn )
+      <# [char] A hold #d [char] [ hold 27 hold #>
       etype                     ( t-col f-col )
-    else
-      2drop
-    then
-  then
-  drop                          ( t-col )
-  1+ s>d <# [char] G hold #d [char] [ hold 27 hold #>
-  etype                         ( )
+   else
+      2dup < if
+         \ downward motion
+         - negate s>d           ( t-col f-col dn )
+         <# [char] B hold #d [char] [ hold 27 hold #>
+         etype                  ( t-col f-col )
+      else
+         2drop
+      then
+   then
+   drop                         ( t-col )
+   1+ s>d <# [char] G hold #d [char] [ hold 27 hold #>
+   etype                        ( )
 ;
 
 \ Assume point and VT cursor are together,
@@ -869,102 +875,102 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ and return VT cursor here.
 \ Factor of ki.redraw.
 : ki.heretype  ( -- )
-  \ type out rest of text
-  ki.a ki.> @ +                 ( addr )
-  ki.n @ ki.> @ -               ( addr n )
-  tuck                          ( n addr n )
-  etype                         ( n )
-  if
-    ki.curfix
-  then
-  ( clear rest of screen )
-  s" [J" etype
-  ki.n @ ki.> @
-  ki.motion
+   \ type out rest of text
+   ki.a ki.> @ +                ( addr )
+   ki.n @ ki.> @ -              ( addr n )
+   tuck                         ( n addr n )
+   etype                        ( n )
+   if
+      ki.curfix
+   then
+   \ clear rest of screen
+   s" [J" etype
+   ki.n @ ki.> @
+   ki.motion
 ;
 
 \ Assuming the VT cursor is at ki.>save,
 \ redraw from whichever of ki.>save and ki.> is leftmost,
 \ and reposition VT cursor at ki.> .
 : ki.redraw
-  ki.>save @ ki.> @             ( old new )
-  > if
-    \ new point is behind old one
-    ki.>save @ ki.> @           ( from to )
-    ki.motion                   ( )
-    ki.> @                      ( p )
-  else
-    \ new point is forward of old one
-    ki.>save @                  ( p )
-  then
-  \ Position of current VT on stack;
-  \ type out text to end.
-  ki.n @                        ( p n )
-  over -                        ( p u )
-  ki.a                          ( p u a )
-  rot +                         ( u addr )
-  over                          ( u addr u )
-  etype                         ( u )
-  if
-    ki.curfix
-  then
-  s" [J" etype
-  ki.n @ ki.> @
-  ki.motion
+   ki.>save @ ki.> @            ( old new )
+   > if
+      \ new point is behind old one
+      ki.>save @ ki.> @         ( from to )
+      ki.motion                 ( )
+      ki.> @                    ( p )
+   else
+      \ new point is forward of old one
+      ki.>save @                ( p )
+   then
+   \ Position of current VT on stack;
+   \ type out text to end.
+   ki.n @                       ( p n )
+   over -                       ( p u )
+   ki.a                         ( p u a )
+   rot +                        ( u addr )
+   over                         ( u addr u )
+   etype                        ( u )
+   if
+      ki.curfix
+   then
+   s" [J" etype
+   ki.n @ ki.> @
+   ki.motion
 ;
 
 : ki.edit
-  0 tty.store
-  0 tty.keypress
+   0 tty.store
+   0 tty.keypress
 
-  begin
-    getc
-    dup 0< if
-      \ negative: EOF or error
-      drop 0                    ( 0 )
-    else
-      \ save input byte
-      ki.k !                    ( )
-      \ save current point
-      ki.> @ ki.>save !         ( )
-      ki.fix                    ( addr u )
-      findword                  ( addr fl | 0 )
-      0= if
-        ki.k 1 ki.insert
+   begin
+      getc
+      dup 0< if
+         \ negative: EOF or error
+         drop 0                 ( 0 )
       else
-        depth >r
-        execute
-        depth r>                ( flag depth1 depth0 )
-        - if
-          s" stack imbalance" etype
-        then
+         \ save input byte
+         ki.k !                 ( )
+         \ save current point
+         ki.> @ ki.>save !      ( )
+         ki.fix                 ( addr u )
+         findword               ( addr fl | 0 )
+         0= if
+            ki.k 1 ki.insert
+         else
+            depth >r
+            execute
+            depth r>            ( flag depth1 depth0 )
+            - if
+               s" stack imbalance" etype
+            then
+         then
+         ki.redraw
       then
-      ki.redraw
-    then
-    while
-  repeat
+      while
+   repeat
 
-  0 tty.restore
+   0 tty.restore
 ;
 
 : ki
-  hl.new
-  ki.fresh
-  ki.edit
+   hl.new
+   ki.fresh
+   ki.edit
 ;
 
 \ Key Input Prompt and Loop
 : kipl
-  begin
-    ki
-    ki.input
-    ?dup if
-      evaluate
-      s"  ok" etype 10 eemit   0
-    else
-      drop   1
-    then
-  until
+   begin
+      ki
+      ki.input
+      ?dup if
+         evaluate
+         s"  ok" etype 10 eemit   0
+      else
+         drop   1
+      then
+   until
 ;
 
 : rc.defined true ;
@@ -977,62 +983,62 @@ variable interactive
 1 interactive !
 
 : adjust-interactive
-  1 argc @ < if
-    -1 interactive +!
-  then
+   1 argc @ < if
+      -1 interactive +!
+   then
 ;
 adjust-interactive
 
 : adjust-vector
-  interactive @ if
-    \ Modify reset vector to point to kipl ...
-    ['] kipl *vreset ! ( )
-    \ ... The QUIT in the assembly routine RUNRC will
-    \ jump through this vector to continue at kipl.
-  else
-    ['] sysexit *vreset !
-  then
+   interactive @ if
+      \ Modify reset vector to point to kipl ...
+      ['] kipl *vreset ! ( )
+      \ ... The QUIT in the assembly routine RUNRC will
+      \ jump through this vector to continue at kipl.
+   else
+      ['] sysexit *vreset !
+   then
 ;
 adjust-vector
 
 \ std1994
 : /string  ( addr u n -- addr' u' )
-  tuck -                ( addr n u' )
-  >r + r>               ( addr' u' )
+   tuck -               ( addr n u' )
+   >r + r>              ( addr' u' )
 ;
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
-  over c@               ( addr u c )
-  [char] # <> if
-    exit
-  then
-  ( addr u )
-  dup dup >r            ( addr u u ) ( r: u )
-  0 do
-    \ l is, or will be, the index of the earliest NL
-    over                ( addr l addr )
-    i + c@              ( addr l ch )
-    10 = if
-      \ :todo: reimplement using `leave`
-      i min
-    then
-  loop
-  ( addr l )
-  r> swap               ( addr u l )
-  /string
+   over c@              ( addr u c )
+   [char] # <> if
+      exit
+   then
+   ( addr u )
+   dup dup >r           ( addr u u ) ( r: u )
+   0 do
+      \ l is, or will be, the index of the earliest NL
+      over              ( addr l addr )
+      i + c@            ( addr l ch )
+      10 = if
+         \ :todo: reimplement using `leave`
+         i min
+      then
+   loop
+   ( addr l )
+   r> swap              ( addr u l )
+   /string
 ;
 
 \ If there is a command line argument,
 \ run it as Forth.
 : run-args
-  1 argc @ < if
-    1 arg openr         ( fileid ior )
-    abort" File not found
+   1 argc @ < if
+      1 arg openr       ( fileid ior )
+      abort" File not found
 "
-    fmapr               ( addr u )
-    shebang
-    evaluate
-  then
+      fmapr             ( addr u )
+      shebang
+      evaluate
+   then
 ;
 run-args
