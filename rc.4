@@ -27,7 +27,7 @@
 \ std1983
 : .(  [char] ) parse type ; immediate
 
-\ std1994
+\ std1994 core-ext
 : 2>r  ( x1 x2 -- ) ( R: -- x1 x2 )
    \ Care taken to preserve return address on top of return stack.
    r>           ( x1 x2 ret )
@@ -36,14 +36,14 @@
    >r
 ;
 
-\ std1994
+\ std1994 core-ext
 : 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
    rot >r       ( x2 x1 )
    swap         ( x1 x2 )
 ;
 
-\ std1994
+\ std1994 core-ext
 : 2r@  ( -- x1 x2 ) ( R: x1 x2 -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
    dup >r
@@ -58,7 +58,7 @@
 \ std1983
 : variable    create 1 cells allot ;
 
-\ std1983
+\ std1983 double
 : dnegate  ( d -- -d )  -1 1 m*/ ;
 
 \ std1994
@@ -251,7 +251,7 @@ create while-token
    dup abs 0    ( n du )        \ du same magnitude as n
    .sign ;
 
-\ std1994
+\ std1994 double
 : d.  ( d -- )
    tuck dabs    ( n du )        \ n same sign as d
    .sign ;
@@ -995,7 +995,7 @@ adjust-interactive
 ;
 adjust-vector
 
-\ std1994
+\ std1994 string
 : /string  ( addr u n -- addr' u' )
    tuck -               ( addr n u' )
    >r + r>              ( addr' u' )
