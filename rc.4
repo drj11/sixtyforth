@@ -239,9 +239,8 @@ create while-token
    type
 ;
 
-\ std1983
-: .  ( n -- )
-   dup abs 0    ( n du )
+\ Using <#, type out double with sign of n.
+: .sign  ( n du -- )
    <#
       bl hold
       #s
@@ -250,16 +249,15 @@ create while-token
    type
 ;
 
+\ std1983
+: .  ( n -- )
+   dup abs 0    ( n du )        \ du same magnitude as n
+   .sign ;
+
 \ std1994
 : d.  ( d -- )
    tuck dabs    ( n du )        \ n same sign as d
-   <#
-      bl hold
-      #s
-      rot sign
-   #>
-   type
-;
+   .sign ;
 
 \ ##
 
