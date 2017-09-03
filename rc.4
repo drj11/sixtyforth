@@ -795,14 +795,18 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ kill-to-end
 : k:^K   ki.> @ ki.n !   1 ;
 
+\ Move the current historic line into key input.
+: hl.move
+  hl.cursor @ hl@             ( from u )
+  tuck ki.a swap              ( u from to u )
+  cmove                       ( u )
+  ki.n !  0 ki.> !
+;
+
 \ next
 : k:^N
   hl.curnext if
-    hl.cursor @ hl@             ( from u )
-    tuck ki.a swap              ( u from to u )
-    cmove                       ( u )
-    ki.n !
-    0 ki.> !
+    hl.move
   then
   1
 ;
@@ -810,11 +814,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ previous
 : k:^P
   hl.curprev if
-    hl.cursor @ hl@             ( from u )
-    tuck ki.a swap              ( u from to u )
-    cmove                       ( u )
-    ki.n !
-    0 ki.> !
+    hl.move
   then
   1
 ;
