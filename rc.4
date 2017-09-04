@@ -266,15 +266,6 @@ create while-token
 
 \ ##
 
-\ Anonymous Map for Writing.
-\ Request freshly allocated memory.
-: amapw  ( sz -- addr )
-   0 swap       ( 0 sz )
-   3 34         ( 0 sz prot flags )
-   -1 0         ( 0 sz prot flags fd offset )
-   9 syscall6   ( addr )
-;
-
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa
 \ in the calling word;
@@ -333,6 +324,15 @@ create fstatbuf 144 allot
       fstatbuf 48 + @
       0 0               ( ud 0 )
    then
+;
+
+\ Anonymous Map for Writing.
+\ Request freshly allocated memory.
+: amapw  ( sz -- addr )
+   0 swap       ( 0 sz )
+   3 34         ( 0 sz prot flags )
+   -1 0         ( 0 sz prot flags fd offset )
+   9 syscall6   ( addr )
 ;
 
 \ File Map for Reading
