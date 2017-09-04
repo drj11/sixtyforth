@@ -26,6 +26,8 @@
 : tuck  ( a b -- b a b )  swap over ;
 \ std1983
 : .(  [char] ) parse type ; immediate
+\ std1994
+: s>d  ( n -- d )  dup 0< ;
 
 \ std1994 core-ext
 : 2>r  ( x1 x2 -- ) ( R: -- x1 x2 )

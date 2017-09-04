@@ -1443,18 +1443,6 @@ RSHIFT:
         jmp next
         CtoL(RSHIFT)
 
-        DQ 3
-        DQ 's>d'        ; std1994
-StoD:   DQ stdexe
-        ; ( n -- d )
-        DQ DUP
-        DQ fABS         ; (n +n)
-        DQ z            ; (n +n 0)
-        DQ ROT          ; (+n 0 n)
-        DQ Dplusminus   ; (d)
-        DQ EXIT
-        CtoL(StoD)
-
         DQ 2
         DQ 'm*'         ; std1994
 Mstar:
