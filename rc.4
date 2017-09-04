@@ -311,18 +311,19 @@ rsp constant argc
 \ see note/fstat.md
 create fstatbuf 144 allot
 
-: fstat*  ( n -- res )
-   \ Leaves result in `fstatbuf`
-   fstatbuf 0 5 syscall3 ;
+\ Modelled after ANSI `file-status`.
+: file*status  ( n -- addr ior )
+   \ Leaves result in `fstatbuf` which is left on stack.
+   fstatbuf tuck 0 5 syscall3 ;
 
 \ std1994 file
 : file-size  ( fileid -- ud ior )
-   fstat*
+   file*status
    ?dup if
-      0 0 rot           ( 0. ior )
+      0 swap                    ( x 0 ior )
    else
-      fstatbuf 48 + @
-      0 0               ( ud 0 )
+      48 + @  0                 ( ud )
+      0                         ( ud 0 )
    then
 ;
 
