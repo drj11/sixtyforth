@@ -588,8 +588,7 @@ variable hl.cursor   0 hl.cursor !
    hl.next @            ( i i base limit )
    within  if
       hl.n mod          ( array-index )
-      2* cells          ( o )
-      hl.array +        ( addr )
+      hl.a&             ( addr )
    else
       drop
       0
