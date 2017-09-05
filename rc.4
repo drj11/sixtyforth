@@ -199,9 +199,9 @@ create while-token
 : to  ( x -- )
    state @  abort" Not implemented in compiler"  ' >body ! ;
 
-\ Anonymous Map for Writing.
+\ Map Anonymous
 \ Request freshly allocated memory.
-: amapw  ( sz -- addr )
+: map-anon  ( sz -- addr )
    0 swap       ( 0 sz )
    3 34         ( 0 sz prot flags )
    -1 0         ( 0 sz prot flags fd offset )
@@ -369,7 +369,7 @@ create fstatbuf 144 allot
    then
 ;
 
-4096 amapw
+4096 map-anon
 constant openbuf        ( buffer for open pathname )
 
 \ std1994
@@ -540,7 +540,7 @@ ki.fresh
 
 \ Memory block for all strings in history.
 variable hl.block
-1000000000 amapw hl.block !
+1000000000 map-anon hl.block !
 \ history-pointer
 variable hl.p
 hl.block @ hl.p !
