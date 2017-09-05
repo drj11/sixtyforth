@@ -212,6 +212,11 @@ create while-token
 
 \ ## Number Printing
 
+300 constant pic-size
+pic-size map-anon drop pic-size +
+value picend
+variable pic
+
 \ double to double division
 \ used in printing numbers
 : uml/mod  ( ud u -- u-rem ud-quot )

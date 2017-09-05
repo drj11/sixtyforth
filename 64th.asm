@@ -11,9 +11,6 @@ extern _binary_rc_4_size
 
 SECTION .bss
 
-picture RESB 300        ; For picture output, <# and so on.
-picend  EQU $
-
 ib0 RESB 500            ; Input Block 0
 ib1 RESB 500            ; Input Block 1
 
@@ -467,19 +464,6 @@ ISATTY:
 BASE:   DQ stdvar
 abase:  DQ 10
         CtoL(BASE)
-
-        DQ 3
-        DQ 'pic'
-PIC:    DQ stdvar
-        DQ 0
-        CtoL(PIC)
-
-        DQ 6
-        DQ 'picend'
-PICEND: DQ stdexe
-        DQ LIT, picend
-        DQ EXIT
-        CtoL(PICEND)
 
         DQ 5
         DQ 'digit'
