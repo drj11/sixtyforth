@@ -177,6 +177,28 @@ create while-token
 \ std1983
 : max   2dup < if swap then drop ;
 
+\ Fixes the CFA of the last defined word
+\ to point to address following call to *fix-cfa
+\ in the calling word;
+\ and terminate excution of calling word.
+: *fix-cfa   r> last name> ! ;
+
+\ std1983
+: does>   compile *fix-cfa codedoes     ( addr n )
+   here over allot                      ( from n to )
+   swap cmove ; immediate
+
+\ std1983
+: constant  ( x -- / -- x )
+   variable last name> >body ! does> @ ;
+
+\ std1994
+: value   constant ;
+
+\ std1994
+: to  ( x -- )
+   state @  abort" Not implemented in compiler"  ' >body ! ;
+
 \ ## Number Printing
 
 \ double to double division
@@ -265,21 +287,6 @@ create while-token
    .sign ;
 
 \ ##
-
-\ Fixes the CFA of the last defined word
-\ to point to address following call to *fix-cfa
-\ in the calling word;
-\ and terminate excution of calling word.
-: *fix-cfa   r> last name> ! ;
-
-\ std1983
-: does>   compile *fix-cfa codedoes     ( addr n )
-   here over allot                      ( from n to )
-   swap cmove ; immediate
-
-\ std1983
-: constant  ( x -- / -- x )
-   variable last name> >body ! does> @ ;
 
 \ Convert from C string, by pushing its length.
 : c>  ( addr -- addr u )
@@ -390,6 +397,8 @@ constant openbuf        ( buffer for open pathname )
 \ Open file for reading.
 : openr  ( c-addr u -- fileid ior )
    r/o open-file ;
+
+\ ##
 
 \ Fetch byte C from addr,
 \ then compute C M AND X XOR
