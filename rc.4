@@ -201,11 +201,13 @@ create while-token
 
 \ Map Anonymous
 \ Request freshly allocated memory.
-: map-anon  ( sz -- addr )
-   0 swap       ( 0 sz )
-   3 34         ( 0 sz prot flags )
-   -1 0         ( 0 sz prot flags fd offset )
-   9 syscall6   ( addr )
+: map-anon  ( sz -- addr ior )
+   0 swap               ( 0 sz )
+   3 34                 ( 0 sz prot flags )
+   -1 0                 ( 0 sz prot flags fd offset )
+   9 syscall6           ( res )
+   -4096 over u<        ( res flag )
+   over and             ( addr ior )
 ;
 
 \ ## Number Printing
@@ -369,7 +371,7 @@ create fstatbuf 144 allot
    then
 ;
 
-4096 map-anon
+4096 map-anon drop
 constant openbuf        ( buffer for open pathname )
 
 \ std1994
@@ -540,7 +542,7 @@ ki.fresh
 
 \ Memory block for all strings in history.
 variable hl.block
-1000000000 map-anon hl.block !
+1000000000 map-anon drop hl.block !
 \ history-pointer
 variable hl.p
 hl.block @ hl.p !
