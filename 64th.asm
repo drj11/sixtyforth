@@ -1588,6 +1588,29 @@ ALIGNED:
         DQ EXIT
         CtoL(ALIGNED)
 
+        DQ 7 | Immediate
+        DQ 'SLITERAL'   ; std1994 string
+SLITERAL:
+        DQ stdexe
+        DQ LIT, BRANCH
+        DQ comma
+        DQ DUP          ; ( c-addr u u )
+        DQ CELLplus     ; ( c-addr u v )
+        DQ ALIGNED      ; ( c-addr u v' )
+        DQ comma        ; ( c-addr u )
+        DQ HERE         ; ( c-addr u here )
+        DQ OVER         ; ( c-addr u here u )
+        DQ ALIGNED      ; ( c-addr u here u' )
+        DQ ALLOT        ; ( c-addr u here )
+        DQ DUP
+        DQ LITERAL      ; compile LIT here
+        DQ OVER
+        DQ LITERAL      ; compile LIT u
+        DQ SWAP         ; ( c-addr here u )
+        DQ CMOVE
+        DQ EXIT
+        CtoL(SLITERAL)
+
         DQ 2 | Immediate
         DQ 's"'         ; std1994
 Squote:
@@ -1605,22 +1628,7 @@ Squote:
         ; address and length of the string.
         DQ LIT, '"'
         DQ PARSE        ; ( c-addr u )
-        DQ LIT, BRANCH
-        DQ comma
-        DQ DUP          ; ( c-addr u u )
-        DQ CELLplus     ; ( c-addr u v )
-        DQ ALIGNED      ; ( c-addr u v' )
-        DQ comma        ; ( c-addr u )
-        DQ HERE         ; ( c-addr u here )
-        DQ OVER         ; ( c-addr u here u )
-        DQ ALIGNED      ; ( c-addr u here u' )
-        DQ ALLOT        ; ( c-addr u here )
-        DQ DUP
-        DQ LITERAL      ; compile LIT here
-        DQ OVER
-        DQ LITERAL      ; compile LIT u
-        DQ SWAP         ; ( c-addr here u )
-        DQ CMOVE
+        DQ SLITERAL
         DQ EXIT
         CtoL(Squote)
 
