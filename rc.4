@@ -115,6 +115,20 @@ create while-token
    true ,
 ; immediate
 
+\ std1994
+: repeat  ( b-token 'BEGIN w-token 'WHILE -- )
+   2swap        ( w-token 'WHILE b-token 'BEGIN )
+   drop         \ :todo: safety check 'BEGIN
+   compile branch
+   here -       ( w-token 'WHILE offset )
+   ,            ( w-token 'WHILE )
+   drop         ( w-token )
+   here         ( w-token here )
+   over         ( w-token here w-token )
+   -            ( w-token offset )
+   swap !
+; immediate
+
 \ std1983
 : if  ( -- token    / at compile time )
    compile 0branch

@@ -1555,27 +1555,6 @@ CELLplus:
         DQ EXIT
         CtoL(CELLplus)
 
-        DQ 6 | Immediate
-        DQ 'repeat'     ; std1983
-REPEAT:
-        DQ stdexe
-        ; REPEAT ( b-token 'BEGIN w-token 'WHILE -- )
-        DQ twoSWAP      ; ( w-token 'WHILE b-token 'BEGIN )
-        DQ DROP         ; :todo: safety check 'BEGIN
-        DQ LIT, BRANCH
-        DQ comma
-        DQ HERE         ; ( w-token 'WHILE b-token here)
-        DQ MINUS        ; ( w-token 'WHILE offset )
-        DQ comma        ; ( w-token 'WHILE )
-        DQ DROP         ; :todo: safety check 'WHILE
-        DQ HERE         ; ( w-token here )
-        DQ OVER         ; ( w-token here w-token )
-        DQ MINUS        ; ( w-token offset )
-        DQ SWAP         ; ( offset w-token )
-        DQ store
-        DQ EXIT
-        CtoL(REPEAT)
-
         DQ 7
         DQ 'aligned'    ; std1994
 ALIGNED:
