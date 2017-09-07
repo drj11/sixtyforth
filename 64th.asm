@@ -890,7 +890,6 @@ SWAP:   DQ $+8
         jmp next
         CtoL(SWAP)
 
-d2swap:
         DQ 5
         DQ '2swap'      ; std1994
 twoSWAP:
@@ -927,7 +926,6 @@ OVER:   DQ $+8
         jmp pushrax
         CtoL(OVER)
 
-d2over:
         DQ 5
         DQ '2over'      ; std1994
 twoOVER:
@@ -941,7 +939,6 @@ twoOVER:
         jmp next
         CtoL(twoOVER)
 
-d2rot:
         DQ 4
         DQ '2rot'       ; std1994 double ext
 twoROT:
