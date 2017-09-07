@@ -549,18 +549,6 @@ CR:
         DQ EXIT
         CtoL(CR)
 
-        DQ 5
-        DQ 'count'      ; std1983 - modified
-COUNT:  DQ stdexe
-        ; (addr -- addr+8 +n)
-        DQ DUP          ; (addr addr)
-        DQ LIT, 8
-        DQ PLUS         ; (addr adddr+8)
-        DQ SWAP         ; (addr+8 addr)
-        DQ fetch        ; (addr+8 length)
-        DQ EXIT
-        CtoL(COUNT)
-
         DQ 1
         DQ '='          ; std1983
 equals: DQ $+8
