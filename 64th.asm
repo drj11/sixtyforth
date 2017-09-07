@@ -1827,7 +1827,7 @@ FIND:
         DQ .x - $
         ; addr xt +-1
         DQ ROT
-        DQ DROP         ; xt +- 1
+        DQ DROP         ; xt +-1
 .x:
         DQ EXIT
         CtoL(FIND)
