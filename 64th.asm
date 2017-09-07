@@ -1592,6 +1592,25 @@ ALIGNED:
         DQ 'SLITERAL'   ; std1994 string
 SLITERAL:
         DQ stdexe
+        ; SLITERAL ( addr u -- )
+        ; A string is compiled into the current word:
+        ;    +--------------+
+        ;    |  BRANCH      |
+        ;    +--------------+
+        ;    |  offset      |
+        ;    +--------------+
+        ; A: |  copy of     |
+        ;    |  string      |
+        ;    |  ...aligned  |
+        ;    +--------------+
+        ; T: |  LIT         |
+        ;    +--------------+
+        ;    |  A           |
+        ;    +--------------+
+        ;    |  LIT         |
+        ;    +--------------+
+        ;    |  u           |
+        ;    +--------------+
         DQ LIT, BRANCH, comma
         DQ DUP          ; ( c-addr u u )
         DQ CELLplus     ; ( c-addr u v )
@@ -1610,17 +1629,7 @@ SLITERAL:
         DQ 's"'         ; std1994
 Squote:
         DQ stdexe
-        ; This implementation of S" is
-        ; a bit pedestration.
-        ; A string is compiled into a branch over
-        ; the string which is copied into the dictionary
-        ; after the branch,
-        ; followed by a push of its address and its length.
-        ; :todo: a more exciting implementation
-        ; would use a single branch-extra primitive
-        ; that used the branch value and location to
-        ; not only compute the branch but also the
-        ; address and length of the string.
+        ; ( "ccc<quote>" -- ) runtime: ( -- addr u )
         DQ LIT, '"'
         DQ PARSE        ; ( c-addr u )
         DQ SLITERAL
