@@ -1815,23 +1815,6 @@ BIC:
         DQ EXIT
         CtoL(BIC)
 
-        DQ 4
-        DQ 'find'
-FIND:
-        DQ stdexe
-        DQ DUP          ; addr addr
-        DQ COUNT        ; addr c-addr u
-        DQ FINDWORD     ; addr { 0 | xt +-1 }
-        DQ DUP
-        DQ ZEROBRANCH
-        DQ .x - $
-        ; addr xt +-1
-        DQ ROT
-        DQ DROP         ; xt +-1
-.x:
-        DQ EXIT
-        CtoL(FIND)
-
         DQ 8
         DQ 'evaluate'
 EVALUATE:
