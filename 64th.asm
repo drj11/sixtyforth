@@ -769,6 +769,26 @@ XOR:    DQ $+8
         jmp next
         CtoL(XOR)
 
+        DQ 6
+        DQ 'invert'
+INVERT:
+        DQ stdexe
+        DQ TRUE
+        DQ XOR
+        DQ EXIT
+        CtoL(INVERT)
+
+        DQ 3
+        DQ 'bic'
+BIC:
+        DQ stdexe
+        ; BIt Clear (name from Alpha Architecture)
+        ; BIC ( na nb -- nc )
+        DQ INVERT
+        DQ AND
+        DQ EXIT
+        CtoL(BIC)
+
         DQ 2
         DQ 'cp'
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
@@ -1782,26 +1802,6 @@ SKIP:
         DQ DROP
         DQ EXIT
         CtoL(SKIP)
-
-        DQ 6
-        DQ 'invert'
-INVERT:
-        DQ stdexe
-        DQ TRUE
-        DQ XOR
-        DQ EXIT
-        CtoL(INVERT)
-
-        DQ 3
-        DQ 'bic'
-BIC:
-        DQ stdexe
-        ; BIt Clear (name from Alpha Architecture)
-        ; BIC ( na nb -- nc )
-        DQ INVERT
-        DQ AND
-        DQ EXIT
-        CtoL(BIC)
 
         DQ 8
         DQ 'evaluate'
