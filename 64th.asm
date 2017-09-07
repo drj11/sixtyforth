@@ -1592,21 +1592,16 @@ ALIGNED:
         DQ 'SLITERAL'   ; std1994 string
 SLITERAL:
         DQ stdexe
-        DQ LIT, BRANCH
-        DQ comma
+        DQ LIT, BRANCH, comma
         DQ DUP          ; ( c-addr u u )
         DQ CELLplus     ; ( c-addr u v )
         DQ ALIGNED      ; ( c-addr u v' )
         DQ comma        ; ( c-addr u )
-        DQ HERE         ; ( c-addr u here )
-        DQ OVER         ; ( c-addr u here u )
-        DQ ALIGNED      ; ( c-addr u here u' )
-        DQ ALLOT        ; ( c-addr u here )
-        DQ DUP
-        DQ LITERAL      ; compile LIT here
-        DQ OVER
-        DQ LITERAL      ; compile LIT u
-        DQ SWAP         ; ( c-addr here u )
+        DQ HERE, SWAP   ; ( c-addr here u )
+        DQ DUP, ALIGNED ; ( c-addr here u u' )
+        DQ ALLOT        ; ( c-addr here u )
+        DQ OVER, LITERAL
+        DQ DUP, LITERAL
         DQ CMOVE
         DQ EXIT
         CtoL(SLITERAL)
