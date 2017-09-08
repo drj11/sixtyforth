@@ -1700,39 +1700,40 @@ PARSERANGE:
         DQ COMBINERANGE ; combin
         DQ toIN
         DQ fetch        ; combin o
-        DQ TRUE         ; combin o true
-        DQ ROT          ; o true combin
+        DQ toR          ; combin  r: o
+        DQ TRUE         ; combin true
+        DQ SWAP         ; true combin
 .ch:
-        ; o x char
-        DQ NIP          ; o combin
+        ; x combin
+        DQ NIP          ; combin
         DQ toIN
-        DQ fetch        ; o combin >in
-        DQ SWAP         ; o >in combin
-        DQ OVER         ; o >in combin >in
-        DQ SOURCE       ; o >in combin >in s-addr u
-        DQ NIP          ; o >in combin >in u
+        DQ fetch        ; combin >in
+        DQ SWAP         ; >in combin
+        DQ OVER         ; >in combin >in
+        DQ SOURCE       ; >in combin >in s-addr u
+        DQ NIP          ; >in combin >in u
         DQ lessthan
         DQ ZEROBRANCH
         DQ .got-$
-        DQ OVER         ; o >in combin >in
-        DQ SOURCE       ; o >in combin >in s-addr u
-        DQ DROP         ; o >in combin >in s-addr
-        DQ PLUS         ; o >in combin addr
-        DQ Cfetch       ; o >in combin c
+        DQ OVER         ; >in combin >in
+        DQ SOURCE       ; >in combin >in s-addr u
+        DQ DROP         ; >in combin >in s-addr
+        DQ PLUS         ; >in combin addr
+        DQ Cfetch       ; >in combin c
         ; increment >in
         DQ LIT, 1
         DQ toIN
-        DQ plusstore    ; o >in combin c
-        DQ CHOK         ; o >in combin flag
+        DQ plusstore    ; >in combin c
+        DQ CHOK         ; >in combin flag
         DQ ZEROBRANCH
         DQ -($-.ch)
 .got:
         ; offset >in combin
-        DQ DROP         ; o >in
+        DQ DROP         ; >in
         ; convert two indexes into addr u form
-        DQ OVER         ; o >in o
-        DQ MINUS        ; o u
-        DQ SWAP         ; u o
+        DQ Rfetch       ; >in o
+        DQ MINUS        ; u
+        DQ Rfrom        ; u o
         DQ SOURCE       ; u o s-addr u
         DQ DROP         ; u o s-addr
         DQ PLUS         ; u c-addr
