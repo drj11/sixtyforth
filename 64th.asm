@@ -1581,7 +1581,7 @@ SLITERAL:
         ;    +--------------+
         ;    |  BRANCH      |
         ;    +--------------+
-        ;    |  offset      |
+        ;    |  offset to T |
         ;    +--------------+
         ; A: |  copy of     |
         ;    |  string      |
