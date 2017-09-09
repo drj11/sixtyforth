@@ -1669,22 +1669,38 @@ COMBINERANGE:
         DQ 'chok'
 CHOK:
         DQ stdexe
-        ; CHOK ( combin c -- combin flag )
+        ; CHOK ( combin c -- flag )
         ; Factor of PARSERANGE (see also COMBINERANGE).
         ; `combin` holds a combined base and limit.
         ; `c` is tested.
         ; Result is true iff
         ; `base` <= `c` < `limit`
-        DQ OVER         ; combin c combin
-        DQ DUP          ; combin c combin combin
-        DQ LIT, 0x1fffff; combin c combin combin mask
-        DQ AND          ; combin c combin base
-        DQ SWAP         ; combin c base combin
-        DQ LIT, 32      ; combin c base combin 32
-        DQ RSHIFT       ; combin c base limit
-        DQ WITHIN       ; combin flag
+        DQ SWAP         ; c combin
+        DQ DUP          ; c combin combin
+        DQ LIT, 0x1fffff; c combin combin mask
+        DQ AND          ; c combin base
+        DQ SWAP         ; c base combin
+        DQ LIT, 32      ; c base combin 32
+        DQ RSHIFT       ; c base limit
+        DQ WITHIN       ; flag
         DQ EXIT
         CtoL(CHOK)
+
+        DQ 4
+        DQ '>in?'
+toINquery:
+        DQ stdexe
+        ; >IN? ( -- >in flag )
+        ; fetch >in and a flag that is
+        ; true when there are characters remaining
+        ; (when >IN is less than end of SOURCE).
+        DQ toIN, fetch  ; >in
+        DQ SOURCE       ; >in s-addr u
+        DQ NIP          ; >in u
+        DQ OVER
+        DQ greaterthan
+        DQ EXIT
+        CtoL(toINquery)
 
         DQ 10
         DQ 'parseran'
@@ -1700,36 +1716,29 @@ PARSERANGE:
         DQ COMBINERANGE ; combin
         DQ toIN
         DQ fetch        ; combin o
-        DQ toR          ; combin  r: o
-        DQ TRUE         ; combin true
-        DQ SWAP         ; true combin
+        DQ toR, toR     ; r: o combin
+        DQ TRUE         ; dummy
 .ch:
-        ; x combin
-        DQ NIP          ; combin
-        DQ toIN
-        DQ fetch        ; combin >in
-        DQ SWAP         ; >in combin
-        DQ OVER         ; >in combin >in
-        DQ SOURCE       ; >in combin >in s-addr u
-        DQ NIP          ; >in combin >in u
-        DQ lessthan
+        DQ DROP         ;
+        DQ toINquery    ; >in flag
         DQ ZEROBRANCH
         DQ .got-$
-        DQ OVER         ; >in combin >in
-        DQ SOURCE       ; >in combin >in s-addr u
-        DQ DROP         ; >in combin >in s-addr
-        DQ PLUS         ; >in combin addr
-        DQ Cfetch       ; >in combin c
+        DQ SOURCE       ; >in s-addr u
+        DQ DROP         ; >in s-addr
+        DQ OVER         ; >in s-addr >in
+        DQ PLUS         ; >in addr
+        DQ Cfetch       ; >in c
         ; increment >in
         DQ LIT, 1
         DQ toIN
-        DQ plusstore    ; >in combin c
-        DQ CHOK         ; >in combin flag
+        DQ plusstore    ; >in c
+        DQ Rfetch, SWAP ; >in combin c  r: o combin
+        DQ CHOK         ; >in flag
         DQ ZEROBRANCH
         DQ -($-.ch)
 .got:
-        ; offset >in combin
-        DQ DROP         ; >in
+        ; >in  r: o combin
+        DQ Rfrom, DROP  ; >in  r: o
         ; convert two indexes into addr u form
         DQ Rfetch       ; >in o
         DQ MINUS        ; u
@@ -1788,6 +1797,7 @@ SKIP:
 .then:  DQ toIN, fetch  ; range addr >in
         DQ PLUS         ; range c-addr
         DQ Cfetch       ; range c
+        DQ OVER, SWAP   ; range range c
         DQ CHOK         ; range flag
         DQ ZEROBRANCH
         DQ .escape-$
