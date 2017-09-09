@@ -1669,13 +1669,12 @@ COMBINERANGE:
         DQ 'chok'
 CHOK:
         DQ stdexe
-        ; CHOK ( combin c -- flag )
+        ; CHOK ( c combin -- flag )
         ; Factor of PARSERANGE (see also COMBINERANGE).
         ; `combin` holds a combined base and limit.
         ; `c` is tested.
         ; Result is true iff
         ; `base` <= `c` < `limit`
-        DQ SWAP         ; c combin
         DQ DUP          ; c combin combin
         DQ LIT, 0x1fffff; c combin combin mask
         DQ AND          ; c combin base
@@ -1732,7 +1731,7 @@ PARSERANGE:
         DQ LIT, 1
         DQ toIN
         DQ plusstore    ; >in c
-        DQ Rfetch, SWAP ; >in combin c  r: o combin
+        DQ Rfetch       ; >in c combin  r: o combin
         DQ CHOK         ; >in flag
         DQ ZEROBRANCH
         DQ -($-.ch)
@@ -1797,7 +1796,7 @@ SKIP:
 .then:  DQ toIN, fetch  ; range addr >in
         DQ PLUS         ; range c-addr
         DQ Cfetch       ; range c
-        DQ OVER, SWAP   ; range range c
+        DQ OVER         ; range c range
         DQ CHOK         ; range flag
         DQ ZEROBRANCH
         DQ .escape-$
