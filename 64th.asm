@@ -1711,7 +1711,7 @@ PARSERANGE:
         ; that falls WITHIN base limit.
         ; (recall `>in` is an offset from the source address)
         ; `o` is the original value of `>in`, saved at the beginning
-        ; of this word and tucked away at the bottom of the stack.
+        ; of this word and tucked away on the return stack.
         DQ COMBINERANGE ; combin
         DQ toIN
         DQ fetch        ; combin o
