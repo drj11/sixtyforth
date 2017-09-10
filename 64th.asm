@@ -1709,7 +1709,14 @@ PARSERANGE:
         ; Parse a word from the SOURCE input;
         ; the word is terminated by the first character
         ; that falls WITHIN base limit.
-        ; (recall `>in` is an offset from the source address)
+        ; >in is advanced; when this word completes
+        ; >in points to either the end of the buffer
+        ; (if the buffer is exhausted), or
+        ; the first character that falls WITHIN base limit.
+        ; Note that words like PARSE will advance over this
+        ; character.
+        ; In following the code,
+        ; recall `>in` is an offset from the source address.
         ; `o` is the original value of `>in`, saved at the beginning
         ; of this word and tucked away on the return stack.
         DQ COMBINERANGE ; combin
@@ -1727,13 +1734,15 @@ PARSERANGE:
         DQ OVER         ; >in s-addr >in
         DQ PLUS         ; >in addr
         DQ Cfetch       ; >in c
+        DQ Rfetch       ; >in c combin  r: o combin
+        DQ CHOK, INVERT ; >in flag
+        DQ ZEROBRANCH
+        DQ .got-$
         ; increment >in
         DQ LIT, 1
         DQ toIN
-        DQ plusstore    ; >in c
-        DQ Rfetch       ; >in c combin  r: o combin
-        DQ CHOK         ; >in flag
-        DQ ZEROBRANCH
+        DQ plusstore
+        DQ BRANCH
         DQ -($-.ch)
 .got:
         ; >in  r: o combin
@@ -1749,6 +1758,18 @@ PARSERANGE:
         DQ EXIT
         CtoL(PARSERANGE)
 
+        DQ 3
+        DQ 'in+'
+INplus:
+        DQ stdexe
+        ; todo: advance >in by one character
+        ; if there is a characer to advance over.
+        DQ toINquery    ; >in flag
+        DQ MINUS        ; >in'
+        DQ toIN, store
+        DQ EXIT
+        CtoL(INplus)
+
         DQ 5
         DQ 'parse'      ; std1994
 PARSE:
@@ -1757,6 +1778,7 @@ PARSE:
         DQ DUP          ; char char
         DQ oneplus      ; base limit
         DQ PARSERANGE
+        DQ INplus
         DQ EXIT
         CtoL(PARSE)
 
@@ -1770,6 +1792,7 @@ PARSEWORD:
         DQ z
         DQ LIT, 33
         DQ PARSERANGE
+        DQ INplus
         DQ EXIT
         CtoL(PARSEWORD)
 
@@ -1783,30 +1806,9 @@ SKIP:
         ; >IN is advanced until:
         ;   either the end of parse area is reached; or,
         ;   it points to a non-skippable character.
-        DQ COMBINERANGE ; range
-.begin:
-        DQ SOURCE       ; range addr u
-        DQ toIN, fetch  ; range addr u >in
-        DQ equals       ; range addr flag
-        DQ ZEROBRANCH
-        DQ .then-$
-        ; range addr
+        DQ SWAP         ; limit base
+        DQ PARSERANGE   ; addr u
         DQ DROP, DROP
-        DQ EXIT
-.then:  DQ toIN, fetch  ; range addr >in
-        DQ PLUS         ; range c-addr
-        DQ Cfetch       ; range c
-        DQ OVER         ; range c range
-        DQ CHOK         ; range flag
-        DQ ZEROBRANCH
-        DQ .escape-$
-        DQ LIT, 1       ; 1
-        DQ toIN         ; 1 >in
-        DQ plusstore
-        DQ BRANCH
-        DQ -($ - .begin)
-.escape:
-        DQ DROP
         DQ EXIT
         CtoL(SKIP)
 
