@@ -1707,12 +1707,11 @@ PARSERANGE:
         DQ stdexe
         ; PARSERANGE ( base limit -- c-addr u )
         ; Parse a word from the SOURCE input;
-        ; the word is terminated by the first character
-        ; that falls WITHIN base limit.
-        ; >in is advanced; when this word completes
-        ; >in points to either the end of the buffer
-        ; (if the buffer is exhausted), or
-        ; the first character that falls WITHIN base limit.
+        ; Scan the initial portion of the parse area until
+        ; we find a terminating character that is WITHIN base limit.
+        ; >IN is advanced until:
+        ;   either the end of parse area is reached; or,
+        ;   it points to a non-scannable character.
         ; Note that words like PARSE will advance over this
         ; character.
         ; In following the code,
