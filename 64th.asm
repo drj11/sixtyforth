@@ -1702,6 +1702,34 @@ toINquery:
         DQ EXIT
         CtoL(toINquery)
 
+        DQ 4
+        DQ 'inch'
+INCH:
+        DQ stdexe
+        ; INCH ( u -- char TRUE ) when valid character
+        ;      ( u -- FALSE FALSE ) when n out of range
+        ; Fetch the next character in the parse area.
+        ; If u is less than the number of characters in the
+        ; input buffer, push the character at that position
+        ; and the TRUE flag.
+        ; Otherwise push FALSE FALSE.
+        DQ DUP, SOURCE  ; u u s-addr u'
+        DQ ROT          ; u s-addr u' u
+        DQ greaterthan  ; u s-addr flag
+        DQ ZEROBRANCH
+        DQ .else-$
+        DQ PLUS         ; addr
+        DQ Cfetch       ; char
+        DQ TRUE         ; char TRUE
+        DQ BRANCH
+        DQ .then-$
+.else:
+        DQ DROP, DROP   ;
+        DQ z, z         ; FALSE FALSE
+.then:
+        DQ EXIT
+        CtoL(INCH)
+
         DQ 10
         DQ 'parseran'
 PARSERANGE:
@@ -1723,29 +1751,23 @@ PARSERANGE:
         DQ toIN
         DQ fetch        ; combin o
         DQ toR, toR     ; r: o combin
-        DQ TRUE         ; dummy
+        DQ toIN, fetch  ; >in
 .ch:
-        DQ DROP         ;
-        DQ toINquery    ; >in flag
-        DQ ZEROBRANCH
-        DQ .got-$
-        DQ SOURCE       ; >in s-addr u
-        DQ DROP         ; >in s-addr
-        DQ OVER         ; >in s-addr >in
-        DQ PLUS         ; >in addr
-        DQ Cfetch       ; >in c
-        DQ Rfetch       ; >in c combin  r: o combin
-        DQ CHOK, INVERT ; >in flag
+        DQ DUP, INCH    ; >in char flag-valid
+        DQ SWAP         ; >in flag-valid char
+        DQ Rfetch       ; >in flag-valid char combin  r: o combin
+        DQ CHOK, INVERT ; >in flag-valid flag-fence
+        DQ AND          ; >in flag
         DQ ZEROBRANCH
         DQ .got-$
         ; increment >in
-        DQ LIT, 1
-        DQ toIN
-        DQ plusstore
+        DQ oneplus      ; >in'
         DQ BRANCH
         DQ -($-.ch)
 .got:
         ; >in  r: o combin
+        DQ DUP
+        DQ toIN, store
         DQ Rfrom, DROP  ; >in  r: o
         ; convert two indexes into addr u form
         DQ Rfetch       ; >in o
