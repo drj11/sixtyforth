@@ -2,9 +2,13 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$(echo '33000 32000 34000 within .
-  1 -5 5 within .' | $FORTH)
+  1 -5 5 within .
+  9 9 9 within .
+  4 9 0 within .
+  -1 9 0 within .
+  ' | $FORTH)
 printf "%s\n" "$out"
 case "$out" in
-    ("-1 -1 ") exit 0;;
+    ("-1 -1 0 0 -1 ") exit 0;;
 esac
 exit 2
