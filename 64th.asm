@@ -1656,7 +1656,7 @@ notequals:
 COMBINERANGE:
         DQ stdexe
         ; COMBINERANGE ( base limit -- range )
-        ; Factor of PARSERANGE (see also CHOK).
+        ; Factor of PARTOK (see also CHWITHIN).
         ; Combines the base and limit into a single value.
         ; The limit is shifted into the upper 32 bits,
         ; the base is left in the lower 32 bits.
@@ -1666,12 +1666,12 @@ COMBINERANGE:
         DQ EXIT
         CtoL(COMBINERANGE)
 
-        DQ 4
-        DQ 'chok'
-CHOK:
+        DQ 8
+        DQ 'chwithin'
+CHWITHIN:
         DQ stdexe
-        ; CHOK ( c combin -- flag )
-        ; Factor of PARSERANGE (see also COMBINERANGE).
+        ; CHWITHIN ( c combin -- flag )
+        ; Factor of PARTOK (see also COMBINERANGE).
         ; `combin` holds a combined base and limit.
         ; `c` is tested.
         ; Result is true iff
@@ -1684,7 +1684,7 @@ CHOK:
         DQ RSHIFT       ; c base limit
         DQ WITHIN       ; flag
         DQ EXIT
-        CtoL(CHOK)
+        CtoL(CHWITHIN)
 
         DQ 4
         DQ 'inch'
@@ -1714,17 +1714,19 @@ INCH:
         DQ EXIT
         CtoL(INCH)
 
-        DQ 10
-        DQ 'parseran'
-PARSERANGE:
+        DQ 6
+        DQ 'partok'
+PARTOK:
         DQ stdexe
-        ; PARSERANGE ( base limit -- c-addr u )
-        ; Parse a word from the SOURCE input;
-        ; Scan the initial portion of the parse area until
-        ; we find a terminating character that is WITHIN base limit.
+        ; PARTOK ( base limit -- c-addr u )
+        ; Parse a token from the SOURCE input;
+        ; characters that are WITHIN base limit form the
+        ; token (whose limits are return as c-addr u).
+        ; The parse area is scanned until a terminating character
+        ; that is not WITHIN base limit.
         ; >IN is advanced until:
         ;   either the end of parse area is reached; or,
-        ;   it points to a non-scannable character.
+        ;   it points to a non-token character.
         ; Note that words like PARSE will advance over this
         ; character.
         ; In following the code,
@@ -1740,7 +1742,7 @@ PARSERANGE:
         DQ DUP, INCH    ; >in char flag-valid
         DQ SWAP         ; >in flag-valid char
         DQ Rfetch       ; >in flag-valid char combin  r: o combin
-        DQ CHOK, INVERT ; >in flag-valid flag-fence
+        DQ CHWITHIN     ; >in flag-valid flag-within
         DQ AND          ; >in flag
         DQ ZEROBRANCH
         DQ .got-$
@@ -1762,7 +1764,7 @@ PARSERANGE:
         DQ PLUS         ; u c-addr
         DQ SWAP         ; c-addr u
         DQ EXIT
-        CtoL(PARSERANGE)
+        CtoL(PARTOK)
 
         DQ 3
         DQ 'in+'
@@ -1786,7 +1788,8 @@ PARSE:
         ; ( char -- c-addr u )
         DQ DUP          ; char char
         DQ oneplus      ; base limit
-        DQ PARSERANGE
+        DQ SWAP         ; limit base
+        DQ PARTOK
         DQ INplus
         DQ EXIT
         CtoL(PARSE)
@@ -1798,9 +1801,9 @@ PARSEWORD:
         DQ z
         DQ LIT, 33
         DQ SKIP
-        DQ z
         DQ LIT, 33
-        DQ PARSERANGE
+        DQ z
+        DQ PARTOK
         DQ INplus
         DQ EXIT
         CtoL(PARSEWORD)
@@ -1815,8 +1818,7 @@ SKIP:
         ; >IN is advanced until:
         ;   either the end of parse area is reached; or,
         ;   it points to a non-skippable character.
-        DQ SWAP         ; limit base
-        DQ PARSERANGE   ; addr u
+        DQ PARTOK       ; addr u
         DQ DROP, DROP
         DQ EXIT
         CtoL(SKIP)
