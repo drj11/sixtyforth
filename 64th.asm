@@ -1721,7 +1721,7 @@ PARTOK:
         ; PARTOK ( base limit -- c-addr u )
         ; Parse a token from the SOURCE input;
         ; characters that are WITHIN base limit form the
-        ; token (whose limits are return as c-addr u).
+        ; token (whose limits are returned as c-addr u).
         ; The parse area is scanned until a terminating character
         ; that is not WITHIN base limit.
         ; >IN is advanced until:
