@@ -1727,8 +1727,15 @@ PARTOK:
         ; >IN is advanced until:
         ;   either the end of parse area is reached; or,
         ;   it points to a non-token character.
-        ; Note that words like PARSE will advance over this
-        ; character.
+        ;
+        ; This is used by PARSE and by
+        ; both the skip and the scan phases of PARSE-WORD.
+        ; Because of the way WITHIN is defined to work,
+        ; if base < limit, then characters between
+        ; base and limit will be included in the token.
+        ; if limit < base, then characters between
+        ; base and limit will delimit the token.
+        ;
         ; In following the code,
         ; recall `>in` is an offset from the source address.
         ; `o` is the original value of `>in`, saved at the beginning
