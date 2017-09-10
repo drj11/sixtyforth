@@ -1687,22 +1687,6 @@ CHOK:
         CtoL(CHOK)
 
         DQ 4
-        DQ '>in?'
-toINquery:
-        DQ stdexe
-        ; >IN? ( -- >in flag )
-        ; fetch >in and a flag that is
-        ; true when there are characters remaining
-        ; (when >IN is less than end of SOURCE).
-        DQ toIN, fetch  ; >in
-        DQ SOURCE       ; >in s-addr u
-        DQ NIP          ; >in u
-        DQ OVER
-        DQ greaterthan
-        DQ EXIT
-        CtoL(toINquery)
-
-        DQ 4
         DQ 'inch'
 INCH:
         DQ stdexe
@@ -1784,10 +1768,13 @@ PARSERANGE:
         DQ 'in+'
 INplus:
         DQ stdexe
-        ; todo: advance >in by one character
-        ; if there is a characer to advance over.
-        DQ toINquery    ; >in flag
-        DQ MINUS        ; >in'
+        ; IN+ ( -- )
+        ; Advance >in by one character,
+        ; unless end of parse area is reached.
+        DQ toIN, fetch  ; >in
+        DQ oneplus      ; >in'
+        DQ SOURCE, NIP  ; >in' u
+        DQ MIN
         DQ toIN, store
         DQ EXIT
         CtoL(INplus)
