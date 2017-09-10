@@ -45,15 +45,6 @@
    swap         ( x1 x2 )
 ;
 
-\ std1994 core-ext
-: 2r@  ( -- x1 x2 ) ( R: x1 x2 -- x1 x2 )
-   r> r> r>     ( ret x2 x1 )
-   dup >r
-   over >r
-   rot >r       ( x2 x1 )
-   swap         ( x1 x2 )
-;
-
 \ std1994
 : 2*  ( x -- x' )  2 * ;
 

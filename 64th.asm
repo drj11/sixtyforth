@@ -1307,6 +1307,18 @@ Rfetch: DQ $+8
         jmp pushrax
         CtoL(Rfetch)
 
+        DQ 3
+        DQ '2r@'        ; std1994 core-ext
+twoRfetch:
+        DQ $+8
+        ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
+        mov rcx, [r12-16]
+        mov rax, [r12-8]
+        add rbp, 8
+        mov [rbp-8], rcx
+        jmp pushrax
+        CtoL(twoRfetch)
+
         DQ 8
         DQ 'findword'
 FINDWORD:
