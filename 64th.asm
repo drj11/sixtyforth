@@ -1747,6 +1747,9 @@ PARTOK:
         DQ toIN, fetch  ; >in
 .ch:
         DQ DUP, INCH    ; >in char flag-valid
+        ; To avoid an IF (ZEROBRANCH),
+        ; proceed to test the char even if invalid.
+        ; Both tests are combined using AND.
         DQ SWAP         ; >in flag-valid char
         DQ Rfetch       ; >in flag-valid char combin  r: o combin
         DQ CHWITHIN     ; >in flag-valid flag-within
