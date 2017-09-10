@@ -380,6 +380,7 @@ dotx2:
         ; .x2 ( u -- ) print 2 hex digits
         DQ z, LIT, 16   ; ud 16
         DQ UMslashMOD   ; lsd msd
+        DQ LIT, 15, AND ; lsd msd
         DQ DIGIT, EMIT
         DQ DIGIT, EMIT
         DQ fBL, EMIT
