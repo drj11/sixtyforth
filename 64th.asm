@@ -1292,6 +1292,20 @@ toR:    DQ $+8
         jmp next
         CtoL(toR)
 
+        DQ 3
+        DQ '2>r'        ; std1994 core-ext
+twotoR:
+        DQ $+8
+        ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add r12, 16
+        mov [r12-16], rax
+        mov [r12-8], rcx
+        sub rbp, 16
+        jmp next
+        CtoL(twotoR)
+
         DQ 2
         DQ 'r>'         ; std1983
 Rfrom:  DQ $+8
@@ -1663,41 +1677,6 @@ notequals:
         DQ EXIT
         CtoL(notequals)
 
-        DQ 12
-        DQ 'combiner'
-COMBINERANGE:
-        DQ stdexe
-        ; COMBINERANGE ( base limit -- range )
-        ; Factor of PARTOK (see also CHWITHIN).
-        ; Combines the base and limit into a single value.
-        ; The limit is shifted into the upper 32 bits,
-        ; the base is left in the lower 32 bits.
-        DQ LIT, 32      ; base limit 32
-        DQ LSHIFT       ; base shifted
-        DQ OR           ; range
-        DQ EXIT
-        CtoL(COMBINERANGE)
-
-        DQ 8
-        DQ 'chwithin'
-CHWITHIN:
-        DQ stdexe
-        ; CHWITHIN ( c combin -- flag )
-        ; Factor of PARTOK (see also COMBINERANGE).
-        ; `combin` holds a combined base and limit.
-        ; `c` is tested.
-        ; Result is true iff
-        ; `base` <= `c` < `limit`
-        DQ DUP          ; c combin combin
-        DQ LIT, 0x1fffff; c combin combin mask
-        DQ AND          ; c combin base
-        DQ SWAP         ; c base combin
-        DQ LIT, 32      ; c base combin 32
-        DQ RSHIFT       ; c base limit
-        DQ WITHIN       ; flag
-        DQ EXIT
-        CtoL(CHWITHIN)
-
         DQ 4
         DQ 'inch'
 INCH:
@@ -1752,10 +1731,9 @@ PARTOK:
         ; recall `>in` is an offset from the source address.
         ; `o` is the original value of `>in`, saved at the beginning
         ; of this word and tucked away on the return stack.
-        DQ COMBINERANGE ; combin
-        DQ toIN
-        DQ fetch        ; combin o
-        DQ toR, toR     ; r: o combin
+        DQ toIN, fetch  ; base limit o
+        DQ toR          ; base limit  r: o
+        DQ twotoR       ; r: o base limit
         DQ toIN, fetch  ; >in
 .ch:
         DQ DUP, INCH    ; >in char flag-valid
@@ -1763,8 +1741,8 @@ PARTOK:
         ; proceed to test the char even if invalid.
         ; Both tests are combined using AND.
         DQ SWAP         ; >in flag-valid char
-        DQ Rfetch       ; >in flag-valid char combin  r: o combin
-        DQ CHWITHIN     ; >in flag-valid flag-within
+        DQ twoRfetch    ; >in flag-valid char base limit
+        DQ WITHIN       ; >in flag-valid flag-within
         DQ AND          ; >in flag
         DQ ZEROBRANCH
         DQ .got-$
@@ -1773,9 +1751,10 @@ PARTOK:
         DQ BRANCH
         DQ -($-.ch)
 .got:
-        ; >in  r: o combin
+        ; >in  r: o base limit
         DQ DUP
         DQ toIN, store
+        DQ Rfrom, DROP  ; >in  r: o base
         DQ Rfrom, DROP  ; >in  r: o
         ; convert two indexes into addr u form
         DQ Rfetch       ; >in o

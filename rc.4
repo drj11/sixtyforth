@@ -30,15 +30,6 @@
 : s>d  ( n -- d )  dup 0< ;
 
 \ std1994 core-ext
-: 2>r  ( x1 x2 -- ) ( R: -- x1 x2 )
-   \ Care taken to preserve return address on top of return stack.
-   r>           ( x1 x2 ret )
-   rot >r       ( x2 ret )
-   swap >r      ( ret )
-   >r
-;
-
-\ std1994 core-ext
 : 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
    rot >r       ( x2 x1 )
