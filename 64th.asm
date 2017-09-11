@@ -1947,16 +1947,14 @@ INTERPRETLINE:
         DQ PARSEWORD    ; c-addr u
         DQ DUP          ; c-addr u u
         DQ ZEROBRANCH
-        DQ .x - $
-        DQ OVER
-        DQ OVER         ; c-addr u c-addr u
+        DQ .x-$
+        DQ OVER, OVER   ; c-addr u c-addr u
         DQ FINDWORD     ; c-addr u { 0 | xt n }
         DQ qEXECUTE
         DQ BRANCH
         DQ -($-.w)
 .x:
-        DQ DROP
-        DQ DROP
+        DQ DROP, DROP
         DQ EXIT
 
 ipl:    DQ stdexe
@@ -1972,26 +1970,24 @@ qEXECUTE:
         ; otherwise try and handle number.
         DQ qDUP
         DQ ZEROBRANCH
-        DQ (.n-$)
-        ; c-addr u addr +-1
-        DQ ROT, DROP    ; c-addr addr +-1
-        DQ ROT, DROP    ; addr +-1
+        DQ .number-$
+        ; c-addr u xt +-1
+        DQ ROT, DROP    ; c-addr xt +-1
+        DQ ROT, DROP    ; xt +-1
         ; immediate=1; non-immediate=-1
-        DQ LIT, 1
-        DQ PLUS         ; (addr 0/2)
-        DQ STATE
-        DQ fetch        ; (addr 0/2 compiling?)
-        DQ zequals      ; (addr 0/2 interpreting?)
-        DQ OR           ; (addr ex)
-        ; 0=compile; nz=execute
+        ; compile if both a non-immediate word and compiling.
+        DQ zless        ; xt flag
+        DQ STATE, fetch ; xt flag compiling?
+        DQ AND          ; xt compile?
+        ; 0=execute; nz=compile
         DQ ZEROBRANCH
-        DQ (.comp-$)
-        DQ EXECUTE
-        DQ EXIT
-.comp:  ; (addr)
+        DQ .exec-$
         DQ comma
         DQ EXIT
-.n:
+.exec:  ; ( xt )
+        DQ EXECUTE
+        DQ EXIT
+.number:
         ; Handle as number.
         ; (c-addr u)
         DQ qNUMBER
@@ -2000,7 +1996,7 @@ qEXECUTE:
         ; (n)
         DQ STATE, fetch ; n compiling?
         DQ ZEROBRANCH
-        DQ (.x-$)
+        DQ .x-$
         DQ LITERAL
 .x:
         DQ EXIT
@@ -2018,21 +2014,18 @@ qNUMBER:
         DQ stdexe
         ; ?NUMBER ( c-addr u -- n true ) if convertible
         ;         ( c-addr u -- c-addr u false ) if not convertible
-        DQ OVER
-        DQ OVER         ; c-addr u c-addr u
+        DQ OVER, OVER   ; c-addr u c-addr u
         DQ scansign     ; c-addr u sign c-addr u
-        DQ FALSE
-        DQ FALSE        ; c-addr u sign c-addr u 0 0
+        DQ z, z         ; c-addr u sign c-addr u 0 0
         DQ twoSWAP      ; c-addr u sign 0 0 c-addr u
-        DQ toNUMBER     ; c-addr u sign ud a n)
+        DQ toNUMBER     ; c-addr u sign ud c-addr' u')
         DQ ZEROBRANCH
         DQ (.success-$)
         ; c-addr u sign ud a
-        DQ DROP
-        DQ DROP
-        DQ DROP
-        DQ DROP
-        DQ FALSE        ; c-addr u
+        DQ DROP         ; c-addr u sign ud
+        DQ DROP, DROP   ; c-addr u sign
+        DQ DROP         ; c-addr u
+        DQ FALSE        ; c-addr u false
         DQ EXIT
 .success:
         ; c-addr u sign ud a
@@ -2045,38 +2038,38 @@ qNUMBER:
         DQ TRUE         ; n true
         DQ EXIT
 
+scansign:
+        DQ stdexe
+        ; ( addr u -- -1 addr' u' ) when leading '-' present
+        ; ( addr u -- 0 addr u )    when leading '-' absent
+        ; Scan an initial '-' sign at the beginning of a number.
+        DQ DUP
+        DQ ZEROBRANCH
+        DQ .empty-$
+        DQ SWAP         ; u addr
+        DQ DUP
+        DQ Cfetch       ; u addr ch
+        DQ LIT, '-'
+        DQ equals       ; u addr bf
+        ; Note: here use fact that -1 is TRUE
+        DQ ROT          ; addr bf u
+        DQ OVER         ; addr bf u bf
+        DQ PLUS         ; addr bf u'
+        DQ ROT, ROT     ; u' addr bf
+        DQ SWAP
+        DQ OVER         ; u' bf addr bf
+        DQ MINUS        ; u' bf addr'
+        DQ ROT          ; bf addr' u'
+        DQ EXIT
+.empty: DQ z
+        DQ ROT, ROT
+        DQ EXIT
+
 vRESET:
         DQ stdexe
         ; vectored reset
 avRESET:
         DQ RUNRC
-        DQ EXIT
-
-scansign:
-        DQ stdexe
-        ; ( addr +n -- sign addr +n )
-        DQ DUP
-        DQ ZEROBRANCH
-        DQ (.empty-$)
-        DQ SWAP         ; (+n addr)
-        DQ DUP
-        DQ Cfetch       ; (+n addr ch)
-        DQ LIT, '-'
-        DQ equals       ; (+n addr bf)
-        ; Note: here use fact that -1 is True
-        DQ ROT          ; (addr bf +n)
-        DQ OVER         ; (addr bf +n bf)
-        DQ PLUS         ; (addr bf +n)
-        DQ ROT
-        DQ ROT          ; (+n addr bf)
-        DQ SWAP
-        DQ OVER         ; (+n bf addr bf)
-        DQ MINUS        ; (+n bf addr)
-        DQ ROT          ; (bf addr +n)
-        DQ EXIT
-.empty: DQ FALSE
-        DQ ROT
-        DQ ROT
         DQ EXIT
 
 ; Input Buffer / Parse Area
