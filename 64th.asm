@@ -2052,14 +2052,12 @@ scansign:
         DQ LIT, '-'
         DQ equals       ; u addr bf
         ; Note: here use fact that -1 is TRUE
-        DQ ROT          ; addr bf u
-        DQ OVER         ; addr bf u bf
-        DQ PLUS         ; addr bf u'
-        DQ ROT, ROT     ; u' addr bf
-        DQ SWAP
-        DQ OVER         ; u' bf addr bf
-        DQ MINUS        ; u' bf addr'
-        DQ ROT          ; bf addr' u'
+        DQ toR                  ; r: bf
+        DQ Rfetch, MINUS        ; u addr'
+        DQ SWAP                 ; addr' u
+        DQ Rfetch, PLUS         ; addr' u'
+        DQ Rfrom                ; addr' u' bf
+        DQ ROT, ROT             ; bf addr' u'
         DQ EXIT
 .empty: DQ z
         DQ ROT, ROT
