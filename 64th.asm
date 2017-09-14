@@ -886,18 +886,14 @@ SWAP:   DQ $+8
         DQ 5
         DQ '2swap'      ; std1994
 twoSWAP:
-        DQ $+8
+        DQ stdexe
         ; 2SWAP ( p q r s -- r s p q )
-        ; Swap 2OS and 4OS
-        mov rax, [rbp-32]
-        mov rcx, [rbp-24]
-        mov rdx, [rbp-16]
-        mov rsi, [rbp-8]
-        mov [rbp-32], rdx
-        mov [rbp-24], rsi
-        mov [rbp-16], rax
-        mov [rbp-8], rcx
-        jmp next
+        ; Equivalent to:  rot >r  rot r>
+        DQ ROT
+        DQ toR
+        DQ ROT
+        DQ Rfrom
+        DQ EXIT
         CtoL(twoSWAP)
 
         DQ 4
