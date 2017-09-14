@@ -446,7 +446,7 @@ ISATTY:
         DQ stdexe
         ; ISATTY ( u-fd -- flag )
         ;   True if file descriptor u-fd refers to a TTY.
-        DQ HERE         ; dummy buffer
+        DQ HERE         ; dummy-buffer
         DQ TCGETS
         DQ zequals      ; 0 is success; convert to true/false
         DQ EXIT
@@ -469,7 +469,7 @@ DIGIT:  DQ stdexe
         DQ OVER         ; (n 9 n)
         DQ lessthan     ; (n bf)
         DQ ZEROBRANCH
-        DQ (.l-$)
+        DQ .l-$
         DQ LIT, 7
         DQ PLUS
 .l:     DQ LIT, '0'
