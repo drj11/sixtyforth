@@ -440,14 +440,6 @@ TCSETS:
         DQ EXIT
         CtoL(TCSETS)
 
-        DQ 7
-        DQ 'tcgetsv'
-TCGETSV:
-        DQ stdvar
-.b:
-        TIMES 36 DB '@'
-        CtoL(TCGETSV)
-
         DQ 6
         DQ 'isatty'
 ISATTY:

@@ -442,16 +442,19 @@ variable chbuf
    r> base !
 ;
 
+
+
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
 : tcgets.  ( fd -- res )
-   tcgetsv tcgets       ( res )
-   tcgetsv @.8
-   tcgetsv 4 + @.8
-   tcgetsv 8 + @.8
-   tcgetsv 12 + @.8
+   here dup tcgets       ( here res )
+   over @.8
+   over 4 + @.8
+   over 8 + @.8
+   over 12 + @.8
    cr
-   tcgetsv 16 +
+   over 16 +
    20 dump              ( res )
+   nip
 ;
 
 create tty.buffer 36 allot
@@ -464,10 +467,10 @@ create tty.buffer 36 allot
 \ Put TTY in keypress mode.
 : tty.keypress ( fd -- )
    \ Fetch and modify TTY settings...
-   dup tcgetsv tcgets drop              ( fd )
+   dup here tcgets drop                 ( fd )
    \ Clear ICANON and ECHO bits.
-   0  10 invert  tcgetsv 12 +  c!xa     ( fd )
-   tcgetsv tcsets drop
+   0  10 invert  here 12 +  c!xa        ( fd )
+   here tcsets drop
 ;
 
 \ Restore TTY settings.
