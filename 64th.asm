@@ -269,6 +269,20 @@ DEPTH:  DQ $+8
         jmp pushrax
         CtoL(DEPTH)
 
+        DQ 4
+        DQ 'true'       ; std1994
+TRUE:   DQ $+8
+        mov rax, -1
+        jmp pushrax
+        CtoL(TRUE)
+
+        DQ 5
+        DQ 'false'      ; std1994
+FALSE:  DQ $+8
+        xor rax, rax
+        jmp pushrax
+        CtoL(FALSE)
+
         DQ 2
         DQ '0='         ; std1983
 zequals:
@@ -1208,20 +1222,6 @@ Dplus:  DQ $+8
         mov [rbp-8], rdx
         jmp next
         CtoL(Dplus)
-
-        DQ 4
-        DQ 'true'       ; std1994
-TRUE:   DQ stdexe
-        DQ LIT, -1
-        DQ EXIT
-        CtoL(TRUE)
-
-        DQ 5
-        DQ 'false'      ; std1994
-FALSE:  DQ stdexe
-        DQ z
-        DQ EXIT
-        CtoL(FALSE)
 
         DQ 2
         DQ 'cp'
