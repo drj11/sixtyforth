@@ -129,7 +129,7 @@ WORD    x
 
 +LOOP
 ,       i
-."
+."      i
 :       i
 ;       i
 ABORT"  i
@@ -139,7 +139,7 @@ COMPILE p
 CONSTANT        i
 CREATE  i
 DO
-DOES>
+DOES>   i
 ELSE    i
 IF      i
 IMMEDIATE       i
@@ -153,8 +153,8 @@ UNTIL   i
 VARIABLE        i
 VOCABULARY
 WHILE   i
-[
-[']
+[       i
+[']     i
 [COMPILE]       i
 ]       i
 
