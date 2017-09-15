@@ -89,6 +89,654 @@ promptlen EQU $-prompt
 STARTOFDICT:
         DQ 0    ; Link Field
 
+        DQ 3
+        DQ 'dup'        ; std1983
+DUP:    DQ $+8
+        ; DUP ( a -- a a )
+        mov rax, [rbp-8]
+pushrax:
+        mov [rbp], rax
+        add rbp, 8
+        jmp next
+        CtoL(DUP)
+
+        DQ 3
+        DQ 'rot'        ; std1983
+ROT:    DQ $+8
+        mov rdx, [rbp-24]
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
+        mov [rbp-24], rcx
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(ROT)
+
+        DQ 5
+        DQ 'depth'      ; std1983
+DEPTH:  DQ $+8
+        ; DEPTH ( -- +n )
+        mov rcx, stack
+        mov rax, rbp
+        sub rax, rcx
+        shr rax, 3
+        jmp pushrax
+        CtoL(DEPTH)
+
+        DQ 1
+        DQ '='          ; std1983
+equals: DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rax, rcx
+        sub rax, 1
+        sbb rax, rax
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(equals)
+
+        DQ 2
+        DQ '<>'         ; std1994
+notequals:
+        DQ stdexe
+        ; <> (a b -- -1)
+        ;    (a a -- 0)
+        DQ XOR
+        DQ zequals
+        DQ zequals
+        DQ EXIT
+        CtoL(notequals)
+
+        DQ 2
+        DQ '0='         ; std1983
+zequals:
+        DQ $+8
+        ; 0= (0 -- -1)
+        ;    (x -- 0) when x is not 0
+        ; true is all bits 1: -1
+        mov rax, [rbp-8]
+        sub rax, 1      ; is-zero now in Carry flag
+        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
+        mov [rbp-8], rax
+        jmp next
+        CtoL(zequals)
+
+        DQ 2
+        DQ '0<'         ; std1983
+zless:  DQ $+8
+        ; 0< (n -- true) when n < 0
+        ;    (n -- false) otherwise
+        mov rax, [rbp-8]
+        ; Shift sign bit into carry flag.
+        shl rax, 1
+        ; Convert carry flag to Forth boolean.
+        sbb rax, rax
+        mov [rbp-8], rax
+        jmp next
+        CtoL(zless)
+
+        DQ 1
+        DQ '<'          ; std1983
+lessthan:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        xor rdx, rdx
+        cmp rax, rcx    ; V iff rax < rcx
+        setl dl         ; :todo: seems super clumsy
+        neg rdx
+        sub rbp, 8
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(lessthan)
+
+        DQ 2
+        DQ 'u<'
+Ulessthan:
+        DQ $+8
+        ; < ( u1 u2 -- flag )
+        ; flag is -1 (TRUE) if u1 < u2;
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        cmp rax, rcx    ; C iff B > A
+        sbb rax, rax    ; -1 iff B > A
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(Ulessthan)
+
+        DQ 6
+        DQ 'branch'
+BRANCH: DQ $+8
+        ; Read the next word as a relative offset (in bytes);
+        ; branch by adding offset to current CODEPOINTER.
+        mov rcx, [rbx]
+        lea rbx, [rbx + rcx]
+        jmp next
+        CtoL(BRANCH)
+
+        DQ 7
+        DQ '0branch'
+ZEROBRANCH:
+        DQ $+8
+        ; Read the next word as a relative offset (in bytes);
+        ; pop the TOS and test it;
+        ; if it is 0 then
+        ; branch by adding offset to current CODEPOINTER.
+        mov rcx, [rbx]
+        sub rbp, 8
+        mov rax, [rbp]
+        test rax, rax
+        jz .branch
+        add rbx, 8
+        jmp next
+.branch:
+        lea rbx, [rbx + rcx]
+        jmp next
+        CtoL(ZEROBRANCH)
+
+        DQ 6
+        DQ 'negate'     ; std1983
+NEGATE:
+        DQ $+8
+        mov rax, [rbp-8]
+        neg rax
+        mov [rbp-8], rax
+        jmp next
+        CtoL(NEGATE)
+
+        DQ 3
+        DQ 'abs'        ; std1983
+fABS:   DQ $+8
+        mov rax, [rbp-8]
+        ; Convert carry flag to Forth boolean in rcx
+        mov rcx, rax
+        shl rcx, 1
+        sbb rcx, rcx
+        ; rcx is now 0 or -1
+        ; If rcx is -1, negate the old-school way.
+        xor rax, rcx
+        sub rax, rcx
+        mov [rbp-8], rax
+        jmp next
+        CtoL(fABS)
+
+        DQ 1
+        DQ '+'          ; std1983
+PLUS:   DQ $+8
+        ; + ( a b -- sum )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(PLUS)
+
+        DQ 1
+        DQ '-'          ; std1983
+MINUS:  DQ $+8
+        ; - ( a b -- difference )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(MINUS)
+
+        DQ 2
+        DQ '1-'         ; std1983
+oneminus:
+        DQ $+8
+        mov rax, [rbp-8]
+        sub rax, 1
+        mov [rbp-8], rax
+        jmp next
+        CtoL(oneminus)
+
+        DQ 3
+        DQ 'min'        ; std1983
+MIN:
+        DQ stdexe
+        DQ OVER
+        DQ OVER
+        DQ greaterthan  ; a b flag
+        DQ ZEROBRANCH
+        DQ .s-$
+        DQ SWAP
+.s:
+        DQ DROP
+        DQ EXIT
+        CtoL(MIN)
+
+        DQ 2
+        DQ 'or'         ; std1983
+OR:     DQ $+8
+        ; OR ( a b -- bitwise-or )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        or rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(OR)
+
+        DQ 3
+        DQ 'and'        ; std1983
+AND:    DQ $+8
+        ; AND ( a b -- bitwise-and )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        and rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(AND)
+
+        DQ 3
+        DQ 'xor'        ; std1983
+XOR:    DQ $+8
+        ; XOR ( a b -- bitwise-xor )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        xor rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(XOR)
+
+        DQ 6
+        DQ 'invert'
+INVERT:
+        DQ stdexe
+        DQ TRUE
+        DQ XOR
+        DQ EXIT
+        CtoL(INVERT)
+
+        DQ 3
+        DQ 'bic'
+BIC:
+        DQ stdexe
+        ; BIt Clear (name from Alpha Architecture)
+        ; BIC ( na nb -- nc )
+        DQ INVERT
+        DQ AND
+        DQ EXIT
+        CtoL(BIC)
+
+        DQ 1
+        DQ '!'          ; std1983
+store:
+        DQ $+8
+        ; ! ( w addr -- )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 16
+        mov [rcx], rax
+        jmp next
+        CtoL(store)
+
+        DQ 2
+        DQ 'c!'         ; std1994
+Cstore:
+        DQ $+8
+        ; C! ( ch buf -- )
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        sub rbp, 16
+        mov [rdx], al
+        jmp next
+        CtoL(Cstore)
+
+        DQ 1
+        DQ '@'          ; std1983
+fetch:  DQ $+8
+        ; @ ( addr -- w )
+        mov rax, [rbp-8]
+        mov rax, [rax]
+        mov [rbp-8], rax
+        jmp next
+        CtoL(fetch)
+
+        DQ 2
+        DQ 'c@'         ; std1983
+Cfetch: DQ $+8
+        ; C@ ( addr -- ch )
+        mov rdx, [rbp-8]
+        xor rax, rax
+        mov al, [rdx]
+        mov [rbp-8], rax
+        jmp next
+        CtoL(Cfetch)
+
+        DQ 5
+        DQ 'cmove'      ; std1983
+CMOVE:
+        DQ $+8
+        ; CMOVE ( from to u -- )
+        mov rsi, [rbp-24]
+        mov rdi, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 24
+        mov rdx, 0
+.l:     cmp rcx, rdx
+        jz next
+        mov al, [rsi+rdx]
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        CtoL(CMOVE)
+
+        DQ 6
+        DQ 'cmove>'
+CMOVEup:
+        DQ $+8
+        ; CMOVE> ( from to u -- )
+        mov rsi, [rbp-24]
+        mov rdi, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 24
+.l:     cmp rcx, 0
+        jz next
+        dec rcx
+        mov al, [rsi+rcx]
+        mov [rdi+rcx], al
+        jmp .l
+        CtoL(CMOVEup)
+
+        DQ 4
+        DQ 'fill'       ; std1983
+FILL:
+        DQ $+8
+        ; FILL ( c-addr u char -- )
+        mov rdi, [rbp-24]
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
+        sub rbp, 24
+        mov rdx, 0
+.l:
+        cmp rcx, rdx
+        jz next
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        CtoL(FILL)
+
+        DQ 2
+        DQ '+!'         ; std1983
+plusstore:
+        DQ stdexe
+        ; ( w addr -- )
+        DQ SWAP         ; (a w)
+        DQ OVER         ; (a w a)
+        DQ fetch        ; (a w b)
+        DQ PLUS         ; (a s)
+        DQ SWAP         ; (s a)
+        DQ store
+        DQ EXIT
+        CtoL(plusstore)
+
+        DQ 4
+        DQ 'swap'       ; std1983
+SWAP:   DQ $+8
+        ; SWAP ( a b -- b a )
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+        jmp next
+        CtoL(SWAP)
+
+        DQ 5
+        DQ '2swap'      ; std1994
+twoSWAP:
+        DQ stdexe
+        ; 2SWAP ( p q r s -- r s p q )
+        ; Equivalent to:  rot >r  rot r>
+        DQ ROT
+        DQ toR
+        DQ ROT
+        DQ Rfrom
+        DQ EXIT
+        CtoL(twoSWAP)
+
+        DQ 4
+        DQ '?dup'       ; std1983
+qDUP:   DQ $+8
+        ; ?DUP ( nz -- nz nz )  when not zero
+        ;      ( 0 -- 0 )       when zero
+        mov rax, [rbp-8]
+        test rax, rax
+        jz next
+        jmp pushrax
+        CtoL(qDUP)
+
+        DQ 4
+        DQ 'over'       ; std1983
+OVER:   DQ $+8
+        ; OVER ( a b -- a b a )
+        mov rax, [rbp-16]
+        jmp pushrax
+        CtoL(OVER)
+
+        DQ 5
+        DQ '2over'      ; std1994
+twoOVER:
+        DQ $+8
+        ; 2OVER ( p q r s -- p q r s p q )
+        mov rcx, [rbp-32]
+        mov rdx, [rbp-24]
+        add rbp, 16
+        mov [rbp-16], rcx
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(twoOVER)
+
+        DQ 4
+        DQ '2rot'       ; std1994 double ext
+twoROT:
+        DQ $+8
+        ; 2ROT ( n o p q r s -- p q r s n o )
+        mov rcx, [rbp-48]
+        mov rdx, [rbp-40]
+        mov r8, [rbp-32]
+        mov r9, [rbp-24]
+        mov [rbp-48], r8
+        mov [rbp-40], r9
+        mov r8, [rbp-16]
+        mov r9, [rbp-8]
+        mov [rbp-32], r8
+        mov [rbp-24], r9
+        mov [rbp-16], rcx
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(twoROT)
+
+        DQ 4
+        DQ 'drop'       ; std1983
+DROP:   DQ $+8
+        ; DROP ( a -- )
+        sub rbp, 8
+        jmp next
+        CtoL(DROP)
+
+        DQ 3
+        DQ 'nip'        ; std1994 core-ext
+NIP:    DQ $+8
+        ; NIP ( a b -- b )
+        mov rax, [rbp-8]
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(NIP)
+
+        DQ 2
+        DQ '>r'         ; std1983
+toR:    DQ $+8
+        mov rax, [rbp-8]
+        mov [r12], rax
+        add r12, 8
+        sub rbp, 8
+        jmp next
+        CtoL(toR)
+
+        DQ 3
+        DQ '2>r'        ; std1994 core-ext
+twotoR:
+        DQ $+8
+        ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add r12, 16
+        mov [r12-16], rax
+        mov [r12-8], rcx
+        sub rbp, 16
+        jmp next
+        CtoL(twotoR)
+
+        DQ 2
+        DQ 'r>'         ; std1983
+Rfrom:  DQ $+8
+        mov rax, [r12-8]
+        sub r12, 8
+        jmp pushrax
+        CtoL(Rfrom)
+
+        DQ 2
+        DQ 'r@'         ; std1983
+Rfetch: DQ $+8
+        mov rax, [r12-8]
+        jmp pushrax
+        CtoL(Rfetch)
+
+        DQ 3
+        DQ '2r@'        ; std1994 core-ext
+twoRfetch:
+        DQ $+8
+        ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
+        mov rcx, [r12-16]
+        mov rax, [r12-8]
+        add rbp, 8
+        mov [rbp-8], rcx
+        jmp pushrax
+        CtoL(twoRfetch)
+
+        DQ 6
+        DQ 'lshift'
+LSHIFT:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+
+        shl rax, cl
+
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(LSHIFT)
+
+        DQ 6
+        DQ 'rshift'
+RSHIFT:
+        DQ $+8
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+
+        shr rax, cl
+
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(RSHIFT)
+
+        DQ 2
+        DQ 'm*'         ; std1994
+Mstar:
+        DQ $+8
+        ; m* ( n1 n2 -- d )
+        mov rax, [rbp-16]       ; multiplier
+        mov rdx, [rbp-8]        ; multiplicand
+
+        imul rdx
+
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(Mstar)
+
+        DQ 3
+        DQ 'um*'        ; std1994
+UMstar:
+        DQ $+8
+        ; um* ( u1 u2 -- ud )
+        mov rax, [rbp-16]       ; multiplier
+        mov rdx, [rbp-8]        ; multiplicand
+
+        mul rdx
+
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(UMstar)
+
+        DQ 1
+        DQ '*'          ; std1983
+star: DQ stdexe
+        ; * ( n1 n2 -- n3 )
+        DQ Mstar
+        DQ DROP
+        DQ EXIT
+        CtoL(star)
+
+        DQ 2
+        DQ '0>'         ; std1983
+zgreater:
+        DQ stdexe
+        ; 0> (n -- b)
+        DQ NEGATE
+        DQ zless
+        DQ EXIT
+        CtoL(zgreater)
+
+        DQ 2
+        DQ '1+'         ; std1983
+oneplus:
+        DQ stdexe
+        DQ LIT, 1
+        DQ PLUS
+        DQ EXIT
+        CtoL(oneplus)
+
+        DQ 2
+        DQ '2+'         ; std1983
+twoplus:
+        DQ stdexe
+        DQ LIT, 2
+        DQ PLUS
+        DQ EXIT
+        CtoL(twoplus)
+
+        DQ 2
+        DQ '2-'         ; std1983
+twominus:
+        DQ stdexe
+        DQ LIT, 2
+        DQ MINUS
+        DQ EXIT
+        CtoL(twominus)
+
+        DQ 1
+        DQ '>'          ; std1983
+greaterthan:
+        DQ stdexe
+        DQ SWAP
+        DQ lessthan
+        DQ EXIT
+        CtoL(greaterthan)
+
         DQ 8
         DQ 'syscall3'
 SYSCALL3:
@@ -165,40 +813,6 @@ fRSP:
         mov rax, rsp
         jmp pushrax
         CtoL(fRSP)
-
-        DQ 3
-        DQ 'dup'        ; std1983
-DUP:    DQ $+8
-        ; DUP ( a -- a a )
-        mov rax, [rbp-8]
-pushrax:
-        mov [rbp], rax
-        add rbp, 8
-        jmp next
-        CtoL(DUP)
-
-        DQ 3
-        DQ 'rot'        ; std1983
-ROT:    DQ $+8
-        mov rdx, [rbp-24]
-        mov rcx, [rbp-16]
-        mov rax, [rbp-8]
-        mov [rbp-24], rcx
-        mov [rbp-16], rax
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(ROT)
-
-        DQ 5
-        DQ 'depth'      ; std1983
-DEPTH:  DQ $+8
-        ; DEPTH ( -- +n )
-        mov rcx, stack
-        mov rax, rbp
-        sub rax, rcx
-        shr rax, 3
-        jmp pushrax
-        CtoL(DEPTH)
 
         DQ 6
         DQ 'within'     ; std1994
@@ -542,137 +1156,6 @@ CR:
         DQ EXIT
         CtoL(CR)
 
-        DQ 1
-        DQ '='          ; std1983
-equals: DQ $+8
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rax, rcx
-        sub rax, 1
-        sbb rax, rax
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(equals)
-
-        DQ 2
-        DQ '0='         ; std1983
-zequals:
-        DQ $+8
-        ; 0= (0 -- -1)
-        ;    (x -- 0) when x is not 0
-        ; true is all bits 1: -1
-        mov rax, [rbp-8]
-        sub rax, 1      ; is-zero now in Carry flag
-        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
-        mov [rbp-8], rax
-        jmp next
-        CtoL(zequals)
-
-        DQ 2
-        DQ '0<'         ; std1983
-zless:  DQ $+8
-        ; 0< (n -- true) when n < 0
-        ;    (n -- false) otherwise
-        mov rax, [rbp-8]
-        ; Shift sign bit into carry flag.
-        shl rax, 1
-        ; Convert carry flag to Forth boolean.
-        sbb rax, rax
-        mov [rbp-8], rax
-        jmp next
-        CtoL(zless)
-
-        DQ 1
-        DQ '<'          ; std1983
-lessthan:
-        DQ $+8
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        xor rdx, rdx
-        cmp rax, rcx    ; V iff rax < rcx
-        setl dl         ; :todo: seems super clumsy
-        neg rdx
-        sub rbp, 8
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(lessthan)
-
-        DQ 2
-        DQ 'u<'
-Ulessthan:
-        DQ $+8
-        ; < ( u1 u2 -- flag )
-        ; flag is -1 (TRUE) if u1 < u2;
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        cmp rax, rcx    ; C iff B > A
-        sbb rax, rax    ; -1 iff B > A
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(Ulessthan)
-
-        DQ 6
-        DQ 'negate'     ; std1983
-NEGATE:
-        DQ $+8
-        mov rax, [rbp-8]
-        neg rax
-        mov [rbp-8], rax
-        jmp next
-        CtoL(NEGATE)
-
-        DQ 3
-        DQ 'abs'        ; std1983
-fABS:   DQ $+8
-        mov rax, [rbp-8]
-        ; Convert carry flag to Forth boolean in rcx
-        mov rcx, rax
-        shl rcx, 1
-        sbb rcx, rcx
-        ; rcx is now 0 or -1
-        ; If rcx is -1, negate the old-school way.
-        xor rax, rcx
-        sub rax, rcx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(fABS)
-
-        DQ 1
-        DQ '+'          ; std1983
-PLUS:   DQ $+8
-        ; + ( a b -- sum )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        add rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(PLUS)
-
-        DQ 1
-        DQ '-'          ; std1983
-MINUS:  DQ $+8
-        ; - ( a b -- difference )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(MINUS)
-
-        DQ 2
-        DQ '1-'         ; std1983
-oneminus:
-        DQ $+8
-        mov rax, [rbp-8]
-        sub rax, 1
-        mov [rbp-8], rax
-        jmp next
-        CtoL(oneminus)
-
         DQ 6
         DQ 'um/mod'     ; std1983
 UMslashMOD:
@@ -697,7 +1180,7 @@ UMslashMOD:
         CtoL(UMslashMOD)
 
         DQ 2
-        DQ 'd+'         ; std1983
+        DQ 'd+'         ; std1994 double
 Dplus:  DQ $+8
         ; D+ ( d1 d2 -- d3 )
         mov rax, [rbp-32]       ; least significant part of augend
@@ -725,62 +1208,6 @@ FALSE:  DQ stdexe
         DQ z
         DQ EXIT
         CtoL(FALSE)
-
-        DQ 2
-        DQ 'or'         ; std1983
-OR:     DQ $+8
-        ; OR ( a b -- bitwise-or )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        or rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(OR)
-
-        DQ 3
-        DQ 'and'        ; std1983
-AND:    DQ $+8
-        ; AND ( a b -- bitwise-and )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        and rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(AND)
-
-        DQ 3
-        DQ 'xor'        ; std1983
-XOR:    DQ $+8
-        ; XOR ( a b -- bitwise-xor )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        xor rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(XOR)
-
-        DQ 6
-        DQ 'invert'
-INVERT:
-        DQ stdexe
-        DQ TRUE
-        DQ XOR
-        DQ EXIT
-        CtoL(INVERT)
-
-        DQ 3
-        DQ 'bic'
-BIC:
-        DQ stdexe
-        ; BIt Clear (name from Alpha Architecture)
-        ; BIC ( na nb -- nc )
-        DQ INVERT
-        DQ AND
-        DQ EXIT
-        CtoL(BIC)
 
         DQ 2
         DQ 'cp'
@@ -813,140 +1240,6 @@ SOURCE:
         DQ fetch
         DQ EXIT
         CtoL(SOURCE)
-
-        DQ 1
-        DQ '!'          ; std1983
-store:  DQ $+8
-store0: ; ! ( w addr -- )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 16
-        mov [rcx], rax
-        jmp next
-        CtoL(store)
-
-        DQ 2
-        DQ 'c!'         ; std1994
-Cstore:
-        DQ $+8
-        ; C! ( ch buf -- )
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        sub rbp, 16
-        mov [rdx], al
-        jmp next
-        CtoL(Cstore)
-
-        DQ 1
-        DQ '@'          ; std1983
-fetch:  DQ $+8
-        ; @ ( addr -- w )
-        mov rax, [rbp-8]
-        mov rax, [rax]
-        mov [rbp-8], rax
-        jmp next
-        CtoL(fetch)
-
-        DQ 2
-        DQ 'c@'         ; std1983
-Cfetch: DQ $+8
-        ; C@ ( addr -- ch )
-        mov rdx, [rbp-8]
-        xor rax, rax
-        mov al, [rdx]
-        mov [rbp-8], rax
-        jmp next
-        CtoL(Cfetch)
-
-        DQ 2
-        DQ '+!'         ; std1983
-plusstore:
-        DQ stdexe
-        ; ( w addr -- )
-        DQ SWAP         ; (a w)
-        DQ OVER         ; (a w a)
-        DQ fetch        ; (a w b)
-        DQ PLUS         ; (a s)
-        DQ SWAP         ; (s a)
-        DQ store
-        DQ EXIT
-        CtoL(plusstore)
-
-        DQ 4
-        DQ 'swap'       ; std1983
-SWAP:   DQ $+8
-        ; SWAP ( a b -- b a )
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(SWAP)
-
-        DQ 5
-        DQ '2swap'      ; std1994
-twoSWAP:
-        DQ stdexe
-        ; 2SWAP ( p q r s -- r s p q )
-        ; Equivalent to:  rot >r  rot r>
-        DQ ROT
-        DQ toR
-        DQ ROT
-        DQ Rfrom
-        DQ EXIT
-        CtoL(twoSWAP)
-
-        DQ 4
-        DQ '?dup'       ; std1983
-qDUP:   DQ $+8
-        ; ?DUP ( nz -- nz nz )  when not zero
-        ;      ( 0 -- 0 )       when zero
-        mov rax, [rbp-8]
-        test rax, rax
-        jz next
-        jmp pushrax
-        CtoL(qDUP)
-
-        DQ 4
-        DQ 'over'       ; std1983
-OVER:   DQ $+8
-        ; OVER ( a b -- a b a )
-        mov rax, [rbp-16]
-        jmp pushrax
-        CtoL(OVER)
-
-        DQ 5
-        DQ '2over'      ; std1994
-twoOVER:
-        DQ $+8
-        ; 2OVER ( p q r s -- p q r s p q )
-        mov rcx, [rbp-32]
-        mov rdx, [rbp-24]
-        add rbp, 16
-        mov [rbp-16], rcx
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(twoOVER)
-
-        DQ 4
-        DQ '2rot'       ; std1994 double ext
-twoROT:
-        DQ $+8
-        ; 2ROT ( n o p q r s -- p q r s n o )
-        mov rcx, [rbp-48]
-        mov rdx, [rbp-40]
-        mov r8, [rbp-32]
-        mov r9, [rbp-24]
-        mov [rbp-48], r8
-        mov [rbp-40], r9
-        mov r8, [rbp-16]
-        mov r9, [rbp-8]
-        mov [rbp-32], r8
-        mov [rbp-24], r9
-        mov [rbp-16], rcx
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(twoROT)
 
         DQ 3
         DQ 'd>s'        ; std1994 double
@@ -989,24 +1282,6 @@ DABS:   DQ stdexe
         DQ EXIT
         CtoL(DABS)
 
-        DQ 4
-        DQ 'drop'       ; std1983
-DROP:   DQ $+8
-        ; DROP ( a -- )
-        sub rbp, 8
-        jmp next
-        CtoL(DROP)
-
-        DQ 3
-        DQ 'nip'        ; std1994 core-ext
-NIP:    DQ $+8
-        ; NIP ( a b -- b )
-        mov rax, [rbp-8]
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(NIP)
-
         DQ 5
         DQ 'allot'      ; std1983
 ALLOT:  DQ stdexe
@@ -1036,75 +1311,6 @@ LITERAL:
         DQ comma
         DQ EXIT
         CtoL(LITERAL)
-
-        DQ 5
-        DQ 'cmove'      ; std1983
-CMOVE:
-        DQ $+8
-        ; CMOVE ( from to u -- )
-cmove0:
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 24
-        mov rdx, 0
-.l:     cmp rcx, rdx
-        jz next
-        mov al, [rsi+rdx]
-        mov [rdi+rdx], al
-        inc rdx
-        jmp .l
-        CtoL(CMOVE)
-
-        DQ 6
-        DQ 'cmove>'
-CMOVEup:
-        DQ $+8
-        ; CMOVE> ( from to u -- )
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 24
-.l:     cmp rcx, 0
-        jz next
-        dec rcx
-        mov al, [rsi+rcx]
-        mov [rdi+rcx], al
-        jmp .l
-        CtoL(CMOVEup)
-
-        DQ 4
-        DQ 'fill'       ; std1983
-FILL:
-        DQ $+8
-        ; FILL ( c-addr u char -- )
-        mov rdi, [rbp-24]
-        mov rcx, [rbp-16]
-        mov rax, [rbp-8]
-        sub rbp, 24
-        mov rdx, 0
-.l:
-        cmp rcx, rdx
-        jz next
-        mov [rdi+rdx], al
-        inc rdx
-        jmp .l
-        CtoL(FILL)
-
-        DQ 3
-        DQ 'min'        ; std1983
-MIN:
-        DQ stdexe
-        DQ OVER
-        DQ OVER
-        DQ greaterthan  ; a b flag
-        DQ ZEROBRANCH
-        DQ .s-$
-        DQ SWAP
-.s:
-        DQ DROP
-        DQ EXIT
-        CtoL(MIN)
 
         DQ 7
         DQ '*create'
@@ -1270,57 +1476,6 @@ EXIT:   DQ $+8
         jmp next
         CtoL(EXIT)
 
-        DQ 2
-        DQ '>r'         ; std1983
-toR:    DQ $+8
-        mov rax, [rbp-8]
-        mov [r12], rax
-        add r12, 8
-        sub rbp, 8
-        jmp next
-        CtoL(toR)
-
-        DQ 3
-        DQ '2>r'        ; std1994 core-ext
-twotoR:
-        DQ $+8
-        ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        add r12, 16
-        mov [r12-16], rax
-        mov [r12-8], rcx
-        sub rbp, 16
-        jmp next
-        CtoL(twotoR)
-
-        DQ 2
-        DQ 'r>'         ; std1983
-Rfrom:  DQ $+8
-        mov rax, [r12-8]
-        sub r12, 8
-        jmp pushrax
-        CtoL(Rfrom)
-
-        DQ 2
-        DQ 'r@'         ; std1983
-Rfetch: DQ $+8
-        mov rax, [r12-8]
-        jmp pushrax
-        CtoL(Rfetch)
-
-        DQ 3
-        DQ '2r@'        ; std1994 core-ext
-twoRfetch:
-        DQ $+8
-        ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
-        mov rcx, [r12-16]
-        mov rax, [r12-8]
-        add rbp, 8
-        mov [rbp-8], rcx
-        jmp pushrax
-        CtoL(twoRfetch)
-
         DQ 8
         DQ 'findword'
 FINDWORD:
@@ -1418,119 +1573,6 @@ z:      DQ stdexe
         DQ LIT, 0
         DQ EXIT
         CtoL(z)
-
-        DQ 6
-        DQ 'lshift'
-LSHIFT:
-        DQ $+8
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-
-        shl rax, cl
-
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(LSHIFT)
-
-        DQ 6
-        DQ 'rshift'
-RSHIFT:
-        DQ $+8
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-
-        shr rax, cl
-
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(RSHIFT)
-
-        DQ 2
-        DQ 'm*'         ; std1994
-Mstar:
-        DQ $+8
-        ; m* ( n1 n2 -- d )
-        mov rax, [rbp-16]       ; multiplier
-        mov rdx, [rbp-8]        ; multiplicand
-
-        imul rdx
-
-        mov [rbp-16], rax
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(Mstar)
-
-        DQ 3
-        DQ 'um*'        ; std1994
-UMstar:
-        DQ $+8
-        ; um* ( u1 u2 -- ud )
-        mov rax, [rbp-16]       ; multiplier
-        mov rdx, [rbp-8]        ; multiplicand
-
-        mul rdx
-
-        mov [rbp-16], rax
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(UMstar)
-
-        DQ 1
-        DQ '*'          ; std1983
-star: DQ stdexe
-        ; * ( n1 n2 -- n3 )
-        DQ Mstar
-        DQ DROP
-        DQ EXIT
-        CtoL(star)
-
-        DQ 2
-        DQ '0>'         ; std1983
-zgreater:
-        DQ stdexe
-        ; 0> (n -- b)
-        DQ NEGATE
-        DQ zless
-        DQ EXIT
-        CtoL(zgreater)
-
-        DQ 2
-        DQ '1+'         ; std1983
-oneplus:
-        DQ stdexe
-        DQ LIT, 1
-        DQ PLUS
-        DQ EXIT
-        CtoL(oneplus)
-
-        DQ 2
-        DQ '2+'         ; std1983
-twoplus:
-        DQ stdexe
-        DQ LIT, 2
-        DQ PLUS
-        DQ EXIT
-        CtoL(twoplus)
-
-        DQ 2
-        DQ '2-'         ; std1983
-twominus:
-        DQ stdexe
-        DQ LIT, 2
-        DQ MINUS
-        DQ EXIT
-        CtoL(twominus)
-
-        DQ 1
-        DQ '>'          ; std1983
-greaterthan:
-        DQ stdexe
-        DQ SWAP
-        DQ lessthan
-        DQ EXIT
-        CtoL(greaterthan)
 
         DQ 9
         DQ 'immediat'   ; std1983
@@ -1652,18 +1694,6 @@ ABORTquote:
         DQ store
         DQ EXIT
         CtoL(ABORTquote)
-
-        DQ 2
-        DQ '<>'         ; std1994
-notequals:
-        DQ stdexe
-        ; <> (a b -- -1)
-        ;    (a a -- 0)
-        DQ XOR
-        DQ zequals
-        DQ zequals
-        DQ EXIT
-        CtoL(notequals)
 
         DQ 4
         DQ 'inch'
@@ -1846,36 +1876,6 @@ EVALUATE:
         DQ IB, store
         DQ EXIT
         CtoL(EVALUATE)
-
-        DQ 6
-        DQ 'branch'
-BRANCH: DQ $+8
-        ; Read the next word as a relative offset (in bytes);
-        ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
-        lea rbx, [rbx + rcx]
-        jmp next
-        CtoL(BRANCH)
-
-        DQ 7
-        DQ '0branch'
-ZEROBRANCH:
-        DQ $+8
-        ; Read the next word as a relative offset (in bytes);
-        ; pop the TOS and test it;
-        ; if it is 0 then
-        ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
-        sub rbp, 8
-        mov rax, [rbp]
-        test rax, rax
-        jz .branch
-        add rbx, 8
-        jmp next
-.branch:
-        lea rbx, [rbx + rcx]
-        jmp next
-        CtoL(ZEROBRANCH)
 
         DQ 7
         DQ '*stdexe'
