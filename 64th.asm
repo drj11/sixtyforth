@@ -321,8 +321,8 @@ notequals:
         DQ 2
         DQ '0<'         ; std1983
 zless:  DQ $+8
+        ; 0< (0|+n -- false)
         ; 0< (n -- true) when n < 0
-        ;    (n -- false) otherwise
         mov rax, [rbp-8]
         ; Shift sign bit into carry flag.
         shl rax, 1
@@ -355,9 +355,9 @@ Ulessthan:
         ; flag is -1 (TRUE) if u1 < u2;
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
+        sub rbp, 8
         cmp rax, rcx    ; C iff B > A
         sbb rax, rax    ; -1 iff B > A
-        sub rbp, 8
         mov [rbp-8], rax
         jmp next
         CtoL(Ulessthan)
