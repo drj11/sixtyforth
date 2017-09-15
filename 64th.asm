@@ -269,17 +269,27 @@ DEPTH:  DQ $+8
         jmp pushrax
         CtoL(DEPTH)
 
+        DQ 2
+        DQ '0='         ; std1983
+zequals:
+        DQ $+8
+        ; 0= (0 -- -1)
+        ;    (x -- 0) when x is not 0
+        mov rax, [rbp-8]
+zeq:    sub rax, 1      ; is-zero now in Carry flag
+        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
+        mov [rbp-8], rax
+        jmp next
+        CtoL(zequals)
+
         DQ 1
         DQ '='          ; std1983
 equals: DQ $+8
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
-        sub rax, rcx
-        sub rax, 1
-        sbb rax, rax
         sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
+        sub rax, rcx
+        jmp zeq
         CtoL(equals)
 
         DQ 2
@@ -293,20 +303,6 @@ notequals:
         DQ zequals
         DQ EXIT
         CtoL(notequals)
-
-        DQ 2
-        DQ '0='         ; std1983
-zequals:
-        DQ $+8
-        ; 0= (0 -- -1)
-        ;    (x -- 0) when x is not 0
-        ; true is all bits 1: -1
-        mov rax, [rbp-8]
-        sub rax, 1      ; is-zero now in Carry flag
-        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
-        mov [rbp-8], rax
-        jmp next
-        CtoL(zequals)
 
         DQ 2
         DQ '0<'         ; std1983
