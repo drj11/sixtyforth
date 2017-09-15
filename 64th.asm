@@ -100,6 +100,33 @@ pushrax:
         jmp next
         CtoL(DUP)
 
+        DQ 4
+        DQ 'over'       ; std1983
+OVER:   DQ $+8
+        ; OVER ( a b -- a b a )
+        mov rax, [rbp-16]
+        jmp pushrax
+        CtoL(OVER)
+
+        DQ 4
+        DQ 'drop'       ; std1983
+DROP:   DQ $+8
+        ; DROP ( a -- )
+        sub rbp, 8
+        jmp next
+        CtoL(DROP)
+
+        DQ 4
+        DQ 'swap'       ; std1983
+SWAP:   DQ $+8
+        ; SWAP ( a b -- b a )
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+        jmp next
+        CtoL(SWAP)
+
         DQ 3
         DQ 'rot'        ; std1983
 ROT:    DQ $+8
@@ -111,6 +138,125 @@ ROT:    DQ $+8
         mov [rbp-8], rdx
         jmp next
         CtoL(ROT)
+
+        DQ 3
+        DQ 'nip'        ; std1994 core-ext
+NIP:    DQ $+8
+        ; NIP ( a b -- b )
+        mov rax, [rbp-8]
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(NIP)
+
+        DQ 4
+        DQ '?dup'       ; std1983
+qDUP:   DQ $+8
+        ; ?DUP ( nz -- nz nz )  when not zero
+        ;      ( 0 -- 0 )       when zero
+        mov rax, [rbp-8]
+        test rax, rax
+        jz next
+        jmp pushrax
+        CtoL(qDUP)
+
+        DQ 5
+        DQ '2over'      ; std1994
+twoOVER:
+        DQ $+8
+        ; 2OVER ( p q r s -- p q r s p q )
+        mov rcx, [rbp-32]
+        mov rdx, [rbp-24]
+        add rbp, 16
+        mov [rbp-16], rcx
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(twoOVER)
+
+        DQ 4
+        DQ '2rot'       ; std1994 double ext
+twoROT:
+        DQ $+8
+        ; 2ROT ( n o p q r s -- p q r s n o )
+        ; A Forth definition:  2>r 2swap 2r> 2swap
+        mov rcx, [rbp-48]
+        mov rdx, [rbp-40]
+        mov r8, [rbp-32]
+        mov r9, [rbp-24]
+        mov [rbp-48], r8
+        mov [rbp-40], r9
+        mov r8, [rbp-16]
+        mov r9, [rbp-8]
+        mov [rbp-32], r8
+        mov [rbp-24], r9
+        mov [rbp-16], rcx
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(twoROT)
+
+        DQ 5
+        DQ '2swap'      ; std1994
+twoSWAP:
+        DQ stdexe
+        ; 2SWAP ( p q r s -- r s p q )
+        ; Equivalent to:  rot >r  rot r>
+        DQ ROT
+        DQ toR
+        DQ ROT
+        DQ Rfrom
+        DQ EXIT
+        CtoL(twoSWAP)
+
+        DQ 2
+        DQ '>r'         ; std1983
+toR:    DQ $+8
+        mov rax, [rbp-8]
+        mov [r12], rax
+        add r12, 8
+        sub rbp, 8
+        jmp next
+        CtoL(toR)
+
+        DQ 2
+        DQ 'r>'         ; std1983
+Rfrom:  DQ $+8
+        mov rax, [r12-8]
+        sub r12, 8
+        jmp pushrax
+        CtoL(Rfrom)
+
+        DQ 2
+        DQ 'r@'         ; std1983
+Rfetch: DQ $+8
+        mov rax, [r12-8]
+        jmp pushrax
+        CtoL(Rfetch)
+
+        DQ 3
+        DQ '2>r'        ; std1994 core-ext
+twotoR:
+        DQ $+8
+        ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add r12, 16
+        mov [r12-16], rax
+        mov [r12-8], rcx
+        sub rbp, 16
+        jmp next
+        CtoL(twotoR)
+
+        DQ 3
+        DQ '2r@'        ; std1994 core-ext
+twoRfetch:
+        DQ $+8
+        ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
+        mov rcx, [r12-16]
+        mov rax, [r12-8]
+        add rbp, 8
+        mov [rbp-8], rcx
+        jmp pushrax
+        CtoL(twoRfetch)
 
         DQ 5
         DQ 'depth'      ; std1983
@@ -479,152 +625,6 @@ plusstore:
         DQ EXIT
         CtoL(plusstore)
 
-        DQ 4
-        DQ 'swap'       ; std1983
-SWAP:   DQ $+8
-        ; SWAP ( a b -- b a )
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(SWAP)
-
-        DQ 5
-        DQ '2swap'      ; std1994
-twoSWAP:
-        DQ stdexe
-        ; 2SWAP ( p q r s -- r s p q )
-        ; Equivalent to:  rot >r  rot r>
-        DQ ROT
-        DQ toR
-        DQ ROT
-        DQ Rfrom
-        DQ EXIT
-        CtoL(twoSWAP)
-
-        DQ 4
-        DQ '?dup'       ; std1983
-qDUP:   DQ $+8
-        ; ?DUP ( nz -- nz nz )  when not zero
-        ;      ( 0 -- 0 )       when zero
-        mov rax, [rbp-8]
-        test rax, rax
-        jz next
-        jmp pushrax
-        CtoL(qDUP)
-
-        DQ 4
-        DQ 'over'       ; std1983
-OVER:   DQ $+8
-        ; OVER ( a b -- a b a )
-        mov rax, [rbp-16]
-        jmp pushrax
-        CtoL(OVER)
-
-        DQ 5
-        DQ '2over'      ; std1994
-twoOVER:
-        DQ $+8
-        ; 2OVER ( p q r s -- p q r s p q )
-        mov rcx, [rbp-32]
-        mov rdx, [rbp-24]
-        add rbp, 16
-        mov [rbp-16], rcx
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(twoOVER)
-
-        DQ 4
-        DQ '2rot'       ; std1994 double ext
-twoROT:
-        DQ $+8
-        ; 2ROT ( n o p q r s -- p q r s n o )
-        ; A Forth definition:  2>r 2swap 2r> 2swap
-        mov rcx, [rbp-48]
-        mov rdx, [rbp-40]
-        mov r8, [rbp-32]
-        mov r9, [rbp-24]
-        mov [rbp-48], r8
-        mov [rbp-40], r9
-        mov r8, [rbp-16]
-        mov r9, [rbp-8]
-        mov [rbp-32], r8
-        mov [rbp-24], r9
-        mov [rbp-16], rcx
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(twoROT)
-
-        DQ 4
-        DQ 'drop'       ; std1983
-DROP:   DQ $+8
-        ; DROP ( a -- )
-        sub rbp, 8
-        jmp next
-        CtoL(DROP)
-
-        DQ 3
-        DQ 'nip'        ; std1994 core-ext
-NIP:    DQ $+8
-        ; NIP ( a b -- b )
-        mov rax, [rbp-8]
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(NIP)
-
-        DQ 2
-        DQ '>r'         ; std1983
-toR:    DQ $+8
-        mov rax, [rbp-8]
-        mov [r12], rax
-        add r12, 8
-        sub rbp, 8
-        jmp next
-        CtoL(toR)
-
-        DQ 3
-        DQ '2>r'        ; std1994 core-ext
-twotoR:
-        DQ $+8
-        ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        add r12, 16
-        mov [r12-16], rax
-        mov [r12-8], rcx
-        sub rbp, 16
-        jmp next
-        CtoL(twotoR)
-
-        DQ 2
-        DQ 'r>'         ; std1983
-Rfrom:  DQ $+8
-        mov rax, [r12-8]
-        sub r12, 8
-        jmp pushrax
-        CtoL(Rfrom)
-
-        DQ 2
-        DQ 'r@'         ; std1983
-Rfetch: DQ $+8
-        mov rax, [r12-8]
-        jmp pushrax
-        CtoL(Rfetch)
-
-        DQ 3
-        DQ '2r@'        ; std1994 core-ext
-twoRfetch:
-        DQ $+8
-        ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
-        mov rcx, [r12-16]
-        mov rax, [r12-8]
-        add rbp, 8
-        mov [rbp-8], rcx
-        jmp pushrax
-        CtoL(twoRfetch)
-
         DQ 6
         DQ 'lshift'
 LSHIFT:
@@ -691,6 +691,46 @@ star: DQ stdexe
         DQ DROP
         DQ EXIT
         CtoL(star)
+
+        DQ 6
+        DQ 'um/mod'     ; std1983
+UMslashMOD:
+        DQ $+8
+        ; UM/MOD ( ud-dividend u-divisor -- u-r u-q )
+        ; Note: Double Single -> Single Single.
+        ; Dividend, least significant.
+        mov rax, [rbp-24]
+        ; Dividend, most significant.
+        mov rdx, [rbp-16]
+        ; Divisor
+        mov rcx, [rbp-8]
+
+        div rcx
+
+        sub rbp, 8
+        ; Deposit remainder.
+        mov [rbp-16], rdx
+        ; Deposit quotient.
+        mov [rbp-8], rax
+        jmp next
+        CtoL(UMslashMOD)
+
+        DQ 6
+        DQ 'sm/rem'     ; std1994
+SMslashREM:
+        DQ $+8
+        ; SM/REM ( d-dividend n-divisor -- n-quotient n-remainder )
+        mov rax, [rbp-24]
+        mov rdx, [rbp-16]
+        mov rcx, [rbp-8]
+
+        idiv rcx
+
+        sub rbp, 8
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+        jmp next
+        CtoL(SMslashREM)
 
         DQ 2
         DQ '0>'         ; std1983
@@ -1157,29 +1197,6 @@ CR:
         DQ EXIT
         CtoL(CR)
 
-        DQ 6
-        DQ 'um/mod'     ; std1983
-UMslashMOD:
-        DQ $+8
-        ; UM/MOD ( ud-dividend u-divisor -- u-r u-q )
-        ; Note: Double Single -> Single Single.
-        ; Dividend, least significant.
-        mov rax, [rbp-24]
-        ; Dividend, most significant.
-        mov rdx, [rbp-16]
-        ; Divisor
-        mov rcx, [rbp-8]
-
-        div rcx
-
-        sub rbp, 8
-        ; Deposit remainder.
-        mov [rbp-16], rdx
-        ; Deposit quotient.
-        mov [rbp-8], rax
-        jmp next
-        CtoL(UMslashMOD)
-
         DQ 2
         DQ 'd+'         ; std1994 double
 Dplus:  DQ $+8
@@ -1550,23 +1567,6 @@ QUIT:   DQ reset
         DQ 'abort'      ; std1983
 ABORT:  DQ dreset
         CtoL(ABORT)
-
-        DQ 6
-        DQ 'sm/rem'     ; std1994
-SMslashREM:
-        DQ $+8
-        ; SM/REM ( d-dividend n-divisor -- n-quotient n-remainder )
-        mov rax, [rbp-24]
-        mov rdx, [rbp-16]
-        mov rcx, [rbp-8]
-
-        idiv rcx
-
-        sub rbp, 8
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(SMslashREM)
 
         DQ 1
         DQ '0'
