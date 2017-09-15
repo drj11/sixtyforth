@@ -540,6 +540,7 @@ twoOVER:
 twoROT:
         DQ $+8
         ; 2ROT ( n o p q r s -- p q r s n o )
+        ; A Forth definition:  2>r 2swap 2r> 2swap
         mov rcx, [rbp-48]
         mov rdx, [rbp-40]
         mov r8, [rbp-32]
