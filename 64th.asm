@@ -109,6 +109,16 @@ EXIT:   DQ $+8
         jmp next
         CtoL(EXIT)
 
+        DQ 4
+        DQ 'quit'       ; std1983
+QUIT:   DQ reset
+        CtoL(QUIT)
+
+        DQ 5
+        DQ 'abort'      ; std1983
+ABORT:  DQ dreset
+        CtoL(ABORT)
+
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -1548,16 +1558,6 @@ FINDWORD:
         mov qword [rbp-8], 0
         jmp next
         CtoL(FINDWORD)
-
-        DQ 4
-        DQ 'quit'       ; std1983
-QUIT:   DQ reset
-        CtoL(QUIT)
-
-        DQ 5
-        DQ 'abort'      ; std1983
-ABORT:  DQ dreset
-        CtoL(ABORT)
 
         DQ 9
         DQ 'immediat'   ; std1983
