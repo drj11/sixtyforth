@@ -283,6 +283,12 @@ FALSE:  DQ $+8
         jmp pushrax
         CtoL(FALSE)
 
+; This primitive is the simplest condition test.
+; It illustrates a technique for converting conditions
+; to Forth boolean flags:
+; - copy condition to carry flag
+; - propagate carry flag to entire word using SBB.
+; It contains entry points that are also used by other definitions.
         DQ 2
         DQ '0='         ; std1983
 zequals:
@@ -290,7 +296,7 @@ zequals:
         ; 0= (0 -- -1)
         ;    (x -- 0) when x is not 0
         mov rax, [rbp-8]
-zeq:    sub rax, 1      ; is-zero now in Carry flag
+ztoc:   sub rax, 1      ; is-zero now in Carry flag
         sbb rax, rax    ; C=0 -> 0; C=1 -> -1
         mov [rbp-8], rax
         jmp next
@@ -303,7 +309,7 @@ equals: DQ $+8
         mov rcx, [rbp-8]
         sub rbp, 8
         sub rax, rcx
-        jmp zeq
+        jmp ztoc
         CtoL(equals)
 
         DQ 2
