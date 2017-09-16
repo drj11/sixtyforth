@@ -89,6 +89,18 @@ promptlen EQU $-prompt
 STARTOFDICT:
         DQ 0    ; Link Field
 
+        DQ 7
+        DQ 'execute'
+EXECUTE:
+        DQ $+8          ; std1983
+        ; EXECUTE ( addr -- )
+        ; execute the Forth word that has compilation address `addr`
+        sub rbp, 8
+        mov rdx, [rbp]
+        mov rax, [rdx]
+        jmp rax
+        CtoL(EXECUTE)
+
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -784,6 +796,21 @@ twominus:
         DQ EXIT
         CtoL(twominus)
 
+        DQ 6
+        DQ 'within'     ; std1994
+WITHIN:
+        DQ stdexe
+        ; WITHIN ( test low high -- flag )
+        ; Implementation as per [FORTH1994]
+        DQ OVER
+        DQ MINUS
+        DQ toR
+        DQ MINUS
+        DQ Rfrom
+        DQ Ulessthan
+        DQ EXIT
+        CtoL(WITHIN)
+
         DQ 8
         DQ 'syscall3'
 SYSCALL3:
@@ -840,18 +867,6 @@ sysEXIT:
         syscall
         CtoL(sysEXIT)
 
-        DQ 7
-        DQ 'execute'
-EXECUTE:
-        DQ $+8          ; std1983
-        ; EXECUTE ( addr -- )
-        ; execute the Forth word that has compilation address `addr`
-        sub rbp, 8
-        mov rdx, [rbp]
-        mov rax, [rdx]
-        jmp rax
-        CtoL(EXECUTE)
-
         DQ 3
         DQ 'rsp'
 fRSP:
@@ -860,21 +875,6 @@ fRSP:
         mov rax, rsp
         jmp pushrax
         CtoL(fRSP)
-
-        DQ 6
-        DQ 'within'     ; std1994
-WITHIN:
-        DQ stdexe
-        ; WITHIN ( test low high -- flag )
-        ; Implementation as per [FORTH1994]
-        DQ OVER
-        DQ MINUS
-        DQ toR
-        DQ MINUS
-        DQ Rfrom
-        DQ Ulessthan
-        DQ EXIT
-        CtoL(WITHIN)
 
         DQ 7
         DQ '>number'    ; std1994
