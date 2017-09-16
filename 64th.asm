@@ -297,7 +297,7 @@ zequals:
         ;    (x -- 0) when x is not 0
         mov rax, [rbp-8]
 ztoc:   sub rax, 1      ; is-zero now in Carry flag
-        sbb rax, rax    ; C=0 -> 0; C=1 -> -1
+cprop:  sbb rax, rax    ; C=0 -> 0; C=1 -> -1
         mov [rbp-8], rax
         jmp next
         CtoL(zequals)
@@ -332,10 +332,7 @@ zless:  DQ $+8
         mov rax, [rbp-8]
         ; Shift sign bit into carry flag.
         shl rax, 1
-        ; Convert carry flag to Forth boolean.
-        sbb rax, rax
-        mov [rbp-8], rax
-        jmp next
+        jmp cprop
         CtoL(zless)
 
         DQ 1
@@ -363,9 +360,7 @@ Ulessthan:
         mov rcx, [rbp-8]
         sub rbp, 8
         cmp rax, rcx    ; C iff B > A
-        sbb rax, rax    ; -1 iff B > A
-        mov [rbp-8], rax
-        jmp next
+        jmp cprop
         CtoL(Ulessthan)
 
         DQ 6
