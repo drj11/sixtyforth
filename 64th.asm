@@ -645,12 +645,11 @@ FILL:
         DQ '+!'         ; std1983
 plusstore:
         DQ stdexe
-        ; ( w addr -- )
-        DQ SWAP         ; (a w)
-        DQ OVER         ; (a w a)
-        DQ fetch        ; (a w b)
-        DQ PLUS         ; (a s)
-        DQ SWAP         ; (s a)
+        ; +! ( n addr -- )
+        DQ SWAP, OVER   ; a n1 a
+        DQ fetch        ; a n1 n2
+        DQ PLUS         ; a n3
+        DQ SWAP         ; n3 a
         DQ store
         DQ EXIT
         CtoL(plusstore)
