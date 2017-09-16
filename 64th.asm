@@ -412,6 +412,117 @@ ZEROBRANCH:
         jmp next
         CtoL(ZEROBRANCH)
 
+        DQ 1
+        DQ '!'          ; std1983
+store:
+        DQ $+8
+        ; ! ( w addr -- )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 16
+        mov [rcx], rax
+        jmp next
+        CtoL(store)
+
+        DQ 2
+        DQ 'c!'         ; std1994
+Cstore:
+        DQ $+8
+        ; C! ( ch buf -- )
+        mov rax, [rbp-16]
+        mov rdx, [rbp-8]
+        sub rbp, 16
+        mov [rdx], al
+        jmp next
+        CtoL(Cstore)
+
+        DQ 1
+        DQ '@'          ; std1983
+fetch:  DQ $+8
+        ; @ ( addr -- w )
+        mov rax, [rbp-8]
+        mov rax, [rax]
+        mov [rbp-8], rax
+        jmp next
+        CtoL(fetch)
+
+        DQ 2
+        DQ 'c@'         ; std1983
+Cfetch: DQ $+8
+        ; C@ ( addr -- ch )
+        mov rdx, [rbp-8]
+        xor rax, rax
+        mov al, [rdx]
+        mov [rbp-8], rax
+        jmp next
+        CtoL(Cfetch)
+
+        DQ 5
+        DQ 'cmove'      ; std1983
+CMOVE:
+        DQ $+8
+        ; CMOVE ( from to u -- )
+        mov rsi, [rbp-24]
+        mov rdi, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 24
+        mov rdx, 0
+.l:     cmp rcx, rdx
+        jz next
+        mov al, [rsi+rdx]
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        CtoL(CMOVE)
+
+        DQ 6
+        DQ 'cmove>'
+CMOVEup:
+        DQ $+8
+        ; CMOVE> ( from to u -- )
+        mov rsi, [rbp-24]
+        mov rdi, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rbp, 24
+.l:     cmp rcx, 0
+        jz next
+        dec rcx
+        mov al, [rsi+rcx]
+        mov [rdi+rcx], al
+        jmp .l
+        CtoL(CMOVEup)
+
+        DQ 4
+        DQ 'fill'       ; std1983
+FILL:
+        DQ $+8
+        ; FILL ( c-addr u char -- )
+        mov rdi, [rbp-24]
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
+        sub rbp, 24
+        mov rdx, 0
+.l:
+        cmp rcx, rdx
+        jz next
+        mov [rdi+rdx], al
+        inc rdx
+        jmp .l
+        CtoL(FILL)
+
+        DQ 2
+        DQ '+!'         ; std1983
+plusstore:
+        DQ stdexe
+        ; +! ( n addr -- )
+        DQ SWAP, OVER   ; a n1 a
+        DQ fetch        ; a n1 n2
+        DQ PLUS         ; a n3
+        DQ SWAP         ; n3 a
+        DQ store
+        DQ EXIT
+        CtoL(plusstore)
+
         DQ 6
         DQ 'negate'     ; std1983
 NEGATE:
@@ -542,117 +653,6 @@ BIC:
         DQ AND
         DQ EXIT
         CtoL(BIC)
-
-        DQ 1
-        DQ '!'          ; std1983
-store:
-        DQ $+8
-        ; ! ( w addr -- )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 16
-        mov [rcx], rax
-        jmp next
-        CtoL(store)
-
-        DQ 2
-        DQ 'c!'         ; std1994
-Cstore:
-        DQ $+8
-        ; C! ( ch buf -- )
-        mov rax, [rbp-16]
-        mov rdx, [rbp-8]
-        sub rbp, 16
-        mov [rdx], al
-        jmp next
-        CtoL(Cstore)
-
-        DQ 1
-        DQ '@'          ; std1983
-fetch:  DQ $+8
-        ; @ ( addr -- w )
-        mov rax, [rbp-8]
-        mov rax, [rax]
-        mov [rbp-8], rax
-        jmp next
-        CtoL(fetch)
-
-        DQ 2
-        DQ 'c@'         ; std1983
-Cfetch: DQ $+8
-        ; C@ ( addr -- ch )
-        mov rdx, [rbp-8]
-        xor rax, rax
-        mov al, [rdx]
-        mov [rbp-8], rax
-        jmp next
-        CtoL(Cfetch)
-
-        DQ 5
-        DQ 'cmove'      ; std1983
-CMOVE:
-        DQ $+8
-        ; CMOVE ( from to u -- )
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 24
-        mov rdx, 0
-.l:     cmp rcx, rdx
-        jz next
-        mov al, [rsi+rdx]
-        mov [rdi+rdx], al
-        inc rdx
-        jmp .l
-        CtoL(CMOVE)
-
-        DQ 6
-        DQ 'cmove>'
-CMOVEup:
-        DQ $+8
-        ; CMOVE> ( from to u -- )
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rbp, 24
-.l:     cmp rcx, 0
-        jz next
-        dec rcx
-        mov al, [rsi+rcx]
-        mov [rdi+rcx], al
-        jmp .l
-        CtoL(CMOVEup)
-
-        DQ 4
-        DQ 'fill'       ; std1983
-FILL:
-        DQ $+8
-        ; FILL ( c-addr u char -- )
-        mov rdi, [rbp-24]
-        mov rcx, [rbp-16]
-        mov rax, [rbp-8]
-        sub rbp, 24
-        mov rdx, 0
-.l:
-        cmp rcx, rdx
-        jz next
-        mov [rdi+rdx], al
-        inc rdx
-        jmp .l
-        CtoL(FILL)
-
-        DQ 2
-        DQ '+!'         ; std1983
-plusstore:
-        DQ stdexe
-        ; +! ( n addr -- )
-        DQ SWAP, OVER   ; a n1 a
-        DQ fetch        ; a n1 n2
-        DQ PLUS         ; a n3
-        DQ SWAP         ; n3 a
-        DQ store
-        DQ EXIT
-        CtoL(plusstore)
 
         DQ 6
         DQ 'lshift'
