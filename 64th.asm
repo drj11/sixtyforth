@@ -101,6 +101,14 @@ EXECUTE:
         jmp rax
         CtoL(EXECUTE)
 
+        DQ 4
+        DQ 'exit'       ; std1983
+EXIT:   DQ $+8
+        sub r12, 8
+        mov rbx, [r12]
+        jmp next
+        CtoL(EXIT)
+
         DQ 3
         DQ 'dup'        ; std1983
 DUP:    DQ $+8
@@ -1475,14 +1483,6 @@ semicolon:
         DQ store
         DQ EXIT
         CtoL(semicolon)
-
-        DQ 4
-        DQ 'exit'       ; std1983
-EXIT:   DQ $+8
-        sub r12, 8
-        mov rbx, [r12]
-        jmp next
-        CtoL(EXIT)
 
         DQ 8
         DQ 'findword'
