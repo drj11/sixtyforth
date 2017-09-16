@@ -298,6 +298,7 @@ TRUE:   DQ $+8
 
         DQ 5
         DQ 'false'      ; std1994
+z:      ; Alternate label for when 0 is intended
 FALSE:  DQ $+8
         xor rax, rax
         jmp pushrax
@@ -1558,13 +1559,6 @@ QUIT:   DQ reset
 ABORT:  DQ dreset
         CtoL(ABORT)
 
-        DQ 1
-        DQ '0'
-z:      DQ stdexe
-        DQ LIT, 0
-        DQ EXIT
-        CtoL(z)
-
         DQ 9
         DQ 'immediat'   ; std1983
 IMMEDIATE:
@@ -1709,7 +1703,7 @@ INCH:
         DQ .then-$
 .else:
         DQ DROP, DROP   ;
-        DQ z, z         ; FALSE FALSE
+        DQ FALSE, FALSE
 .then:
         DQ EXIT
         CtoL(INCH)
