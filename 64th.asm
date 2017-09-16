@@ -2190,34 +2190,24 @@ BUMPIB:
         ; and if it is still within IBLIMIT,
         ; and is positioned at a newline,
         ; IB is incremented past it.
-        DQ z
-        DQ toIN
-        DQ store
-        DQ numberIB     ; #ib
-        DQ fetch
-        DQ z
-        DQ numberIB
-        DQ store
-        DQ IB           ; #ib ib
+        DQ z, toIN, store
+        DQ numberIB, fetch      ; #ib
+        DQ z, numberIB, store
+        DQ IB                   ; #ib &ib
         DQ plusstore
-        DQ IB
-        DQ fetch
-        DQ IBLIMIT
-        DQ fetch        ; ib iblimit
-        DQ equals
+        DQ IB, fetch            ; ib
+        DQ IBLIMIT, fetch       ; ib iblimit
+        DQ notequals
         DQ ZEROBRANCH
-        DQ .bump - $
-        DQ EXIT
-.bump:
-        DQ IB
-        DQ fetch        ; ib
-        DQ Cfetch       ; c
-        DQ LIT, 10      ; c 10
+        DQ .then - $
+        DQ IB, fetch            ; ib
+        DQ Cfetch               ; c
+        DQ LIT, 10              ; c 10
         DQ equals
         DQ ZEROBRANCH
         DQ .then - $
         DQ LIT, 1
-        DQ IB           ; 1 &ib
+        DQ IB                   ; 1 &ib
         DQ plusstore
 .then:
         DQ EXIT
