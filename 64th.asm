@@ -729,10 +729,10 @@ UMslashMOD:
         mov rdx, [rbp-16]
         ; Divisor
         mov rcx, [rbp-8]
+        sub rbp, 8
 
         div rcx
 
-        sub rbp, 8
         ; Deposit remainder.
         mov [rbp-16], rdx
         ; Deposit quotient.
@@ -748,10 +748,10 @@ SMslashREM:
         mov rax, [rbp-24]
         mov rdx, [rbp-16]
         mov rcx, [rbp-8]
+        sub rbp, 8
 
         idiv rcx
 
-        sub rbp, 8
         mov [rbp-16], rdx
         mov [rbp-8], rax
         jmp next
