@@ -523,81 +523,6 @@ plusstore:
         DQ EXIT
         CtoL(plusstore)
 
-        DQ 6
-        DQ 'negate'     ; std1983
-NEGATE:
-        DQ $+8
-        mov rax, [rbp-8]
-        neg rax
-        mov [rbp-8], rax
-        jmp next
-        CtoL(NEGATE)
-
-        DQ 3
-        DQ 'abs'        ; std1983
-fABS:   DQ $+8
-        mov rax, [rbp-8]
-        ; Convert carry flag to Forth boolean in rcx
-        mov rcx, rax
-        shl rcx, 1
-        sbb rcx, rcx
-        ; rcx is now 0 or -1
-        ; If rcx is -1, negate the old-school way.
-        xor rax, rcx
-        sub rax, rcx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(fABS)
-
-        DQ 1
-        DQ '+'          ; std1983
-PLUS:   DQ $+8
-        ; + ( a b -- sum )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        add rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(PLUS)
-
-        DQ 1
-        DQ '-'          ; std1983
-MINUS:  DQ $+8
-        ; - ( a b -- difference )
-        mov rax, [rbp-16]
-        mov rcx, [rbp-8]
-        sub rax, rcx
-        sub rbp, 8
-        mov [rbp-8], rax
-        jmp next
-        CtoL(MINUS)
-
-        DQ 2
-        DQ '1-'         ; std1983
-oneminus:
-        DQ $+8
-        mov rax, [rbp-8]
-        sub rax, 1
-        mov [rbp-8], rax
-        jmp next
-        CtoL(oneminus)
-
-        DQ 3
-        DQ 'min'        ; std1983
-MIN:
-        DQ stdexe
-        DQ OVER
-        DQ OVER
-        DQ greaterthan  ; a b flag
-        DQ ZEROBRANCH
-        DQ .s-$
-        DQ SWAP
-.s:
-        DQ DROP
-        DQ EXIT
-        CtoL(MIN)
-
         DQ 2
         DQ 'or'         ; std1983
 OR:     DQ $+8
@@ -681,6 +606,81 @@ RSHIFT:
         mov [rbp-8], rax
         jmp next
         CtoL(RSHIFT)
+
+        DQ 6
+        DQ 'negate'     ; std1983
+NEGATE:
+        DQ $+8
+        mov rax, [rbp-8]
+        neg rax
+        mov [rbp-8], rax
+        jmp next
+        CtoL(NEGATE)
+
+        DQ 3
+        DQ 'abs'        ; std1983
+fABS:   DQ $+8
+        mov rax, [rbp-8]
+        ; Convert carry flag to Forth boolean in rcx
+        mov rcx, rax
+        shl rcx, 1
+        sbb rcx, rcx
+        ; rcx is now 0 or -1
+        ; If rcx is -1, negate the old-school way.
+        xor rax, rcx
+        sub rax, rcx
+        mov [rbp-8], rax
+        jmp next
+        CtoL(fABS)
+
+        DQ 1
+        DQ '+'          ; std1983
+PLUS:   DQ $+8
+        ; + ( a b -- sum )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        add rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(PLUS)
+
+        DQ 1
+        DQ '-'          ; std1983
+MINUS:  DQ $+8
+        ; - ( a b -- difference )
+        mov rax, [rbp-16]
+        mov rcx, [rbp-8]
+        sub rax, rcx
+        sub rbp, 8
+        mov [rbp-8], rax
+        jmp next
+        CtoL(MINUS)
+
+        DQ 2
+        DQ '1-'         ; std1983
+oneminus:
+        DQ $+8
+        mov rax, [rbp-8]
+        sub rax, 1
+        mov [rbp-8], rax
+        jmp next
+        CtoL(oneminus)
+
+        DQ 3
+        DQ 'min'        ; std1983
+MIN:
+        DQ stdexe
+        DQ OVER
+        DQ OVER
+        DQ greaterthan  ; a b flag
+        DQ ZEROBRANCH
+        DQ .s-$
+        DQ SWAP
+.s:
+        DQ DROP
+        DQ EXIT
+        CtoL(MIN)
 
         DQ 2
         DQ 'm*'         ; std1994
