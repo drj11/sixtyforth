@@ -363,6 +363,25 @@ Ulessthan:
         jmp cprop
         CtoL(Ulessthan)
 
+        DQ 2
+        DQ '0>'         ; std1983
+zgreater:
+        DQ stdexe
+        ; 0> (n -- b)
+        DQ NEGATE
+        DQ zless
+        DQ EXIT
+        CtoL(zgreater)
+
+        DQ 1
+        DQ '>'          ; std1983
+greaterthan:
+        DQ stdexe
+        DQ SWAP
+        DQ lessthan
+        DQ EXIT
+        CtoL(greaterthan)
+
         DQ 6
         DQ 'branch'
 BRANCH: DQ $+8
@@ -744,16 +763,6 @@ SMslashREM:
         CtoL(SMslashREM)
 
         DQ 2
-        DQ '0>'         ; std1983
-zgreater:
-        DQ stdexe
-        ; 0> (n -- b)
-        DQ NEGATE
-        DQ zless
-        DQ EXIT
-        CtoL(zgreater)
-
-        DQ 2
         DQ '1+'         ; std1983
 oneplus:
         DQ stdexe
@@ -779,15 +788,6 @@ twominus:
         DQ MINUS
         DQ EXIT
         CtoL(twominus)
-
-        DQ 1
-        DQ '>'          ; std1983
-greaterthan:
-        DQ stdexe
-        DQ SWAP
-        DQ lessthan
-        DQ EXIT
-        CtoL(greaterthan)
 
         DQ 8
         DQ 'syscall3'
