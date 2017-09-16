@@ -809,6 +809,63 @@ WITHIN:
         DQ EXIT
         CtoL(WITHIN)
 
+        DQ 2
+        DQ 'd+'         ; std1994 double
+Dplus:  DQ $+8
+        ; D+ ( d1 d2 -- d3 )
+        mov rax, [rbp-32]       ; least significant part of augend
+        mov rdx, [rbp-24]       ; most
+        mov r8, [rbp-16]        ; least significant part of addend
+        mov r9, [rbp-8]         ; most
+        add rax, r8
+        adc rdx, r9
+        sub rbp, 16
+        mov [rbp-16], rax
+        mov [rbp-8], rdx
+        jmp next
+        CtoL(Dplus)
+
+        DQ 3
+        DQ 'd>s'        ; std1994 double
+DtoS:   DQ stdexe
+        DQ DROP
+        DQ EXIT
+        CtoL(DtoS)
+
+        DQ 3
+        DQ 'd+-'        ; acornsoft
+Dplusminus:
+        DQ $+8
+        ; m+- (d n -- d)
+        mov rcx, [rbp-16]
+        mov rax, [rbp-8]
+        sub rbp, 8
+        ; Have operands got same sign?
+        xor rax, rcx
+        jns .x
+        ; rcx has most significant single precision number.
+        ; Put least sigfnificant single into rax.
+        mov rax, [rbp-16]
+        mov rdx, 0
+        sub rdx, rax
+        ; Negated least significant now in rdx.
+        mov rax, 0
+        sbb rax, rcx
+        ; Megated most significant now in rax.
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+.x:     jmp next
+        CtoL(Dplusminus)
+
+        DQ 4
+        DQ 'dabs'       ; std1994 double
+DABS:   DQ stdexe
+        ; DABS ( d -- ud )
+        DQ LIT, 7       ; Arbitrary, should be positive.
+        DQ Dplusminus
+        DQ EXIT
+        CtoL(DABS)
+
         DQ 8
         DQ 'syscall3'
 SYSCALL3:
@@ -1202,22 +1259,6 @@ CR:
         CtoL(CR)
 
         DQ 2
-        DQ 'd+'         ; std1994 double
-Dplus:  DQ $+8
-        ; D+ ( d1 d2 -- d3 )
-        mov rax, [rbp-32]       ; least significant part of augend
-        mov rdx, [rbp-24]       ; most
-        mov r8, [rbp-16]        ; least significant part of addend
-        mov r9, [rbp-8]         ; most
-        add rax, r8
-        adc rdx, r9
-        sub rbp, 16
-        mov [rbp-16], rax
-        mov [rbp-8], rdx
-        jmp next
-        CtoL(Dplus)
-
-        DQ 2
         DQ 'cp'
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
@@ -1248,47 +1289,6 @@ SOURCE:
         DQ fetch
         DQ EXIT
         CtoL(SOURCE)
-
-        DQ 3
-        DQ 'd>s'        ; std1994 double
-DtoS:   DQ stdexe
-        DQ DROP
-        DQ EXIT
-        CtoL(DtoS)
-
-        DQ 3
-        DQ 'd+-'        ; acornsoft
-Dplusminus:
-        DQ $+8
-        ; m+- (d n -- d)
-        mov rcx, [rbp-16]
-        mov rax, [rbp-8]
-        sub rbp, 8
-        ; Have operands got same sign?
-        xor rax, rcx
-        jns .x
-        ; rcx has most significant single precision number.
-        ; Put least sigfnificant single into rax.
-        mov rax, [rbp-16]
-        mov rdx, 0
-        sub rdx, rax
-        ; Negated least significant now in rdx.
-        mov rax, 0
-        sbb rax, rcx
-        ; Megated most significant now in rax.
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-.x:     jmp next
-        CtoL(Dplusminus)
-
-        DQ 4
-        DQ 'dabs'       ; std1994 double
-DABS:   DQ stdexe
-        ; DABS ( d -- ud )
-        DQ LIT, 7       ; Arbitrary, should be positive.
-        DQ Dplusminus
-        DQ EXIT
-        CtoL(DABS)
 
         DQ 5
         DQ 'allot'      ; std1983
