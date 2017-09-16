@@ -800,14 +800,12 @@ twominus:
         DQ 'within'     ; std1994
 WITHIN:
         DQ stdexe
-        ; WITHIN ( test low high -- flag )
+        ; WITHIN ( t p q -- flag )
         ; Implementation as per [FORTH1994]
-        DQ OVER
-        DQ MINUS
-        DQ toR
-        DQ MINUS
-        DQ Rfrom
-        DQ Ulessthan
+        DQ OVER, MINUS  ; t p u1
+        DQ toR          ; t p  r: u1
+        DQ MINUS, Rfrom ; u2 u1
+        DQ Ulessthan    ; flag
         DQ EXIT
         CtoL(WITHIN)
 
