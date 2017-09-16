@@ -26,9 +26,6 @@ emitbuf RESB 1
 
 SECTION .data
 
-prompt DB '> '
-promptlen EQU $-prompt
-
 
 ; Start of Dictionary
 ; The Dictionary is a key Forth datastructure.
@@ -2284,28 +2281,23 @@ qPROMPT:
         ; If interactive and the input buffer is empty,
         ; issue a prompt.
         DQ LIT, 0       ; stdin
-        DQ ISATTY
-        DQ zequals
-        DQ ZEROBRANCH
-        DQ .interactive - $
-        DQ EXIT
-.interactive:
-        DQ toIN
-        DQ fetch
-        DQ numberIB
-        DQ fetch
-        DQ notequals
+        DQ ISATTY       ; tty?
+        DQ toIN, fetch  ; tty? >in
+        DQ SOURCE, NIP  ; tty? >in u
+        DQ equals       ; tty? empty?
+        DQ AND          ; flag
         DQ ZEROBRANCH
         DQ .then - $
-        DQ EXIT
-.then:
         DQ LIT, 2       ; stderr
         DQ LIT, prompt
         DQ LIT, promptlen
         DQ LIT, sys_write
         DQ SYSCALL3
         DQ DROP
+.then:
         DQ EXIT
+prompt DB '> '
+promptlen EQU $-prompt
 
 RC:
         DQ stdexe
