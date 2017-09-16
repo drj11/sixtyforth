@@ -387,7 +387,7 @@ greaterthan:
 BRANCH: DQ $+8
         ; Read the next word as a relative offset (in bytes);
         ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
+brarbx: mov rcx, [rbx]
         lea rbx, [rbx + rcx]
         jmp next
         CtoL(BRANCH)
@@ -400,15 +400,11 @@ ZEROBRANCH:
         ; pop the TOS and test it;
         ; if it is 0 then
         ; branch by adding offset to current CODEPOINTER.
-        mov rcx, [rbx]
         sub rbp, 8
         mov rax, [rbp]
         test rax, rax
-        jz .branch
+        jz brarbx
         add rbx, 8
-        jmp next
-.branch:
-        lea rbx, [rbx + rcx]
         jmp next
         CtoL(ZEROBRANCH)
 
