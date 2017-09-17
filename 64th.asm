@@ -2306,8 +2306,10 @@ RUNRC:
         DQ store
         DQ RC
         DQ EVALUATE
-        ; We just changed the vectored reset to point to READLOOP,
-        ; so this jumps to the READLOOP.
+        ; This QUIT jumps through vectored reset,
+        ; which RUNRC has changed to READLOOP.
+        ; However, usually RC (the file `rc.4`) also modifies
+        ; the vectored reset to point to `kipl`.
         DQ QUIT
 
 
