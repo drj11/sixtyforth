@@ -848,6 +848,24 @@ DtoS:   DQ stdexe
         DQ EXIT
         CtoL(DtoS)
 
+        DQ 7
+        DQ 'dnegate'    ; std1994 double
+DNEGATE:
+        DQ $+8
+        ; m+- ( d -- -d )
+        mov rax, [rbp-16]       ; Least significant
+        mov rcx, [rbp-8]        ; Most significant
+        mov rdx, 0
+        sub rdx, rax
+        ; Negated least significant now in rdx.
+        mov rax, 0
+        sbb rax, rcx
+        ; Negated most significant now in rax.
+        mov [rbp-16], rdx
+        mov [rbp-8], rax
+.x:     jmp next
+        CtoL(DNEGATE)
+
         DQ 3
         DQ 'd+-'        ; acornsoft
 Dplusminus:
