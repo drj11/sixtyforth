@@ -867,7 +867,7 @@ Dplusminus:
         ; Negated least significant now in rdx.
         mov rax, 0
         sbb rax, rcx
-        ; Megated most significant now in rax.
+        ; Negated most significant now in rax.
         mov [rbp-16], rdx
         mov [rbp-8], rax
 .x:     jmp next
