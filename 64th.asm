@@ -985,7 +985,7 @@ toNUMBER:
 ASCIItoDIGIT:
         DQ stdexe
         ; factor of >NUMBER
-        ; ( c-addr u -- c-addr u n )
+        ; ( c-addr1 u1 -- c-addr2 u2 n )
         ; c-addr and u are updated
         ; n is the next digit;
         ; n is negative if there is no next digit.
