@@ -24,7 +24,7 @@ returnstack       RESB 100000
 emitbuf RESB 1
 
 
-SECTION .data
+SECTION .rodata
 
 
 ; Start of Dictionary
@@ -1191,12 +1191,6 @@ ISATTY:
         DQ EXIT
         CtoL(ISATTY)
 
-        DQ 4
-        DQ 'base'       ; std1983
-BASE:   DQ stdvar
-abase:  DQ 10
-        CtoL(BASE)
-
         DQ 5
         DQ 'digit'
 DIGIT:  DQ stdexe
@@ -1281,12 +1275,6 @@ CR:
         DQ EXIT
         CtoL(CR)
 
-        DQ 2
-        DQ 'cp'
-CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
-        DQ dictfree
-        CtoL(CP)
-
         DQ 4
         DQ 'here'       ; std1983
 HERE:   DQ stdexe
@@ -1294,12 +1282,6 @@ HERE:   DQ stdexe
         DQ fetch
         DQ EXIT
         CtoL(HERE)
-
-        DQ 3
-        DQ '>in'        ; std1983
-toIN:   DQ stdvar
-atoIN:  DQ 0
-        CtoL(toIN)
 
         DQ 6
         DQ 'source'     ; std1994
@@ -1457,13 +1439,6 @@ fromNAME:
         DQ PLUS
         DQ EXIT
         CtoL(fromNAME)
-
-        DQ 5
-        DQ 'state'      ; std1983
-STATE:  DQ stdvar
-stateaddr:
-        DQ 0
-        CtoL(STATE)
 
         DQ 1
         DQ ']'          ; std1983
@@ -1883,6 +1858,43 @@ starVRESET:
         DQ LIT, avRESET
         DQ EXIT
         CtoL(starVRESET)
+
+        ; End Of Read Only.
+        ; Peculiar dictionary entry, exists so that
+        ; the next section can link to this word.
+        DQ 5
+        DQ '*eoro'
+EORO:
+
+
+SECTION .data
+
+        CtoL(EORO)
+
+        DQ 4
+        DQ 'base'       ; std1983
+BASE:   DQ stdvar
+abase:  DQ 10
+        CtoL(BASE)
+
+        DQ 2
+        DQ 'cp'
+CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
+        DQ dictfree
+        CtoL(CP)
+
+        DQ 3
+        DQ '>in'        ; std1983
+toIN:   DQ stdvar
+atoIN:  DQ 0
+        CtoL(toIN)
+
+        DQ 5
+        DQ 'state'      ; std1983
+STATE:  DQ stdvar
+stateaddr:
+        DQ 0
+        CtoL(STATE)
 
         DQ 7
         DQ 'useless'
