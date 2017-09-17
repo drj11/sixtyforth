@@ -1934,7 +1934,7 @@ INTERPRETLINE:
         ; until there are no more to interpret.
 .w:
         DQ PARSEWORD    ; c-addr u
-        DQ DUP          ; c-addr u u
+        DQ qDUP         ; c-addr u u?
         DQ ZEROBRANCH
         DQ .x-$
         DQ OVER, OVER   ; c-addr u c-addr u
@@ -1943,7 +1943,7 @@ INTERPRETLINE:
         DQ BRANCH
         DQ .w-$
 .x:
-        DQ DROP, DROP
+        DQ DROP
         DQ EXIT
 
 ipl:    DQ stdexe
