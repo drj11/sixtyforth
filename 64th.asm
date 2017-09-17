@@ -869,26 +869,15 @@ DNEGATE:
         DQ 3
         DQ 'd+-'        ; acornsoft
 Dplusminus:
-        DQ $+8
-        ; m+- (d n -- d)
-        mov rcx, [rbp-16]
-        mov rax, [rbp-8]
-        sub rbp, 8
-        ; Have operands got same sign?
-        xor rax, rcx
-        jns .x
-        ; rcx has most significant single precision number.
-        ; Put least sigfnificant single into rax.
-        mov rax, [rbp-16]
-        mov rdx, 0
-        sub rdx, rax
-        ; Negated least significant now in rdx.
-        mov rax, 0
-        sbb rax, rcx
-        ; Negated most significant now in rax.
-        mov [rbp-16], rdx
-        mov [rbp-8], rax
-.x:     jmp next
+        DQ stdexe
+        ; d+- ( d1 n -- d2 )
+        ; d2 shares sign with n
+        DQ OVER, XOR    ; d1 s  \ s < 0 when d1 needs negating
+        DQ zless
+        DQ ZEROBRANCH
+        DQ .x-$
+        DQ DNEGATE      ; -d1
+.x:     DQ EXIT
         CtoL(Dplusminus)
 
         DQ 4
