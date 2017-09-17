@@ -2048,8 +2048,8 @@ scansign:
         DQ Rfrom                ; addr' u' bf
         DQ ROT, ROT             ; bf addr' u'
         DQ EXIT
-.empty: DQ z
-        DQ ROT, ROT
+.empty: ; addr 0
+        DQ SWAP, OVER
         DQ EXIT
 
 vRESET:
