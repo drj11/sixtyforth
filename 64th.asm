@@ -981,7 +981,7 @@ toNUMBER:
         DQ Dplus        ; c-addr u ud
         DQ twoSWAP      ; ud c-addr
         DQ BRANCH
-        DQ -($ - .begin)
+        DQ .begin - $
 ASCIItoDIGIT:
         DQ stdexe
         ; factor of >NUMBER
@@ -1145,7 +1145,7 @@ DUMP:
         DQ oneplus
         DQ SWAP         ; addr+1 limit
         DQ BRANCH
-        DQ -($-.l)
+        DQ .l-$
 .x:
         DQ DROP, DROP
         DQ EXIT
@@ -1756,7 +1756,7 @@ PARTOK:
         ; increment >in
         DQ oneplus      ; >in'
         DQ BRANCH
-        DQ -($-.ch)
+        DQ .ch-$
 .got:
         ; >in  r: o base limit
         DQ DUP
@@ -1908,7 +1908,7 @@ READLOOP:
         DQ (.x-$)
         DQ INTERPRETLINE
         DQ BRANCH
-        DQ -($ - .line)
+        DQ .line-$
 .x:     DQ EXIT
 
 ; Repeat, until the input buffer is empty:
@@ -1929,7 +1929,7 @@ INTERPRETLINE:
         DQ FINDWORD     ; c-addr u { 0 | xt n }
         DQ qEXECUTE
         DQ BRANCH
-        DQ -($-.w)
+        DQ .w-$
 .x:
         DQ DROP, DROP
         DQ EXIT
@@ -2187,7 +2187,7 @@ SCAN:
         ; p
         DQ oneplus
         DQ BRANCH
-        DQ -($ - .begin)
+        DQ .begin-$
 
 BUMPIB:
         DQ stdexe
