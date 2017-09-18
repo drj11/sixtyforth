@@ -1866,9 +1866,56 @@ starVRESET:
         DQ '*eoro'
 EORO:
 
+ipl:    DQ stdexe
+        DQ vRESET
+        DQ sysEXIT
+
 
 SECTION .data
 
+vRESET:
+        DQ stdexe
+        ; vectored reset
+avRESET:
+        DQ RUNRC
+        DQ EXIT
+
+; Input Buffer / Parse Area
+; A fresh block, from OS, is read into ib1.
+; IB + #IB <= IBLIMIT
+; When a new line is required,
+; the input block area is scanned until either:
+; a line terminator is found; or,
+; IBLIMIT is reached.
+; If a line terminator is found then
+; IB and #IB are updated, with no new input from OS.
+; If IBLIMIT is reached then
+; the valid portion of ib1 (from IB to IBLIMIT)
+; is copied to the end of ib0, and
+; a fresh block is read into ib1,
+; updating IBLIMIT (and IB and #IB).
+; If the freshly read block has length zero, then
+; that marks EOF and REFILL returns FALSE.
+
+numberIB:
+        DQ stdvar
+        ; Size of current input buffer.
+anumberIB:
+        DQ 0
+
+IB:
+        DQ stdvar
+        ; address of current input buffer.
+aIB:
+        DQ ib1
+
+IBLIMIT:
+        DQ stdvar
+        ; Pointer to one past last valid byte in input block.
+aIBLIMIT:
+        DQ ib1
+
+; Writable portion of dictionary links to Read Only portion.
         CtoL(EORO)
 
         DQ 4
@@ -1945,10 +1992,6 @@ INTERPRETLINE:
 .x:
         DQ DROP
         DQ EXIT
-
-ipl:    DQ stdexe
-        DQ vRESET
-        DQ sysEXIT
 
 qEXECUTE:
         DQ stdexe
@@ -2051,48 +2094,6 @@ scansign:
 .empty: ; addr 0
         DQ SWAP, OVER
         DQ EXIT
-
-vRESET:
-        DQ stdexe
-        ; vectored reset
-avRESET:
-        DQ RUNRC
-        DQ EXIT
-
-; Input Buffer / Parse Area
-; A fresh block, from OS, is read into ib1.
-; IB + #IB <= IBLIMIT
-; When a new line is required,
-; the input block area is scanned until either:
-; a line terminator is found; or,
-; IBLIMIT is reached.
-; If a line terminator is found then
-; IB and #IB are updated, with no new input from OS.
-; If IBLIMIT is reached then
-; the valid portion of ib1 (from IB to IBLIMIT)
-; is copied to the end of ib0, and
-; a fresh block is read into ib1,
-; updating IBLIMIT (and IB and #IB).
-; If the freshly read block has length zero, then
-; that marks EOF and REFILL returns FALSE.
-
-numberIB:
-        DQ stdvar
-        ; Size of current input buffer.
-anumberIB:
-        DQ 0
-
-IB:
-        DQ stdvar
-        ; address of current input buffer.
-aIB:
-        DQ ib1
-
-IBLIMIT:
-        DQ stdvar
-        ; Pointer to one past last valid byte in input block.
-aIBLIMIT:
-        DQ ib1
 
 
 SECTION .text
