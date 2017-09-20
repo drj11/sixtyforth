@@ -1953,23 +1953,6 @@ dictfree TIMES 8000 DQ 0
 
 DICT:   CtoL(USELESS)
 
-; (outer) Interpreter loop:
-; Repeat:
-;   issue prompt;
-;   fill buffers from input (if cannot, exit);
-;   interpret line
-READLOOP:
-        DQ stdexe
-.line:
-        DQ qPROMPT
-        DQ REFILL
-        DQ ZEROBRANCH
-        DQ (.x-$)
-        DQ INTERPRETLINE
-        DQ BRANCH
-        DQ .line-$
-.x:     DQ EXIT
-
 ; Repeat, until the input buffer is empty:
 ;   PARSEWORD: lex single word from input: creates a string.
 ;   FINDWORD: To convert from string to DICT entry.
@@ -2149,166 +2132,6 @@ LIT:    DQ $+8
         add rbp, 8
         jmp next
 
-COPYDOWN:
-        DQ stdexe
-        ; Copy region from (newly bumped) IB (to IBLIMIT)
-        ; down to end of ib0.
-        DQ LIT, ib1     ; ib1
-        DQ IBLIMIT
-        DQ fetch        ; ib1 iblimit
-        DQ OVER         ; ib1 iblimit ib1
-        DQ MINUS        ; ib1 u
-        DQ DUP
-        DQ NEGATE       ; ib1 u -u
-        DQ IB
-        DQ plusstore    ; check IB underflow here
-        DQ OVER
-        DQ OVER         ; ib1 u ib1 u
-        DQ MINUS        ; ib1 u target
-        DQ SWAP         ; ib1 target u
-        DQ CMOVE        ;
-        DQ EXIT
-
-SCAN:
-        DQ stdexe
-        ; scan the input buffer, from IB to IBLIMIT,
-        ; for a newline.
-        ; SCAN ( -- p false ) newline found
-        ;      ( -- iblimit true ) newline not found
-        DQ IB
-        DQ fetch        ; p
-.begin:
-        DQ IBLIMIT
-        DQ fetch        ; p iblimit
-        DQ OVER         ; p iblimit p
-        DQ equals       ; p flag
-        DQ ZEROBRANCH
-        DQ .ch - $
-        DQ TRUE
-        DQ EXIT
-.ch:
-        ; p
-        DQ DUP
-        DQ Cfetch       ; p c
-        DQ LIT, 10      ; p c 10
-        DQ equals       ; p flag
-        DQ ZEROBRANCH
-        DQ .continue - $
-        DQ FALSE
-        DQ EXIT
-.continue:
-        ; p
-        DQ oneplus
-        DQ BRANCH
-        DQ .begin-$
-
-BUMPIB:
-        DQ stdexe
-        ; Bump IB past the current record,
-        ; and reset >IN to 0.
-        ; IB has #IB added to it,
-        ; and if it is still within IBLIMIT,
-        ; and is positioned at a newline,
-        ; IB is incremented past it.
-        DQ z, toIN, store
-        DQ numberIB, fetch      ; #ib
-        DQ z, numberIB, store
-        DQ IB                   ; #ib &ib
-        DQ plusstore
-        DQ IB, fetch            ; ib
-        DQ IBLIMIT, fetch       ; ib iblimit
-        DQ notequals
-        DQ ZEROBRANCH
-        DQ .then - $
-        DQ IB, fetch            ; ib
-        DQ Cfetch               ; c
-        DQ LIT, 10              ; c 10
-        DQ equals
-        DQ ZEROBRANCH
-        DQ .then - $
-        DQ LIT, 1
-        DQ IB                   ; 1 &ib
-        DQ plusstore
-.then:
-        DQ EXIT
-
-REFILL:
-        DQ stdexe
-        ; REFILL ( -- false ) no more input / end of file
-        ;        ( -- true ) input available, see SOURCE
-        ; see numberIB for description.
-        DQ BUMPIB
-        DQ SCAN         ; p flag
-        DQ ZEROBRANCH
-        DQ .scanned - $
-        DQ DROP
-        DQ COPYDOWN
-        DQ READIB1
-        ; If empty after reading, can't refill.
-        DQ IBLIMIT, fetch       ; iblimit
-        DQ IB, fetch            ; iblimit ib
-        DQ equals
-        DQ ZEROBRANCH
-        DQ .then - $
-        DQ FALSE
-        DQ EXIT
-.then:
-        DQ SCAN         ; p flag
-        ; Regardless of whether we found a newline,
-        ; return the parse area.
-        ; It must be the case that the last read block
-        ; does not contain a newline.
-        ; Either it is an unterminated final record
-        ; (which we are going to accept),
-        ; or there is a line longer than a block.
-        ; The latter means that the line is too long,
-        ; we parse it where the block falls and carry on.
-        DQ DROP         ; p
-.scanned:
-        ; p marks next newline (or one past the end of the block)
-        DQ IB, fetch            ; p ib
-        DQ MINUS                ; u
-        DQ numberIB             ; u &#ib
-        DQ store
-        DQ TRUE
-        DQ EXIT
-
-READIB1:
-        DQ stdexe
-        DQ LIT, ib1
-        DQ IBLIMIT
-        DQ store
-        DQ LIT, 0       ; stdin
-        DQ LIT, ib1
-        DQ LIT, ibsize
-        DQ SYSREAD
-        DQ IBLIMIT
-        DQ plusstore
-        DQ EXIT
-
-qPROMPT:
-        DQ stdexe
-        ; If interactive and the input buffer is empty,
-        ; issue a prompt.
-        DQ LIT, 0       ; stdin
-        DQ ISATTY       ; tty?
-        DQ toIN, fetch  ; tty? >in
-        DQ SOURCE, NIP  ; tty? >in u
-        DQ equals       ; tty? empty?
-        DQ AND          ; flag
-        DQ ZEROBRANCH
-        DQ .then - $
-        DQ LIT, 2       ; stderr
-        DQ LIT, prompt
-        DQ LIT, promptlen
-        DQ LIT, sys_write
-        DQ SYSCALL3
-        DQ DROP
-.then:
-        DQ EXIT
-prompt DB '> '
-promptlen EQU $-prompt
-
 RC:
         DQ stdexe
         ; RC ( -- addr u )
@@ -2321,15 +2144,15 @@ RC:
 
 RUNRC:
         DQ stdexe
-        DQ LIT, READLOOP
+        DQ LIT, sysEXIT
         DQ LIT, avRESET
         DQ store
         DQ RC
         DQ EVALUATE
         ; This QUIT jumps through vectored reset,
-        ; which RUNRC has changed to READLOOP.
-        ; However, usually RC (the file `rc.4`) also modifies
-        ; the vectored reset to point to `kipl`.
+        ; which RUNRC has changed to sysEXIT
+        ; However, usually RC (the file `rc.4`) modifies
+        ; the vectored reset again to point to `kipl`.
         DQ QUIT
 
 
