@@ -364,6 +364,14 @@ rsp constant argc
       0         ( 0 0 )
    then
 ;
+: arg-pop  ( -- )
+   argc @ 2 < if  exit  then
+   argc 2 cells +       ( addr-from )
+   argc cell+           ( addr-from addr-to )
+   -1 argc +!
+   argc @ cells         ( addr-from addr-to u )
+   cmove
+;
 
 \ see note/fstat.md
 create fstatbuf 144 allot
@@ -1037,24 +1045,31 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 variable interactive
 1 interactive !
 
-: adjust-interactive
-   1 argc @ < if
-      -1 interactive +!
-   then
-;
-adjust-interactive
+' kipl *vreset !
 
-: adjust-vector
-   interactive @ if
-      \ Modify reset vector to point to kipl ...
-      ['] kipl *vreset ! ( )
-      \ ... The QUIT in the assembly routine RUNRC will
-      \ jump through this vector to continue at kipl.
-   else
-      ['] sysexit *vreset !
-   then
+: disable-interactive
+   ['] sysexit *vreset !
 ;
-adjust-vector
+
+: -c?  ( c-addr u -- flag )  s" -c" compare 0= ;
+
+\ Handle command line options
+: options
+   begin
+      false     \ false to break at while
+      2 argc @ < if
+          1 arg -c? if
+             disable-interactive
+             2 arg
+             arg-pop arg-pop
+             evaluate
+             drop true
+          then
+      then
+      while
+   repeat
+;
+options
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
@@ -1082,6 +1097,7 @@ adjust-vector
 \ run it as Forth.
 : run-args
    1 argc @ < if
+      disable-interactive
       1 arg openr       ( fileid ior )
       abort" File not found
 "
