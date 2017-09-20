@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '
+out=$($FORTH -c '
 0 aligned
 1 aligned
 2 aligned
@@ -10,7 +10,7 @@ out=$(echo '
 8 aligned
 13 aligned
 . . . . . . .
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("16 8 8 8 8 8 0 ") exit 0;;

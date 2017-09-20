@@ -1,10 +1,10 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '1 2 3
+out=$($FORTH -c '1 2 3
 : t 2>r r> r> ;
 t . . . 
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("2 3 1 ") exit 0;;

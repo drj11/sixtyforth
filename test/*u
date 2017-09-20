@@ -2,10 +2,10 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test that `*` works for unsigned values outside the signed range
-out=$(echo '4000000000 dup * u.
+out=$($FORTH -c '4000000000 dup * u.
   -1 1 * u.
   -1 0 * u.
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("16000000000000000000 18446744073709551615 0 ") exit 0;;

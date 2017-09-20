@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x parse-word false false 2swap >number ;
-x 37.59 drop drop drop .' | $FORTH)
+out=$($FORTH -c ': x parse-word false false 2swap >number ;
+x 37.59 drop drop drop .')
 printf '%s\n' "$out"
 case "$out" in
     ("37 ") exit 0;;

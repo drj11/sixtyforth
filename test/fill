@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '
+out=$($FORTH -c '
 here
 16 allot
 dup 16 99 fill
@@ -10,7 +10,7 @@ dup c@ .
 dup 11 + c@ .
 dup 12 + c@ .
 dup 15 + c@ .
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("33 33 99 99 ") exit 0;;

@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '7 2 dnegate . .
+out=$($FORTH -c '7 2 dnegate . .
 -9 -1 dnegate d.
-2 0 dnegate d.' | $FORTH)
+2 0 dnegate d.')
 printf "%s\n" "$out"
 case $out in
     ('-3 -7 9 -2 ') exit 0;;

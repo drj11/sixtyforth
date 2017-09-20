@@ -1,11 +1,11 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '
+out=$($FORTH -c '
 3 constant pi
 : foo pi s" foo " type ;
 foo .
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("foo 3 ") exit 0;;

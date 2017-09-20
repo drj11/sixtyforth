@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': dub >r r@ r> ; 99 dub . . ' | $FORTH)
+out=$($FORTH -c ': dub >r r@ r> ; 99 dub . . ')
 printf "%s\n" "$out"
 case "$out" in
     ("99 99 ") exit 0;;

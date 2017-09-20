@@ -1,12 +1,12 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x does> invert ;
+out=$($FORTH -c ': x does> invert ;
 create foo
 foo
 x
 foo
-+ .' | $FORTH)
++ .')
 printf "%s\n" "$out"
 case "$out" in
     ("-1 ") exit 0;;

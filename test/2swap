@@ -1,7 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(printf "1 2 3 4 5 2swap\n. . . . .\n" | $FORTH)
+out=$($FORTH -c '1 2 3 4 5 2swap
+. . . . .')
 printf "%s\n" "$out"
 case "$out" in
     ("3 2 5 4 1 ") exit 0;;

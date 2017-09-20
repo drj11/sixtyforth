@@ -2,10 +2,10 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 #
-out=$(echo ': foo s" foo" type ;
+out=$($FORTH -c ': foo s" foo" type ;
 \ foo bar
 foo \ this is a comment
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("foo") exit 0;;

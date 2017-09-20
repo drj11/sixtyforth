@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x begin 1- dup . dup 0= until ; 4 x .' | $FORTH)
+out=$($FORTH -c ': x begin 1- dup . dup 0= until ; 4 x .')
 printf "%s\n" "$out"
 case "$out" in
     ("3 2 1 0 0 ") exit 0;;

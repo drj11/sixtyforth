@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test that TAB delimits words.
 # (not required by [std1994], but sensible)
-out=$(printf '99\t.' | $FORTH)
+out=$($FORTH -c "$(printf '99\t.')")
 
 case "$out" in
     ("99 ") exit 0;;

@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': cc [char] A [char] B ;
-cc cc . . . .' | $FORTH)
+out=$($FORTH -c ': cc [char] A [char] B ;
+cc cc . . . .')
 printf "%s\n" "$out"
 case "$out" in
     ("66 65 66 65 ") exit 0;;

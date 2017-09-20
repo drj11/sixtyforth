@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x s" 3@5" ;
+out=$($FORTH -c ': x s" 3@5" ;
 0 0 x >number
-. drop d.' | $FORTH)
+. drop d.')
 printf '%s\n' "$out"
 case "$out" in
     ("2 3 ") exit 0;;

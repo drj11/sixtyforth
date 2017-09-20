@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': trip dup dup ; 7 trip . . .' | $FORTH)
+out=$($FORTH -c ': trip dup dup ; 7 trip . . .')
 printf "%s\n" "$out"
 case "$out" in
     ("7 7 7 ") exit 0;;

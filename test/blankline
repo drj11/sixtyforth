@@ -4,7 +4,9 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # commit 9863caefc015dc8db13b8137b8d2c42038037358
 # has a bug where it terminated on a blank line.
 
-out=$(printf '7\n\n.' | $FORTH)
+out=$($FORTH -c '7
+
+.')
 printf "%s\n" "$out"
 case "$out" in
     ("7 ") exit 0;;

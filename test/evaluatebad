@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x s" hello" ;
-  x evaluate' | $FORTH)
+out=$($FORTH -c ': x s" hello" ;
+  x evaluate')
 printf '%s\n' "$out"
 if [ "${#out}" -lt 9 ]
 then

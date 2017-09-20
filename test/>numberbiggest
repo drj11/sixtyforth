@@ -2,10 +2,10 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # 
-out=$(echo ': x s" 340282366920938463463374607431768211455" ;
+out=$($FORTH -c ': x s" 340282366920938463463374607431768211455" ;
 0 0 x >number
 . drop d.
-' | $FORTH)
+')
 printf '%s\n' "$out"
 case "$out" in
     ("0 -1 ") exit 0;;

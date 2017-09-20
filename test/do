@@ -1,11 +1,11 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '
+out=$($FORTH -c '
 : s 0 do s" @" loop ;
 : t 0 do type loop s" -" type ;
 4 s 4 t
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("@@@@-") exit 0;;

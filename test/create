@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo create magic magic negate 808 , here + . | $FORTH | sed 's/ *$//')
+out=$($FORTH -c 'create magic magic negate 808 , here + .')
 printf "%s\n" "$out"
 case $out in
-    (8) exit 0;;
+    ("8 ") exit 0;;
 esac
 exit 2

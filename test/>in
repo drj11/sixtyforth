@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '>in @ negate >in @ + .' | $FORTH | sed 's/ *$//')
+out=$($FORTH -c '>in @ negate >in @ + .')
 printf "%s\n" "$out"
 case $out in
-    (13) exit 0;;
+    ("13 ") exit 0;;
 esac
 exit 2

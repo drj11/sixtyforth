@@ -1,12 +1,12 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '9223372036854775807 10 mod .
+out=$($FORTH -c '9223372036854775807 10 mod .
 9223372036854775807 1 mod .
 9223372036854775807 9223372036854775807 mod .
 9223372036854775807 999999 mod .
 depth .
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case $out in
     ('7 0 0 36043 0 ') exit 0;;

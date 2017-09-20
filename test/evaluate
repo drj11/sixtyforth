@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo ': x s" 2 * 1+" ;
-  7 9 x evaluate . .' | $FORTH)
+out=$($FORTH -c ': x s" 2 * 1+" ;
+  7 9 x evaluate . .')
 printf "%s\n" "$out"
 case "$out" in
     ("19 7 ") exit 0;;

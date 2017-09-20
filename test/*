@@ -1,11 +1,11 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$(echo '111111111 dup dup * .
+out=$($FORTH -c '111111111 dup dup * .
 dup negate dup * .
 dup dup negate * .
 dup negate swap * .
-' | $FORTH)
+')
 printf "%s\n" "$out"
 case "$out" in
     ("12345678987654321 12345678987654321 -12345678987654321 -12345678987654321 ") exit 0;;
