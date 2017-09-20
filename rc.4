@@ -1056,14 +1056,15 @@ variable interactive
 \ Handle command line options
 : options
    begin
-      false     \ false to break at while
+      false             \ false to break at while
       2 argc @ < if
           1 arg -c? if
              disable-interactive
+             drop
              2 arg
              arg-pop arg-pop
              evaluate
-             drop true
+             true       \ true to continue at while
           then
       then
       while
