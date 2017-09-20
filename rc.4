@@ -58,6 +58,9 @@
 \ std1994 double
 : d0=  ( xd -- flag )  or 0= ;
 
+\ std1994
+: count  ( addr -- addr' ch )  dup 1+ swap c@ ;
+
 \ std1994 string
 : /string  ( addr u n -- addr' u' )
    tuck -               ( addr n u' )
@@ -294,6 +297,44 @@ variable pic
 : d.  ( d -- )
    tuck dabs    ( n du )        \ n same sign as d
    .sign ;
+
+\ ## String
+
+\ 3-way comparison
+\ result is -1 when u1 < u2
+\           +1 when u2 < u1
+\            0 when u1 = u2
+: cmp  ( u1 u2 -- -1|0|1 )
+   2dup u<      ( u1 u2 flag< )
+   swap rot     ( flag< u2 u1 )
+   u<           ( flag< flag> )
+   -
+;
+
+\ std1994
+: compare  ( c-addr1 u1 c-addr2 u2 -- n )
+   rot 2dup 2>r
+   min          ( c-addr1 c-addr2 n )
+   false
+   begin
+      drop
+      dup 0= if
+        \ identical up to common part
+        drop 2drop
+        r> r> cmp
+        exit
+      then
+      ( c-addr1 c-addr2 n )
+      1-
+      rot count >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
+      rot count >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
+      rot 2r>           ( c-addr1' c-addr2' n ch1 ch2 )
+      cmp               ( c-addr1' c-addr2' n -1|0|1 )
+      dup
+  until
+  2r> 2drop
+  nip nip nip
+;
 
 \ ##
 

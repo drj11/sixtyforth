@@ -1,0 +1,17 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$(echo ': a s" aa" ;  : b s" bb" ;
+a b compare .
+a a compare .
+b a compare .
+
+a drop 0 a compare .
+a drop 0 b drop 0 compare .
+a a drop 0 compare .
+' | $FORTH)
+printf "%s\n" "$out"
+case "$out" in
+    ("-1 0 1 -1 0 1 ") exit 0;;
+esac
+exit 2

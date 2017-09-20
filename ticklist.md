@@ -3,7 +3,7 @@
 KEY
 
 i - implemented
-m - implemented in a modified fashion
+p - implemented but untested
 p - partially implemented (for example, small inputs only)
 
 
@@ -39,7 +39,7 @@ C!      i
 C@      i
 CMOVE   i
 CMOVE>  i
-COUNT   m
+COUNT   u
 D+      i
 D<
 DEPTH   i
