@@ -11,8 +11,6 @@ extern _binary_rc_4_size
 
 SECTION .bss
 
-wordbuf RESB 8192
-
 stack   RESB 100000
 returnstack       RESB 100000
 
