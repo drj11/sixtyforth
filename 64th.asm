@@ -11,11 +11,6 @@ extern _binary_rc_4_size
 
 SECTION .bss
 
-ib0 RESB 500            ; Input Block 0
-ib1 RESB 500            ; Input Block 1
-
-ibsize EQU ib1 - ib0
-
 wordbuf RESB 8192
 
 stack   RESB 100000
@@ -1881,21 +1876,6 @@ avRESET:
         DQ EXIT
 
 ; Input Buffer / Parse Area
-; A fresh block, from OS, is read into ib1.
-; IB + #IB <= IBLIMIT
-; When a new line is required,
-; the input block area is scanned until either:
-; a line terminator is found; or,
-; IBLIMIT is reached.
-; If a line terminator is found then
-; IB and #IB are updated, with no new input from OS.
-; If IBLIMIT is reached then
-; the valid portion of ib1 (from IB to IBLIMIT)
-; is copied to the end of ib0, and
-; a fresh block is read into ib1,
-; updating IBLIMIT (and IB and #IB).
-; If the freshly read block has length zero, then
-; that marks EOF and REFILL returns FALSE.
 
 numberIB:
         DQ stdvar
@@ -1907,13 +1887,7 @@ IB:
         DQ stdvar
         ; address of current input buffer.
 aIB:
-        DQ ib1
-
-IBLIMIT:
-        DQ stdvar
-        ; Pointer to one past last valid byte in input block.
-aIBLIMIT:
-        DQ ib1
+        DQ 0
 
 ; Writable portion of dictionary links to Read Only portion.
         CtoL(EORO)
@@ -2094,10 +2068,9 @@ reset:  ; QUIT jumps here
         mov qword [rax], 0
         mov rax, atoIN
         mov [rax], rcx
-        mov rcx, ib1
         mov rax, aIB
         mov [rax], rcx
-        mov rax, aIBLIMIT
+        mov rax, anumberIB
         mov [rax], rcx
 
         ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
