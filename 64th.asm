@@ -1918,6 +1918,12 @@ aIBLIMIT:
 ; Writable portion of dictionary links to Read Only portion.
         CtoL(EORO)
 
+        DQ 3
+        DQ '>in'        ; std1983
+toIN:   DQ stdvar
+atoIN:  DQ 0
+        CtoL(toIN)
+
         DQ 4
         DQ 'base'       ; std1983
 BASE:   DQ stdvar
@@ -1929,12 +1935,6 @@ abase:  DQ 10
 CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
         DQ dictfree
         CtoL(CP)
-
-        DQ 3
-        DQ '>in'        ; std1983
-toIN:   DQ stdvar
-atoIN:  DQ 0
-        CtoL(toIN)
 
         DQ 5
         DQ 'state'      ; std1983
