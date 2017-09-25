@@ -43,16 +43,15 @@
 : m*/  ( d1 n1 +n2 -- d2 )
    2over 2over          ( d1 n1 n2 d1 n1 n2 )
    drop                 ( d1 n1 n2 d1 n1 )
-   \ dsign is a double with the correct sign
-   xor                  ( d1 n1 n2 dsign )
-   2rot                 ( n1 n2 dsign d1 )
-   dabs                 ( n1 n2 dsign ud1 )
-   2rot swap            ( dsign ud1 n2 n1 )
-   abs swap             ( dsign ud1 u1 n2 )
-   um*/mod drop         ( dsign ud )
-   rot                  ( x ud sign )
-   d+-                  ( x d )
-   rot drop             ( d )
+   \ sign has correct sign, garbage mantissa
+   xor nip              ( d1 n1 n2 sign )
+   >r                   ( d1 n1 n2 )  ( r: sign )
+   2swap                ( n1 n2 d1 )
+   dabs                 ( n1 n2 ud1 )
+   2swap                ( ud1 n1 n2 )
+   swap abs swap        ( ud1 u1 n2 )
+   um*/mod drop         ( ud )
+   r> d+-               ( d )  ( r: )
 ;
 
 \ std1983
