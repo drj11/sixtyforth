@@ -1863,74 +1863,12 @@ ipl:    DQ stdexe
         DQ vRESET
         DQ sysEXIT
 
-
-SECTION .data
-
-vRESET:
-        DQ stdexe
-        ; vectored reset
-avRESET:
-        DQ RUNRC
-        DQ EXIT
-
-; Input Buffer / Parse Area
-
-numberIB:
-        DQ stdvar
-        ; Size of current input buffer.
-anumberIB:
-        DQ 0
-
-IB:
-        DQ stdvar
-        ; address of current input buffer.
-aIB:
-        DQ 0
-
-; Writable portion of dictionary links to Read Only portion.
-        CtoL(EORO)
-
-        DQ 3
-        DQ '>in'        ; std1983
-toIN:   DQ stdvar
-atoIN:  DQ 0
-        CtoL(toIN)
-
-        DQ 4
-        DQ 'base'       ; std1983
-BASE:   DQ stdvar
-abase:  DQ 10
-        CtoL(BASE)
-
-        DQ 2
-        DQ 'cp'
-CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
-        DQ dictfree
-        CtoL(CP)
-
-        DQ 5
-        DQ 'state'      ; std1983
-STATE:  DQ stdvar
-stateaddr:
-        DQ 0
-        CtoL(STATE)
-
-ALIGN 8
-        DQ 7
-        DQ 'useless'
-USELESS:
-        DQ stdvar
-        CtoL(USELESS)
-
-dictfree TIMES 8000 DQ 0
-
-DICT:   CtoL(USELESS)
+;;; Outer Interpreter
 
 ; Repeat, until the input buffer is empty:
 ;   PARSEWORD: lex single word from input: creates a string.
 ;   FINDWORD: To convert from string to DICT entry.
 ;   qEXECUTE: execute / convert number / compile.
-
 INTERPRETLINE:
         DQ stdexe
         ; Interpret successively parsed words,
@@ -2050,6 +1988,70 @@ scansign:
 .empty: ; addr 0
         DQ SWAP, OVER
         DQ EXIT
+
+
+
+SECTION .data
+
+vRESET:
+        DQ stdexe
+        ; vectored reset
+avRESET:
+        DQ RUNRC
+        DQ EXIT
+
+; Input Buffer / Parse Area
+
+numberIB:
+        DQ stdvar
+        ; Size of current input buffer.
+anumberIB:
+        DQ 0
+
+IB:
+        DQ stdvar
+        ; address of current input buffer.
+aIB:
+        DQ 0
+
+; Writable portion of dictionary links to Read Only portion.
+        CtoL(EORO)
+
+        DQ 3
+        DQ '>in'        ; std1983
+toIN:   DQ stdvar
+atoIN:  DQ 0
+        CtoL(toIN)
+
+        DQ 4
+        DQ 'base'       ; std1983
+BASE:   DQ stdvar
+abase:  DQ 10
+        CtoL(BASE)
+
+        DQ 2
+        DQ 'cp'
+CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution/
+        DQ dictfree
+        CtoL(CP)
+
+        DQ 5
+        DQ 'state'      ; std1983
+STATE:  DQ stdvar
+stateaddr:
+        DQ 0
+        CtoL(STATE)
+
+ALIGN 8
+        DQ 7
+        DQ 'useless'
+USELESS:
+        DQ stdvar
+        CtoL(USELESS)
+
+dictfree TIMES 8000 DQ 0
+
+DICT:   CtoL(USELESS)
 
 
 SECTION .text
