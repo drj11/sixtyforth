@@ -1023,32 +1023,6 @@ digitadvance:
         CtoL(toNUMBER)
 
         DQ 3
-        DQ 'm*/'        ; std1994 double
-Mstarslash:
-        DQ stdexe
-        ; M*/ ( d1 n1 +n2 -- d2 )
-        DQ twoOVER
-        DQ twoOVER      ; (d1 n1 n2 d1 n1 n2)
-        DQ DROP         ; (d1 n1 n2 d1 n1)
-        DQ XOR          ; (d1 n1 n2 dsign)
-        ; dsign is a double with the correct sign
-        ; and otherwise arbitrary digits
-        DQ twoROT       ; (n1 n2 dsign d1)
-        DQ DABS         ; (n1 n2 dsign ud1)
-        DQ twoROT       ; (dsign ud1 n1 n2)
-        DQ SWAP         ; (dsign ud1 n2 n1)
-        DQ fABS         ; (dsign ud1 n2 u1)
-        DQ SWAP         ; (dsign ud1 u1 n2)
-        DQ UMstarslashMOD  ; (dsign ud r)
-        DQ DROP         ; (dsign ud)
-        DQ ROT          ; (x ud sign)
-        DQ Dplusminus   ; (x d)
-        DQ ROT          ; (d x)
-        DQ DROP
-        DQ EXIT
-        CtoL(Mstarslash)
-
-        DQ 3
         DQ 'ud*'
 UDstar:
         DQ stdexe

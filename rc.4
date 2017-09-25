@@ -39,6 +39,20 @@
 \ std1994
 : 2*  ( x -- x' )  2 * ;
 
+\ std1994 double
+: m*/  ( d1 n1 +n2 -- d2 )
+   >r                   ( d1 n1 )  ( r: n2 )
+   \ sign has correct sign, garbage mantissa
+   2dup xor             ( d1 n1 sign )
+   r> swap >r           ( d1 n1 n2 )  ( r: sign )
+   2swap                ( n1 n2 d1 )
+   dabs                 ( n1 n2 ud1 )
+   2swap                ( ud1 n1 n2 )
+   swap abs swap        ( ud1 u1 n2 )
+   um*/mod drop         ( ud )
+   r> d+-               ( d )  ( r: )
+;
+
 \ std1983
 : variable    create 1 cells allot ;
 
