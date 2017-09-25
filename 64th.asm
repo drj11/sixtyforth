@@ -1915,6 +1915,7 @@ stateaddr:
         DQ 0
         CtoL(STATE)
 
+ALIGN 8
         DQ 7
         DQ 'useless'
 USELESS:
