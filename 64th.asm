@@ -76,7 +76,7 @@ SECTION .rodata
 ; In general access memory sequentially from lower addresses to
 ; higher addresses.
 
-STARTOFDICT:
+; Sentinel value dictionary has a Link Field of 0
         DQ 0    ; Link Field
 
         DQ 7
