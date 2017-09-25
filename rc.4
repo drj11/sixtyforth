@@ -39,6 +39,22 @@
 \ std1994
 : 2*  ( x -- x' )  2 * ;
 
+\ std1994 double
+: m*/  ( d1 n1 +n2 -- d2 )
+   2over 2over          ( d1 n1 n2 d1 n1 n2 )
+   drop                 ( d1 n1 n2 d1 n1 )
+   \ dsign is a double with the correct sign
+   xor                  ( d1 n1 n2 dsign )
+   2rot                 ( n1 n2 dsign d1 )
+   dabs                 ( n1 n2 dsign ud1 )
+   2rot swap            ( dsign ud1 n2 n1 )
+   abs swap             ( dsign ud1 u1 n2 )
+   um*/mod drop         ( dsign ud )
+   rot                  ( x ud sign )
+   d+-                  ( x d )
+   rot drop             ( d )
+;
+
 \ std1983
 : variable    create 1 cells allot ;
 
