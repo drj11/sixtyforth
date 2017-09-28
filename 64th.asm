@@ -1279,9 +1279,7 @@ starCREATE:
         ; *CREATE ( addr u -- )
         ; Create dictionary entry for word left on stack.
         ; Link Field Address
-        DQ HERE         ; ( addr u lfa)
-        ; Rotate the LFA out of the way for now
-        DQ ROT, ROT     ; ( lfa addr u )
+        DQ HERE, toR    ; ( r: lfa )
         ; Compile Link Field
         DQ THEWL, fetch
         DQ comma
@@ -1291,19 +1289,20 @@ starCREATE:
         DQ DUP
         DQ comma
         ; Name String
-        DQ LIT, 8       ; ( lfa addr u 8 )
-        DQ MIN          ; ( lfa addr u|8 )
-        DQ HERE         ; ( lfa addr u|8 here )
-        DQ SWAP         ; ( lfa addr here u|8 )
-        DQ CMOVE        ; ( lfa )
+        DQ LIT, 8       ; ( addr u 8 )
+        DQ MIN          ; ( addr u|8 )
+        DQ HERE         ; ( addr u|8 here )
+        DQ SWAP         ; ( addr here u|8 )
+        DQ CMOVE        ; ( )
         DQ LIT, 1
-        DQ CELLS        ; ( lfa cc )
+        DQ CELLS        ; ( cc )
         DQ ALLOT
 
         ; Compile Code Field
         DQ LIT, stdvar
         DQ comma
         ; Update Dictionary pointer
+        DQ Rfrom        ; ( lfa )  ( r: )
         DQ THEWL        ; ( lfa &dict )
         DQ store
         DQ EXIT
