@@ -1428,6 +1428,28 @@ FINDWORD:
         DQ EXIT
         CtoL(FINDWORD)
 
+        DQ 13
+        DQ 'exec-wor'
+EXECWORDLIST:
+        DQ stdexe
+        ; EXEC-WORDLIST ( xt wid -- ... )
+        ; An iteration is performed where
+        ; the LFA of each word in the wordlist is pushed
+        ; onto the stack and the word xt is executed.
+        ; When that word pushes True onto the stack,
+        ; the iteration is terminated.
+        ; For expected operation, xt should have the stack action:
+        ;  XT ( lfa -- lfa 0 ) when continuing
+        ;     ( lfa -- ... x ) when terminating
+        ; the TOS left by xt is always consumed.
+.begin: DQ fetch                ; ( xt lfa )
+        DQ OVER                 ; ( xt lfa xt )
+        DQ EXECUTE              ; ( xt ... x )
+        DQ ZEROBRANCH
+        DQ .begin-$
+        DQ EXIT
+        CtoL(EXECWORDLIST)
+
         DQ 15
         DQ 'search-w'   ; std1994
 SEARCHWORDLIST:
