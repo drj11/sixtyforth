@@ -1431,7 +1431,7 @@ FINDWORD:
         CtoL(FINDWORD)
 
         DQ 15
-        DQ 'search-wordlist'
+        DQ 'search-wordlist'    ; std1994
 SEARCHWORDLIST:
         DQ $+8
         ; search and locate string in dictionary
