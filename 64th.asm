@@ -1429,7 +1429,7 @@ FINDWORD:
         CtoL(FINDWORD)
 
         DQ 15
-        DQ 'search-wordlist'    ; std1994
+        DQ 'search-w'   ; std1994
 SEARCHWORDLIST:
         DQ $+8
         ; search and locate string in dictionary
@@ -1493,7 +1493,7 @@ SEARCHWORDLIST:
         sub rbp, 8
         mov qword [rbp-8], 0
         jmp next
-        CtoL(FINDWORD)
+        CtoL(SEARCHWORDLIST)
 
         DQ 9
         DQ 'immediat'   ; std1983
