@@ -1442,11 +1442,13 @@ EXECWORDLIST:
         ;  XT ( lfa -- lfa 0 ) when continuing
         ;     ( lfa -- ... x ) when terminating
         ; the TOS left by xt is always consumed.
-.begin: DQ fetch                ; ( xt lfa )
-        DQ OVER                 ; ( xt lfa xt )
-        DQ EXECUTE              ; ( xt ... x )
+        DQ SWAP, toR            ; ( lfa )  ( r: xt )
+.begin: DQ fetch                ; ( lfa )
+        DQ Rfetch               ; ( lfa xt )
+        DQ EXECUTE              ; ( ... x )
         DQ ZEROBRANCH
         DQ .begin-$
+        DQ Rfrom, DROP          ; ( r: )
         DQ EXIT
         CtoL(EXECWORDLIST)
 
