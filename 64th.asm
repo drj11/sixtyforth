@@ -258,15 +258,16 @@ twoRfetch:
         CtoL(twoRfetch)
 
         DQ 5
-        DQ 'depth'      ; std1983
-DEPTH:  DQ $+8
-        ; DEPTH ( -- +n )
-        mov rcx, stack
+        DQ 'stack'
+STACK:
+        DQ $+8
+        ; STACK ( -- addr-stack addr-base )
         mov rax, rbp
-        sub rax, rcx
-        shr rax, 3
+        add rbp, 8
+        mov [rbp-8], rax
+        mov rax, stack
         jmp pushrax
-        CtoL(DEPTH)
+        CtoL(STACK)
 
         DQ 4
         DQ 'true'       ; std1994

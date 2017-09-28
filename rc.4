@@ -42,6 +42,12 @@
 \ std1994
 : 2*  ( x -- x' )  2 * ;
 
+\ std1994
+: /mod  ( n1 n2 -- rem quot )  >r s>d r> sm/rem ;
+
+\ std1994
+: /  ( n1 n2 -- n3 )  /mod nip ;
+
 \ std1994 double
 : m*/  ( d1 n1 +n2 -- d2 )
    >r                   ( d1 n1 )  ( r: n2 )
@@ -55,6 +61,10 @@
    um*/mod drop         ( ud )
    r> d+-               ( d )  ( r: )
 ;
+
+\ std1994 core
+: depth  ( -- +n )
+   stack -  1 cells / ;
 
 \ std1983
 : variable    create 1 cells allot ;
