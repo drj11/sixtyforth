@@ -1424,13 +1424,25 @@ semicolon:
         DQ 8
         DQ 'findword'
 FINDWORD:
+        DQ stdexe
+        DQ LIT, DICT
+        DQ SEARCHWORDLIST
+        DQ EXIT
+        CtoL(FINDWORD)
+
+        DQ 15
+        DQ 'search-wordlist'
+SEARCHWORDLIST:
         DQ $+8
         ; search and locate string in dictionary
-        ; (similar interface to SEARCH-WORDLIST)
-        ; FINDWORD ( c-addr u -- xt 1 ) found immediate
-        ;          ( c-addr u -- xt -1 ) found non-immediate
-        ;          ( c-addr u -- 0 ) not found
-        mov rax, DICT           ; Link to most recent word
+        ; FINDWORD ( c-addr u wid -- xt 1 ) found immediate
+        ;          ( c-addr u wid -- xt -1 ) found non-immediate
+        ;          ( c-addr u wid -- 0 ) not found
+        ; In this routine wid, wordlist identify,
+        ; is simply the address of a cell that points to
+        ; the link field of the most recent word in that wordlist.
+        mov rax, [rbp-8]
+        sub rbp, 8
         ; rax points to Link Field
         ; (that points to the next word in the dictionary).
 .loop:  mov rax, [rax]
