@@ -1283,8 +1283,7 @@ starCREATE:
         ; Rotate the LFA out of the way for now
         DQ ROT, ROT     ; ( lfa addr u )
         ; Compile Link Field
-        DQ LIT, DICT
-        DQ fetch
+        DQ THEWL, fetch
         DQ comma
 
         ; Compile Name Field.
@@ -1305,7 +1304,7 @@ starCREATE:
         DQ LIT, stdvar
         DQ comma
         ; Update Dictionary pointer
-        DQ LIT, DICT    ; ( lfa &dict )
+        DQ THEWL        ; ( lfa &dict )
         DQ store
         DQ EXIT
         CtoL(starCREATE)
@@ -1425,7 +1424,7 @@ semicolon:
         DQ 'findword'
 FINDWORD:
         DQ stdexe
-        DQ LIT, DICT
+        DQ THEWL
         DQ SEARCHWORDLIST
         DQ EXIT
         CtoL(FINDWORD)
@@ -1515,8 +1514,7 @@ IMMEDIATE:
         DQ 4
         DQ 'last'       ; Acornsoft
 LAST:   DQ stdexe
-        DQ LIT, DICT
-        DQ fetch
+        DQ THEWL, fetch
         DQ LIT, 8       ; L>NAME
         DQ PLUS
         DQ EXIT
@@ -1833,7 +1831,7 @@ ipl:    DQ stdexe
 
 ; Repeat, until the input buffer is empty:
 ;   PARSEWORD: lex single word from input: creates a string.
-;   FINDWORD: To convert from string to DICT entry.
+;   FINDWORD: To convert from string to execution token.
 ;   qEXECUTE: execute / convert number / compile.
 INTERPRETLINE:
         DQ stdexe
@@ -2015,9 +2013,14 @@ USELESS:
         DQ stdvar
         CtoL(USELESS)
 
-dictfree TIMES 8000 DQ 0
+; THE Word List
+        DQ 5
+        DQ 'thewl'
+THEWL:  DQ stdvar
+thewladdr:
+        CtoL(THEWL)
 
-DICT:   CtoL(USELESS)
+dictfree TIMES 8000 DQ 0
 
 
 SECTION .text
