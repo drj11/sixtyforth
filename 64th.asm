@@ -397,7 +397,7 @@ brarbx: mov rcx, [rbx]
 
         DQ 7
         DQ '0branch'
-ZEROBRANCH:
+zBRANCH:
         DQ $+8
         ; Read the next word as a relative offset (in bytes);
         ; pop the TOS and test it;
@@ -409,7 +409,7 @@ ZEROBRANCH:
         jz brarbx
         add rbx, 8
         jmp next
-        CtoL(ZEROBRANCH)
+        CtoL(zBRANCH)
 
         DQ 1
         DQ '!'          ; std1983
@@ -673,7 +673,7 @@ MIN:
         DQ OVER
         DQ OVER
         DQ greaterthan  ; a b flag
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .s-$
         DQ SWAP
 .s:
@@ -849,7 +849,7 @@ Dplusminus:
         ; d2 shares sign with n
         DQ OVER, XOR    ; d1 s  \ s < 0 when d1 needs negating
         DQ zless
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .x-$
         DQ DNEGATE      ; -d1
 .x:     DQ EXIT
@@ -936,11 +936,11 @@ toNUMBER:
         ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
 .begin:
         DQ DUP          ; ud c-addr u u
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .x - $
         DQ ASCIItoDIGIT ; ud c-addr u n
         DQ DUP, zless   ; ud c-addr u n bf
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .ok - $
         DQ DROP
 .x:
@@ -970,7 +970,7 @@ ASCIItoDIGIT:
         DQ LIT, '9'+1   ; c-addr u ch ch '0' ':'
         DQ WITHIN       ; c-addr u ch bf
         ; ok if '0' <= ch <= '9'
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .then - $
         DQ LIT, '0'
         DQ MINUS        ; c-addr u c
@@ -984,7 +984,7 @@ ASCIItoDIGIT:
         DQ LIT, 10      ; c-addr u c c 10
         DQ BASE, fetch  ; c-addr u c c 10 base
         DQ WITHIN       ; c-addr u c bf
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .then2 - $
         DQ digitadvance
         DQ EXIT
@@ -1085,7 +1085,7 @@ DUMP:
 .l:
         DQ OVER, OVER
         DQ Ulessthan    ; addr limit bf
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ (.x-$)
         DQ OVER         ; addr limit addr
         DQ Cfetch
@@ -1150,7 +1150,7 @@ DIGIT:  DQ stdexe
         DQ LIT, 9       ; (n 9)
         DQ OVER         ; (n 9 n)
         DQ lessthan     ; (n bf)
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .l-$
         DQ LIT, 7
         DQ PLUS
@@ -1448,7 +1448,7 @@ EXECWORDLIST:
 .begin: DQ fetch                ; ( lfa )
         DQ Rfetch               ; ( lfa xt )
         DQ EXECUTE              ; ( ... x )
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .begin-$
         DQ Rfrom, DROP          ; ( r: )
         DQ EXIT
@@ -1462,7 +1462,7 @@ MATCHXT:
         ;         ( c-addr u lfa -- c-addr u 0 0 true ) end of list
         ;         ( c-addr u lfa -- c-addr u xt 1|-1 true ) match
         DQ DUP, zequals         ; c-addr u lfa flag
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .then-$
         DQ z, TRUE              ; c-addr u 0 0 true
         DQ EXIT
@@ -1647,7 +1647,7 @@ Squote:
         DQ 'abort"'     ; std1983
 ABORTquote:
         DQ stdexe
-        DQ LIT, ZEROBRANCH, comma
+        DQ LIT, zBRANCH, comma
         DQ HERE         ; ( here )
         DQ TRUE, comma
         DQ Squote
@@ -1675,7 +1675,7 @@ INCH:
         DQ DUP, SOURCE  ; u u s-addr u'
         DQ ROT          ; u s-addr u' u
         DQ greaterthan  ; u s-addr flag
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .else-$
         DQ PLUS         ; addr
         DQ Cfetch       ; char
@@ -1721,14 +1721,14 @@ PARTOK:
         DQ toIN, fetch  ; >in
 .ch:
         DQ DUP, INCH    ; >in char flag-valid
-        ; To avoid an IF (ZEROBRANCH),
+        ; To avoid an IF (zBRANCH),
         ; proceed to test the char even if invalid.
         ; Both tests are combined using AND.
         DQ SWAP         ; >in flag-valid char
         DQ twoRfetch    ; >in flag-valid char base limit
         DQ WITHIN       ; >in flag-valid flag-within
         DQ AND          ; >in flag
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .got-$
         ; increment >in
         DQ oneplus      ; >in'
@@ -1885,7 +1885,7 @@ INTERPRETLINE:
 .w:
         DQ PARSEWORD    ; c-addr u
         DQ qDUP         ; c-addr u u?
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .x-$
         DQ OVER, OVER   ; c-addr u c-addr u
         DQ FINDWORD     ; c-addr u { 0 | xt n }
@@ -1904,7 +1904,7 @@ qEXECUTE:
         ; if n is non zero then EXECUTE/COMPILE xt;
         ; otherwise try and handle number.
         DQ qDUP
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .number-$
         ; c-addr u xt +-1
         DQ ROT, DROP    ; c-addr xt +-1
@@ -1915,7 +1915,7 @@ qEXECUTE:
         DQ STATE, fetch ; xt flag compiling?
         DQ AND          ; xt compile?
         ; 0=execute; nz=compile
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .exec-$
         DQ comma
         DQ EXIT
@@ -1926,11 +1926,11 @@ qEXECUTE:
         ; Handle as number.
         ; (c-addr u)
         DQ qNUMBER
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ (.abort-$)
         ; (n)
         DQ STATE, fetch ; n compiling?
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .x-$
         DQ LITERAL
 .x:
@@ -1954,7 +1954,7 @@ qNUMBER:
         DQ z, z         ; c-addr u sign c-addr u 0 0
         DQ twoSWAP      ; c-addr u sign 0 0 c-addr u
         DQ toNUMBER     ; c-addr u sign ud c-addr' u')
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ (.success-$)
         ; c-addr u sign ud a
         DQ DROP         ; c-addr u sign ud
@@ -1979,7 +1979,7 @@ scansign:
         ; ( addr u -- 0 addr u )    when leading '-' absent
         ; Scan an initial '-' sign at the beginning of a number.
         DQ DUP
-        DQ ZEROBRANCH
+        DQ zBRANCH
         DQ .empty-$
         DQ SWAP         ; u addr
         DQ DUP
