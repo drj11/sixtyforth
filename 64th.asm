@@ -1596,7 +1596,7 @@ ALIGNED:
         CtoL(ALIGNED)
 
         DQ 7 | Immediate
-        DQ 'SLITERAL'   ; std1994 string
+        DQ 'sliteral'   ; std1994 string
 SLITERAL:
         DQ stdexe
         ; SLITERAL ( addr u -- )
