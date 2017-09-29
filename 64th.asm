@@ -272,6 +272,7 @@ STACK:
         DQ 4
         DQ 'true'       ; std1994
 TRUE:   DQ $+8
+pushtrue:
         mov rax, -1
         jmp pushrax
         CtoL(TRUE)
@@ -1452,26 +1453,32 @@ EXECWORDLIST:
         DQ EXIT
         CtoL(EXECWORDLIST)
 
-        DQ 15
-        DQ 'search-w'   ; std1994
-SEARCHWORDLIST:
+        DQ 7
+        DQ 'matchxt'
+MATCHXT:
+        DQ stdexe
+        ; MATCHXT ( c-addr u lfa -- c-addr u lfa 0 ) no match
+        ;         ( c-addr u lfa -- c-addr u 0 0 true ) end of list
+        ;         ( c-addr u lfa -- c-addr u xt 1|-1 true ) match
+        DQ DUP, zequals         ; c-addr u lfa flag
+        DQ ZEROBRANCH
+        DQ .then-$
+        DQ z, TRUE              ; c-addr u 0 0 true
+        DQ EXIT
+.then:
+        DQ MATCHASM
+        DQ EXIT
+        CtoL(MATCHXT)
+
+        DQ 8
+        DQ 'matchasm'
+MATCHASM:
         DQ $+8
-        ; search and locate string in dictionary
-        ; FINDWORD ( c-addr u wid -- xt 1 ) found immediate
-        ;          ( c-addr u wid -- xt -1 ) found non-immediate
-        ;          ( c-addr u wid -- 0 ) not found
-        ; In this routine wid, wordlist identify,
-        ; is simply the address of a cell that points to
-        ; the link field of the most recent word in that wordlist.
-        mov rax, [rbp-8]
-        sub rbp, 8
-        ; rax points to Link Field
-        ; (that points to the next word in the dictionary).
-.loop:  mov rax, [rax]
-        test rax, rax
-        jz .empty
-        mov r13, [rbp-8]        ; length
-        mov rcx, [rbp-16]       ; pointer
+        ; MATCHASM ( c-addr u lfa -- c-addr u lfa 0 ) no match
+        ; MATCHASM ( c-addr u lfa -- c-addr u xt 1|-1 true ) match
+        mov rax, [rbp-8]        ; LFA
+        mov r13, [rbp-16]       ; length
+        mov rcx, [rbp-24]       ; pointer
         ; target string in (rcx, r13)
         mov r14, [rax+8]        ; length of dict name
         ; mask off flags
@@ -1480,7 +1487,7 @@ SEARCHWORDLIST:
         lea rdx, [rax+16]       ; pointer to dict name
         ; dict string in (rdx, r14)
         cmp r13, r14
-        jnz .loop       ; lengths don't match, try next
+        jnz .nomatch    ; lengths don't match, try next
         ; The dictionary only holds 8 bytes of name,
         ; so we must check at most 8 bytes.
         cmp r13, 8
@@ -1493,7 +1500,7 @@ SEARCHWORDLIST:
         mov r8b, [rcx]
         mov r9b, [rdx]
         cmp r8, r9
-        jnz .loop       ; byte doesn't match, try next
+        jnz .nomatch    ; byte doesn't match, try next
         inc rcx
         inc rdx
         dec r13
@@ -1503,20 +1510,35 @@ SEARCHWORDLIST:
         mov rdx, [rax+8]
         shr rdx, 32
         ; Skip over Link and Name Field (length and 8 name bytes),
-        ; storing Code Field Address in RAX (and then replace TOS).
+        ; storing Code Field Address in RAX
         lea rax, [rax + 24]
+        add rbp, 8
         mov [rbp-16], rax
-        ; std1983 requires -1 (true) for non-immediate word,
+        ; ANSI requires -1 (true) for non-immediate word,
         ; and 1 for immediate word.
         ; Flags (rdx) is 0 for non-immediate; 2 for immediate.
         ; So we can subtract 1.
         sub rdx, 1
         mov [rbp-8], rdx
-        jmp next
-.empty:
-        sub rbp, 8
-        mov qword [rbp-8], 0
-        jmp next
+        jmp pushtrue
+.nomatch:
+        xor rax, rax
+        jmp pushrax
+        CtoL(MATCHASM)
+
+        DQ 15
+        DQ 'search-w'   ; std1994
+SEARCHWORDLIST:
+        DQ stdexe
+        ; SEARCHWO ( c-addr u wid -- xt 1 ) found immediate
+        ;          ( c-addr u wid -- xt -1 ) found non-immediate
+        ;          ( c-addr u wid -- 0 ) not found
+        DQ LIT, MATCHXT
+        DQ SWAP                 ; ( c-addr u xt wid )
+        DQ EXECWORDLIST         ; ( c-addr u x x )
+        DQ twoSWAP, DROP, DROP  ; ( x x )
+        DQ qDUP, DROP
+        DQ EXIT
         CtoL(SEARCHWORDLIST)
 
         DQ 9
