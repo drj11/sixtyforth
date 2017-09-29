@@ -281,6 +281,7 @@ pushtrue:
         DQ 'false'      ; std1994
 z:      ; Alternate label for when 0 is intended
 FALSE:  DQ $+8
+pushfalse:
         xor rax, rax
         jmp pushrax
         CtoL(FALSE)
@@ -1522,8 +1523,7 @@ MATCHASM:
         mov [rbp-8], rdx
         jmp pushtrue
 .nomatch:
-        xor rax, rax
-        jmp pushrax
+        jmp pushfalse
         CtoL(MATCHASM)
 
         DQ 15
