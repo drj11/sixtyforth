@@ -363,6 +363,35 @@ variable pic
   nip nip nip
 ;
 
+\ print name of word given its LFA
+: .lfa  ( lfa -- lfa 0 )
+        ( lfa -- 1 )
+   dup 0= if
+      drop
+      1
+      exit
+   then
+   dup                  ( lfa lfa )
+   cell+                ( lfa nfa )
+   dup @                ( lfa nfa u-bits )
+   4294967295 and       ( lfa nfa u )
+   swap cell+ swap      ( lfa c-addr u )
+   here over [char] ?   ( lfa c-addr u here u ? )
+   fill                 ( lfa c-addr u )
+   dup >r               ( lfa c-addr u )  ( r: u )
+   8 min                ( lfa c-addr 8|u )
+   here swap            ( lfa c-addr here 8|u )
+   cmove
+   here r>
+   type cr
+   false
+;
+
+\ std1994
+: words
+   ['] .lfa thewl exec-wordlist
+;
+
 \ ##
 
 \ Convert from C string, by pushing its length.
