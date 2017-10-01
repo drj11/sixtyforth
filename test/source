@@ -1,0 +1,11 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c 'source depth .
+source 99 u< .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("2 -1 ") exit 0;;
+esac
+exit 2
