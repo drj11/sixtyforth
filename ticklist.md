@@ -162,6 +162,7 @@ WHILE   i
 
 <>      i
 >NUMBER i
+/STRING i
 2!      i
 2*      i
 2@      i
