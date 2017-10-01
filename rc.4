@@ -62,6 +62,9 @@
    r> d+-               ( d )  ( r: )
 ;
 
+\ std1994 core ext
+: u>  ( u1 u2 -- flag )  swap u< ;
+
 \ std1994 core
 : depth  ( -- +n )
    stack -  1 cells / ;
