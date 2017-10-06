@@ -3,7 +3,7 @@
 KEY
 
 i - implemented
-p - implemented but untested
+u - implemented but untested
 p - partially implemented (for example, small inputs only)
 
 
@@ -176,11 +176,13 @@ BL      i
 CELL+   i
 CELLS   i
 CHAR    i
+DECIMAL u
 D.      i
 D>S     i
 DABS    i
 EVALUATE        i
 FALSE   i
+HEX     i
 INVERT  i
 M*      i
 M*/     i
