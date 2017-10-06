@@ -328,6 +328,11 @@ variable pic
    tuck dabs    ( n du )        \ n same sign as d
    .sign ;
 
+\ std1994
+: decimal  ( -- )  10 base ! ;
+\ std1994 core ext
+: hex  ( -- )  16 base ! ;
+
 \ ## String
 
 \ 3-way comparison
