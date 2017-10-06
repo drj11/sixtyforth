@@ -335,6 +335,11 @@ variable pic
 
 \ ## String
 
+\ std1994
+: ."  ( copmile: "ccc<quote>" -- )
+   [compile] s" compile type
+; immediate
+
 \ 3-way comparison
 \ result is -1 when u1 < u2
 \           +1 when u2 < u1
