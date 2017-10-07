@@ -22,6 +22,12 @@
 \ std1983
 : [']   ' [compile] literal ; immediate
 
+\ std1994
+: recurse
+   last name>
+   ,
+; immediate
+
 : 2dup  ( x x' -- x x' x x' )  over over ;
 : tuck  ( a b -- b a b )  swap over ;
 \ std1983

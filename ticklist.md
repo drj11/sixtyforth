@@ -188,6 +188,7 @@ M*      i
 M*/     i
 NIP     i
 PARSE   i
+RECURSE i
 S"      i
 S>D     i
 SM/REM  i

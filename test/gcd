@@ -1,0 +1,14 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# Test of RECURSE.
+# From http://galileo.phys.virginia.edu/classes/551.jvn.fall01/primer.htm
+out=$($FORTH -c '
+: gcd  ?dup  if   tuck mod recurse   then  ;
+784 48 gcd .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("16 ") exit 0;;
+esac
+exit 2
