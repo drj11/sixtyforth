@@ -191,6 +191,7 @@ PARSE   i
 S"      i
 S>D     i
 SM/REM  i
+TO      p
 TRUE    i
 TUCK    i
 U>      i
