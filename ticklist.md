@@ -191,9 +191,10 @@ PARSE   i
 S"      i
 S>D     i
 SM/REM  i
-TO      p
+TO      i
 TRUE    i
 TUCK    i
 U>      i
+VALUE   i
 WITHIN  i
 [CHAR]  i

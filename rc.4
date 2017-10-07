@@ -218,12 +218,19 @@ create while-token
 : constant  ( x -- / -- x )
    variable last name> >body ! does> @ ;
 
-\ std1994
+\ std1994 core ext
 : value   constant ;
 
-\ std1994
+\ std1994 core ext
 : to  ( x -- )
-   state @  abort" Not implemented in compiler"  ' >body ! ;
+   ' >body
+   state @ if
+      [compile] literal
+      compile !
+   else
+      !
+   then
+; immediate
 
 \ Map Anonymous
 \ Request freshly allocated memory.
