@@ -143,7 +143,7 @@ DOES>   i
 ELSE    i
 IF      i
 IMMEDIATE       i
-LEAVE
+LEAVE   p (not very good testing)
 LITERAL i
 LOOP
 REPEAT  i

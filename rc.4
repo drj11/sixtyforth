@@ -170,11 +170,20 @@ create while-token
 \ std1983
 : then
    here over - swap ! ; immediate
+   
+create do-stack  3 cells allot
+variable do-sp  0 do-sp !
+: do-addr   do-stack  do-sp @ cells  + ;
+
+: >do   do-addr !  1 do-sp +! ;
+: do>   -1 do-sp +!  do-addr @ ;
 
 \ std1983
-: do  ( limit base --    / C: -- token )
+: do  ( limit base -- )
+      ( C: -- do-token )
+      ( do-stack: -- leave-token )
    compile 2>r
-   here         ( token )
+   0 >do  here  ( do-token )
 ; immediate
 
 \ Implements the test part of a DO LOOP,
@@ -189,13 +198,36 @@ create while-token
    swap >r      ( flag )
 ;
 
+: leave
+   compile branch
+   do>          ( leave-token )
+   here >do
+   ,
+; immediate
+
+\ Fix the leave token.
+\ Fetch the previous leave token in the linked-list,
+\ and store offset to HERE at that address.
+: fix-leave  ( leave-token -- leave-token' )
+   dup @ swap   ( leave-token' leave-token )
+   here over    ( leave-token' leave-token here leave-token )
+   - swap !     ( leave-token' )
+;
+
 \ std1983
-: loop  ( R: limit base -- limit base+1 |        / C: do-token -- )
+: loop  ( R: limit base -- limit base+1 | )
+        ( C: do-token -- )
    compile looptest
    compile 0branch
    here         ( do-token here )
    -            ( byte-offset )
    ,
+   \ fix the linked-list of leave-tokens up
+   do>          ( leave-token )
+   begin
+      ?dup while
+      fix-leave         ( leave-token' )
+   repeat
    compile 2r> compile 2drop
 ; immediate
 
