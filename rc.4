@@ -270,6 +270,11 @@ variable do-sp  0 do-sp !
    then
 ; immediate
 
+\ std1994
+: align  ( -- )
+   here aligned  here  - allot
+;
+
 \ Map Anonymous
 \ Request freshly allocated memory.
 : map-anon  ( sz -- addr ior )
@@ -488,7 +493,7 @@ rsp constant argc
 ;
 
 \ see note/fstat.md
-create fstatbuf 144 allot
+create fstatbuf 144 allot align
 
 \ Modelled after ANSI `file-status`.
 : file*status  ( n -- addr ior )
@@ -617,7 +622,7 @@ variable chbuf
    nip
 ;
 
-create tty.buffer 36 allot
+create tty.buffer 36 allot align
 
 \ Store TTY settings.
 : tty.store ( fd -- )
