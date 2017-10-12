@@ -1,0 +1,15 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: s 0 do   if leave then   s" @" leave   loop ;
+0 4 s type
+depth .
+1 4 s
+depth .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("@0 0 ") exit 0;;
+esac
+exit 2
