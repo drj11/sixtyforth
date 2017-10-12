@@ -8,10 +8,11 @@ SixtyForth a 64-bit implementation of FORTH
 written in 64-bit Intel assembler.
 
 The SixtyForth language is
-inspired by the ANSI Forth standard (1994 edition),
-but since it does not follow the standard exactly,
-it should probably be more accurately described as
-a Forth-like language.
+inspired by traditional Forth implementations,
+but is also ultimately intended to
+implement the ANSI Forth standard (1994 edition).
+
+It does not yet implement the standard.
 
 In this implementation a cell is 64-bits wide,
 and signed integers are represented in 2's complement.
@@ -28,6 +29,11 @@ in order to be
 recognised by the SixtyForth system
 (The standard requires that the uppercase forms are accepted,
 but this is not yet implemented).
+
+Input is accepted from the keyboard
+(and interactively ^A ^E ^P ^N ^D ^K work);
+from the command line (`./64th -c 'source type'`);
+and from files (`./64th example/hw.64th`).
 
 ## Building SixtyForth and running it
 
@@ -48,6 +54,9 @@ Run this to start using SixtyForth:
 The skeptical may want to run the tests first:
 
     make test
+
+The tests are run using `urchin` which is an `npm` module.
+`urchin` will be installed if `npm` works.
 
 ## Bugs, Issues, Fun
 
