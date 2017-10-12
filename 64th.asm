@@ -1317,6 +1317,7 @@ CREATE:
         DQ PARSEWORD    ; ( addr u )
         DQ starCREATE
         DQ EXIT
+ALIGN 8
         CtoL(CREATE)
 
         DQ 8
@@ -1339,6 +1340,7 @@ doestarget:
         jmp [.n+0]
 .n:
         DQ pushparam
+ALIGN 8
 doestargetlen EQU $ - doestarget
 
 pushparam:
@@ -2049,9 +2051,9 @@ CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution
 STATE:  DQ stdvar
 stateaddr:
         DQ 0
+ALIGN 8
         CtoL(STATE)
 
-ALIGN 8
         DQ 7
         DQ 'useless'
 USELESS:
