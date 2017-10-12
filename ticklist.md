@@ -138,12 +138,12 @@ BEGIN   i
 COMPILE p
 CONSTANT        i
 CREATE  i
-DO
+DO      i
 DOES>   i
 ELSE    i
 IF      i
 IMMEDIATE       i
-LEAVE   p (not very good testing)
+LEAVE   i
 LITERAL i
 LOOP
 REPEAT  i
