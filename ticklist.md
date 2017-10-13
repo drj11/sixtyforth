@@ -49,8 +49,8 @@ DUP     i
 EXECUTE i
 EXIT    i
 FILL    i
-I
-J
+I       i
+J       i
 MAX     i
 MIN     i
 MOD     i
@@ -145,7 +145,7 @@ IF      i
 IMMEDIATE       i
 LEAVE   i
 LITERAL i
-LOOP
+LOOP    i
 REPEAT  i
 STATE   i
 THEN    i
