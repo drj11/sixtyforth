@@ -1093,6 +1093,22 @@ DUMP:
         DQ SWAP         ; limit addr
         DQ oneplus
         DQ SWAP         ; addr+1 limit
+        DQ OVER, DUP    ; addr limit addr addr
+        DQ ALIGNED
+        DQ equals       ; addr limit flag
+        DQ zBRANCH
+        DQ .skipbl-$
+        DQ OVER
+        DQ LIT, 15, AND
+        DQ zBRANCH
+        DQ .else-$
+        DQ fBL, EMIT
+        DQ BRANCH
+        DQ .skipbl-$
+.else:
+        DQ CR
+.skipbl:
+
         DQ BRANCH
         DQ .l-$
 .x:
