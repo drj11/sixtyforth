@@ -178,12 +178,12 @@ variable do-sp  0 do-sp !
 ; immediate
 
 \ Push the current-leave token (on the do-stack)
-\ onto the leave linked-list.
-\ Replace current-leave token with the value on TOS.
+\ onto the leave linked-list at HERE.
+\ Replace current-leave token with HERE.
 \ Factor of LEAVE and ?DO .
-: push-leave  ( new-token -- )
-   do>          ( new-token leave-token )
-   over !  >do
+: push-leave  ( -- )
+   here do>     ( new-token leave-token )
+   , >do
 ;
 
 \ std1994
@@ -197,7 +197,6 @@ variable do-sp  0 do-sp !
    [compile] do
    compile <>
    compile 0branch
-   here  true ,
    push-leave
    drop here
 ; immediate
@@ -216,7 +215,7 @@ variable do-sp  0 do-sp !
 
 : leave
    compile branch
-   here  true ,  push-leave
+   push-leave
 ; immediate
 
 \ Fix the leave token.
