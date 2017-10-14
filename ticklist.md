@@ -162,6 +162,7 @@ WHILE   i
 
 <>      i
 >NUMBER i
+?DO     i
 /STRING i
 2!      i
 2*      i

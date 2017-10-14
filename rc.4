@@ -177,6 +177,31 @@ variable do-sp  0 do-sp !
    0 >do  here  ( do-token )
 ; immediate
 
+\ Push the current-leave token (on the do-stack)
+\ onto the leave linked-list.
+\ Replace current-leave token with the value on TOS.
+\ Factor of LEAVE and ?DO .
+: push-leave  ( new-token -- )
+   do>          ( new-token leave-token )
+   over !  >do
+;
+
+\ std1994
+: ?do  ( limit base -- )
+       ( C: -- do-token )
+       ( do-stack: -- leave-token )
+   \ Use DO to setup a DO LOOP,
+   \ but adjust the do-token so that the LOOP returns
+   \ to a point after the equalty test implied by ?DO .
+   compile 2dup
+   [compile] do
+   compile <>
+   compile 0branch
+   here  true ,
+   push-leave
+   drop here
+; immediate
+
 \ Implements the test part of a DO LOOP,
 \ leaving a flag on the stack.
 : looptest  ( -- flag    / R: limit index -- limit index' )
@@ -191,9 +216,7 @@ variable do-sp  0 do-sp !
 
 : leave
    compile branch
-   do>          ( leave-token )
-   here >do
-   ,
+   here  true ,  push-leave
 ; immediate
 
 \ Fix the leave token.

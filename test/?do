@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: x 9 swap ?do i . loop  [char] @ emit  ;
+9 x
+6 x
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("@6 7 8 @") exit 0;;
+esac
+exit 2
