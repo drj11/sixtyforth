@@ -105,45 +105,34 @@
 
 \ ## Control Flow
 
-create begin-token
-
 \ std1983
-: begin  ( -- token begin-token / at compile time )
-   here begin-token
+: begin  ( -- token / at compile time )
+   here
 ; immediate
 
 \ std1983
-: until  ( token begin-token -- / at compile time )
-   \ todo: check token
-   drop
+: until  ( token -- / at compile time )
    compile 0branch
    here         ( token here )
    -            ( byte-offset )
    ,
 ; immediate
 
-create while-token
-
 \ std1983
-: while  ( token begin-token -- w-token while-token )
+: while  ( token -- token w-token )
    compile 0branch
-   \ todo: check token
-   here         ( token begin-token w-token )
-   while-token  ( token begin-token w-token while-token )
+   here         ( token w-token )
    true ,
 ; immediate
 
 \ std1994
-: repeat  ( b-token 'BEGIN w-token 'WHILE -- )
-   2swap        ( w-token 'WHILE b-token 'BEGIN )
-   drop         \ :todo: safety check 'BEGIN
+: repeat  ( b-token w-token -- )
+   swap         ( w-token b-token )
    compile branch
-   here -       ( w-token 'WHILE offset )
-   ,            ( w-token 'WHILE )
-   drop         ( w-token )
+   here -       ( w-token offset )
+   ,            ( w-token )
    here         ( w-token here )
-   over         ( w-token here w-token )
-   -            ( w-token offset )
+   over -       ( w-token offset )
    swap !
 ; immediate
 
