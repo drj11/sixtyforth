@@ -127,7 +127,7 @@ WORD    x
 ## Compiler layer 
 
 
-+LOOP
++LOOP   i
 ,       i
 ."      i
 :       i

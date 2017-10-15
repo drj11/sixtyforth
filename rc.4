@@ -213,6 +213,30 @@ variable do-sp  0 do-sp !
    swap >r      ( flag )
 ;
 
+\ Add inc to index and convert inc to flag;
+\ flag is true iff index crosses boundary between
+\ limit-1 and limit.
+: +test  ( inc limit index -- flag index' )
+  swap >r       ( inc index )  ( r: limit )
+  2dup +        ( inc index index' )
+  dup r@ -      ( inc index index' o' )
+  rot r> -      ( inc index' o' o )
+  over xor      ( inc index' o' x )
+  rot 2swap     ( x index' inc o' )
+  xor invert    ( x index' q )
+  rot and       ( index' sflag )
+  0< swap       ( flag index' )
+;
+
+: +looptest  ( inc -- flag ) ( r: limit index -- limit index' )
+   r> swap      ( ret inc )
+   2r@          ( ret inc limit index )
+   +test        ( ret flag index' )
+   r> drop      ( r: limit )
+   >r           ( ret flag ) ( r: limit index' )
+   swap >r      ( flag )
+;
+
 : leave
    compile branch
    push-leave
@@ -227,10 +251,7 @@ variable do-sp  0 do-sp !
    - swap !     ( leave-token' )
 ;
 
-\ std1983
-: loop  ( R: limit base -- limit base+1 | )
-        ( C: do-token -- )
-   compile looptest
+: loopy
    compile 0branch
    here         ( do-token here )
    -            ( byte-offset )
@@ -242,6 +263,20 @@ variable do-sp  0 do-sp !
       fix-leave         ( leave-token' )
    repeat
    compile 2r> compile 2drop
+;
+
+\ std1983
+: loop  ( R: limit base -- limit base+1 | )
+        ( C: do-token -- )
+   compile looptest
+   loopy
+; immediate
+
+: +loop  ( inc -- )
+         ( R: limit base -- limit base' | )
+         ( C: do-token -- )
+   compile +looptest
+   loopy
 ; immediate
 
 \ std1983
