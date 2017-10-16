@@ -1,0 +1,10 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# Assumes ASCII
+out=$($FORTH -c 'here 99 c, 98 c, c@ .')
+printf "%s\n" "$out"
+case "$out" in
+    ("99 ") exit 0;;
+esac
+exit 2

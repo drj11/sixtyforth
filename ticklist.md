@@ -174,7 +174,7 @@ WHILE   i
 2SWAP   i
 ALIGNED i
 BL      i
-C,      p
+C,      i
 CELL+   i
 CELLS   i
 CHAR    i
