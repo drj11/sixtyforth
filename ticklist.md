@@ -12,8 +12,8 @@ p - partially implemented (for example, small inputs only)
 
 !       i
 *       i
-*/
-*/MOD
+*/      i
+*/MOD   p
 +       i
 +!      i
 -       i

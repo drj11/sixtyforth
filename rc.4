@@ -50,6 +50,8 @@
 
 \ std1994
 : /mod  ( n1 n2 -- rem quot )  >r s>d r> sm/rem ;
+: */mod  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
+: */  ( n1 n2 n3 -- quot )  */mod nip ;
 
 \ std1994
 : /  ( n1 n2 -- n3 )  /mod nip ;
