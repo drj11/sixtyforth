@@ -328,6 +328,10 @@ variable do-sp  0 do-sp !
    here aligned  here  - allot
 ;
 
+\ std1994
+: c,  ( char -- )
+   here  1 allot  !  ;
+
 \ Map Anonymous
 \ Request freshly allocated memory.
 : map-anon  ( sz -- addr ior )
