@@ -442,6 +442,14 @@ variable pic
 \ std1994 core ext
 : hex  ( -- )  16 base ! ;
 
+\ std1994 tools
+: .s  ( -- )
+   stack
+   ?do
+      i @ .
+   1 cells  +loop
+;
+
 \ ## String
 
 \ std1994
