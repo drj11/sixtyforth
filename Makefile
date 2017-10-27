@@ -5,7 +5,7 @@ rc.o: rc.4
 	objcopy --input binary --output elf64-x86-64 --binary-architecture i386:x86-64 $< $@
 
 64th.o: 64th.asm
-	nasm -w+error -g -f elf64 -o $@ -l listing $<
+	nasm -w+error -g -f elf64 -o $@ -l ignore/listing $<
 
 node_modules/urchin/urchin:
 	npm install urchin

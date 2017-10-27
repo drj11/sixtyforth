@@ -1,4 +1,5 @@
 core
+ignore
 node_modules
 test/.urchin.log
 vendor
