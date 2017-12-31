@@ -95,7 +95,7 @@ EXECUTE:
         DQ 'exit'       ; std1983
 EXIT:   DQ $+8
         sub r12, 8
-        mov rbx, [r12]
+        mov rbx, [r12]  ; Pop I from Return Stack
         jmp next
         CtoL(EXIT)
 
@@ -2106,21 +2106,21 @@ reset:  ; QUIT jumps here
         mov rax, anumberIB
         mov [rax], rcx
 
-        ; Initialising RDX (aka THIS) and RBX (aka CODEPOINTER),
+        ; Initialising W (RDX) and I (RBX),
         ; so as to fake executing the Forth word IPL.
         mov rdx, vRESET
         mov rbx, ipl+16
 
 stdexe:
-        ; Stack CODEPOINTER onto continuation stack, then
+        ; Stack I onto continuation stack, then
         mov [r12], rbx
         add r12, 8
-        ; Fetch new CODEPOINTER from THIS.
+        ; Fetch new I from W.
         lea rbx, [rdx+8]
 next:
-        mov rdx, [rbx]
+        mov rdx, [rbx]  ; Load W from I
         add rbx, 8
-        mov rax, [rdx]
+        mov rax, [rdx]  ; Load Code Field from W
         jmp rax
 
 stdvar:
