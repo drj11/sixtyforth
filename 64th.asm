@@ -99,6 +99,14 @@ EXIT:   DQ $+8
         jmp next
         CtoL(EXIT)
 
+        DQ 5
+        DQ 'semic'
+semic:  DQ $+8
+        sub r12, 8
+        mov rbx, [r12]  ; Pop I from Return Stack
+        jmp next
+        CtoL(semic)
+
         DQ 4
         DQ 'quit'       ; std1983
 QUIT:   DQ reset
@@ -1430,7 +1438,7 @@ colon:  DQ stdexe
         DQ ';'          ; std1983
 semicolon:
         DQ stdexe
-        DQ LIT, EXIT
+        DQ LIT, semic
         DQ comma
         ; :todo: check compiler safety
         DQ z
