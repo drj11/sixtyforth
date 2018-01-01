@@ -4,9 +4,9 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 : s 0 do   if leave then   s" @" leave   loop ;
 0 4 s type
-depth .
+DEPTH .
 1 4 s
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case "$out" in

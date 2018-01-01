@@ -12,7 +12,7 @@ TUCK cell+ !
 TUCK cell+ cell+ !
 2@
 . .
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case "$out" in

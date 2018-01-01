@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': select if swap then drop ;
   1 2 3 select .
   8 9 0 select .
-  depth .')
+  DEPTH .')
 printf "%s\n" "$out"
 case "$out" in
     ("2 8 0 ") exit 0;;

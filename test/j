@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 : s 0 do dup 0 do i . j . bl emit loop loop ;
 3 2 s
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case "$out" in

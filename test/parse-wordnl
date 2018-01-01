@@ -2,10 +2,10 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test bug when PARSE-WORD is used before buffer input end.
-out=$($FORTH -c 'depth .
+out=$($FORTH -c 'DEPTH .
 : s s" parse-word" ;
 s evaluate
-depth .')
+DEPTH .')
 printf "%s\n" "$out"
 case "$out" in
     ("0 2 ") exit 0;;

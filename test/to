@@ -10,7 +10,7 @@ doob .
 doob .
 zero
 doob .
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case $out in

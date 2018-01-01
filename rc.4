@@ -66,8 +66,7 @@
 \ CORE-EXT
 : U>  ( u1 u2 -- flag )  swap u< ;
 
-\ std1994 core
-: depth  ( -- +n )
+: DEPTH  ( -- +n )
    stack -  1 cells / ;
 
 \ std1983
@@ -1180,9 +1179,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          0= if
             ki.k 1 ki.insert
          else
-            depth >r
+            DEPTH >r
             execute
-            depth r>            ( flag depth1 depth0 )
+            DEPTH r>            ( flag depth1 depth0 )
             - if
                s" stack imbalance" etype
             then
