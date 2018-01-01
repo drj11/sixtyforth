@@ -28,10 +28,9 @@
 : 2DUP  ( x x' -- x x' x x' )  over over ;
 \ CORE-EXT
 : TUCK  ( a b -- b a b )  swap over ;
-\ std1983
+\ CORE-EXT
 : .(  [CHAR] ) parse type ; immediate
-\ std1994
-: s>d  ( n -- d )  dup 0< ;
+: S>D  ( n -- d )  dup 0< ;
 
 \ std1994 core-ext
 : 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
@@ -47,7 +46,7 @@
 : 2*  ( x -- x' )  2 * ;
 
 \ std1994
-: /mod  ( n1 n2 -- rem quot )  >r s>d r> sm/rem ;
+: /mod  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
 : */mod  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
 : */  ( n1 n2 n3 -- quot )  */mod nip ;
 
@@ -83,7 +82,7 @@
 \ std1994
 : mod  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
-   >r s>d r> sm/rem drop
+   >r S>D r> sm/rem drop
 ;
 
 \ std1994
@@ -1074,7 +1073,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Fix cursor position if it is at end of row
 : ki.curfix
-   ki.n @ s>d  tty.cols  um/mod ( col row )
+   ki.n @ S>D  tty.cols  um/mod ( col row )
    0>  swap 0=  and  if
       10 eemit
    then
@@ -1092,20 +1091,20 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ `from` and `to` are byte positions in the ki.a input string.
 : ki.motion  ( from to -- )
    tty.cols >r
-   s>d r@ um/mod                ( from to-col to-row )
+   S>D r@ um/mod                ( from to-col to-row )
    rot                          ( to-col to-row from )
-   s>d r> um/mod                ( to-col to-row from-col from-row )
+   S>D r> um/mod                ( to-col to-row from-col from-row )
    rot                          ( to-col from-col from-row to-row )
    \ vertical motion
    2DUP > if
       \ upward motion
-      - s>d                     ( t-col f-col dn )
+      - S>D                     ( t-col f-col dn )
       <# [CHAR] A hold #d [CHAR] [ hold 27 hold #>
       etype                     ( t-col f-col )
    else
       2DUP < if
          \ downward motion
-         - negate s>d           ( t-col f-col dn )
+         - negate S>D           ( t-col f-col dn )
          <# [CHAR] B hold #d [CHAR] [ hold 27 hold #>
          etype                  ( t-col f-col )
       else
@@ -1113,7 +1112,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
       then
    then
    drop                         ( t-col )
-   1+ s>d <# [CHAR] G hold #d [CHAR] [ hold 27 hold #>
+   1+ S>D <# [CHAR] G hold #d [CHAR] [ hold 27 hold #>
    etype                        ( )
 ;
 
