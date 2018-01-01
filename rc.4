@@ -261,12 +261,12 @@ VARIABLE do-sp  0 do-sp !
 ; immediate
 
 \ std1983
-: i  ( -- index )
+: I  ( -- index )
    2r@ drop
 ;
 
 \ std1994
-: j  ( -- index )  ( R: lj bj li bi ret )
+: J  ( -- index )  ( R: lj bj li bi ret )
    2R>  2r@ drop  rot rot 2>r
 ;
 
@@ -425,7 +425,7 @@ VARIABLE pic
 : .s  ( -- )
    stack
    ?DO
-      i @ .
+      I @ .
    1 cells  +LOOP
 ;
 
@@ -1248,10 +1248,10 @@ options
    0 DO
       \ l is, or will be, the index of the earliest NL
       over              ( addr l addr )
-      i + c@            ( addr l ch )
+      I + c@            ( addr l ch )
       10 = IF
          \ :todo: reimplement using `leave`
-         i min
+         I min
       THEN
    LOOP
    ( addr l )
