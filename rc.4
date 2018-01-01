@@ -7,9 +7,9 @@
 
 : [COMPILE]   ' , ; immediate
 
-: char   parse-word drop c@ ;
-\ std1994
-: [char]   char [COMPILE] literal ; immediate
+: CHAR   parse-word drop c@ ;
+
+: [char]   CHAR [COMPILE] literal ; immediate
 \ std1983
 : (   [char] ) parse 2DROP ; immediate
 
