@@ -73,8 +73,7 @@
 \ DOUBLE
 : 2VARIABLE   create 2 cells allot ;
 
-\ std1994
-: mod  ( n1 n2 -- n3 )
+: MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
    >r S>D r> sm/rem drop
 ;
@@ -826,7 +825,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    hl.base              ( i i base )
    hl.next @            ( i i base limit )
    within  if
-      hl.n mod          ( array-index )
+      hl.n MOD          ( array-index )
       hl.a&             ( addr )
    else
       drop
