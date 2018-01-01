@@ -7,9 +7,9 @@ out=$($FORTH -c '
 -1
 here
 3 cells allot
-tuck !
-tuck cell+ !
-tuck cell+ cell+ !
+TUCK !
+TUCK cell+ !
+TUCK cell+ cell+ !
 2@
 . .
 depth .

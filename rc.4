@@ -26,7 +26,8 @@
 ; immediate
 
 : 2DUP  ( x x' -- x x' x x' )  over over ;
-: tuck  ( a b -- b a b )  swap over ;
+\ CORE-EXT
+: TUCK  ( a b -- b a b )  swap over ;
 \ std1983
 : .(  [CHAR] ) parse type ; immediate
 \ std1994
@@ -86,7 +87,7 @@
 ;
 
 \ std1994
-: 2!  ( x1 x2 addr -- )  tuck !   cell+ ! ;
+: 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
 
 \ std1994
 : 2@  ( addr -- x1 x2 )
@@ -100,7 +101,7 @@
 
 \ std1994 string
 : /string  ( addr u n -- addr' u' )
-   tuck -               ( addr n u' )
+   TUCK -               ( addr n u' )
    >r + r>              ( addr' u' )
 ;
 
@@ -363,7 +364,7 @@ variable pic
 : hold  ( ch -- )
    pic @        ( ch addr )
    1-           ( ch addr' )
-   tuck         ( addr' ch addr' )
+   TUCK         ( addr' ch addr' )
    c!           ( addr' )
    pic !
 ;
@@ -431,7 +432,7 @@ variable pic
 
 \ std1994 double
 : d.  ( d -- )
-   tuck dabs    ( n du )        \ n same sign as d
+   TUCK dabs    ( n du )        \ n same sign as d
    .sign ;
 
 \ std1994
@@ -562,7 +563,7 @@ create fstatbuf 144 allot align
 \ Modelled after ANSI `file-status`.
 : file*status  ( n -- addr ior )
    \ Leaves result in `fstatbuf` which is left on stack.
-   fstatbuf tuck 0 5 syscall3 ;
+   fstatbuf TUCK 0 5 syscall3 ;
 
 \ std1994 file
 : file-size  ( fileid -- ud ior )
@@ -587,7 +588,7 @@ create fstatbuf 144 allot align
       0 0
    else
       ( n sz )
-      tuck                              ( sz n sz )
+      TUCK                              ( sz n sz )
       0 rot rot swap                    ( sz 0 sz n )
       \ For #defines, see /usr/include/asm-generic/mman-common.h
       \ PROT_READ 1
@@ -1050,7 +1051,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Move the current historic line into key input.
 : hl.move
    hl.cursor @ hl@              ( from u )
-   tuck ki.a swap               ( u from to u )
+   TUCK ki.a swap               ( u from to u )
    cmove                        ( u )
    ki.n !  0 ki.> !
 ;
@@ -1124,7 +1125,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    \ type out rest of text
    ki.a ki.> @ +                ( addr )
    ki.n @ ki.> @ -              ( addr n )
-   tuck                         ( n addr n )
+   TUCK                         ( n addr n )
    etype                        ( n )
    if
       ki.curfix
