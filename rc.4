@@ -78,15 +78,13 @@
    >r S>D r> sm/rem drop
 ;
 
-\ std1994
 : 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
 
-\ std1994
 : 2@  ( addr -- x1 x2 )
    dup cell+ @   swap @ ;
 
-\ std1994 double
-: d0=  ( xd -- flag )  or 0= ;
+\ DOUBLE
+: D0=  ( xd -- flag )  or 0= ;
 
 \ std1994
 : count  ( addr -- addr' ch )  dup 1+ swap c@ ;
@@ -380,7 +378,7 @@ VARIABLE pic
    begin
       #
       2DUP      ( ud ud )
-      d0=       ( ud flag )
+      D0=       ( ud flag )
    until
 ;
 
