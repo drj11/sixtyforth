@@ -1,16 +1,15 @@
 : 2DROP   drop drop ;
 : \   10 parse 2DROP ; immediate         \ Now we have comments
 
-\ std1983
 : '
    \ Avoid using IF, which is not defined yet
    parse-word findword dup 0= ?dup 2DROP ;
-\ std1983
-: [compile]   ' , ; immediate
-\ std1994
+
+: [COMPILE]   ' , ; immediate
+
 : char   parse-word drop c@ ;
 \ std1994
-: [char]   char [compile] literal ; immediate
+: [char]   char [COMPILE] literal ; immediate
 \ std1983
 : (   [char] ) parse 2DROP ; immediate
 
@@ -20,7 +19,7 @@
 : compile   r> dup @ , cell+ >r ;
 
 \ std1983
-: [']   ' [compile] literal ; immediate
+: [']   ' [COMPILE] literal ; immediate
 
 \ std1994
 : recurse
@@ -196,7 +195,7 @@ variable do-sp  0 do-sp !
    \ but adjust the do-token so that the LOOP returns
    \ to a point after the equalty test implied by ?DO .
    compile 2dup
-   [compile] do
+   [COMPILE] do
    compile <>
    compile 0branch
    push-leave
@@ -318,7 +317,7 @@ variable do-sp  0 do-sp !
 : to  ( x -- )
    ' >body
    state @ if
-      [compile] literal
+      [COMPILE] literal
       compile !
    else
       !
@@ -454,7 +453,7 @@ variable pic
 
 \ std1994
 : ."  ( copmile: "ccc<quote>" -- )
-   [compile] s" compile type
+   [COMPILE] s" compile type
 ; immediate
 
 \ 3-way comparison
