@@ -272,8 +272,7 @@ VARIABLE do-sp  0 do-sp !
 
 \ ##
 
-\ std1983
-: max   2DUP < IF swap THEN drop ;
+: MAX   2DUP < IF swap THEN drop ;
 
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa
@@ -770,7 +769,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 
 \ Index of earliest history element.
 : hl.base  ( -- base )
-   hl.n hl.next @ max
+   hl.n hl.next @ MAX
    hl.n -
 ;
 
@@ -997,7 +996,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : k:^A   0 ki.> !   1 ;
 
 \ backward-char
-: k:^B   ki.> @ 1-  0  max  ki.> !   1 ;
+: k:^B   ki.> @ 1-  0  MAX  ki.> !   1 ;
 
 \ erase-forward-char
 : k:^D
