@@ -69,10 +69,9 @@
 : DEPTH  ( -- +n )
    stack -  1 cells / ;
 
-\ std1983
-: variable    create 1 cells allot ;
-\ std1994 double
-: 2variable   create 2 cells allot ;
+: VARIABLE    create 1 cells allot ;
+\ DOUBLE
+: 2VARIABLE   create 2 cells allot ;
 
 \ std1994
 : mod  ( n1 n2 -- n3 )
@@ -157,7 +156,7 @@
    here over - swap ! ; immediate
    
 create do-stack  3 cells allot
-variable do-sp  0 do-sp !
+VARIABLE do-sp  0 do-sp !
 : do-addr   do-stack  do-sp @ cells  + ;
 
 : >do   do-addr !  1 do-sp +! ;
@@ -301,7 +300,7 @@ variable do-sp  0 do-sp !
 
 \ std1983
 : constant  ( x -- / -- x )
-   variable last name> >body ! does> @ ;
+   VARIABLE last name> >body ! does> @ ;
 
 \ std1994 core ext
 : value   constant ;
@@ -342,7 +341,7 @@ variable do-sp  0 do-sp !
 300 constant pic-size
 pic-size map-anon drop pic-size +
 value picend
-variable pic
+VARIABLE pic
 
 \ double to double division
 \ used in printing numbers
@@ -633,7 +632,7 @@ constant openbuf        ( buffer for open pathname )
 : c!xa  ( X M addr -- )
    dup >r c@ and xor r> c! ;
 
-variable chbuf
+VARIABLE chbuf
 
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
@@ -712,7 +711,7 @@ create tty.szbuf 8 allot
    16 syscall3          ( res )
 ;
 
-variable tty.vbuf
+VARIABLE tty.vbuf
 -1 tty.vbuf !
 
 \ Number of columns in TTY.
@@ -750,14 +749,14 @@ variable tty.vbuf
 \ address
 create ki.a ki.z allot
 \ point
-variable ki.>
+VARIABLE ki.>
 \ validity
-variable ki.n
-variable ki.>save
+VARIABLE ki.n
+VARIABLE ki.>save
 \ small buffer for key input
-variable ki.k
+VARIABLE ki.k
 \ small buffer used for findword
-variable ki.fixk
+VARIABLE ki.fixk
 
 \ Reset key variables to create a fresh buffer
 : ki.fresh
@@ -769,17 +768,17 @@ ki.fresh
 \ ## Historic Lines
 
 \ Memory block for all strings in history.
-variable hl.block
+VARIABLE hl.block
 1000000000 map-anon drop hl.block !
 \ history-pointer
-variable hl.p
+VARIABLE hl.p
 hl.block @ hl.p !
 
 : hl.n   999 ;
 create hl.array hl.n 2* cells allot
 
-variable hl.next   0 hl.next !
-variable hl.cursor   0 hl.cursor !
+VARIABLE hl.next   0 hl.next !
+VARIABLE hl.cursor   0 hl.cursor !
 
 \ Index of earliest history element.
 : hl.base  ( -- base )
@@ -1220,7 +1219,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ -1 always interactive
 \ 0 not interactive
 \ 1 interactive unless args provided
-variable interactive
+VARIABLE interactive
 1 interactive !
 
 ' kipl *vreset !
