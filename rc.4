@@ -88,8 +88,8 @@
 
 : COUNT  ( addr -- addr' ch )  dup 1+ swap c@ ;
 
-\ std1994 string
-: /string  ( addr u n -- addr' u' )
+\ STRING
+: /STRING  ( addr u n -- addr' u' )
    TUCK -               ( addr n u' )
    >r + r>              ( addr' u' )
 ;
@@ -1264,7 +1264,7 @@ options
    loop
    ( addr l )
    r> swap              ( addr u l )
-   /string
+   /STRING
 ;
 
 \ If there is a command line argument,

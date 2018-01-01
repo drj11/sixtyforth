@@ -2,8 +2,8 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-0 1 1 /string . .
-3 2 -1 /string . .
+0 1  1 /STRING . .
+3 2 -1 /STRING . .
 ')
 printf "%s\n" "$out"
 case "$out" in
