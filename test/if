@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c ': select if swap then drop ;
+out=$($FORTH -c ': select IF swap THEN drop ;
   1 2 3 select .
   8 9 0 select .
   DEPTH .')

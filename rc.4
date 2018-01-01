@@ -100,7 +100,6 @@
    here
 ; immediate
 
-\ std1983
 : UNTIL  ( token -- / at compile time )
    compile 0branch
    here         ( token here )
@@ -108,14 +107,12 @@
    ,
 ; immediate
 
-\ std1983
 : WHILE  ( token -- token w-token )
    compile 0branch
    here         ( token w-token )
    true ,
 ; immediate
 
-\ std1994
 : REPEAT  ( b-token w-token -- )
    swap         ( w-token b-token )
    compile branch
@@ -126,8 +123,7 @@
    swap !
 ; immediate
 
-\ std1983
-: if  ( -- token    / at compile time )
+: IF  ( -- token    / at compile time )
    compile 0branch
    here         ( token )
    \ compile dummy offset
@@ -135,7 +131,7 @@
 ; immediate
 
 \ std1983
-: else  ( token -- newtoken      / at compile time )
+: ELSE  ( token -- newtoken      / at compile time )
    compile branch
    here         ( token newtoken )
    ( compile dummy offset )
@@ -147,7 +143,7 @@
 ; immediate
 
 \ std1983
-: then
+: THEN
    here over - swap ! ; immediate
    
 create do-stack  3 cells allot
@@ -280,7 +276,7 @@ VARIABLE do-sp  0 do-sp !
 \ ##
 
 \ std1983
-: max   2DUP < if swap then drop ;
+: max   2DUP < IF swap THEN drop ;
 
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa
@@ -303,12 +299,12 @@ VARIABLE do-sp  0 do-sp !
 \ std1994 core ext
 : to  ( x -- )
    ' >body
-   state @ if
+   state @ IF
       [COMPILE] literal
       compile !
-   else
+   ELSE
       !
-   then
+   THEN
 ; immediate
 
 \ std1994
@@ -382,10 +378,10 @@ VARIABLE pic
 
 \ std1994
 : sign  ( n -- )
-   0< if
+   0< IF
       [CHAR] -
       hold
-   then
+   THEN
 ;
 
 \ std1994
@@ -461,12 +457,12 @@ VARIABLE pic
    false
    BEGIN
       drop
-      dup 0= if
+      dup 0= IF
         \ identical up to common part
         drop 2DROP
         r> r> cmp
         exit
-      then
+      THEN
       ( c-addr1 c-addr2 n )
       1-
       rot COUNT >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
@@ -482,11 +478,11 @@ VARIABLE pic
 \ print name of word given its LFA
 : .lfa  ( lfa -- lfa 0 )
         ( lfa -- 1 )
-   dup 0= if
+   dup 0= IF
       drop
       1
       exit
-   then
+   THEN
    dup                  ( lfa lfa )
    cell+                ( lfa nfa )
    dup @                ( lfa nfa u-bits )
@@ -530,14 +526,14 @@ rsp constant argc
    \ Following ARGC are the pointers to C strings.
    argc
    + @          ( addr )
-   dup if
+   dup IF
       c>        ( addr u )
-   else
+   ELSE
       0         ( 0 0 )
-   then
+   THEN
 ;
 : arg-pop  ( -- )
-   argc @ 2 < if  exit  then
+   argc @ 2 < IF  exit  THEN
    argc 2 cells +       ( addr-from )
    argc cell+           ( addr-from addr-to )
    -1 argc +!
@@ -556,12 +552,12 @@ create fstatbuf 144 allot align
 \ std1994 file
 : file-size  ( fileid -- ud ior )
    file*status
-   ?dup if
+   ?dup IF
       0 swap                    ( x 0 ior )
-   else
+   ELSE
       48 + @  0                 ( ud )
       0                         ( ud 0 )
-   then
+   THEN
 ;
 
 \ File Map for Reading
@@ -571,10 +567,10 @@ create fstatbuf 144 allot align
    dup file-size                        ( fd ud ior )
    abort" File cannot be mapped"        ( fd ud )
    d>s                                  ( fd u )
-   dup 1 < if
+   dup 1 < IF
       drop drop
       0 0
-   else
+   ELSE
       ( n sz )
       TUCK                              ( sz n sz )
       0 rot rot swap                    ( sz 0 sz n )
@@ -587,7 +583,7 @@ create fstatbuf 144 allot align
       0                                 ( sz 0 sz 1 2 n 0 )
       9 syscall6                        ( sz addr )
       swap
-   then
+   THEN
 ;
 
 4096 map-anon drop
@@ -632,13 +628,13 @@ VARIABLE chbuf
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
    chbuf 1 sysread
-   dup 0< if
-   else
-      0= if -9999999
-      else
+   dup 0< IF
+   ELSE
+      0= IF -9999999
+      ELSE
          chbuf c@
-      then
-   then
+      THEN
+   THEN
 ;
 
 \ Read single byte from stdin
@@ -713,14 +709,14 @@ VARIABLE tty.vbuf
 : tty.cols ( -- cols )
    0 tty.szbuf
    tiocgwinsz
-   0= if
+   0= IF
       tty.szbuf 2+      ( a+2 )
       dup 1+            ( a+2 a+3 )
       c@ swap c@        ( b1 b0 )
       swap              ( b0 b1 )
       256 * +           ( cols )
       tty.vbuf !
-   then
+   THEN
    tty.vbuf @
 ;
 
@@ -782,22 +778,22 @@ VARIABLE hl.cursor   0 hl.cursor !
 ;
 
 : hl.curprev  ( -- flag )
-   hl.cursor @  hl.base  >  if
+   hl.cursor @  hl.base  >  IF
       -1 hl.cursor +!
       true
-   else
+   ELSE
       0
-   then
+   THEN
 ;
 
 : hl.curnext  ( -- flag )
    hl.cursor @  hl.next @ 1-    ( c end )
-   < if
+   < IF
       1 hl.cursor +!
       true
-   else
+   ELSE
       0
-   then
+   THEN
 ;
 
 \ Return address of uth double-world entry in hl.array.
@@ -820,25 +816,25 @@ VARIABLE hl.cursor   0 hl.cursor !
    dup                  ( i i )
    hl.base              ( i i base )
    hl.next @            ( i i base limit )
-   within  if
+   within  IF
       hl.n MOD          ( array-index )
       hl.a&             ( addr )
-   else
+   ELSE
       drop
       0
-   then
+   THEN
 ;
 
 \ Fetch string from history; 0 0 if invalid index.
 : hl@  ( i -- addr u )
    hl&                  ( addr )
-   dup if
+   dup IF
       2@                ( u a )
       swap              ( a u )
-   else
+   ELSE
       drop
       0 0
-   then
+   THEN
 ;
 
 \ Save the string into most recent element of history;
@@ -846,9 +842,9 @@ VARIABLE hl.cursor   0 hl.cursor !
 : hl.save  ( from u -- )
    hl.next @ 1-         ( from u i )
    hl&                  ( from u h-addr )
-   dup 0= if
+   dup 0= IF
       abort" hl.save problem"
-   then
+   THEN
    \ :todo: check lengths here
    2DUP                 ( from u h-addr u h-addr )
    cell+ !              ( from u h-addr )
@@ -930,11 +926,11 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Insert the text into the buffer at the current point,
 \ and advance the point past the inserted text.
 : ki.insert  ( addr u -- 1 )
-   dup ki.n @ +  ki.z  >  if
+   dup ki.n @ +  ki.z  >  IF
       \ buffer full
       s" #%#" etype
       0
-   else
+   ELSE
       ( addr u )
       \ copy text to right of point up to make room
       ki.a ki.> @ +     ( addr u from )
@@ -951,7 +947,7 @@ VARIABLE hl.cursor   0 hl.cursor !
       ki.> +!           ( addr u > )
       swap cmove        ( )
       1
-   then
+   THEN
 ;
 
 \ fix-up the single character in ki.k
@@ -959,19 +955,19 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ and prefix everything with k:
 : ki.fix
    s" k:" ki.fixk swap cmove
-   ki.k c@  32  <  if
+   ki.k c@  32  <  IF
       [CHAR] ^ ki.fixk 2 + c!
       ki.k c@
       64 or ki.fixk 3 + c!
       ki.fixk 4
-   else
+   ELSE
       ki.k c@ ki.fixk 2 + c!
       ki.fixk 3
-   then
+   THEN
 ;
 
 : erase-backward-char
-   ki.> @  if
+   ki.> @  IF
       \ copy down characters
       ki.a ki.> @ +     ( from )
       dup 1-            ( from to )
@@ -980,7 +976,7 @@ VARIABLE hl.cursor   0 hl.cursor !
       \ shrink buffer
       -1 ki.> +!
       -1 ki.n +!
-   then
+   THEN
 ;
 
 \ Create a binding for the current stty erase key
@@ -1009,11 +1005,11 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ erase-forward-char
 : k:^D
    \ if entire line is empty, terminate
-   ki.n @ 0=  ki.> @ 0=  and  if
+   ki.n @ 0=  ki.> @ 0=  and  IF
       0  exit
-   then
+   THEN
    \ Test if there are any characters ahead of point to erase.
-   ki.n @  ki.> @  -  if
+   ki.n @  ki.> @  -  IF
       \ copy down characters
       ki.a ki.> @ +             ( to )
       dup 1+ swap               ( from to )
@@ -1021,7 +1017,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
       cmove
       \ shrink buffer
       -1 ki.n +!
-   then
+   THEN
    1
 ;
 
@@ -1046,26 +1042,26 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ next
 : k:^N
-   hl.curnext if
+   hl.curnext IF
       hl.move
-   then
+   THEN
    1
 ;
 
 \ previous
 : k:^P
-   hl.curprev if
+   hl.curprev IF
       hl.move
-   then
+   THEN
    1
 ;
 
 \ Fix cursor position if it is at end of row
 : ki.curfix
    ki.n @ S>D  tty.cols  um/mod ( col row )
-   0>  swap 0=  and  if
+   0>  swap 0=  and  IF
       10 eemit
-   then
+   THEN
 ;
 
 \ Like #s, but always in decimal.
@@ -1085,21 +1081,21 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    S>D r> um/mod                ( to-col to-row from-col from-row )
    rot                          ( to-col from-col from-row to-row )
    \ vertical motion
-   2DUP > if
+   2DUP > IF
       \ upward motion
       - S>D                     ( t-col f-col dn )
       <# [CHAR] A hold #d [CHAR] [ hold 27 hold #>
       etype                     ( t-col f-col )
-   else
-      2DUP < if
+   ELSE
+      2DUP < IF
          \ downward motion
          - negate S>D           ( t-col f-col dn )
          <# [CHAR] B hold #d [CHAR] [ hold 27 hold #>
          etype                  ( t-col f-col )
-      else
+      ELSE
          2DROP
-      then
-   then
+      THEN
+   THEN
    drop                         ( t-col )
    1+ S>D <# [CHAR] G hold #d [CHAR] [ hold 27 hold #>
    etype                        ( )
@@ -1115,9 +1111,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    ki.n @ ki.> @ -              ( addr n )
    TUCK                         ( n addr n )
    etype                        ( n )
-   if
+   IF
       ki.curfix
-   then
+   THEN
    \ clear rest of screen
    s" [J" etype
    ki.n @ ki.> @
@@ -1129,15 +1125,15 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ and reposition VT cursor at ki.> .
 : ki.redraw
    ki.>save @ ki.> @            ( old new )
-   > if
+   > IF
       \ new point is behind old one
       ki.>save @ ki.> @         ( from to )
       ki.motion                 ( )
       ki.> @                    ( p )
-   else
+   ELSE
       \ new point is forward of old one
       ki.>save @                ( p )
-   then
+   THEN
    \ Position of current VT on stack;
    \ type out text to end.
    ki.n @                       ( p n )
@@ -1146,9 +1142,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    rot +                        ( u addr )
    over                         ( u addr u )
    etype                        ( u )
-   if
+   IF
       ki.curfix
-   then
+   THEN
    s" [J" etype
    ki.n @ ki.> @
    ki.motion
@@ -1160,28 +1156,28 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
    BEGIN
       getc
-      dup 0< if
+      dup 0< IF
          \ negative: EOF or error
          drop 0                 ( 0 )
-      else
+      ELSE
          \ save input byte
          ki.k !                 ( )
          \ save current point
          ki.> @ ki.>save !      ( )
          ki.fix                 ( addr u )
          findword               ( addr fl | 0 )
-         0= if
+         0= IF
             ki.k 1 ki.insert
-         else
+         ELSE
             DEPTH >r
             execute
             DEPTH r>            ( flag depth1 depth0 )
-            - if
+            - IF
                s" stack imbalance" etype
-            then
-         then
+            THEN
+         THEN
          ki.redraw
-      then
+      THEN
       WHILE
    REPEAT
 
@@ -1199,12 +1195,12 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    BEGIN
       ki
       ki.input
-      ?dup if
+      ?dup IF
          evaluate
          s"  ok" etype 10 eemit   0
-      else
+      ELSE
          drop   1
-      then
+      THEN
    UNTIL
 ;
 
@@ -1229,16 +1225,16 @@ VARIABLE interactive
 : options
    BEGIN
       false             \ false to break at while
-      2 argc @ < if
-          1 arg -c? if
+      2 argc @ < IF
+          1 arg -c? IF
              disable-interactive
              drop
              2 arg
              arg-pop arg-pop
              evaluate
              true       \ true to continue at while
-          then
-      then
+          THEN
+      THEN
       WHILE
    REPEAT
 ;
@@ -1247,19 +1243,19 @@ options
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
    over c@              ( addr u c )
-   [CHAR] # <> if
+   [CHAR] # <> IF
       exit
-   then
+   THEN
    ( addr u )
    dup dup >r           ( addr u u ) ( r: u )
    0 do
       \ l is, or will be, the index of the earliest NL
       over              ( addr l addr )
       i + c@            ( addr l ch )
-      10 = if
+      10 = IF
          \ :todo: reimplement using `leave`
          i min
-      then
+      THEN
    loop
    ( addr l )
    r> swap              ( addr u l )
@@ -1269,7 +1265,7 @@ options
 \ If there is a command line argument,
 \ run it as Forth.
 : run-args
-   1 argc @ < if
+   1 argc @ < IF
       disable-interactive
       1 arg openr       ( fileid ior )
       abort" File not found
@@ -1277,6 +1273,6 @@ options
       fmapr             ( addr u )
       shebang
       evaluate
-   then
+   THEN
 ;
 run-args
