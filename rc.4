@@ -47,12 +47,10 @@
 : /MOD  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
 : */MOD  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
 : */  ( n1 n2 n3 -- quot )  */MOD nip ;
-
-\ std1994
 : /  ( n1 n2 -- n3 )  /MOD nip ;
 
-\ std1994 double
-: m*/  ( d1 n1 +n2 -- d2 )
+\ DOUBLE
+: M*/  ( d1 n1 +n2 -- d2 )
    >r                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
    2DUP xor             ( d1 n1 sign )

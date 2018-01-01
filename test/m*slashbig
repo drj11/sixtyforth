@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # It's not that big.
 # Two 40 bit factors giving 80 bit product.
-out=$($FORTH -c '1000111000222 0 1000111000222 1 m*/ d.')
+out=$($FORTH -c '1000111000222 0 1000111000222 1 M*/ d.')
 printf "%s\n" "$out"
 case "$out" in
     ("1000222012765049284049284 ") exit 0;;

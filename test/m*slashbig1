@@ -2,8 +2,8 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Product of a 47-bit number and two 40-bit numbers
-out=$($FORTH -c '123000111000222 0 1000111000222 1 m*/
-      1000111000222 1 m*/
+out=$($FORTH -c '123000111000222 0 1000111000222 1 M*/
+      1000111000222 1 M*/
       d.')
 printf "%s\n" "$out"
 case "$out" in
