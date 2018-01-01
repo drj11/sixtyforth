@@ -96,13 +96,12 @@
 
 \ ## Control Flow
 
-\ std1983
-: begin  ( -- token / at compile time )
+: BEGIN  ( -- token / at compile time )
    here
 ; immediate
 
 \ std1983
-: until  ( token -- / at compile time )
+: UNTIL  ( token -- / at compile time )
    compile 0branch
    here         ( token here )
    -            ( byte-offset )
@@ -110,14 +109,14 @@
 ; immediate
 
 \ std1983
-: while  ( token -- token w-token )
+: WHILE  ( token -- token w-token )
    compile 0branch
    here         ( token w-token )
    true ,
 ; immediate
 
 \ std1994
-: repeat  ( b-token w-token -- )
+: REPEAT  ( b-token w-token -- )
    swap         ( w-token b-token )
    compile branch
    here -       ( w-token offset )
@@ -247,10 +246,10 @@ VARIABLE do-sp  0 do-sp !
    ,
    \ fix the linked-list of leave-tokens up
    do>          ( leave-token )
-   begin
-      ?dup while
+   BEGIN
+      ?dup WHILE
       fix-leave         ( leave-token' )
-   repeat
+   REPEAT
    compile 2R> compile 2DROP
 ;
 
@@ -374,11 +373,11 @@ VARIABLE pic
 
 \ std1994
 : #s  ( ud -- 0. )
-   begin
+   BEGIN
       #
       2DUP      ( ud ud )
       D0=       ( ud flag )
-   until
+   UNTIL
 ;
 
 \ std1994
@@ -460,7 +459,7 @@ VARIABLE pic
    rot 2DUP 2>r
    min          ( c-addr1 c-addr2 n )
    false
-   begin
+   BEGIN
       drop
       dup 0= if
         \ identical up to common part
@@ -475,7 +474,7 @@ VARIABLE pic
       rot 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       dup
-  until
+  UNTIL
   2R> 2DROP
   nip nip nip
 ;
@@ -514,12 +513,12 @@ VARIABLE pic
 \ Convert from C string, by pushing its length.
 : c>  ( addr -- addr u )
    -1           ( addr i )
-   begin
+   BEGIN
       1+        ( addr i )
       2DUP +    ( addr i p )
       c@        ( addr i ch )
       0=        ( addr i flag )
-   until
+   UNTIL
 ;
 
 \ ARGC and ARG modelled after gforth implementation.
@@ -875,15 +874,15 @@ VARIABLE hl.cursor   0 hl.cursor !
 
 : hl.
    hl.base              ( i )
-   begin
+   BEGIN
       dup hl.next @     ( i i n )
       <                 ( i flag )
-   while
+   WHILE
       dup .
       dup hl@           ( i addr u )
       type cr           ( i )
       1+                ( i+1 )
-   repeat
+   REPEAT
    drop
 ;
 
@@ -1159,7 +1158,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    0 tty.store
    0 tty.keypress
 
-   begin
+   BEGIN
       getc
       dup 0< if
          \ negative: EOF or error
@@ -1183,8 +1182,8 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          then
          ki.redraw
       then
-      while
-   repeat
+      WHILE
+   REPEAT
 
    0 tty.restore
 ;
@@ -1197,7 +1196,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Key Input Prompt and Loop
 : kipl
-   begin
+   BEGIN
       ki
       ki.input
       ?dup if
@@ -1206,7 +1205,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
       else
          drop   1
       then
-   until
+   UNTIL
 ;
 
 : rc.defined true ;
@@ -1228,7 +1227,7 @@ VARIABLE interactive
 
 \ Handle command line options
 : options
-   begin
+   BEGIN
       false             \ false to break at while
       2 argc @ < if
           1 arg -c? if
@@ -1240,8 +1239,8 @@ VARIABLE interactive
              true       \ true to continue at while
           then
       then
-      while
-   repeat
+      WHILE
+   REPEAT
 ;
 options
 
