@@ -1,0 +1,12 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+#
+out=$($FORTH -c ': c s" Hello" ;
+c drop dup COUNT
+. - .')
+printf "%s\n" "$out"
+case "$out" in
+    ("72 -1 ") exit 0;;
+esac
+exit 2

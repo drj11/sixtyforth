@@ -86,8 +86,7 @@
 \ DOUBLE
 : D0=  ( xd -- flag )  or 0= ;
 
-\ std1994
-: count  ( addr -- addr' ch )  dup 1+ swap c@ ;
+: COUNT  ( addr -- addr' ch )  dup 1+ swap c@ ;
 
 \ std1994 string
 : /string  ( addr u n -- addr' u' )
@@ -471,8 +470,8 @@ VARIABLE pic
       then
       ( c-addr1 c-addr2 n )
       1-
-      rot count >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
-      rot count >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
+      rot COUNT >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
+      rot COUNT >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
       rot 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       dup
