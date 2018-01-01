@@ -42,16 +42,14 @@
 \ DOUBLE-EXT
 : 2ROT  ( p q r s t u -- r s t u p q )  2>r 2swap 2R> 2swap ;
 
-\ std1994
 : 2*  ( x -- x' )  2 * ;
 
-\ std1994
-: /mod  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
-: */mod  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
-: */  ( n1 n2 n3 -- quot )  */mod nip ;
+: /MOD  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
+: */MOD  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
+: */  ( n1 n2 n3 -- quot )  */MOD nip ;
 
 \ std1994
-: /  ( n1 n2 -- n3 )  /mod nip ;
+: /  ( n1 n2 -- n3 )  /MOD nip ;
 
 \ std1994 double
 : m*/  ( d1 n1 +n2 -- d2 )
