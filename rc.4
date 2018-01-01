@@ -148,13 +148,12 @@
    
 create do-stack  3 cells allot
 VARIABLE do-sp  0 do-sp !
-: do-addr   do-stack  do-sp @ cells  + ;
+   : do-addr   do-stack  do-sp @ cells  + ;
 
-: >do   do-addr !  1 do-sp +! ;
-: do>   -1 do-sp +!  do-addr @ ;
+   : >do   do-addr !  1 do-sp +! ;
+   : do>   -1 do-sp +!  do-addr @ ;
 
-\ std1983
-: do  ( limit base -- )
+: DO  ( limit base -- )
       ( C: -- do-token )
       ( do-stack: -- leave-token )
    compile 2>r
@@ -170,15 +169,14 @@ VARIABLE do-sp  0 do-sp !
    , >do
 ;
 
-\ std1994
-: ?do  ( limit base -- )
+: ?DO  ( limit base -- )
        ( C: -- do-token )
        ( do-stack: -- leave-token )
    \ Use DO to setup a DO LOOP,
    \ but adjust the do-token so that the LOOP returns
    \ to a point after the equalty test implied by ?DO .
    compile 2DUP
-   [COMPILE] do
+   [COMPILE] DO
    compile <>
    compile 0branch
    push-leave
@@ -249,14 +247,13 @@ VARIABLE do-sp  0 do-sp !
    compile 2R> compile 2DROP
 ;
 
-\ std1983
-: loop  ( R: limit base -- limit base+1 | )
+: LOOP  ( R: limit base -- limit base+1 | )
         ( C: do-token -- )
    compile looptest
    loopy
 ; immediate
 
-: +loop  ( inc -- )
+: +LOOP  ( inc -- )
          ( R: limit base -- limit base' | )
          ( C: do-token -- )
    compile +looptest
@@ -427,9 +424,9 @@ VARIABLE pic
 \ std1994 tools
 : .s  ( -- )
    stack
-   ?do
+   ?DO
       i @ .
-   1 cells  +loop
+   1 cells  +LOOP
 ;
 
 \ ## String
@@ -1248,7 +1245,7 @@ options
    THEN
    ( addr u )
    dup dup >r           ( addr u u ) ( r: u )
-   0 do
+   0 DO
       \ l is, or will be, the index of the earliest NL
       over              ( addr l addr )
       i + c@            ( addr l ch )
@@ -1256,7 +1253,7 @@ options
          \ :todo: reimplement using `leave`
          i min
       THEN
-   loop
+   LOOP
    ( addr l )
    r> swap              ( addr u l )
    /STRING
