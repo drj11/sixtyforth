@@ -1,10 +1,10 @@
-: 2drop   drop drop ;
-: \   10 parse 2drop ; immediate         \ Now we have comments
+: 2DROP   drop drop ;
+: \   10 parse 2DROP ; immediate         \ Now we have comments
 
 \ std1983
 : '
    \ Avoid using IF, which is not defined yet
-   parse-word findword dup 0= ?dup 2drop ;
+   parse-word findword dup 0= ?dup 2DROP ;
 \ std1983
 : [compile]   ' , ; immediate
 \ std1994
@@ -12,7 +12,7 @@
 \ std1994
 : [char]   char [compile] literal ; immediate
 \ std1983
-: (   [char] ) parse 2drop ; immediate
+: (   [char] ) parse 2DROP ; immediate
 
 ( Now we have round bracket comments )
 
@@ -264,7 +264,7 @@ variable do-sp  0 do-sp !
       ?dup while
       fix-leave         ( leave-token' )
    repeat
-   compile 2r> compile 2drop
+   compile 2r> compile 2DROP
 ;
 
 \ std1983
@@ -404,7 +404,7 @@ variable pic
 
 \ std1994
 : #>  ( ud -- addr u )
-   2drop
+   2DROP
    pic @
    picend       ( addr end )
    over -       ( addr u )
@@ -477,7 +477,7 @@ variable pic
       drop
       dup 0= if
         \ identical up to common part
-        drop 2drop
+        drop 2DROP
         r> r> cmp
         exit
       then
@@ -489,7 +489,7 @@ variable pic
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       dup
   until
-  2r> 2drop
+  2r> 2DROP
   nip nip nip
 ;
 
@@ -1111,7 +1111,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          <# [char] B hold #d [char] [ hold 27 hold #>
          etype                  ( t-col f-col )
       else
-         2drop
+         2DROP
       then
    then
    drop                         ( t-col )
