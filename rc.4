@@ -9,9 +9,9 @@
 
 : CHAR   parse-word drop c@ ;
 
-: [char]   CHAR [COMPILE] literal ; immediate
+: [CHAR]   CHAR [COMPILE] literal ; immediate
 \ std1983
-: (   [char] ) parse 2DROP ; immediate
+: (   [CHAR] ) parse 2DROP ; immediate
 
 ( Now we have round bracket comments )
 
@@ -30,7 +30,7 @@
 : 2dup  ( x x' -- x x' x x' )  over over ;
 : tuck  ( a b -- b a b )  swap over ;
 \ std1983
-: .(  [char] ) parse type ; immediate
+: .(  [CHAR] ) parse type ; immediate
 \ std1994
 : s>d  ( n -- d )  dup 0< ;
 
@@ -396,7 +396,7 @@ variable pic
 \ std1994
 : sign  ( n -- )
    0< if
-      [char] -
+      [CHAR] -
       hold
    then
 ;
@@ -505,7 +505,7 @@ variable pic
    dup @                ( lfa nfa u-bits )
    4294967295 and       ( lfa nfa u )
    swap cell+ swap      ( lfa c-addr u )
-   here over [char] ?   ( lfa c-addr u here u ? )
+   here over [CHAR] ?   ( lfa c-addr u here u ? )
    fill                 ( lfa c-addr u )
    dup >r               ( lfa c-addr u )  ( r: u )
    8 min                ( lfa c-addr 8|u )
@@ -973,7 +973,7 @@ variable hl.cursor   0 hl.cursor !
 : ki.fix
    s" k:" ki.fixk swap cmove
    ki.k c@  32  <  if
-      [char] ^ ki.fixk 2 + c!
+      [CHAR] ^ ki.fixk 2 + c!
       ki.k c@
       64 or ki.fixk 3 + c!
       ki.fixk 4
@@ -1101,20 +1101,20 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    2dup > if
       \ upward motion
       - s>d                     ( t-col f-col dn )
-      <# [char] A hold #d [char] [ hold 27 hold #>
+      <# [CHAR] A hold #d [CHAR] [ hold 27 hold #>
       etype                     ( t-col f-col )
    else
       2dup < if
          \ downward motion
          - negate s>d           ( t-col f-col dn )
-         <# [char] B hold #d [char] [ hold 27 hold #>
+         <# [CHAR] B hold #d [CHAR] [ hold 27 hold #>
          etype                  ( t-col f-col )
       else
          2DROP
       then
    then
    drop                         ( t-col )
-   1+ s>d <# [char] G hold #d [char] [ hold 27 hold #>
+   1+ s>d <# [CHAR] G hold #d [CHAR] [ hold 27 hold #>
    etype                        ( )
 ;
 
@@ -1260,7 +1260,7 @@ options
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
    over c@              ( addr u c )
-   [char] # <> if
+   [CHAR] # <> if
       exit
    then
    ( addr u )
