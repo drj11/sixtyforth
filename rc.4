@@ -25,7 +25,7 @@
    ,
 ; immediate
 
-: 2dup  ( x x' -- x x' x x' )  over over ;
+: 2DUP  ( x x' -- x x' x x' )  over over ;
 : tuck  ( a b -- b a b )  swap over ;
 \ std1983
 : .(  [CHAR] ) parse type ; immediate
@@ -57,7 +57,7 @@
 : m*/  ( d1 n1 +n2 -- d2 )
    >r                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
-   2dup xor             ( d1 n1 sign )
+   2DUP xor             ( d1 n1 sign )
    r> swap >r           ( d1 n1 n2 )  ( r: sign )
    2swap                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
@@ -192,7 +192,7 @@ variable do-sp  0 do-sp !
    \ Use DO to setup a DO LOOP,
    \ but adjust the do-token so that the LOOP returns
    \ to a point after the equalty test implied by ?DO .
-   compile 2dup
+   compile 2DUP
    [COMPILE] do
    compile <>
    compile 0branch
@@ -217,7 +217,7 @@ variable do-sp  0 do-sp !
 \ limit-1 and limit.
 : +test  ( inc limit index -- flag index' )
   swap >r       ( inc index )  ( r: limit )
-  2dup +        ( inc index index' )
+  2DUP +        ( inc index index' )
   dup r@ -      ( inc index index' o' )
   rot r> -      ( inc index' o' o )
   over xor      ( inc index' o' x )
@@ -291,7 +291,7 @@ variable do-sp  0 do-sp !
 \ ##
 
 \ std1983
-: max   2dup < if swap then drop ;
+: max   2DUP < if swap then drop ;
 
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa
@@ -386,7 +386,7 @@ variable pic
 : #s  ( ud -- 0. )
    begin
       #
-      2dup      ( ud ud )
+      2DUP      ( ud ud )
       d0=       ( ud flag )
    until
 ;
@@ -459,7 +459,7 @@ variable pic
 \           +1 when u2 < u1
 \            0 when u1 = u2
 : cmp  ( u1 u2 -- -1|0|1 )
-   2dup u<      ( u1 u2 flag< )
+   2DUP u<      ( u1 u2 flag< )
    swap rot     ( flag< u2 u1 )
    u<           ( flag< flag> )
    -
@@ -467,7 +467,7 @@ variable pic
 
 \ std1994 string
 : compare  ( c-addr1 u1 c-addr2 u2 -- n )
-   rot 2dup 2>r
+   rot 2DUP 2>r
    min          ( c-addr1 c-addr2 n )
    false
    begin
@@ -526,7 +526,7 @@ variable pic
    -1           ( addr i )
    begin
       1+        ( addr i )
-      2dup +    ( addr i p )
+      2DUP +    ( addr i p )
       c@        ( addr i ch )
       0=        ( addr i flag )
    until
@@ -861,11 +861,11 @@ variable hl.cursor   0 hl.cursor !
       abort" hl.save problem"
    then
    \ :todo: check lengths here
-   2dup                 ( from u h-addr u h-addr )
+   2DUP                 ( from u h-addr u h-addr )
    cell+ !              ( from u h-addr )
    @                    ( from u to )
    \ calculate a new value for hl.p
-   2dup                 ( from u to u to )
+   2DUP                 ( from u to u to )
    +                    ( from u to new-p )
    hl.p !               ( from u to )
    swap cmove
@@ -1096,13 +1096,13 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    s>d r> um/mod                ( to-col to-row from-col from-row )
    rot                          ( to-col from-col from-row to-row )
    \ vertical motion
-   2dup > if
+   2DUP > if
       \ upward motion
       - s>d                     ( t-col f-col dn )
       <# [CHAR] A hold #d [CHAR] [ hold 27 hold #>
       etype                     ( t-col f-col )
    else
-      2dup < if
+      2DUP < if
          \ downward motion
          - negate s>d           ( t-col f-col dn )
          <# [CHAR] B hold #d [CHAR] [ hold 27 hold #>
