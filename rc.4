@@ -32,15 +32,15 @@
 : .(  [CHAR] ) parse type ; immediate
 : S>D  ( n -- d )  dup 0< ;
 
-\ std1994 core-ext
-: 2r>   ( R: x1 x2 -- ) ( -- x1 x2 )
+\ CORE-EXT
+: 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
    rot >r       ( x2 x1 )
    swap         ( x1 x2 )
 ;
 
 \ std1994 double ext
-: 2rot  ( p q r s t u -- r s t u p q )  2>r 2swap 2r> 2swap ;
+: 2rot  ( p q r s t u -- r s t u p q )  2>r 2swap 2R> 2swap ;
 
 \ std1994
 : 2*  ( x -- x' )  2 * ;
@@ -261,7 +261,7 @@ variable do-sp  0 do-sp !
       ?dup while
       fix-leave         ( leave-token' )
    repeat
-   compile 2r> compile 2DROP
+   compile 2R> compile 2DROP
 ;
 
 \ std1983
@@ -285,7 +285,7 @@ variable do-sp  0 do-sp !
 
 \ std1994
 : j  ( -- index )  ( R: lj bj li bi ret )
-   2r>  2r@ drop  rot rot 2>r
+   2R>  2r@ drop  rot rot 2>r
 ;
 
 \ ##
@@ -482,11 +482,11 @@ variable pic
       1-
       rot count >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
       rot count >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
-      rot 2r>           ( c-addr1' c-addr2' n ch1 ch2 )
+      rot 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       dup
   until
-  2r> 2DROP
+  2R> 2DROP
   nip nip nip
 ;
 
