@@ -189,7 +189,7 @@ qDUP:   DQ $+8
         CtoL(qDUP)
 
         DQ 5
-        DQ '2over'      ; std1994
+        DQ '2OVER'      ; std1994
 twoOVER:
         DQ $+8
         ; 2OVER ( p q r s -- p q r s p q )
@@ -202,7 +202,7 @@ twoOVER:
         CtoL(twoOVER)
 
         DQ 5
-        DQ '2swap'      ; std1994
+        DQ '2SWAP'      ; std1994
 twoSWAP:
         DQ stdexe
         ; 2SWAP ( p q r s -- r s p q )
@@ -962,7 +962,7 @@ toNUMBER:
         DQ Rfrom        ; c-addr u ud n
         DQ z            ; c-addr u ud n 0
         DQ Dplus        ; c-addr u ud
-        DQ twoSWAP      ; ud c-addr
+        DQ twoSWAP      ; ud c-addr u
         DQ BRANCH
         DQ .begin - $
 ASCIItoDIGIT:

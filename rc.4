@@ -40,7 +40,7 @@
 ;
 
 \ DOUBLE-EXT
-: 2ROT  ( p q r s t u -- r s t u p q )  2>r 2swap 2R> 2swap ;
+: 2ROT  ( p q r s t u -- r s t u p q )  2>r 2SWAP 2R> 2SWAP ;
 
 : 2*  ( x -- x' )  2 * ;
 
@@ -55,9 +55,9 @@
    \ sign has correct sign, garbage mantissa
    2DUP xor             ( d1 n1 sign )
    r> SWAP >r           ( d1 n1 n2 )  ( r: sign )
-   2swap                ( n1 n2 d1 )
+   2SWAP                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
-   2swap                ( ud1 n1 n2 )
+   2SWAP                ( ud1 n1 n2 )
    SWAP abs SWAP        ( ud1 u1 n2 )
    um*/mod DROP         ( ud )
    r> d+-               ( d )  ( r: )
@@ -204,7 +204,7 @@ VARIABLE do-sp  0 do-sp !
   DUP r@ -      ( inc index index' o' )
   ROT r> -      ( inc index' o' o )
   OVER xor      ( inc index' o' x )
-  ROT 2swap     ( x index' inc o' )
+  ROT 2SWAP     ( x index' inc o' )
   xor invert    ( x index' q )
   ROT and       ( index' sflag )
   0< SWAP       ( flag index' )
