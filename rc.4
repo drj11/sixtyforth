@@ -300,8 +300,7 @@ VARIABLE do-sp  0 do-sp !
    THEN
 ; immediate
 
-\ std1994
-: align  ( -- )
+: ALIGN  ( -- )
    here aligned  here  - allot
 ;
 
@@ -535,7 +534,7 @@ rsp CONSTANT argc
 ;
 
 \ see note/fstat.md
-create fstatbuf 144 allot align
+create fstatbuf 144 allot ALIGN
 
 \ Modelled after ANSI `file-status`.
 : file*status  ( n -- addr ior )
@@ -664,7 +663,7 @@ VARIABLE chbuf
    nip
 ;
 
-create tty.buffer 36 allot align
+create tty.buffer 36 allot ALIGN
 
 \ Store TTY settings.
 : tty.store ( fd -- )
