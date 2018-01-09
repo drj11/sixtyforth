@@ -569,8 +569,8 @@ create fstatbuf 144 allot ALIGN
 4096 map-anon drop
 CONSTANT openbuf        ( buffer for open pathname )
 
-\ std1994
-: r/o
+\ FILE
+: R/O
    \ Modelled after the `flags` argument to open()
    \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
    0 ;
@@ -593,7 +593,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 
 \ Open file for reading.
 : openr  ( c-addr u -- fileid ior )
-   r/o open-file ;
+   R/O open-file ;
 
 \ ##
 
