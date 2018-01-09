@@ -2,13 +2,13 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': a s" aa" ;  : b s" bb" ;
-a b compare .
-a a compare .
-b a compare .
+a b COMPARE .
+a a COMPARE .
+b a COMPARE .
 
-a drop 0 a compare .
-a drop 0 b drop 0 compare .
-a a drop 0 compare .
+a drop 0 a COMPARE .
+a drop 0 b drop 0 COMPARE .
+a a drop 0 COMPARE .
 ')
 printf "%s\n" "$out"
 case "$out" in

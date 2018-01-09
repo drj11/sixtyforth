@@ -431,8 +431,8 @@ VARIABLE pic
       -
    ;
 
-\ std1994 string
-: compare  ( c-addr1 u1 c-addr2 u2 -- n )
+\ STRINg
+: COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
    rot 2DUP 2>r
    min          ( c-addr1 c-addr2 n )
    false
@@ -1200,7 +1200,7 @@ VARIABLE interactive
    ['] sysexit *vreset !
 ;
 
-: -c?  ( c-addr u -- flag )  s" -c" compare 0= ;
+: -c?  ( c-addr u -- flag )  s" -c" COMPARE 0= ;
 
 \ Handle command line options
 : options
