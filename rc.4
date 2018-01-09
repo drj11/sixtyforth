@@ -402,10 +402,9 @@ VARIABLE pic
    TUCK dabs    ( n du )        \ n same sign as d
    .sign ;
 
-\ std1994
-: decimal  ( -- )  10 base ! ;
-\ std1994 core ext
-: hex  ( -- )  16 base ! ;
+: DECIMAL  ( -- )  10 base ! ;
+\ CORE-EXT
+: HEX  ( -- )  16 base ! ;
 
 \ std1994 tools
 : .s  ( -- )
