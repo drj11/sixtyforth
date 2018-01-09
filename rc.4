@@ -327,13 +327,13 @@ VARIABLE pic
 
 \ double to double division
 \ used in printing numbers
-: uml/mod  ( ud u -- u-rem ud-quot )
-   >r r@
-   0 swap um/mod        ( L Mrem Mquot )
-   r> swap >r           ( L Mrem u )
-   um/mod               ( Lrem Lquot )
-   r>                   ( Lrem ud-quot )
-;
+   : uml/mod  ( ud u -- u-rem ud-quot )
+      >r r@
+      0 swap um/mod     ( L Mrem Mquot )
+      r> swap >r        ( L Mrem u )
+      um/mod            ( Lrem Lquot )
+      r>                ( Lrem ud-quot )
+   ;
 
 \ std1994
 : hold  ( ch -- )
