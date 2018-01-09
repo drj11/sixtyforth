@@ -424,12 +424,12 @@ VARIABLE pic
 \ result is -1 when u1 < u2
 \           +1 when u2 < u1
 \            0 when u1 = u2
-: cmp  ( u1 u2 -- -1|0|1 )
-   2DUP u<      ( u1 u2 flag< )
-   swap rot     ( flag< u2 u1 )
-   u<           ( flag< flag> )
-   -
-;
+   : cmp  ( u1 u2 -- -1|0|1 )
+      2DUP u<   ( u1 u2 flag< )
+      swap rot  ( flag< u2 u1 )
+      u<        ( flag< flag> )
+      -
+   ;
 
 \ std1994 string
 : compare  ( c-addr1 u1 c-addr2 u2 -- n )
