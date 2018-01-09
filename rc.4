@@ -575,8 +575,8 @@ CONSTANT openbuf        ( buffer for open pathname )
    \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
    0 ;
 
-\ std1994 file
-: open-file  ( c-addr u fam -- fileid ior )
+\ FILE
+: OPEN-FILE  ( c-addr u fam -- fileid ior )
    >r >r                ( c-addr )      ( r: fam u )
    openbuf r@           ( c-addr path u )
    cmove                ( )
@@ -593,7 +593,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 
 \ Open file for reading.
 : openr  ( c-addr u -- fileid ior )
-   R/O open-file ;
+   R/O OPEN-FILE ;
 
 \ ##
 
