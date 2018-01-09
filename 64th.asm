@@ -92,7 +92,7 @@ EXECUTE:
         CtoL(EXECUTE)
 
         DQ 4
-        DQ 'exit'       ; std1983
+        DQ 'EXIT'       ; std1983
 EXIT:   DQ $+8
         sub r12, 8
         mov rbx, [r12]  ; Pop I from Return Stack

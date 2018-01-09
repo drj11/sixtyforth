@@ -431,7 +431,7 @@ VARIABLE pic
       -
    ;
 
-\ STRINg
+\ STRING
 : COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
    rot 2DUP 2>r
    min          ( c-addr1 c-addr2 n )
@@ -442,7 +442,7 @@ VARIABLE pic
         \ identical up to common part
         drop 2DROP
         r> r> cmp
-        exit
+        EXIT
       THEN
       ( c-addr1 c-addr2 n )
       1-
@@ -462,7 +462,7 @@ VARIABLE pic
    dup 0= IF
       drop
       1
-      exit
+      EXIT
    THEN
    dup                  ( lfa lfa )
    cell+                ( lfa nfa )
@@ -513,7 +513,7 @@ rsp CONSTANT argc
    THEN
 ;
 : arg-pop  ( -- )
-   argc @ 2 < IF  exit  THEN
+   argc @ 2 < IF  EXIT  THEN
    argc 2 cells +       ( addr-from )
    argc cell+           ( addr-from addr-to )
    -1 argc +!
@@ -986,7 +986,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : k:^D
    \ if entire line is empty, terminate
    ki.n @ 0=  ki.> @ 0=  and  IF
-      0  exit
+      0  EXIT
    THEN
    \ Test if there are any characters ahead of point to erase.
    ki.n @  ki.> @  -  IF
@@ -1224,7 +1224,7 @@ options
 : shebang  ( addr u -- n-addr n-u )
    over c@              ( addr u c )
    [CHAR] # <> IF
-      exit
+      EXIT
    THEN
    ( addr u )
    dup dup >r           ( addr u u ) ( r: u )
