@@ -80,7 +80,7 @@ SECTION .rodata
         DQ 0    ; Link Field
 
         DQ 7
-        DQ 'execute'
+        DQ 'EXECUTE'
 EXECUTE:
         DQ $+8          ; std1983
         ; EXECUTE ( addr -- )

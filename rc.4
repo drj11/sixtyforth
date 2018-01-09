@@ -1150,7 +1150,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
             ki.k 1 ki.insert
          ELSE
             DEPTH >r
-            execute
+            EXECUTE
             DEPTH r>            ( flag depth1 depth0 )
             - IF
                s" stack imbalance" etype
