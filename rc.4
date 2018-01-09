@@ -487,15 +487,15 @@ VARIABLE pic
 \ ##
 
 \ Convert from C string, by pushing its length.
-: c>  ( addr -- addr u )
-   -1           ( addr i )
-   BEGIN
-      1+        ( addr i )
-      2DUP +    ( addr i p )
-      c@        ( addr i ch )
-      0=        ( addr i flag )
-   UNTIL
-;
+   : c>  ( addr -- addr u )
+      -1           ( addr i )
+      BEGIN
+         1+        ( addr i )
+         2DUP +    ( addr i p )
+         c@        ( addr i ch )
+         0=        ( addr i flag )
+      UNTIL
+   ;
 
 \ ARGC and ARG modelled after gforth implementation.
 \ The initial RSP register is the address of ARGC
