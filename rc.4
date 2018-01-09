@@ -284,12 +284,11 @@ VARIABLE do-sp  0 do-sp !
    here over allot                      ( from n to )
    swap cmove ; immediate
 
-\ std1983
-: constant  ( x -- / -- x )
+: CONSTANT  ( x -- / -- x )
    VARIABLE last name> >body ! DOES> @ ;
 
 \ std1994 core ext
-: value   constant ;
+: value   CONSTANT ;
 
 \ std1994 core ext
 : to  ( x -- )
@@ -324,7 +323,7 @@ VARIABLE do-sp  0 do-sp !
 
 \ ## Number Printing
 
-300 constant pic-size
+300 CONSTANT pic-size
 pic-size map-anon drop pic-size +
 value picend
 VARIABLE pic
@@ -515,7 +514,7 @@ VARIABLE pic
 \ ARGC and ARG modelled after gforth implementation.
 \ The initial RSP register is the address of ARGC
 \ (in the Linux ABI).
-rsp constant argc
+rsp CONSTANT argc
 : arg  ( i -- i-addr i-len )
    1+ cells
    \ Following ARGC are the pointers to C strings.
@@ -582,7 +581,7 @@ create fstatbuf 144 allot align
 ;
 
 4096 map-anon drop
-constant openbuf        ( buffer for open pathname )
+CONSTANT openbuf        ( buffer for open pathname )
 
 \ std1994
 : r/o

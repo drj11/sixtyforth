@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-3 constant pi
+3 CONSTANT pi
 : foo pi s" foo " type ;
 foo .
 ')
