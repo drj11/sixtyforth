@@ -113,7 +113,7 @@ QUIT:   DQ reset
         CtoL(QUIT)
 
         DQ 5
-        DQ 'abort'      ; std1983
+        DQ 'ABORT'      ; std1983
 ABORT:  DQ dreset
         CtoL(ABORT)
 
