@@ -108,7 +108,7 @@ semic:  DQ $+8
         CtoL(semic)
 
         DQ 4
-        DQ 'quit'       ; std1983
+        DQ 'QUIT'       ; std1983
 QUIT:   DQ reset
         CtoL(QUIT)
 
