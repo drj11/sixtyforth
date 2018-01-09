@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c 'VARIABLE v
 : c s" abcdefgh" ;
-c v swap 
+c v SWAP 
 cmove>
 v 8 type
 v 2 +

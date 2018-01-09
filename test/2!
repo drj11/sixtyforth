@@ -7,7 +7,7 @@ out=$($FORTH -c 'here
 here
 2 cells allot
 2!
-dup @ .
+DUP @ .
 cell+ @ .
 ')
 printf "%s\n" "$out"

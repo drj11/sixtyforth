@@ -4,12 +4,12 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 here
 16 allot
-dup 16 99 fill
-dup 12 33 fill
-dup c@ .
-dup 11 + c@ .
-dup 12 + c@ .
-dup 15 + c@ .
+DUP 16 99 fill
+DUP 12 33 fill
+DUP c@ .
+DUP 11 + c@ .
+DUP 12 + c@ .
+DUP 15 + c@ .
 ')
 printf "%s\n" "$out"
 case "$out" in

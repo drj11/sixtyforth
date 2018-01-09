@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-: s 0 DO dup 0 DO I . J . bl emit LOOP LOOP ;
+: s 0 DO  DUP 0  DO  I . J . bl emit  LOOP  LOOP ;
 3 2 s
 DEPTH .
 ')

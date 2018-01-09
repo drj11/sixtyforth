@@ -6,9 +6,9 @@ a b COMPARE .
 a a COMPARE .
 b a COMPARE .
 
-a drop 0 a COMPARE .
-a drop 0 b drop 0 COMPARE .
-a a drop 0 COMPARE .
+a DROP 0 a COMPARE .
+a DROP 0 b DROP 0 COMPARE .
+a a DROP 0 COMPARE .
 ')
 printf "%s\n" "$out"
 case "$out" in

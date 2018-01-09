@@ -1,13 +1,13 @@
-: 2DROP   drop drop ;
+: 2DROP   DROP DROP ;
 : \   10 parse 2DROP ; immediate         \ Now we have comments
 
 : '
    \ Avoid using IF, which is not defined yet
-   parse-word findword dup 0= ?dup 2DROP ;
+   parse-word findword DUP 0= ?dup 2DROP ;
 
 : [COMPILE]   ' , ; immediate
 
-: CHAR   parse-word drop c@ ;
+: CHAR   parse-word DROP c@ ;
 
 : [CHAR]   CHAR [COMPILE] literal ; immediate
 
@@ -16,7 +16,7 @@
 ( Now we have round bracket comments )
 
 \ Using the definition in [FORTH1994] A.6.1.2033
-   : compile   r> dup @ , cell+ >r ;
+   : compile   r> DUP @ , cell+ >r ;
 
 : [']   ' [COMPILE] literal ; immediate
 
@@ -25,18 +25,18 @@
    ,
 ; immediate
 
-: 2DUP  ( x x' -- x x' x x' )  over over ;
+: 2DUP  ( x x' -- x x' x x' )  OVER OVER ;
 \ CORE-EXT
-: TUCK  ( a b -- b a b )  swap over ;
+: TUCK  ( a b -- b a b )  SWAP OVER ;
 \ CORE-EXT
 : .(  [CHAR] ) parse type ; immediate
-: S>D  ( n -- d )  dup 0< ;
+: S>D  ( n -- d )  DUP 0< ;
 
 \ CORE-EXT
 : 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
    rot >r       ( x2 x1 )
-   swap         ( x1 x2 )
+   SWAP         ( x1 x2 )
 ;
 
 \ DOUBLE-EXT
@@ -54,17 +54,17 @@
    >r                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
    2DUP xor             ( d1 n1 sign )
-   r> swap >r           ( d1 n1 n2 )  ( r: sign )
+   r> SWAP >r           ( d1 n1 n2 )  ( r: sign )
    2swap                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
    2swap                ( ud1 n1 n2 )
-   swap abs swap        ( ud1 u1 n2 )
-   um*/mod drop         ( ud )
+   SWAP abs SWAP        ( ud1 u1 n2 )
+   um*/mod DROP         ( ud )
    r> d+-               ( d )  ( r: )
 ;
 
 \ CORE-EXT
-: U>  ( u1 u2 -- flag )  swap u< ;
+: U>  ( u1 u2 -- flag )  SWAP u< ;
 
 : DEPTH  ( -- +n )
    stack -  1 cells / ;
@@ -75,18 +75,18 @@
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
-   >r S>D r> sm/rem drop
+   >r S>D r> sm/rem DROP
 ;
 
 : 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
 
 : 2@  ( addr -- x1 x2 )
-   dup cell+ @   swap @ ;
+   DUP cell+ @   SWAP @ ;
 
 \ DOUBLE
 : D0=  ( xd -- flag )  or 0= ;
 
-: COUNT  ( addr -- addr' ch )  dup 1+ swap c@ ;
+: COUNT  ( addr -- addr' ch )  DUP 1+ SWAP c@ ;
 
 \ STRING
 : /STRING  ( addr u n -- addr' u' )
@@ -114,13 +114,13 @@
 ; immediate
 
 : REPEAT  ( b-token w-token -- )
-   swap         ( w-token b-token )
+   SWAP         ( w-token b-token )
    compile branch
    here -       ( w-token offset )
    ,            ( w-token )
    here         ( w-token here )
-   over -       ( w-token offset )
-   swap !
+   OVER -       ( w-token offset )
+   SWAP !
 ; immediate
 
 : IF  ( -- token    / at compile time )
@@ -136,15 +136,15 @@
    here         ( token newtoken )
    ( compile dummy offset )
    true ,
-   swap         ( newtoken token )
-   here over -  ( newtoken token offset )
-   swap         ( newtoken offset token )
+   SWAP         ( newtoken token )
+   here OVER -  ( newtoken token offset )
+   SWAP         ( newtoken offset token )
    !            ( newtoken )
 ; immediate
 
 \ std1983
 : THEN
-   here over - swap ! ; immediate
+   here OVER - SWAP ! ; immediate
    
 create do-stack  3 cells allot
 VARIABLE do-sp  0 do-sp !
@@ -180,7 +180,7 @@ VARIABLE do-sp  0 do-sp !
    compile <>
    compile 0branch
    push-leave
-   drop here
+   DROP here
 ; immediate
 
 \ Implements the test part of a DO LOOP,
@@ -189,34 +189,34 @@ VARIABLE do-sp  0 do-sp !
    r>           ( ret )
    2r@          ( ret limit index )
    1+           ( ret limit index' )
-   r> drop      ( r: limit )
-   dup >r       ( r: limit index' )
+   r> DROP      ( r: limit )
+   DUP >r       ( r: limit index' )
    =            ( ret flag )
-   swap >r      ( flag )
+   SWAP >r      ( flag )
 ;
 
 \ Add inc to index and convert inc to flag;
 \ flag is true iff index crosses boundary between
 \ limit-1 and limit.
 : +test  ( inc limit index -- flag index' )
-  swap >r       ( inc index )  ( r: limit )
+  SWAP >r       ( inc index )  ( r: limit )
   2DUP +        ( inc index index' )
-  dup r@ -      ( inc index index' o' )
+  DUP r@ -      ( inc index index' o' )
   rot r> -      ( inc index' o' o )
-  over xor      ( inc index' o' x )
+  OVER xor      ( inc index' o' x )
   rot 2swap     ( x index' inc o' )
   xor invert    ( x index' q )
   rot and       ( index' sflag )
-  0< swap       ( flag index' )
+  0< SWAP       ( flag index' )
 ;
 
 : +looptest  ( inc -- flag ) ( r: limit index -- limit index' )
-   r> swap      ( ret inc )
+   r> SWAP      ( ret inc )
    2r@          ( ret inc limit index )
    +test        ( ret flag index' )
-   r> drop      ( r: limit )
+   r> DROP      ( r: limit )
    >r           ( ret flag ) ( r: limit index' )
-   swap >r      ( flag )
+   SWAP >r      ( flag )
 ;
 
 : LEAVE
@@ -228,9 +228,9 @@ VARIABLE do-sp  0 do-sp !
 \ Fetch the previous leave token in the linked-list,
 \ and store offset to HERE at that address.
 : fix-leave  ( leave-token -- leave-token' )
-   dup @ swap   ( leave-token' leave-token )
-   here over    ( leave-token' leave-token here leave-token )
-   - swap !     ( leave-token' )
+   DUP @ SWAP   ( leave-token' leave-token )
+   here OVER    ( leave-token' leave-token here leave-token )
+   - SWAP !     ( leave-token' )
 ;
 
 : loopy
@@ -262,17 +262,17 @@ VARIABLE do-sp  0 do-sp !
 
 \ std1983
 : I  ( -- index )
-   2r@ drop
+   2r@ DROP
 ;
 
 \ std1994
 : J  ( -- index )  ( R: lj bj li bi ret )
-   2R>  2r@ drop  rot rot 2>r
+   2R>  2r@ DROP  rot rot 2>r
 ;
 
 \ ##
 
-: MAX   2DUP < IF swap THEN drop ;
+: MAX   2DUP < IF SWAP THEN DROP ;
 
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa
@@ -281,8 +281,8 @@ VARIABLE do-sp  0 do-sp !
    : *fix-cfa   r> last name> ! ;
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
-   here over allot                      ( from n to )
-   swap cmove ; immediate
+   here OVER allot                      ( from n to )
+   SWAP cmove ; immediate
 
 : CONSTANT  ( x -- / -- x )
    VARIABLE last name> >body ! DOES> @ ;
@@ -310,18 +310,18 @@ VARIABLE do-sp  0 do-sp !
 \ Map Anonymous
 \ Request freshly allocated memory.
 : map-anon  ( sz -- addr ior )
-   0 swap               ( 0 sz )
+   0 SWAP               ( 0 sz )
    3 34                 ( 0 sz prot flags )
    -1 0                 ( 0 sz prot flags fd offset )
    9 syscall6           ( res )
-   -4096 over u<        ( res flag )
-   over and             ( addr ior )
+   -4096 OVER u<        ( res flag )
+   OVER and             ( addr ior )
 ;
 
 \ ## Number Printing
 
 300 CONSTANT pic-size
-pic-size map-anon drop pic-size +
+pic-size map-anon DROP pic-size +
 VALUE picend
 VARIABLE pic
 
@@ -329,8 +329,8 @@ VARIABLE pic
 \ used in printing numbers
    : uml/mod  ( ud u -- u-rem ud-quot )
       >r r@
-      0 swap um/mod     ( L Mrem Mquot )
-      r> swap >r        ( L Mrem u )
+      0 SWAP um/mod     ( L Mrem Mquot )
+      r> SWAP >r        ( L Mrem u )
       um/mod            ( Lrem Lquot )
       r>                ( Lrem ud-quot )
    ;
@@ -374,7 +374,7 @@ VARIABLE pic
    2DROP
    pic @
    picend       ( addr end )
-   over -       ( addr u )
+   OVER -       ( addr u )
 ;
 
 : U.  ( u -- )
@@ -394,7 +394,7 @@ VARIABLE pic
    ;
 
 : .  ( n -- )
-   dup abs 0    ( n du )        \ du same magnitude as n
+   DUP abs 0    ( n du )        \ du same magnitude as n
    .sign ;
 
 \ DOUBLE
@@ -426,7 +426,7 @@ VARIABLE pic
 \            0 when u1 = u2
    : cmp  ( u1 u2 -- -1|0|1 )
       2DUP u<   ( u1 u2 flag< )
-      swap rot  ( flag< u2 u1 )
+      SWAP rot  ( flag< u2 u1 )
       u<        ( flag< flag> )
       -
    ;
@@ -437,10 +437,10 @@ VARIABLE pic
    min          ( c-addr1 c-addr2 n )
    false
    BEGIN
-      drop
-      dup 0= IF
+      DROP
+      DUP 0= IF
         \ identical up to common part
-        drop 2DROP
+        DROP 2DROP
         r> r> cmp
         EXIT
       THEN
@@ -450,7 +450,7 @@ VARIABLE pic
       rot COUNT >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
       rot 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
-      dup
+      DUP
   UNTIL
   2R> 2DROP
   nip nip nip
@@ -459,21 +459,21 @@ VARIABLE pic
 \ print name of word given its LFA
 : .lfa  ( lfa -- lfa 0 )
         ( lfa -- 1 )
-   dup 0= IF
-      drop
+   DUP 0= IF
+      DROP
       1
       EXIT
    THEN
-   dup                  ( lfa lfa )
+   DUP                  ( lfa lfa )
    cell+                ( lfa nfa )
-   dup @                ( lfa nfa u-bits )
+   DUP @                ( lfa nfa u-bits )
    4294967295 and       ( lfa nfa u )
-   swap cell+ swap      ( lfa c-addr u )
-   here over [CHAR] ?   ( lfa c-addr u here u ? )
+   SWAP cell+ SWAP      ( lfa c-addr u )
+   here OVER [CHAR] ?   ( lfa c-addr u here u ? )
    fill                 ( lfa c-addr u )
-   dup >r               ( lfa c-addr u )  ( r: u )
+   DUP >r               ( lfa c-addr u )  ( r: u )
    8 min                ( lfa c-addr 8|u )
-   here swap            ( lfa c-addr here 8|u )
+   here SWAP            ( lfa c-addr here 8|u )
    cmove
    here r>
    type cr
@@ -506,7 +506,7 @@ rsp CONSTANT argc
    \ Following ARGC are the pointers to C strings.
    argc
    + @          ( addr )
-   dup IF
+   DUP IF
       c>        ( addr u )
    ELSE
       0         ( 0 0 )
@@ -533,7 +533,7 @@ create fstatbuf 144 allot ALIGN
 : file-size  ( fileid -- ud ior )
    file*status
    ?dup IF
-      0 swap                    ( x 0 ior )
+      0 SWAP                    ( x 0 ior )
    ELSE
       48 + @  0                 ( ud )
       0                         ( ud 0 )
@@ -544,16 +544,16 @@ create fstatbuf 144 allot ALIGN
 \ Map fildes fd into memory for reading.
 \ Address and length of mapping are left on stack.
 : fmapr ( fd -- addr u )
-   dup file-size                        ( fd ud ior )
+   DUP file-size                        ( fd ud ior )
    abort" File cannot be mapped"        ( fd ud )
    d>s                                  ( fd u )
-   dup 1 < IF
-      drop drop
+   DUP 1 < IF
+      DROP DROP
       0 0
    ELSE
       ( n sz )
       TUCK                              ( sz n sz )
-      0 rot rot swap                    ( sz 0 sz n )
+      0 rot rot SWAP                    ( sz 0 sz n )
       \ For #defines, see /usr/include/asm-generic/mman-common.h
       \ PROT_READ 1
       \ PROT_WRITE 2
@@ -562,11 +562,11 @@ create fstatbuf 144 allot ALIGN
       1 2 rot                           ( sz 0 sz 1 2 n )
       0                                 ( sz 0 sz 1 2 n 0 )
       9 syscall6                        ( sz addr )
-      swap
+      SWAP
    THEN
 ;
 
-4096 map-anon drop
+4096 map-anon DROP
 CONSTANT openbuf        ( buffer for open pathname )
 
 \ FILE
@@ -588,7 +588,7 @@ CONSTANT openbuf        ( buffer for open pathname )
    \ For syscall numbers, see
    \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
    2 syscall3           ( fileid )
-   dup 0 min            ( fileid 0 | ior ior )
+   DUP 0 min            ( fileid 0 | ior ior )
 ;
 
 \ Open file for reading.
@@ -601,14 +601,14 @@ CONSTANT openbuf        ( buffer for open pathname )
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-   dup >r c@ and xor r> c! ;
+   DUP >r c@ and xor r> c! ;
 
 VARIABLE chbuf
 
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
    chbuf 1 sysread
-   dup 0< IF
+   DUP 0< IF
    ELSE
       0= IF -9999999
       ELSE
@@ -640,13 +640,13 @@ VARIABLE chbuf
 
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
 : tcgets.  ( fd -- res )
-   here dup tcgets       ( here res )
-   over @.8
-   over 4 + @.8
-   over 8 + @.8
-   over 12 + @.8
+   here DUP tcgets       ( here res )
+   OVER @.8
+   OVER 4 + @.8
+   OVER 8 + @.8
+   OVER 12 + @.8
    cr
-   over 16 +
+   OVER 16 +
    20 dump              ( res )
    nip
 ;
@@ -655,21 +655,21 @@ create tty.buffer 36 allot ALIGN
 
 \ Store TTY settings.
 : tty.store ( fd -- )
-   tty.buffer tcgets drop
+   tty.buffer tcgets DROP
 ;
 
 \ Put TTY in keypress mode.
 : tty.keypress ( fd -- )
    \ Fetch and modify TTY settings...
-   dup here tcgets drop                 ( fd )
+   DUP here tcgets DROP                 ( fd )
    \ Clear ICANON and ECHO bits.
    0  10 invert  here 12 +  c!xa        ( fd )
-   here tcsets drop
+   here tcsets DROP
 ;
 
 \ Restore TTY settings.
 : tty.restore  ( fd -- )
-   tty.buffer tcsets drop
+   tty.buffer tcsets DROP
 ;
 
 create tty.szbuf 8 allot
@@ -677,7 +677,7 @@ create tty.szbuf 8 allot
 : tiocgwinsz  ( fd p -- res )
    \ 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h
    21523                ( fd p 0x5413 )
-   swap                 ( fd 0x5413 p )
+   SWAP                 ( fd 0x5413 p )
    ( ioctl )
    16 syscall3          ( res )
 ;
@@ -691,9 +691,9 @@ VARIABLE tty.vbuf
    tiocgwinsz
    0= IF
       tty.szbuf 2+      ( a+2 )
-      dup 1+            ( a+2 a+3 )
-      c@ swap c@        ( b1 b0 )
-      swap              ( b0 b1 )
+      DUP 1+            ( a+2 a+3 )
+      c@ SWAP c@        ( b1 b0 )
+      SWAP              ( b0 b1 )
       256 * +           ( cols )
       tty.vbuf !
    THEN
@@ -740,7 +740,7 @@ ki.fresh
 
 \ Memory block for all strings in history.
 VARIABLE hl.block
-1000000000 map-anon drop hl.block !
+1000000000 map-anon DROP hl.block !
 \ history-pointer
 VARIABLE hl.p
 hl.block @ hl.p !
@@ -793,14 +793,14 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ for history element i;
 \ 0 if invalid index.
 : hl&  ( i -- addr )
-   dup                  ( i i )
+   DUP                  ( i i )
    hl.base              ( i i base )
    hl.next @            ( i i base limit )
    within  IF
       hl.n MOD          ( array-index )
       hl.a&             ( addr )
    ELSE
-      drop
+      DROP
       0
    THEN
 ;
@@ -808,11 +808,11 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Fetch string from history; 0 0 if invalid index.
 : hl@  ( i -- addr u )
    hl&                  ( addr )
-   dup IF
+   DUP IF
       2@                ( u a )
-      swap              ( a u )
+      SWAP              ( a u )
    ELSE
-      drop
+      DROP
       0 0
    THEN
 ;
@@ -822,7 +822,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 : hl.save  ( from u -- )
    hl.next @ 1-         ( from u i )
    hl&                  ( from u h-addr )
-   dup 0= IF
+   DUP 0= IF
       abort" hl.save problem"
    THEN
    \ :todo: check lengths here
@@ -833,7 +833,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    2DUP                 ( from u to u to )
    +                    ( from u to new-p )
    hl.p !               ( from u to )
-   swap cmove
+   SWAP cmove
 ;
 
 \ Create a new history entry.
@@ -843,7 +843,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    \ increment hl.next
    1 hl.next +!         ( 0 p i )
    \ set cursor
-   dup hl.cursor !      ( 0 p i )
+   DUP hl.cursor !      ( 0 p i )
    hl&                  ( 0 p addr )
    2!
 ;
@@ -851,15 +851,15 @@ VARIABLE hl.cursor   0 hl.cursor !
 : hl.
    hl.base              ( i )
    BEGIN
-      dup hl.next @     ( i i n )
+      DUP hl.next @     ( i i n )
       <                 ( i flag )
    WHILE
-      dup .
-      dup hl@           ( i addr u )
+      DUP .
+      DUP hl@           ( i addr u )
       type cr           ( i )
       1+                ( i+1 )
    REPEAT
-   drop
+   DROP
 ;
 
 \ hl.cursor     - which history element we are currently showing.
@@ -906,7 +906,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Insert the text into the buffer at the current point,
 \ and advance the point past the inserted text.
 : ki.insert  ( addr u -- 1 )
-   dup ki.n @ +  ki.z  >  IF
+   DUP ki.n @ +  ki.z  >  IF
       \ buffer full
       s" #%#" etype
       0
@@ -914,18 +914,18 @@ VARIABLE hl.cursor   0 hl.cursor !
       ( addr u )
       \ copy text to right of point up to make room
       ki.a ki.> @ +     ( addr u from )
-      over              ( addr u from u )
+      OVER              ( addr u from u )
       ki.> @ + ki.a +   ( addr u from to )
       ki.n @ ki.> @ -   ( addr u from to n )
       cmove>            ( addr u )
       \ increment length
-      dup ki.n +!       ( addr u )
+      DUP ki.n +!       ( addr u )
       \ copy new input at point
       ki.a ki.> @ +     ( addr u > )
-      over              ( addr u > u )
+      OVER              ( addr u > u )
       \ bump ki.>
       ki.> +!           ( addr u > )
-      swap cmove        ( )
+      SWAP cmove        ( )
       1
    THEN
 ;
@@ -934,7 +934,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Convert Control Chars to ^J form,
 \ and prefix everything with k:
 : ki.fix
-   s" k:" ki.fixk swap cmove
+   s" k:" ki.fixk SWAP cmove
    ki.k c@  32  <  IF
       [CHAR] ^ ki.fixk 2 + c!
       ki.k c@
@@ -950,7 +950,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    ki.> @  IF
       \ copy down characters
       ki.a ki.> @ +     ( from )
-      dup 1-            ( from to )
+      DUP 1-            ( from to )
       ki.n @ ki.> @ -   ( from to n )
       cmove
       \ shrink buffer
@@ -972,7 +972,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : k:^J
    end-of-line
    ki.input hl.save
-   s"  " ki.insert drop
+   s"  " ki.insert DROP
    0
 ;
 
@@ -992,7 +992,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    ki.n @  ki.> @  -  IF
       \ copy down characters
       ki.a ki.> @ +             ( to )
-      dup 1+ swap               ( from to )
+      DUP 1+ SWAP               ( from to )
       ki.n @ ki.> @ - 1-        ( from to n )
       cmove
       \ shrink buffer
@@ -1015,7 +1015,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Move the current historic line into key input.
 : hl.move
    hl.cursor @ hl@              ( from u )
-   TUCK ki.a swap               ( u from to u )
+   TUCK ki.a SWAP               ( u from to u )
    cmove                        ( u )
    ki.n !  0 ki.> !
 ;
@@ -1039,7 +1039,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Fix cursor position if it is at end of row
 : ki.curfix
    ki.n @ S>D  tty.cols  um/mod ( col row )
-   0>  swap 0=  and  IF
+   0>  SWAP 0=  and  IF
       10 eemit
    THEN
 ;
@@ -1076,7 +1076,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          2DROP
       THEN
    THEN
-   drop                         ( t-col )
+   DROP                         ( t-col )
    1+ S>D <# [CHAR] G HOLD #d [CHAR] [ HOLD 27 HOLD #>
    etype                        ( )
 ;
@@ -1117,10 +1117,10 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    \ Position of current VT on stack;
    \ type out text to end.
    ki.n @                       ( p n )
-   over -                       ( p u )
+   OVER -                       ( p u )
    ki.a                         ( p u a )
    rot +                        ( u addr )
-   over                         ( u addr u )
+   OVER                         ( u addr u )
    etype                        ( u )
    IF
       ki.curfix
@@ -1136,9 +1136,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
    BEGIN
       getc
-      dup 0< IF
+      DUP 0< IF
          \ negative: EOF or error
-         drop 0                 ( 0 )
+         DROP 0                 ( 0 )
       ELSE
          \ save input byte
          ki.k !                 ( )
@@ -1179,7 +1179,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          evaluate
          s"  ok" etype 10 eemit   0
       ELSE
-         drop   1
+         DROP   1
       THEN
    UNTIL
 ;
@@ -1208,7 +1208,7 @@ VARIABLE interactive
       2 argc @ < IF
           1 arg -c? IF
              disable-interactive
-             drop
+             DROP
              2 arg
              arg-pop arg-pop
              evaluate
@@ -1222,15 +1222,15 @@ options
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
-   over c@              ( addr u c )
+   OVER c@              ( addr u c )
    [CHAR] # <> IF
       EXIT
    THEN
    ( addr u )
-   dup dup >r           ( addr u u ) ( r: u )
+   DUP DUP >r           ( addr u u ) ( r: u )
    0 DO
       \ l is, or will be, the index of the earliest NL
-      over              ( addr l addr )
+      OVER              ( addr l addr )
       I + c@            ( addr l ch )
       10 = IF
          \ :todo: reimplement using `leave`
@@ -1238,7 +1238,7 @@ options
       THEN
    LOOP
    ( addr l )
-   r> swap              ( addr u l )
+   r> SWAP              ( addr u l )
    /STRING
 ;
 

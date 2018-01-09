@@ -118,7 +118,7 @@ ABORT:  DQ dreset
         CtoL(ABORT)
 
         DQ 3
-        DQ 'dup'        ; std1983
+        DQ 'DUP'        ; std1983
 DUP:    DQ $+8
         ; DUP ( a -- a a )
         mov rax, [rbp-8]
@@ -129,7 +129,7 @@ pushrax:
         CtoL(DUP)
 
         DQ 4
-        DQ 'over'       ; std1983
+        DQ 'OVER'       ; std1983
 OVER:   DQ $+8
         ; OVER ( a b -- a b a )
         mov rax, [rbp-16]
@@ -137,7 +137,7 @@ OVER:   DQ $+8
         CtoL(OVER)
 
         DQ 4
-        DQ 'drop'       ; std1983
+        DQ 'DROP'       ; std1983
 DROP:   DQ $+8
         ; DROP ( a -- )
         sub rbp, 8
@@ -145,7 +145,7 @@ DROP:   DQ $+8
         CtoL(DROP)
 
         DQ 4
-        DQ 'swap'       ; std1983
+        DQ 'SWAP'       ; std1983
 SWAP:   DQ $+8
         ; SWAP ( a b -- b a )
         mov rax, [rbp-16]
