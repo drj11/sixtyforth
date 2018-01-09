@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': x s" 3@5" ;
 0 0 x >number
-. drop d.')
+. drop D.')
 printf '%s\n' "$out"
 case "$out" in
     ("2 3 ") exit 0;;

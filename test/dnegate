@@ -2,8 +2,8 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '7 2 dnegate . .
--9 -1 dnegate d.
-2 0 dnegate d.')
+-9 -1 dnegate D.
+2 0 dnegate D.')
 printf "%s\n" "$out"
 case $out in
     ('-3 -7 9 -2 ') exit 0;;

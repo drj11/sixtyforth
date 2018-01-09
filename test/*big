@@ -5,7 +5,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '65535 65537 *
 dup 2 +
 *
-0 d.')
+0 D.')
 printf "%s\n" "$out"
 case "$out" in
     ("18446744073709551615 ") exit 0;;

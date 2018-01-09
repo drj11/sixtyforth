@@ -397,8 +397,8 @@ VARIABLE pic
    dup abs 0    ( n du )        \ du same magnitude as n
    .sign ;
 
-\ std1994 double
-: d.  ( d -- )
+\ DOUBLE
+: D.  ( d -- )
    TUCK dabs    ( n du )        \ n same sign as d
    .sign ;
 
