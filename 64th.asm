@@ -178,7 +178,7 @@ NIP:    DQ $+8
         CtoL(NIP)
 
         DQ 4
-        DQ '?dup'       ; std1983
+        DQ '?DUP'       ; std1983
 qDUP:   DQ $+8
         ; ?DUP ( nz -- nz nz )  when not zero
         ;      ( 0 -- 0 )       when zero

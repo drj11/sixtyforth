@@ -3,7 +3,7 @@
 
 : '
    \ Avoid using IF, which is not defined yet
-   parse-word findword DUP 0= ?dup 2DROP ;
+   parse-word findword DUP 0= ?DUP 2DROP ;
 
 : [COMPILE]   ' , ; immediate
 
@@ -241,7 +241,7 @@ VARIABLE do-sp  0 do-sp !
    \ fix the linked-list of leave-tokens up
    do>          ( leave-token )
    BEGIN
-      ?dup WHILE
+      ?DUP WHILE
       fix-leave         ( leave-token' )
    REPEAT
    compile 2R> compile 2DROP
@@ -532,7 +532,7 @@ create fstatbuf 144 allot ALIGN
 \ std1994 file
 : file-size  ( fileid -- ud ior )
    file*status
-   ?dup IF
+   ?DUP IF
       0 SWAP                    ( x 0 ior )
    ELSE
       48 + @  0                 ( ud )
@@ -1175,7 +1175,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    BEGIN
       ki
       ki.input
-      ?dup IF
+      ?DUP IF
          evaluate
          s"  ok" etype 10 eemit   0
       ELSE
