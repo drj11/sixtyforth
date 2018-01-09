@@ -156,7 +156,7 @@ SWAP:   DQ $+8
         CtoL(SWAP)
 
         DQ 3
-        DQ 'rot'        ; std1983
+        DQ 'ROT'        ; std1983
 ROT:    DQ $+8
         mov rdx, [rbp-24]
         mov rcx, [rbp-16]
@@ -168,7 +168,7 @@ ROT:    DQ $+8
         CtoL(ROT)
 
         DQ 3
-        DQ 'nip'        ; std1994 core-ext
+        DQ 'NIP'        ; std1994 core-ext
 NIP:    DQ $+8
         ; NIP ( a b -- b )
         mov rax, [rbp-8]

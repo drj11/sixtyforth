@@ -1,9 +1,9 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$( $FORTH -c '1 97 3 ROT . 5 ROT . . .' )
+out=$( $FORTH -c '1 97 3 NIP . .' )
 printf "%s\n" "$out"
 case "$out" in
-    ("1 97 5 3 ") exit 0;;
+    ("3 1 ") exit 0;;
 esac
 exit 2

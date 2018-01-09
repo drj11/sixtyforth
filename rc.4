@@ -35,7 +35,7 @@
 \ CORE-EXT
 : 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )
    r> r> r>     ( ret x2 x1 )
-   rot >r       ( x2 x1 )
+   ROT >r       ( x2 x1 )
    SWAP         ( x1 x2 )
 ;
 
@@ -46,8 +46,8 @@
 
 : /MOD  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
 : */MOD  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
-: */  ( n1 n2 n3 -- quot )  */MOD nip ;
-: /  ( n1 n2 -- n3 )  /MOD nip ;
+: */  ( n1 n2 n3 -- quot )  */MOD NIP ;
+: /  ( n1 n2 -- n3 )  /MOD NIP ;
 
 \ DOUBLE
 : M*/  ( d1 n1 +n2 -- d2 )
@@ -202,11 +202,11 @@ VARIABLE do-sp  0 do-sp !
   SWAP >r       ( inc index )  ( r: limit )
   2DUP +        ( inc index index' )
   DUP r@ -      ( inc index index' o' )
-  rot r> -      ( inc index' o' o )
+  ROT r> -      ( inc index' o' o )
   OVER xor      ( inc index' o' x )
-  rot 2swap     ( x index' inc o' )
+  ROT 2swap     ( x index' inc o' )
   xor invert    ( x index' q )
-  rot and       ( index' sflag )
+  ROT and       ( index' sflag )
   0< SWAP       ( flag index' )
 ;
 
@@ -267,7 +267,7 @@ VARIABLE do-sp  0 do-sp !
 
 \ std1994
 : J  ( -- index )  ( R: lj bj li bi ret )
-   2R>  2r@ DROP  rot rot 2>r
+   2R>  2r@ DROP  ROT ROT 2>r
 ;
 
 \ ##
@@ -351,7 +351,7 @@ VARIABLE pic
 : #  ( ud -- ud' )
    base @
    uml/mod      ( r ud )
-   rot          ( ud r )
+   ROT          ( ud r )
    digit HOLD   ( ud )
 ;
 
@@ -388,7 +388,7 @@ VARIABLE pic
       <#
          bl HOLD
          #S
-         rot SIGN
+         ROT SIGN
       #>
       type
    ;
@@ -426,14 +426,14 @@ VARIABLE pic
 \            0 when u1 = u2
    : cmp  ( u1 u2 -- -1|0|1 )
       2DUP u<   ( u1 u2 flag< )
-      SWAP rot  ( flag< u2 u1 )
+      SWAP ROT  ( flag< u2 u1 )
       u<        ( flag< flag> )
       -
    ;
 
 \ STRING
 : COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
-   rot 2DUP 2>r
+   ROT 2DUP 2>r
    min          ( c-addr1 c-addr2 n )
    false
    BEGIN
@@ -446,14 +446,14 @@ VARIABLE pic
       THEN
       ( c-addr1 c-addr2 n )
       1-
-      rot COUNT >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
-      rot COUNT >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
-      rot 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
+      ROT COUNT >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
+      ROT COUNT >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
+      ROT 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       DUP
   UNTIL
   2R> 2DROP
-  nip nip nip
+  NIP NIP NIP
 ;
 
 \ print name of word given its LFA
@@ -553,13 +553,13 @@ create fstatbuf 144 allot ALIGN
    ELSE
       ( n sz )
       TUCK                              ( sz n sz )
-      0 rot rot SWAP                    ( sz 0 sz n )
+      0 ROT ROT SWAP                    ( sz 0 sz n )
       \ For #defines, see /usr/include/asm-generic/mman-common.h
       \ PROT_READ 1
       \ PROT_WRITE 2
       \ MAP_PRIVATE 2
       \ MAP_ANONYMOUS 32
-      1 2 rot                           ( sz 0 sz 1 2 n )
+      1 2 ROT                           ( sz 0 sz 1 2 n )
       0                                 ( sz 0 sz 1 2 n 0 )
       9 syscall6                        ( sz addr )
       SWAP
@@ -648,7 +648,7 @@ VARIABLE chbuf
    cr
    OVER 16 +
    20 dump              ( res )
-   nip
+   NIP
 ;
 
 create tty.buffer 36 allot ALIGN
@@ -1057,9 +1057,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : ki.motion  ( from to -- )
    tty.cols >r
    S>D r@ um/mod                ( from to-col to-row )
-   rot                          ( to-col to-row from )
+   ROT                          ( to-col to-row from )
    S>D r> um/mod                ( to-col to-row from-col from-row )
-   rot                          ( to-col from-col from-row to-row )
+   ROT                          ( to-col from-col from-row to-row )
    \ vertical motion
    2DUP > IF
       \ upward motion
@@ -1119,7 +1119,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    ki.n @                       ( p n )
    OVER -                       ( p u )
    ki.a                         ( p u a )
-   rot +                        ( u addr )
+   ROT +                        ( u addr )
    OVER                         ( u addr u )
    etype                        ( u )
    IF
