@@ -335,8 +335,7 @@ VARIABLE pic
       r>                ( Lrem ud-quot )
    ;
 
-\ std1994
-: hold  ( ch -- )
+: HOLD  ( ch -- )
    pic @        ( ch addr )
    1-           ( ch addr' )
    TUCK         ( addr' ch addr' )
@@ -344,22 +343,19 @@ VARIABLE pic
    pic !
 ;
 
-\ std1994
 : <#  ( -- )
    picend
    pic !
 ;
 
-\ std1994
 : #  ( ud -- ud' )
    base @
    uml/mod      ( r ud )
    rot          ( ud r )
-   digit hold   ( ud )
+   digit HOLD   ( ud )
 ;
 
-\ std1994
-: #s  ( ud -- 0. )
+: #S  ( ud -- 0. )
    BEGIN
       #
       2DUP      ( ud ud )
@@ -367,15 +363,13 @@ VARIABLE pic
    UNTIL
 ;
 
-\ std1994
-: sign  ( n -- )
+: SIGN  ( n -- )
    0< IF
       [CHAR] -
-      hold
+      HOLD
    THEN
 ;
 
-\ std1994
 : #>  ( ud -- addr u )
    2DROP
    pic @
@@ -386,16 +380,16 @@ VARIABLE pic
 \ std1983
 : u.  ( u -- )
    0
-   <# bl hold #s #>
+   <# bl HOLD #S #>
    type
 ;
 
 \ Using <#, type out double with sign of n.
 : .sign  ( n du -- )
    <#
-      bl hold
-      #s
-      rot sign
+      bl HOLD
+      #S
+      rot SIGN
    #>
    type
 ;
@@ -640,7 +634,7 @@ VARIABLE chbuf
    base @ >r
    16 base !
    0                    ( ud )
-   <# bl hold
+   <# bl HOLD
       # # # # # # # #
    #>
    type
@@ -1058,7 +1052,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Like #s, but always in decimal.
 : #d
    base @ >r  10 base !
-   #s
+   #S
    r> base !
 ;
 
@@ -1075,20 +1069,20 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    2DUP > IF
       \ upward motion
       - S>D                     ( t-col f-col dn )
-      <# [CHAR] A hold #d [CHAR] [ hold 27 hold #>
+      <# [CHAR] A HOLD #d [CHAR] [ HOLD 27 HOLD #>
       etype                     ( t-col f-col )
    ELSE
       2DUP < IF
          \ downward motion
          - negate S>D           ( t-col f-col dn )
-         <# [CHAR] B hold #d [CHAR] [ hold 27 hold #>
+         <# [CHAR] B HOLD #d [CHAR] [ HOLD 27 HOLD #>
          etype                  ( t-col f-col )
       ELSE
          2DROP
       THEN
    THEN
    drop                         ( t-col )
-   1+ S>D <# [CHAR] G hold #d [CHAR] [ hold 27 hold #>
+   1+ S>D <# [CHAR] G HOLD #d [CHAR] [ HOLD 27 HOLD #>
    etype                        ( )
 ;
 
