@@ -287,11 +287,10 @@ VARIABLE do-sp  0 do-sp !
 : CONSTANT  ( x -- / -- x )
    VARIABLE last name> >body ! DOES> @ ;
 
-\ std1994 core ext
-: value   CONSTANT ;
-
-\ std1994 core ext
-: to  ( x -- )
+\ CORE-EXT
+: VALUE   CONSTANT ;
+\ CORE-EXT
+: TO  ( x -- )
    ' >body
    state @ IF
       [COMPILE] literal
@@ -325,7 +324,7 @@ VARIABLE do-sp  0 do-sp !
 
 300 CONSTANT pic-size
 pic-size map-anon drop pic-size +
-value picend
+VALUE picend
 VARIABLE pic
 
 \ double to double division
