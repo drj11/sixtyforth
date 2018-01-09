@@ -384,14 +384,14 @@ VARIABLE pic
 ;
 
 \ Using <#, type out double with sign of n.
-: .sign  ( n du -- )
-   <#
-      bl HOLD
-      #S
-      rot SIGN
-   #>
-   type
-;
+   : .sign  ( n du -- )
+      <#
+         bl HOLD
+         #S
+         rot SIGN
+      #>
+      type
+   ;
 
 : .  ( n -- )
    dup abs 0    ( n du )        \ du same magnitude as n
