@@ -362,7 +362,7 @@ lessthan:
         CtoL(lessthan)
 
         DQ 2
-        DQ 'u<'
+        DQ 'U<'
 Ulessthan:
         DQ $+8
         ; < ( u1 u2 -- flag )

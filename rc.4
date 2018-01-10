@@ -64,7 +64,7 @@
 ;
 
 \ CORE-EXT
-: U>  ( u1 u2 -- flag )  SWAP u< ;
+: U>  ( u1 u2 -- flag )  SWAP U< ;
 
 : DEPTH  ( -- +n )
    stack -  1 cells / ;
@@ -314,7 +314,7 @@ VARIABLE do-sp  0 do-sp !
    3 34                 ( 0 sz prot flags )
    -1 0                 ( 0 sz prot flags fd offset )
    9 syscall6           ( res )
-   -4096 OVER u<        ( res flag )
+   -4096 OVER U<        ( res flag )
    OVER and             ( addr ior )
 ;
 
@@ -425,9 +425,9 @@ VARIABLE pic
 \           +1 when u2 < u1
 \            0 when u1 = u2
    : cmp  ( u1 u2 -- -1|0|1 )
-      2DUP u<   ( u1 u2 flag< )
+      2DUP U<   ( u1 u2 flag< )
       SWAP ROT  ( flag< u2 u1 )
-      u<        ( flag< flag> )
+      U<        ( flag< flag> )
       -
    ;
 
