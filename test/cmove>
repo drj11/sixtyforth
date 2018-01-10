@@ -4,11 +4,11 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c 'VARIABLE v
 : c s" abcdefgh" ;
 c v SWAP 
-cmove>
+CMOVE>
 v 8 type
 v 2 +
 v 1 +
-5 cmove>
+5 CMOVE>
 v 8 type' )
 printf "%s\n" "$out"
 case $out in

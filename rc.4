@@ -282,7 +282,7 @@ VARIABLE do-sp  0 do-sp !
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
    here OVER allot                      ( from n to )
-   SWAP cmove ; immediate
+   SWAP CMOVE ; immediate
 
 : CONSTANT  ( x -- / -- x )
    VARIABLE last name> >body ! DOES> @ ;
@@ -474,7 +474,7 @@ VARIABLE pic
    DUP >R               ( lfa c-addr u )  ( r: u )
    8 min                ( lfa c-addr 8|u )
    here SWAP            ( lfa c-addr here 8|u )
-   cmove
+   CMOVE
    here R>
    type cr
    FALSE
@@ -518,7 +518,7 @@ rsp CONSTANT argc
    argc cell+           ( addr-from addr-to )
    -1 argc +!
    argc @ cells         ( addr-from addr-to u )
-   cmove
+   CMOVE
 ;
 
 \ see note/fstat.md
@@ -579,7 +579,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 : OPEN-FILE  ( c-addr u fam -- fileid ior )
    >R >R                ( c-addr )      ( r: fam u )
    openbuf R@           ( c-addr path u )
-   cmove                ( )
+   CMOVE                ( )
    0 R>                 ( 0 u )         ( r: fam )
    openbuf 1+ +         ( 0 p )
    !
@@ -833,7 +833,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    2DUP                 ( from u to u to )
    +                    ( from u to new-p )
    hl.p !               ( from u to )
-   SWAP cmove
+   SWAP CMOVE
 ;
 
 \ Create a new history entry.
@@ -917,7 +917,7 @@ VARIABLE hl.cursor   0 hl.cursor !
       OVER              ( addr u from u )
       ki.> @ + ki.a +   ( addr u from to )
       ki.n @ ki.> @ -   ( addr u from to n )
-      cmove>            ( addr u )
+      CMOVE>            ( addr u )
       \ increment length
       DUP ki.n +!       ( addr u )
       \ copy new input at point
@@ -925,7 +925,7 @@ VARIABLE hl.cursor   0 hl.cursor !
       OVER              ( addr u > u )
       \ bump ki.>
       ki.> +!           ( addr u > )
-      SWAP cmove        ( )
+      SWAP CMOVE        ( )
       1
    THEN
 ;
@@ -934,7 +934,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Convert Control Chars to ^J form,
 \ and prefix everything with k:
 : ki.fix
-   s" k:" ki.fixk SWAP cmove
+   s" k:" ki.fixk SWAP CMOVE
    ki.k C@  32  <  IF
       [CHAR] ^ ki.fixk 2 + C!
       ki.k C@
@@ -952,7 +952,7 @@ VARIABLE hl.cursor   0 hl.cursor !
       ki.a ki.> @ +     ( from )
       DUP 1-            ( from to )
       ki.n @ ki.> @ -   ( from to n )
-      cmove
+      CMOVE
       \ shrink buffer
       -1 ki.> +!
       -1 ki.n +!
@@ -994,7 +994,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
       ki.a ki.> @ +             ( to )
       DUP 1+ SWAP               ( from to )
       ki.n @ ki.> @ - 1-        ( from to n )
-      cmove
+      CMOVE
       \ shrink buffer
       -1 ki.n +!
    THEN
@@ -1016,7 +1016,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 : hl.move
    hl.cursor @ hl@              ( from u )
    TUCK ki.a SWAP               ( u from to u )
-   cmove                        ( u )
+   CMOVE                        ( u )
    ki.n !  0 ki.> !
 ;
 

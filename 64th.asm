@@ -465,7 +465,7 @@ Cfetch: DQ $+8
         CtoL(Cfetch)
 
         DQ 5
-        DQ 'cmove'      ; std1983
+        DQ 'CMOVE'      ; std1983
 CMOVE:
         DQ $+8
         ; CMOVE ( from to u -- )
@@ -483,7 +483,7 @@ CMOVE:
         CtoL(CMOVE)
 
         DQ 6
-        DQ 'cmove>'
+        DQ 'CMOVE>'
 CMOVEup:
         DQ $+8
         ; CMOVE> ( from to u -- )
