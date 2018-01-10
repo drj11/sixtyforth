@@ -1084,7 +1084,7 @@ dotx2:
         CtoL(dotx2)
 
         DQ 4
-        DQ 'dump'
+        DQ 'DUMP'
 DUMP:
         DQ stdexe
         ; DUMP ( addr u -- )
