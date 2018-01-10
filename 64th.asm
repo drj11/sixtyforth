@@ -1335,7 +1335,7 @@ starCREATE:
         CtoL(starCREATE)
 
         DQ 6
-        DQ 'create'
+        DQ 'CREATE'
 CREATE:
         DQ stdexe
         DQ PARSEWORD    ; ( addr u )

@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': x DOES> INVERT ;
-create foo
+CREATE foo
 foo
 x
 foo
