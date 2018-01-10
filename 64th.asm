@@ -1269,7 +1269,7 @@ SOURCE:
         CtoL(SOURCE)
 
         DQ 5
-        DQ 'allot'      ; std1983
+        DQ 'ALLOT'      ; std1983
 ALLOT:  DQ stdexe
         ; allot ( w -- )
         DQ CP

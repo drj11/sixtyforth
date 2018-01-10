@@ -6,7 +6,7 @@ out=$($FORTH -c '
 -123456789
 -1
 HERE
-3 cells allot
+3 cells ALLOT
 TUCK !
 TUCK cell+ !
 TUCK cell+ cell+ !

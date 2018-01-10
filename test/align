@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 
 out=$($FORTH -c '
 ALIGN HERE
-1 allot ALIGN HERE
+1 ALLOT ALIGN HERE
 - .
 ')
 printf "%s\n" "$out"

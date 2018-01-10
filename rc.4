@@ -69,9 +69,9 @@
 : DEPTH  ( -- +n )
    stack -  1 cells / ;
 
-: VARIABLE    create 1 cells allot ;
+: VARIABLE    create 1 cells ALLOT ;
 \ DOUBLE
-: 2VARIABLE   create 2 cells allot ;
+: 2VARIABLE   create 2 cells ALLOT ;
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
@@ -146,7 +146,7 @@
 : THEN
    HERE OVER - SWAP ! ; immediate
    
-create do-stack  3 cells allot
+create do-stack  3 cells ALLOT
 VARIABLE do-sp  0 do-sp !
    : do-addr   do-stack  do-sp @ cells  + ;
 
@@ -281,7 +281,7 @@ VARIABLE do-sp  0 do-sp !
    : *fix-cfa   R> last name> ! ;
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
-   HERE OVER allot                      ( from n to )
+   HERE OVER ALLOT                      ( from n to )
    SWAP CMOVE ; immediate
 
 : CONSTANT  ( x -- / -- x )
@@ -301,11 +301,11 @@ VARIABLE do-sp  0 do-sp !
 ; immediate
 
 : ALIGN  ( -- )
-   HERE aligned  HERE  - allot
+   HERE aligned  HERE  - ALLOT
 ;
 
 : C,  ( char -- )
-   HERE  1 allot  !  ;
+   HERE  1 ALLOT  !  ;
 
 \ Map Anonymous
 \ Request freshly allocated memory.
@@ -522,7 +522,7 @@ rsp CONSTANT argc
 ;
 
 \ see note/fstat.md
-create fstatbuf 144 allot ALIGN
+create fstatbuf 144 ALLOT ALIGN
 
 \ Modelled after ANSI `file-status`.
 : file*status  ( n -- addr ior )
@@ -651,7 +651,7 @@ VARIABLE chbuf
    NIP
 ;
 
-create tty.buffer 36 allot ALIGN
+create tty.buffer 36 ALLOT ALIGN
 
 \ Store TTY settings.
 : tty.store ( fd -- )
@@ -672,7 +672,7 @@ create tty.buffer 36 allot ALIGN
    tty.buffer tcsets DROP
 ;
 
-create tty.szbuf 8 allot
+create tty.szbuf 8 ALLOT
 
 : tiocgwinsz  ( fd p -- res )
    \ 0x5413, TIOCGWINSZ according to /usr/include/asm-generic/ioctls.h
@@ -718,7 +718,7 @@ VARIABLE tty.vbuf
 \ size
 : ki.z  96 ;
 \ address
-create ki.a ki.z allot
+create ki.a ki.z ALLOT
 \ point
 VARIABLE ki.>
 \ validity
@@ -746,7 +746,7 @@ VARIABLE hl.p
 hl.block @ hl.p !
 
 : hl.n   999 ;
-create hl.array hl.n 2* cells allot
+create hl.array hl.n 2* cells ALLOT
 
 VARIABLE hl.next   0 hl.next !
 VARIABLE hl.cursor   0 hl.cursor !

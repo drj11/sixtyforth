@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 HERE
-16 allot
+16 ALLOT
 DUP 16 99 FILL
 DUP 12 33 FILL
 DUP C@ .

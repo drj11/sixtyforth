@@ -5,7 +5,7 @@ out=$($FORTH -c 'HERE
 9876543210
 -123456789
 HERE
-2 cells allot
+2 cells ALLOT
 2!
 DUP @ .
 cell+ @ .
