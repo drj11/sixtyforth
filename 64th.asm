@@ -500,7 +500,7 @@ CMOVEup:
         CtoL(CMOVEup)
 
         DQ 4
-        DQ 'fill'       ; std1983
+        DQ 'FILL'       ; std1983
 FILL:
         DQ $+8
         ; FILL ( c-addr u char -- )

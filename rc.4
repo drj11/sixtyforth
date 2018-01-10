@@ -470,7 +470,7 @@ VARIABLE pic
    4294967295 and       ( lfa nfa u )
    SWAP cell+ SWAP      ( lfa c-addr u )
    here OVER [CHAR] ?   ( lfa c-addr u here u ? )
-   fill                 ( lfa c-addr u )
+   FILL                 ( lfa c-addr u )
    DUP >R               ( lfa c-addr u )  ( r: u )
    8 min                ( lfa c-addr 8|u )
    here SWAP            ( lfa c-addr here 8|u )

@@ -4,8 +4,8 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 here
 16 allot
-DUP 16 99 fill
-DUP 12 33 fill
+DUP 16 99 FILL
+DUP 12 33 FILL
 DUP C@ .
 DUP 11 + C@ .
 DUP 12 + C@ .
