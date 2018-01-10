@@ -1239,7 +1239,7 @@ EMIT:
         CtoL(EMIT)
 
         DQ 2
-        DQ 'cr'         ; std1994
+        DQ 'CR'         ; std1994
 CR:
         DQ stdexe
         ; CR ( -- )

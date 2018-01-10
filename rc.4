@@ -476,7 +476,7 @@ VARIABLE pic
    here SWAP            ( lfa c-addr here 8|u )
    CMOVE
    here R>
-   TYPE cr
+   TYPE CR
    FALSE
 ;
 
@@ -645,7 +645,7 @@ VARIABLE chbuf
    OVER 4 + @.8
    OVER 8 + @.8
    OVER 12 + @.8
-   cr
+   CR
    OVER 16 +
    20 DUMP              ( res )
    NIP
@@ -856,7 +856,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    WHILE
       DUP .
       DUP hl@           ( i addr u )
-      TYPE cr           ( i )
+      TYPE CR           ( i )
       1+                ( i+1 )
    REPEAT
    DROP
