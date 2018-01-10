@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c 'TRUE invert .
-TRUE TRUE xor .
+out=$($FORTH -c 'TRUE INVERT .
+TRUE TRUE XOR .
 TRUE .
 TRUE FALSE = .
 ')

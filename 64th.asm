@@ -555,7 +555,7 @@ AND:    DQ $+8
         CtoL(AND)
 
         DQ 3
-        DQ 'xor'        ; std1983
+        DQ 'XOR'        ; std1983
 XOR:    DQ $+8
         ; XOR ( a b -- bitwise-xor )
         mov rax, [rbp-16]
@@ -567,7 +567,7 @@ XOR:    DQ $+8
         CtoL(XOR)
 
         DQ 6
-        DQ 'invert'
+        DQ 'INVERT'     ; std1994
 INVERT:
         DQ stdexe
         DQ TRUE

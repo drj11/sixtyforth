@@ -53,7 +53,7 @@
 : M*/  ( d1 n1 +n2 -- d2 )
    >R                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
-   2DUP xor             ( d1 n1 sign )
+   2DUP XOR             ( d1 n1 sign )
    R> SWAP >R           ( d1 n1 n2 )  ( r: sign )
    2SWAP                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
@@ -203,9 +203,9 @@ VARIABLE do-sp  0 do-sp !
   2DUP +        ( inc index index' )
   DUP R@ -      ( inc index index' o' )
   ROT R> -      ( inc index' o' o )
-  OVER xor      ( inc index' o' x )
+  OVER XOR      ( inc index' o' x )
   ROT 2SWAP     ( x index' inc o' )
-  xor invert    ( x index' q )
+  XOR INVERT    ( x index' q )
   ROT AND       ( index' sflag )
   0< SWAP       ( flag index' )
 ;
@@ -601,7 +601,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-   DUP >R C@ AND xor R> C! ;
+   DUP >R C@ AND XOR R> C! ;
 
 VARIABLE chbuf
 
@@ -663,7 +663,7 @@ create tty.buffer 36 allot ALIGN
    \ Fetch and modify TTY settings...
    DUP here tcgets DROP                 ( fd )
    \ Clear ICANON and ECHO bits.
-   0  10 invert  here 12 +  c!xa        ( fd )
+   0  10 INVERT  here 12 +  c!xa        ( fd )
    here tcsets DROP
 ;
 
