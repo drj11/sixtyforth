@@ -16,7 +16,7 @@
 ( Now we have round bracket comments )
 
 \ Using the definition in [FORTH1994] A.6.1.2033
-   : compile   r> DUP @ , cell+ >r ;
+   : compile   R> DUP @ , cell+ >R ;
 
 : [']   ' [COMPILE] literal ; immediate
 
@@ -34,8 +34,8 @@
 
 \ CORE-EXT
 : 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )
-   r> r> r>     ( ret x2 x1 )
-   ROT >r       ( x2 x1 )
+   R> R> R>     ( ret x2 x1 )
+   ROT >R       ( x2 x1 )
    SWAP         ( x1 x2 )
 ;
 
@@ -44,23 +44,23 @@
 
 : 2*  ( x -- x' )  2 * ;
 
-: /MOD  ( n1 n2 -- rem quot )  >r S>D r> sm/rem ;
-: */MOD  ( n1 n2 n3 -- rem quot )  >r m* r> sm/rem ;
+: /MOD  ( n1 n2 -- rem quot )  >R S>D R> sm/rem ;
+: */MOD  ( n1 n2 n3 -- rem quot )  >R m* R> sm/rem ;
 : */  ( n1 n2 n3 -- quot )  */MOD NIP ;
 : /  ( n1 n2 -- n3 )  /MOD NIP ;
 
 \ DOUBLE
 : M*/  ( d1 n1 +n2 -- d2 )
-   >r                   ( d1 n1 )  ( r: n2 )
+   >R                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
    2DUP xor             ( d1 n1 sign )
-   r> SWAP >r           ( d1 n1 n2 )  ( r: sign )
+   R> SWAP >R           ( d1 n1 n2 )  ( r: sign )
    2SWAP                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
    2SWAP                ( ud1 n1 n2 )
    SWAP abs SWAP        ( ud1 u1 n2 )
    um*/mod DROP         ( ud )
-   r> d+-               ( d )  ( r: )
+   R> d+-               ( d )  ( r: )
 ;
 
 \ CORE-EXT
@@ -75,7 +75,7 @@
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
-   >r S>D r> sm/rem DROP
+   >R S>D R> sm/rem DROP
 ;
 
 : 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
@@ -91,7 +91,7 @@
 \ STRING
 : /STRING  ( addr u n -- addr' u' )
    TUCK -               ( addr n u' )
-   >r + r>              ( addr' u' )
+   >R + R>              ( addr' u' )
 ;
 
 \ ## Control Flow
@@ -186,23 +186,23 @@ VARIABLE do-sp  0 do-sp !
 \ Implements the test part of a DO LOOP,
 \ leaving a flag on the stack.
 : looptest  ( -- flag    / R: limit index -- limit index' )
-   r>           ( ret )
+   R>           ( ret )
    2r@          ( ret limit index )
    1+           ( ret limit index' )
-   r> DROP      ( r: limit )
-   DUP >r       ( r: limit index' )
+   R> DROP      ( r: limit )
+   DUP >R       ( r: limit index' )
    =            ( ret flag )
-   SWAP >r      ( flag )
+   SWAP >R      ( flag )
 ;
 
 \ Add inc to index and convert inc to flag;
 \ flag is true iff index crosses boundary between
 \ limit-1 and limit.
 : +test  ( inc limit index -- flag index' )
-  SWAP >r       ( inc index )  ( r: limit )
+  SWAP >R       ( inc index )  ( r: limit )
   2DUP +        ( inc index index' )
-  DUP r@ -      ( inc index index' o' )
-  ROT r> -      ( inc index' o' o )
+  DUP R@ -      ( inc index index' o' )
+  ROT R> -      ( inc index' o' o )
   OVER xor      ( inc index' o' x )
   ROT 2SWAP     ( x index' inc o' )
   xor invert    ( x index' q )
@@ -211,12 +211,12 @@ VARIABLE do-sp  0 do-sp !
 ;
 
 : +looptest  ( inc -- flag ) ( r: limit index -- limit index' )
-   r> SWAP      ( ret inc )
+   R> SWAP      ( ret inc )
    2r@          ( ret inc limit index )
    +test        ( ret flag index' )
-   r> DROP      ( r: limit )
-   >r           ( ret flag ) ( r: limit index' )
-   SWAP >r      ( flag )
+   R> DROP      ( r: limit )
+   >R           ( ret flag ) ( r: limit index' )
+   SWAP >R      ( flag )
 ;
 
 : LEAVE
@@ -278,7 +278,7 @@ VARIABLE do-sp  0 do-sp !
 \ to point to address following call to *fix-cfa
 \ in the calling word;
 \ and terminate excution of calling word.
-   : *fix-cfa   r> last name> ! ;
+   : *fix-cfa   R> last name> ! ;
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
    here OVER allot                      ( from n to )
@@ -328,11 +328,11 @@ VARIABLE pic
 \ double to double division
 \ used in printing numbers
    : uml/mod  ( ud u -- u-rem ud-quot )
-      >r r@
+      >R R@
       0 SWAP um/mod     ( L Mrem Mquot )
-      r> SWAP >r        ( L Mrem u )
+      R> SWAP >R        ( L Mrem u )
       um/mod            ( Lrem Lquot )
-      r>                ( Lrem ud-quot )
+      R>                ( Lrem ud-quot )
    ;
 
 : HOLD  ( ch -- )
@@ -441,13 +441,13 @@ VARIABLE pic
       DUP 0= IF
         \ identical up to common part
         DROP 2DROP
-        r> r> cmp
+        R> R> cmp
         EXIT
       THEN
       ( c-addr1 c-addr2 n )
       1-
-      ROT COUNT >r      ( c-addr2 n c-addr1' )  ( r: ch1 )
-      ROT COUNT >r      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
+      ROT COUNT >R      ( c-addr2 n c-addr1' )  ( r: ch1 )
+      ROT COUNT >R      ( n c-addr1' c-addr2' )  ( r: ch1 ch2 )
       ROT 2R>           ( c-addr1' c-addr2' n ch1 ch2 )
       cmp               ( c-addr1' c-addr2' n -1|0|1 )
       DUP
@@ -471,11 +471,11 @@ VARIABLE pic
    SWAP cell+ SWAP      ( lfa c-addr u )
    here OVER [CHAR] ?   ( lfa c-addr u here u ? )
    fill                 ( lfa c-addr u )
-   DUP >r               ( lfa c-addr u )  ( r: u )
+   DUP >R               ( lfa c-addr u )  ( r: u )
    8 min                ( lfa c-addr 8|u )
    here SWAP            ( lfa c-addr here 8|u )
    cmove
-   here r>
+   here R>
    type cr
    false
 ;
@@ -577,14 +577,14 @@ CONSTANT openbuf        ( buffer for open pathname )
 
 \ FILE
 : OPEN-FILE  ( c-addr u fam -- fileid ior )
-   >r >r                ( c-addr )      ( r: fam u )
-   openbuf r@           ( c-addr path u )
+   >R >R                ( c-addr )      ( r: fam u )
+   openbuf R@           ( c-addr path u )
    cmove                ( )
-   0 r>                 ( 0 u )         ( r: fam )
+   0 R>                 ( 0 u )         ( r: fam )
    openbuf 1+ +         ( 0 p )
    !
    openbuf              ( openbuf )
-   r> 0                 ( openbuf fam 0 )
+   R> 0                 ( openbuf fam 0 )
    \ For syscall numbers, see
    \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
    2 syscall3           ( fileid )
@@ -601,7 +601,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-   DUP >r c@ and xor r> c! ;
+   DUP >R c@ and xor R> c! ;
 
 VARIABLE chbuf
 
@@ -626,14 +626,14 @@ VARIABLE chbuf
 \ Fetch and print 8 hex digits.
 : @.8  ( addr -- )
    @ 4294967295 ( 2**32 - 1 ) and       ( w )
-   base @ >r
+   base @ >R
    16 base !
    0                    ( ud )
    <# bl HOLD
       # # # # # # # #
    #>
    type
-   r> base !
+   R> base !
 ;
 
 
@@ -1046,19 +1046,19 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Like #s, but always in decimal.
 : #d
-   base @ >r  10 base !
+   base @ >R  10 base !
    #S
-   r> base !
+   R> base !
 ;
 
 \ Emit ANSI codes to move VT cursor,
 \ from location `from` to location `to`.
 \ `from` and `to` are byte positions in the ki.a input string.
 : ki.motion  ( from to -- )
-   tty.cols >r
-   S>D r@ um/mod                ( from to-col to-row )
+   tty.cols >R
+   S>D R@ um/mod                ( from to-col to-row )
    ROT                          ( to-col to-row from )
-   S>D r> um/mod                ( to-col to-row from-col from-row )
+   S>D R> um/mod                ( to-col to-row from-col from-row )
    ROT                          ( to-col from-col from-row to-row )
    \ vertical motion
    2DUP > IF
@@ -1149,9 +1149,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
          0= IF
             ki.k 1 ki.insert
          ELSE
-            DEPTH >r
+            DEPTH >R
             EXECUTE
-            DEPTH r>            ( flag depth1 depth0 )
+            DEPTH R>            ( flag depth1 depth0 )
             - IF
                s" stack imbalance" etype
             THEN
@@ -1227,7 +1227,7 @@ options
       EXIT
    THEN
    ( addr u )
-   DUP DUP >r           ( addr u u ) ( r: u )
+   DUP DUP >R           ( addr u u ) ( r: u )
    0 DO
       \ l is, or will be, the index of the earliest NL
       OVER              ( addr l addr )
@@ -1238,7 +1238,7 @@ options
       THEN
    LOOP
    ( addr l )
-   r> SWAP              ( addr u l )
+   R> SWAP              ( addr u l )
    /STRING
 ;
 

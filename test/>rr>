@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c ': inc 1+ ; : nipadd >r inc r> ; 7 9 nipadd . . ')
+out=$($FORTH -c ': inc 1+ ; : nipadd >R inc R> ; 7 9 nipadd . . ')
 printf "%s\n" "$out"
 case "$out" in
     ("9 8 ") exit 0;;

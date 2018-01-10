@@ -215,7 +215,7 @@ twoSWAP:
         CtoL(twoSWAP)
 
         DQ 2
-        DQ '>r'         ; std1983
+        DQ '>R'         ; std1983
 toR:    DQ $+8
         mov rax, [rbp-8]
         mov [r12], rax
@@ -225,7 +225,7 @@ toR:    DQ $+8
         CtoL(toR)
 
         DQ 2
-        DQ 'r>'         ; std1983
+        DQ 'R>'         ; std1983
 Rfrom:  DQ $+8
         mov rax, [r12-8]
         sub r12, 8
@@ -233,7 +233,7 @@ Rfrom:  DQ $+8
         CtoL(Rfrom)
 
         DQ 2
-        DQ 'r@'         ; std1983
+        DQ 'R@'         ; std1983
 Rfetch: DQ $+8
         mov rax, [r12-8]
         jmp pushrax
