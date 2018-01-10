@@ -7,7 +7,7 @@
 
 : [COMPILE]   ' , ; immediate
 
-: CHAR   parse-word DROP c@ ;
+: CHAR   parse-word DROP C@ ;
 
 : [CHAR]   CHAR [COMPILE] literal ; immediate
 
@@ -86,7 +86,7 @@
 \ DOUBLE
 : D0=  ( xd -- flag )  or 0= ;
 
-: COUNT  ( addr -- addr' ch )  DUP 1+ SWAP c@ ;
+: COUNT  ( addr -- addr' ch )  DUP 1+ SWAP C@ ;
 
 \ STRING
 : /STRING  ( addr u n -- addr' u' )
@@ -339,7 +339,7 @@ VARIABLE pic
    pic @        ( ch addr )
    1-           ( ch addr' )
    TUCK         ( addr' ch addr' )
-   c!           ( addr' )
+   C!           ( addr' )
    pic !
 ;
 
@@ -492,7 +492,7 @@ VARIABLE pic
       BEGIN
          1+        ( addr i )
          2DUP +    ( addr i p )
-         c@        ( addr i ch )
+         C@        ( addr i ch )
          0=        ( addr i flag )
       UNTIL
    ;
@@ -601,7 +601,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-   DUP >R c@ and xor R> c! ;
+   DUP >R C@ and xor R> C! ;
 
 VARIABLE chbuf
 
@@ -612,7 +612,7 @@ VARIABLE chbuf
    ELSE
       0= IF -9999999
       ELSE
-         chbuf c@
+         chbuf C@
       THEN
    THEN
 ;
@@ -692,7 +692,7 @@ VARIABLE tty.vbuf
    0= IF
       tty.szbuf 2+      ( a+2 )
       DUP 1+            ( a+2 a+3 )
-      c@ SWAP c@        ( b1 b0 )
+      C@ SWAP C@        ( b1 b0 )
       SWAP              ( b0 b1 )
       256 * +           ( cols )
       tty.vbuf !
@@ -935,13 +935,13 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ and prefix everything with k:
 : ki.fix
    s" k:" ki.fixk SWAP cmove
-   ki.k c@  32  <  IF
-      [CHAR] ^ ki.fixk 2 + c!
-      ki.k c@
-      64 or ki.fixk 3 + c!
+   ki.k C@  32  <  IF
+      [CHAR] ^ ki.fixk 2 + C!
+      ki.k C@
+      64 or ki.fixk 3 + C!
       ki.fixk 4
    ELSE
-      ki.k c@ ki.fixk 2 + c!
+      ki.k C@ ki.fixk 2 + C!
       ki.fixk 3
    THEN
 ;
@@ -961,8 +961,8 @@ VARIABLE hl.cursor   0 hl.cursor !
 
 \ Create a binding for the current stty erase key
 0 tty.store
-tty.buffer 19 + c@
-ki.k c!
+tty.buffer 19 + C@
+ki.k C!
 ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 : end-of-line
@@ -1222,7 +1222,7 @@ options
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
-   OVER c@              ( addr u c )
+   OVER C@              ( addr u c )
    [CHAR] # <> IF
       EXIT
    THEN
@@ -1231,7 +1231,7 @@ options
    0 DO
       \ l is, or will be, the index of the earliest NL
       OVER              ( addr l addr )
-      I + c@            ( addr l ch )
+      I + C@            ( addr l ch )
       10 = IF
          \ :todo: reimplement using `leave`
          I min

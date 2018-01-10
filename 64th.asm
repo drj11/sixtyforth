@@ -432,7 +432,7 @@ store:
         CtoL(store)
 
         DQ 2
-        DQ 'c!'         ; std1994
+        DQ 'C!'         ; std1994
 Cstore:
         DQ $+8
         ; C! ( ch buf -- )
@@ -454,7 +454,7 @@ fetch:  DQ $+8
         CtoL(fetch)
 
         DQ 2
-        DQ 'c@'         ; std1983
+        DQ 'C@'         ; std1983
 Cfetch: DQ $+8
         ; C@ ( addr -- ch )
         mov rdx, [rbp-8]

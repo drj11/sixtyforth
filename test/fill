@@ -6,10 +6,10 @@ here
 16 allot
 DUP 16 99 fill
 DUP 12 33 fill
-DUP c@ .
-DUP 11 + c@ .
-DUP 12 + c@ .
-DUP 15 + c@ .
+DUP C@ .
+DUP 11 + C@ .
+DUP 12 + C@ .
+DUP 15 + C@ .
 ')
 printf "%s\n" "$out"
 case "$out" in
