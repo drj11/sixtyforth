@@ -9,7 +9,7 @@
 
 : CHAR   parse-word DROP C@ ;
 
-: [CHAR]   CHAR [COMPILE] literal ; immediate
+: [CHAR]   CHAR [COMPILE] LITERAL ; immediate
 
 : (   [CHAR] ) parse 2DROP ; immediate
 
@@ -18,7 +18,7 @@
 \ Using the definition in [FORTH1994] A.6.1.2033
    : compile   R> DUP @ , cell+ >R ;
 
-: [']   ' [COMPILE] literal ; immediate
+: [']   ' [COMPILE] LITERAL ; immediate
 
 : RECURSE
    last name>
@@ -293,7 +293,7 @@ VARIABLE do-sp  0 do-sp !
 : TO  ( x -- )
    ' >body
    state @ IF
-      [COMPILE] literal
+      [COMPILE] LITERAL
       compile !
    ELSE
       !

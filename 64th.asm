@@ -1289,7 +1289,7 @@ comma:  DQ stdexe
         CtoL(comma)
 
         DQ 7 | Immediate
-        DQ 'literal'    ; std1983
+        DQ 'LITERAL'    ; std1983
 LITERAL:
         DQ stdexe
         DQ LIT, LIT     ; haha, weird or what?
