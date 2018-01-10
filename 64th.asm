@@ -832,7 +832,7 @@ DtoS:   DQ stdexe
         CtoL(DtoS)
 
         DQ 7
-        DQ 'dnegate'    ; std1994 double
+        DQ 'DNEGATE'    ; std1994 double
 DNEGATE:
         DQ $+8
         ; m+- ( d -- -d )
