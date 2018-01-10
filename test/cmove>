@@ -5,11 +5,11 @@ out=$($FORTH -c 'VARIABLE v
 : c s" abcdefgh" ;
 c v SWAP 
 CMOVE>
-v 8 type
+v 8 TYPE
 v 2 +
 v 1 +
 5 CMOVE>
-v 8 type' )
+v 8 TYPE' )
 printf "%s\n" "$out"
 case $out in
     (abcdefghaggggggh) exit 0;;

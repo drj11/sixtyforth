@@ -29,7 +29,7 @@
 \ CORE-EXT
 : TUCK  ( a b -- b a b )  SWAP OVER ;
 \ CORE-EXT
-: .(  [CHAR] ) parse type ; immediate
+: .(  [CHAR] ) parse TYPE ; immediate
 : S>D  ( n -- d )  DUP 0< ;
 
 \ CORE-EXT
@@ -380,7 +380,7 @@ VARIABLE pic
 : U.  ( u -- )
    0
    <# BL HOLD #S #>
-   type
+   TYPE
 ;
 
 \ Using <#, type out double with sign of n.
@@ -390,7 +390,7 @@ VARIABLE pic
          #S
          ROT SIGN
       #>
-      type
+      TYPE
    ;
 
 : .  ( n -- )
@@ -417,7 +417,7 @@ VARIABLE pic
 \ ## String
 
 : ."  ( copmile: "ccc<quote>" -- )
-   [COMPILE] s" compile type
+   [COMPILE] s" compile TYPE
 ; immediate
 
 \ 3-way comparison
@@ -476,7 +476,7 @@ VARIABLE pic
    here SWAP            ( lfa c-addr here 8|u )
    CMOVE
    here R>
-   type cr
+   TYPE cr
    FALSE
 ;
 
@@ -632,7 +632,7 @@ VARIABLE chbuf
    <# BL HOLD
       # # # # # # # #
    #>
-   type
+   TYPE
    R> base !
 ;
 
@@ -856,7 +856,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    WHILE
       DUP .
       DUP hl@           ( i addr u )
-      type cr           ( i )
+      TYPE cr           ( i )
       1+                ( i+1 )
    REPEAT
    DROP

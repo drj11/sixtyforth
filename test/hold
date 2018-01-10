@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '13799 0 <# # # # 44 HOLD #S #> type')
+out=$($FORTH -c '13799 0 <# # # # 44 HOLD #S #> TYPE')
 printf "%s\n" "$out"
 case $out in
     ('13,799') exit 0;;

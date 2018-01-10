@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 #
-out=$($FORTH -c ': foo s" foo" type ;
+out=$($FORTH -c ': foo s" foo" TYPE ;
 \ foo bar
 foo \ this is a comment
 ')

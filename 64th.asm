@@ -1204,7 +1204,7 @@ FTYPE:
         CtoL(FTYPE)
 
         DQ 4
-        DQ 'type'       ; std1983
+        DQ 'TYPE'       ; std1983
 TYPE:   DQ stdexe
         ; TYPE ( addr +n -- )
         DQ LIT, 1       ; addr n 1      ; stdout

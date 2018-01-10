@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '123 0 <# #S 123 NEGATE SIGN #> type')
+out=$($FORTH -c '123 0 <# #S 123 NEGATE SIGN #> TYPE')
 printf "%s\n" "$out"
 case $out in
     ('-123') exit 0;;

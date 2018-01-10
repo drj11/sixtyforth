@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Note that #s emits at least one digit.
-out=$($FORTH -c '37 0 <# # # # 44 HOLD #S #> type')
+out=$($FORTH -c '37 0 <# # # # 44 HOLD #S #> TYPE')
 printf "%s\n" "$out"
 case $out in
     ('0,037') exit 0;;
