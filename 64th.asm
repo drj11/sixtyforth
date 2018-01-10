@@ -587,7 +587,7 @@ BIC:
         CtoL(BIC)
 
         DQ 6
-        DQ 'lshift'
+        DQ 'LSHIFT'
 LSHIFT:
         DQ $+8
         mov rax, [rbp-16]
@@ -601,7 +601,7 @@ LSHIFT:
         CtoL(LSHIFT)
 
         DQ 6
-        DQ 'rshift'
+        DQ 'RSHIFT'
 RSHIFT:
         DQ $+8
         mov rax, [rbp-16]
