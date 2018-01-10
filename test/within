@@ -1,11 +1,11 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '33000 32000 34000 within .
-  1 -5 5 within .
-  9 9 9 within .
-  4 9 0 within .
-  -1 9 0 within .
+out=$($FORTH -c '33000 32000 34000 WITHIN .
+   1 -5  5 WITHIN .
+   9  9  9 WITHIN .
+   4  9  0 WITHIN .
+  -1  9  0 WITHIN .
   ')
 printf "%s\n" "$out"
 case "$out" in

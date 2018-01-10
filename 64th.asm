@@ -796,7 +796,7 @@ twominus:
         CtoL(twominus)
 
         DQ 6
-        DQ 'within'     ; std1994
+        DQ 'WITHIN'     ; std1994
 WITHIN:
         DQ stdexe
         ; WITHIN ( t p q -- flag )

@@ -796,7 +796,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    DUP                  ( i i )
    hl.base              ( i i base )
    hl.next @            ( i i base limit )
-   within  IF
+   WITHIN  IF
       hl.n MOD          ( array-index )
       hl.a&             ( addr )
    ELSE
