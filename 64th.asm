@@ -729,7 +729,7 @@ star: DQ stdexe
         CtoL(star)
 
         DQ 6
-        DQ 'um/mod'     ; std1983
+        DQ 'UM/MOD'     ; std1983
 UMslashMOD:
         DQ $+8
         ; UM/MOD ( ud-dividend u-divisor -- u-r u-q )
@@ -752,7 +752,7 @@ UMslashMOD:
         CtoL(UMslashMOD)
 
         DQ 6
-        DQ 'sm/rem'     ; std1994
+        DQ 'SM/REM'     ; std1994
 SMslashREM:
         DQ $+8
         ; SM/REM ( d-dividend n-divisor -- n-quotient n-remainder )

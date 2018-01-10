@@ -1,10 +1,10 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '4 S>D 3 sm/rem . .
--4 S>D  3 sm/rem . .
- 4 S>D -3 sm/rem . .
--4 S>D -3 sm/rem . .')
+out=$($FORTH -c '4 S>D 3 SM/REM . .
+-4 S>D  3 SM/REM . .
+ 4 S>D -3 SM/REM . .
+-4 S>D -3 SM/REM . .')
 printf "%s\n" "$out"
 case $out in
     ('1 1 -1 -1 -1 1 1 -1 ') exit 0;;

@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '0 1 1000000000 um/mod . .
-  18446744073708675072 999999 1000000 um/mod . .
+out=$($FORTH -c '0 1 1000000000 UM/MOD . .
+  18446744073708675072 999999 1000000 UM/MOD . .
 ')
 printf "%s\n" "$out"
 case $out in

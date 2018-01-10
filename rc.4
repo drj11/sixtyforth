@@ -44,8 +44,8 @@
 
 : 2*  ( x -- x' )  2 * ;
 
-: /MOD  ( n1 n2 -- rem quot )  >R S>D R> sm/rem ;
-: */MOD  ( n1 n2 n3 -- rem quot )  >R M* R> sm/rem ;
+: /MOD  ( n1 n2 -- rem quot )  >R S>D R> SM/REM ;
+: */MOD  ( n1 n2 n3 -- rem quot )  >R M* R> SM/REM ;
 : */  ( n1 n2 n3 -- quot )  */MOD NIP ;
 : /  ( n1 n2 -- n3 )  /MOD NIP ;
 
@@ -75,7 +75,7 @@
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
-   >R S>D R> sm/rem DROP
+   >R S>D R> SM/REM DROP
 ;
 
 : 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
@@ -329,9 +329,9 @@ VARIABLE pic
 \ used in printing numbers
    : uml/mod  ( ud u -- u-rem ud-quot )
       >R R@
-      0 SWAP um/mod     ( L Mrem Mquot )
+      0 SWAP UM/MOD     ( L Mrem Mquot )
       R> SWAP >R        ( L Mrem u )
-      um/mod            ( Lrem Lquot )
+      UM/MOD            ( Lrem Lquot )
       R>                ( Lrem ud-quot )
    ;
 
@@ -1038,7 +1038,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 
 \ Fix cursor position if it is at end of row
 : ki.curfix
-   ki.n @ S>D  tty.cols  um/mod ( col row )
+   ki.n @ S>D  tty.cols  UM/MOD ( col row )
    0>  SWAP 0=  AND  IF
       10 eemit
    THEN
@@ -1056,9 +1056,9 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ `from` and `to` are byte positions in the ki.a input string.
 : ki.motion  ( from to -- )
    tty.cols >R
-   S>D R@ um/mod                ( from to-col to-row )
+   S>D R@ UM/MOD                ( from to-col to-row )
    ROT                          ( to-col to-row from )
-   S>D R> um/mod                ( to-col to-row from-col from-row )
+   S>D R> UM/MOD                ( to-col to-row from-col from-row )
    ROT                          ( to-col from-col from-row to-row )
    \ vertical motion
    2DUP > IF
