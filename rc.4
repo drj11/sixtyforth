@@ -379,14 +379,14 @@ VARIABLE pic
 
 : U.  ( u -- )
    0
-   <# bl HOLD #S #>
+   <# BL HOLD #S #>
    type
 ;
 
 \ Using <#, type out double with sign of n.
    : .sign  ( n du -- )
       <#
-         bl HOLD
+         BL HOLD
          #S
          ROT SIGN
       #>
@@ -629,7 +629,7 @@ VARIABLE chbuf
    base @ >R
    16 base !
    0                    ( ud )
-   <# bl HOLD
+   <# BL HOLD
       # # # # # # # #
    #>
    type

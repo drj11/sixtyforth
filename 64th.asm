@@ -1184,7 +1184,7 @@ DIGIT:  DQ stdexe
         CtoL(DIGIT)
 
         DQ 2
-        DQ 'bl'         ; std1994
+        DQ 'BL'         ; std1994
 fBL:    DQ stdexe
         DQ LIT, ' '
         DQ EXIT
