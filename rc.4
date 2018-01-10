@@ -546,7 +546,7 @@ create fstatbuf 144 allot ALIGN
 : fmapr ( fd -- addr u )
    DUP file-size                        ( fd ud ior )
    abort" File cannot be mapped"        ( fd ud )
-   d>s                                  ( fd u )
+   D>S                                  ( fd u )
    DUP 1 < IF
       DROP DROP
       0 0

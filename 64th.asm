@@ -825,7 +825,7 @@ Dplus:  DQ $+8
         CtoL(Dplus)
 
         DQ 3
-        DQ 'd>s'        ; std1994 double
+        DQ 'D>S'        ; std1994 double
 DtoS:   DQ stdexe
         DQ DROP
         DQ EXIT
