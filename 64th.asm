@@ -809,7 +809,7 @@ WITHIN:
         CtoL(WITHIN)
 
         DQ 2
-        DQ 'd+'         ; std1994 double
+        DQ 'D+'         ; std1994 double
 Dplus:  DQ $+8
         ; D+ ( d1 d2 -- d3 )
         mov rax, [rbp-32]       ; least significant part of augend
