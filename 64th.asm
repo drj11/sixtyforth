@@ -864,7 +864,7 @@ Dplusminus:
         CtoL(Dplusminus)
 
         DQ 4
-        DQ 'dabs'       ; std1994 double
+        DQ 'DABS'       ; std1994 double
 DABS:   DQ stdexe
         ; DABS ( d -- ud )
         DQ LIT, 7       ; Arbitrary, should be positive.

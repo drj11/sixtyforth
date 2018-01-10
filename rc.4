@@ -56,7 +56,7 @@
    2DUP XOR             ( d1 n1 sign )
    R> SWAP >R           ( d1 n1 n2 )  ( r: sign )
    2SWAP                ( n1 n2 d1 )
-   dabs                 ( n1 n2 ud1 )
+   DABS                 ( n1 n2 ud1 )
    2SWAP                ( ud1 n1 n2 )
    SWAP ABS SWAP        ( ud1 u1 n2 )
    um*/mod DROP         ( ud )
@@ -399,7 +399,7 @@ VARIABLE pic
 
 \ DOUBLE
 : D.  ( d -- )
-   TUCK dabs    ( n du )        \ n same sign as d
+   TUCK DABS    ( n du )        \ n same sign as d
    .sign ;
 
 : DECIMAL  ( -- )  10 base ! ;
