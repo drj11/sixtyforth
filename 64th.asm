@@ -938,7 +938,7 @@ fRSP:
         CtoL(fRSP)
 
         DQ 7
-        DQ '>number'    ; std1994
+        DQ '>NUMBER'    ; std1994
 toNUMBER:
         DQ stdexe
         ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
