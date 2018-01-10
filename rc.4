@@ -45,7 +45,7 @@
 : 2*  ( x -- x' )  2 * ;
 
 : /MOD  ( n1 n2 -- rem quot )  >R S>D R> sm/rem ;
-: */MOD  ( n1 n2 n3 -- rem quot )  >R m* R> sm/rem ;
+: */MOD  ( n1 n2 n3 -- rem quot )  >R M* R> sm/rem ;
 : */  ( n1 n2 n3 -- quot )  */MOD NIP ;
 : /  ( n1 n2 -- n3 )  /MOD NIP ;
 

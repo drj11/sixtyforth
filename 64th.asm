@@ -690,7 +690,7 @@ MIN:
         CtoL(MIN)
 
         DQ 2
-        DQ 'm*'         ; std1994
+        DQ 'M*'         ; std1994
 Mstar:
         DQ $+8
         ; m* ( n1 n2 -- d )
@@ -705,7 +705,7 @@ Mstar:
         CtoL(Mstar)
 
         DQ 3
-        DQ 'um*'        ; std1994
+        DQ 'UM*'        ; std1994
 UMstar:
         DQ $+8
         ; um* ( u1 u2 -- ud )
