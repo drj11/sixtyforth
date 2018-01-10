@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c ' 7 2 negate 1 negate + + .')
+out=$($FORTH -c ' 7 2 NEGATE 1 NEGATE + + .')
 printf "%s\n" "$out"
 case $out in
     ("4 ") exit 0;;

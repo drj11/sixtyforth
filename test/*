@@ -2,9 +2,9 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '111111111 DUP DUP * .
-DUP negate DUP * .
-DUP DUP negate * .
-DUP negate SWAP * .
+DUP NEGATE DUP * .
+DUP DUP NEGATE * .
+DUP NEGATE SWAP * .
 ')
 printf "%s\n" "$out"
 case "$out" in

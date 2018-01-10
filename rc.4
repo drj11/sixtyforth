@@ -58,7 +58,7 @@
    2SWAP                ( n1 n2 d1 )
    dabs                 ( n1 n2 ud1 )
    2SWAP                ( ud1 n1 n2 )
-   SWAP abs SWAP        ( ud1 u1 n2 )
+   SWAP ABS SWAP        ( ud1 u1 n2 )
    um*/mod DROP         ( ud )
    R> d+-               ( d )  ( r: )
 ;
@@ -394,7 +394,7 @@ VARIABLE pic
    ;
 
 : .  ( n -- )
-   DUP abs 0    ( n du )        \ du same magnitude as n
+   DUP ABS 0    ( n du )        \ du same magnitude as n
    .sign ;
 
 \ DOUBLE
@@ -1069,7 +1069,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    ELSE
       2DUP < IF
          \ downward motion
-         - negate S>D           ( t-col f-col dn )
+         - NEGATE S>D           ( t-col f-col dn )
          <# [CHAR] B HOLD #d [CHAR] [ HOLD 27 HOLD #>
          etype                  ( t-col f-col )
       ELSE

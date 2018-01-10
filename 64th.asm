@@ -615,7 +615,7 @@ RSHIFT:
         CtoL(RSHIFT)
 
         DQ 6
-        DQ 'negate'     ; std1983
+        DQ 'NEGATE'     ; std1983
 NEGATE:
         DQ $+8
         mov rax, [rbp-8]
@@ -625,7 +625,7 @@ NEGATE:
         CtoL(NEGATE)
 
         DQ 3
-        DQ 'abs'        ; std1983
+        DQ 'ABS'        ; std1983
 fABS:   DQ $+8
         mov rax, [rbp-8]
         ; Convert carry flag to Forth boolean in rcx
