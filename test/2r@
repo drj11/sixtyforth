@@ -2,11 +2,11 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '1 2 3
-: t 2>R R> R> ;
-t . . . 
+: t >R >R 2R@ R> R> ;
+t . . . . .
 ')
 printf "%s\n" "$out"
 case "$out" in
-    ("2 3 1 ") exit 0;;
+    ("3 2 2 3 1 ") exit 0;;
 esac
 exit 2

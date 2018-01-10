@@ -240,7 +240,7 @@ Rfetch: DQ $+8
         CtoL(Rfetch)
 
         DQ 3
-        DQ '2>r'        ; std1994 core-ext
+        DQ '2>R'        ; std1994 core-ext
 twotoR:
         DQ $+8
         ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
@@ -254,7 +254,7 @@ twotoR:
         CtoL(twotoR)
 
         DQ 3
-        DQ '2r@'        ; std1994 core-ext
+        DQ '2R@'        ; std1994 core-ext
 twoRfetch:
         DQ $+8
         ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )

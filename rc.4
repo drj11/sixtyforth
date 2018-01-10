@@ -40,7 +40,7 @@
 ;
 
 \ DOUBLE-EXT
-: 2ROT  ( p q r s t u -- r s t u p q )  2>r 2SWAP 2R> 2SWAP ;
+: 2ROT  ( p q r s t u -- r s t u p q )  2>R 2SWAP 2R> 2SWAP ;
 
 : 2*  ( x -- x' )  2 * ;
 
@@ -156,7 +156,7 @@ VARIABLE do-sp  0 do-sp !
 : DO  ( limit base -- )
       ( C: -- do-token )
       ( do-stack: -- leave-token )
-   compile 2>r
+   compile 2>R
    0 >do  here  ( do-token )
 ; immediate
 
@@ -187,7 +187,7 @@ VARIABLE do-sp  0 do-sp !
 \ leaving a flag on the stack.
 : looptest  ( -- flag    / R: limit index -- limit index' )
    R>           ( ret )
-   2r@          ( ret limit index )
+   2R@          ( ret limit index )
    1+           ( ret limit index' )
    R> DROP      ( r: limit )
    DUP >R       ( r: limit index' )
@@ -212,7 +212,7 @@ VARIABLE do-sp  0 do-sp !
 
 : +looptest  ( inc -- flag ) ( r: limit index -- limit index' )
    R> SWAP      ( ret inc )
-   2r@          ( ret inc limit index )
+   2R@          ( ret inc limit index )
    +test        ( ret flag index' )
    R> DROP      ( r: limit )
    >R           ( ret flag ) ( r: limit index' )
@@ -262,12 +262,12 @@ VARIABLE do-sp  0 do-sp !
 
 \ std1983
 : I  ( -- index )
-   2r@ DROP
+   2R@ DROP
 ;
 
 \ std1994
 : J  ( -- index )  ( R: lj bj li bi ret )
-   2R>  2r@ DROP  ROT ROT 2>r
+   2R>  2R@ DROP  ROT ROT 2>R
 ;
 
 \ ##
@@ -433,7 +433,7 @@ VARIABLE pic
 
 \ STRING
 : COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
-   ROT 2DUP 2>r
+   ROT 2DUP 2>R
    min          ( c-addr1 c-addr2 n )
    false
    BEGIN
