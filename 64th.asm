@@ -278,7 +278,7 @@ STACK:
         CtoL(STACK)
 
         DQ 4
-        DQ 'true'       ; std1994
+        DQ 'TRUE'       ; std1994
 TRUE:   DQ $+8
 pushtrue:
         mov rax, -1
@@ -286,7 +286,7 @@ pushtrue:
         CtoL(TRUE)
 
         DQ 5
-        DQ 'false'      ; std1994
+        DQ 'FALSE'      ; std1994
 z:      ; Alternate label for when 0 is intended
 FALSE:  DQ $+8
 pushfalse:

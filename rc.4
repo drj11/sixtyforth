@@ -110,7 +110,7 @@
 : WHILE  ( token -- token w-token )
    compile 0branch
    here         ( token w-token )
-   true ,
+   TRUE ,
 ; immediate
 
 : REPEAT  ( b-token w-token -- )
@@ -127,7 +127,7 @@
    compile 0branch
    here         ( token )
    \ compile dummy offset
-   true ,
+   TRUE ,
 ; immediate
 
 \ std1983
@@ -135,7 +135,7 @@
    compile branch
    here         ( token newtoken )
    ( compile dummy offset )
-   true ,
+   TRUE ,
    SWAP         ( newtoken token )
    here OVER -  ( newtoken token offset )
    SWAP         ( newtoken offset token )
@@ -435,7 +435,7 @@ VARIABLE pic
 : COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
    ROT 2DUP 2>R
    min          ( c-addr1 c-addr2 n )
-   false
+   FALSE
    BEGIN
       DROP
       DUP 0= IF
@@ -477,7 +477,7 @@ VARIABLE pic
    cmove
    here R>
    type cr
-   false
+   FALSE
 ;
 
 : WORDS
@@ -760,7 +760,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 : hl.curprev  ( -- flag )
    hl.cursor @  hl.base  >  IF
       -1 hl.cursor +!
-      true
+      TRUE
    ELSE
       0
    THEN
@@ -770,7 +770,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    hl.cursor @  hl.next @ 1-    ( c end )
    < IF
       1 hl.cursor +!
-      true
+      TRUE
    ELSE
       0
    THEN
@@ -1184,7 +1184,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    UNTIL
 ;
 
-: rc.defined true ;
+: rc.defined TRUE ;
 
 \ 3 valued:
 \ -1 always interactive
@@ -1204,7 +1204,7 @@ VARIABLE interactive
 \ Handle command line options
 : options
    BEGIN
-      false             \ false to break at while
+      FALSE             \ false to break at while
       2 argc @ < IF
           1 arg -c? IF
              disable-interactive
@@ -1212,7 +1212,7 @@ VARIABLE interactive
              2 arg
              arg-pop arg-pop
              evaluate
-             true       \ true to continue at while
+             TRUE       \ true to continue at while
           THEN
       THEN
       WHILE
