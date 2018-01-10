@@ -1257,7 +1257,7 @@ HERE:   DQ stdexe
         CtoL(HERE)
 
         DQ 6
-        DQ 'source'     ; std1994
+        DQ 'SOURCE'     ; std1994
 SOURCE:
         DQ stdexe
         ; :todo: Implement more input sources.
