@@ -84,7 +84,7 @@
    DUP cell+ @   SWAP @ ;
 
 \ DOUBLE
-: D0=  ( xd -- flag )  or 0= ;
+: D0=  ( xd -- flag )  OR 0= ;
 
 : COUNT  ( addr -- addr' ch )  DUP 1+ SWAP C@ ;
 
@@ -206,7 +206,7 @@ VARIABLE do-sp  0 do-sp !
   OVER xor      ( inc index' o' x )
   ROT 2SWAP     ( x index' inc o' )
   xor invert    ( x index' q )
-  ROT and       ( index' sflag )
+  ROT AND       ( index' sflag )
   0< SWAP       ( flag index' )
 ;
 
@@ -315,7 +315,7 @@ VARIABLE do-sp  0 do-sp !
    -1 0                 ( 0 sz prot flags fd offset )
    9 syscall6           ( res )
    -4096 OVER U<        ( res flag )
-   OVER and             ( addr ior )
+   OVER AND             ( addr ior )
 ;
 
 \ ## Number Printing
@@ -467,7 +467,7 @@ VARIABLE pic
    DUP                  ( lfa lfa )
    cell+                ( lfa nfa )
    DUP @                ( lfa nfa u-bits )
-   4294967295 and       ( lfa nfa u )
+   4294967295 AND       ( lfa nfa u )
    SWAP cell+ SWAP      ( lfa c-addr u )
    here OVER [CHAR] ?   ( lfa c-addr u here u ? )
    FILL                 ( lfa c-addr u )
@@ -601,7 +601,7 @@ CONSTANT openbuf        ( buffer for open pathname )
 \ then compute C M AND X XOR
 \ and store at addr.
 : c!xa  ( X M addr -- )
-   DUP >R C@ and xor R> C! ;
+   DUP >R C@ AND xor R> C! ;
 
 VARIABLE chbuf
 
@@ -625,7 +625,7 @@ VARIABLE chbuf
 
 \ Fetch and print 8 hex digits.
 : @.8  ( addr -- )
-   @ 4294967295 ( 2**32 - 1 ) and       ( w )
+   @ 4294967295 ( 2**32 - 1 ) AND       ( w )
    base @ >R
    16 base !
    0                    ( ud )
@@ -938,7 +938,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    ki.k C@  32  <  IF
       [CHAR] ^ ki.fixk 2 + C!
       ki.k C@
-      64 or ki.fixk 3 + C!
+      64 OR ki.fixk 3 + C!
       ki.fixk 4
    ELSE
       ki.k C@ ki.fixk 2 + C!
@@ -985,7 +985,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ erase-forward-char
 : k:^D
    \ if entire line is empty, terminate
-   ki.n @ 0=  ki.> @ 0=  and  IF
+   ki.n @ 0=  ki.> @ 0=  AND  IF
       0  EXIT
    THEN
    \ Test if there are any characters ahead of point to erase.
@@ -1039,7 +1039,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 \ Fix cursor position if it is at end of row
 : ki.curfix
    ki.n @ S>D  tty.cols  um/mod ( col row )
-   0>  SWAP 0=  and  IF
+   0>  SWAP 0=  AND  IF
       10 eemit
    THEN
 ;
@@ -1137,7 +1137,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
    BEGIN
       getc
       DUP 0< IF
-         \ negative: EOF or error
+         \ negative: EOF OR error
          DROP 0                 ( 0 )
       ELSE
          \ save input byte

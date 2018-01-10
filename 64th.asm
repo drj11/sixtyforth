@@ -531,7 +531,7 @@ plusstore:
         CtoL(plusstore)
 
         DQ 2
-        DQ 'or'         ; std1983
+        DQ 'OR'         ; std1983
 OR:     DQ $+8
         ; OR ( a b -- bitwise-or )
         mov rax, [rbp-16]
@@ -543,7 +543,7 @@ OR:     DQ $+8
         CtoL(OR)
 
         DQ 3
-        DQ 'and'        ; std1983
+        DQ 'AND'        ; std1983
 AND:    DQ $+8
         ; AND ( a b -- bitwise-and )
         mov rax, [rbp-16]
