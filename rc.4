@@ -285,13 +285,13 @@ VARIABLE do-sp  0 do-sp !
    SWAP CMOVE ; immediate
 
 : CONSTANT  ( x -- / -- x )
-   VARIABLE last name> >body ! DOES> @ ;
+   VARIABLE last name> >BODY ! DOES> @ ;
 
 \ CORE-EXT
 : VALUE   CONSTANT ;
 \ CORE-EXT
 : TO  ( x -- )
-   ' >body
+   ' >BODY
    state @ IF
       [COMPILE] LITERAL
       compile !

@@ -1387,7 +1387,7 @@ pushparam:
         CtoL(CODEDOES)
 
         DQ 5
-        DQ '>body'      ; std1983
+        DQ '>BODY'      ; std1983
 toBODY: DQ stdexe
 .body:  DQ LIT, (.body-toBODY)  ; 8, basically
         DQ PLUS
