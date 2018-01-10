@@ -1229,7 +1229,7 @@ FEMIT:
         CtoL(FEMIT)
 
         DQ 4
-        DQ 'emit'       ; std1994
+        DQ 'EMIT'       ; std1994
 EMIT:
         DQ stdexe
         ; EMIT ( ch -- )
