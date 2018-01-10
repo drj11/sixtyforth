@@ -97,35 +97,35 @@
 \ ## Control Flow
 
 : BEGIN  ( -- token / at compile time )
-   here
+   HERE
 ; immediate
 
 : UNTIL  ( token -- / at compile time )
    compile 0branch
-   here         ( token here )
+   HERE         ( token here )
    -            ( byte-offset )
    ,
 ; immediate
 
 : WHILE  ( token -- token w-token )
    compile 0branch
-   here         ( token w-token )
+   HERE         ( token w-token )
    TRUE ,
 ; immediate
 
 : REPEAT  ( b-token w-token -- )
    SWAP         ( w-token b-token )
    compile branch
-   here -       ( w-token offset )
+   HERE -       ( w-token offset )
    ,            ( w-token )
-   here         ( w-token here )
+   HERE         ( w-token here )
    OVER -       ( w-token offset )
    SWAP !
 ; immediate
 
 : IF  ( -- token    / at compile time )
    compile 0branch
-   here         ( token )
+   HERE         ( token )
    \ compile dummy offset
    TRUE ,
 ; immediate
@@ -133,18 +133,18 @@
 \ std1983
 : ELSE  ( token -- newtoken      / at compile time )
    compile branch
-   here         ( token newtoken )
+   HERE         ( token newtoken )
    ( compile dummy offset )
    TRUE ,
    SWAP         ( newtoken token )
-   here OVER -  ( newtoken token offset )
+   HERE OVER -  ( newtoken token offset )
    SWAP         ( newtoken offset token )
    !            ( newtoken )
 ; immediate
 
 \ std1983
 : THEN
-   here OVER - SWAP ! ; immediate
+   HERE OVER - SWAP ! ; immediate
    
 create do-stack  3 cells allot
 VARIABLE do-sp  0 do-sp !
@@ -157,7 +157,7 @@ VARIABLE do-sp  0 do-sp !
       ( C: -- do-token )
       ( do-stack: -- leave-token )
    compile 2>R
-   0 >do  here  ( do-token )
+   0 >do  HERE  ( do-token )
 ; immediate
 
 \ Push the current-leave token (on the do-stack)
@@ -165,7 +165,7 @@ VARIABLE do-sp  0 do-sp !
 \ Replace current-leave token with HERE.
 \ Factor of LEAVE and ?DO .
 : push-leave  ( -- )
-   here do>     ( new-token leave-token )
+   HERE do>     ( new-token leave-token )
    , >do
 ;
 
@@ -180,7 +180,7 @@ VARIABLE do-sp  0 do-sp !
    compile <>
    compile 0branch
    push-leave
-   DROP here
+   DROP HERE
 ; immediate
 
 \ Implements the test part of a DO LOOP,
@@ -229,13 +229,13 @@ VARIABLE do-sp  0 do-sp !
 \ and store offset to HERE at that address.
 : fix-leave  ( leave-token -- leave-token' )
    DUP @ SWAP   ( leave-token' leave-token )
-   here OVER    ( leave-token' leave-token here leave-token )
+   HERE OVER    ( leave-token' leave-token here leave-token )
    - SWAP !     ( leave-token' )
 ;
 
 : loopy
    compile 0branch
-   here         ( do-token here )
+   HERE         ( do-token here )
    -            ( byte-offset )
    ,
    \ fix the linked-list of leave-tokens up
@@ -281,7 +281,7 @@ VARIABLE do-sp  0 do-sp !
    : *fix-cfa   R> last name> ! ;
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
-   here OVER allot                      ( from n to )
+   HERE OVER allot                      ( from n to )
    SWAP CMOVE ; immediate
 
 : CONSTANT  ( x -- / -- x )
@@ -301,11 +301,11 @@ VARIABLE do-sp  0 do-sp !
 ; immediate
 
 : ALIGN  ( -- )
-   here aligned  here  - allot
+   HERE aligned  HERE  - allot
 ;
 
 : C,  ( char -- )
-   here  1 allot  !  ;
+   HERE  1 allot  !  ;
 
 \ Map Anonymous
 \ Request freshly allocated memory.
@@ -469,13 +469,13 @@ VARIABLE pic
    DUP @                ( lfa nfa u-bits )
    4294967295 AND       ( lfa nfa u )
    SWAP cell+ SWAP      ( lfa c-addr u )
-   here OVER [CHAR] ?   ( lfa c-addr u here u ? )
+   HERE OVER [CHAR] ?   ( lfa c-addr u here u ? )
    FILL                 ( lfa c-addr u )
    DUP >R               ( lfa c-addr u )  ( r: u )
    8 MIN                ( lfa c-addr 8|u )
-   here SWAP            ( lfa c-addr here 8|u )
+   HERE SWAP            ( lfa c-addr here 8|u )
    CMOVE
-   here R>
+   HERE R>
    TYPE CR
    FALSE
 ;
@@ -640,7 +640,7 @@ VARIABLE chbuf
 
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
 : tcgets.  ( fd -- res )
-   here DUP tcgets       ( here res )
+   HERE DUP tcgets       ( here res )
    OVER @.8
    OVER 4 + @.8
    OVER 8 + @.8
@@ -661,10 +661,10 @@ create tty.buffer 36 allot ALIGN
 \ Put TTY in keypress mode.
 : tty.keypress ( fd -- )
    \ Fetch and modify TTY settings...
-   DUP here tcgets DROP                 ( fd )
+   DUP HERE tcgets DROP                 ( fd )
    \ Clear ICANON and ECHO bits.
-   0  10 INVERT  here 12 +  c!xa        ( fd )
-   here tcsets DROP
+   0  10 INVERT  HERE 12 +  c!xa        ( fd )
+   HERE tcsets DROP
 ;
 
 \ Restore TTY settings.
@@ -963,7 +963,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 0 tty.store
 tty.buffer 19 + C@
 ki.k C!
-ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
+ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
 
 : end-of-line
    ki.n @ ki.> ! ;

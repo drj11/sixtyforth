@@ -5,7 +5,7 @@ out=$($FORTH -c '
 9876543210
 -123456789
 -1
-here
+HERE
 3 cells allot
 TUCK !
 TUCK cell+ !

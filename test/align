@@ -3,8 +3,8 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 
 out=$($FORTH -c '
-ALIGN here
-1 allot ALIGN here
+ALIGN HERE
+1 allot ALIGN HERE
 - .
 ')
 printf "%s\n" "$out"

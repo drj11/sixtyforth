@@ -1249,7 +1249,7 @@ CR:
         CtoL(CR)
 
         DQ 4
-        DQ 'here'       ; std1983
+        DQ 'HERE'       ; std1983
 HERE:   DQ stdexe
         DQ CP
         DQ fetch

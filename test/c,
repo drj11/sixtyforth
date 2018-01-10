@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 #
-out=$($FORTH -c 'here 99 C, 98 C, C@ .')
+out=$($FORTH -c 'HERE 99 C, 98 C, C@ .')
 printf "%s\n" "$out"
 case "$out" in
     ("99 ") exit 0;;

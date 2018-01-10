@@ -1,10 +1,10 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c 'here
+out=$($FORTH -c 'HERE
 9876543210
 -123456789
-here
+HERE
 2 cells allot
 2!
 DUP @ .
