@@ -675,7 +675,7 @@ oneminus:
         CtoL(oneminus)
 
         DQ 3
-        DQ 'min'        ; std1983
+        DQ 'MIN'        ; std1983
 MIN:
         DQ stdexe
         DQ OVER

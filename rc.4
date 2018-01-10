@@ -434,7 +434,7 @@ VARIABLE pic
 \ STRING
 : COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
    ROT 2DUP 2>R
-   min          ( c-addr1 c-addr2 n )
+   MIN          ( c-addr1 c-addr2 n )
    FALSE
    BEGIN
       DROP
@@ -472,7 +472,7 @@ VARIABLE pic
    here OVER [CHAR] ?   ( lfa c-addr u here u ? )
    FILL                 ( lfa c-addr u )
    DUP >R               ( lfa c-addr u )  ( r: u )
-   8 min                ( lfa c-addr 8|u )
+   8 MIN                ( lfa c-addr 8|u )
    here SWAP            ( lfa c-addr here 8|u )
    CMOVE
    here R>
@@ -588,7 +588,7 @@ CONSTANT openbuf        ( buffer for open pathname )
    \ For syscall numbers, see
    \ http://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/
    2 syscall3           ( fileid )
-   DUP 0 min            ( fileid 0 | ior ior )
+   DUP 0 MIN            ( fileid 0 | ior ior )
 ;
 
 \ Open file for reading.
@@ -1007,7 +1007,7 @@ ki.fix *create *stdexe here body> ! ] erase-backward-char 1 ; ( )
 ;
 
 \ forward-char
-: k:^F   ki.> @ 1+  ki.n @  min  ki.> !   1 ;
+: k:^F   ki.> @ 1+  ki.n @  MIN  ki.> !   1 ;
 
 \ kill-to-end
 : k:^K   ki.> @ ki.n !   1 ;
@@ -1234,7 +1234,7 @@ options
       I + C@            ( addr l ch )
       10 = IF
          \ :todo: reimplement using `leave`
-         I min
+         I MIN
       THEN
    LOOP
    ( addr l )
