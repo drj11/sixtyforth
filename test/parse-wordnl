@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test bug when PARSE-WORD is used before buffer input end.
 out=$($FORTH -c 'DEPTH .
 : s S" parse-word" ;
-s evaluate
+s EVALUATE
 DEPTH .')
 printf "%s\n" "$out"
 case "$out" in

@@ -1176,7 +1176,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
       ki
       ki.input
       ?DUP IF
-         evaluate
+         EVALUATE
          S"  ok" etype 10 eemit   0
       ELSE
          DROP   1
@@ -1211,7 +1211,7 @@ VARIABLE interactive
              DROP
              2 arg
              arg-pop arg-pop
-             evaluate
+             EVALUATE
              TRUE       \ true to continue at while
           THEN
       THEN
@@ -1252,7 +1252,7 @@ options
 "
       fmapr             ( addr u )
       shebang
-      evaluate
+      EVALUATE
    THEN
 ;
 run-args

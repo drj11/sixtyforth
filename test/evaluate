@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': x S" 2 * 1+" ;
-  7 9 x evaluate . .')
+  7 9 x EVALUATE . .')
 printf "%s\n" "$out"
 case "$out" in
     ("19 7 ") exit 0;;

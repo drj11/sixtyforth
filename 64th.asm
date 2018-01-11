@@ -1835,7 +1835,7 @@ SKIP:
         CtoL(SKIP)
 
         DQ 8
-        DQ 'evaluate'
+        DQ 'EVALUATE'
 EVALUATE:
         DQ stdexe
         ; EVALUATE ( c-addr u -- ) also side effects
