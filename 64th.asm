@@ -1568,7 +1568,7 @@ SEARCHWORDLIST:
         CtoL(SEARCHWORDLIST)
 
         DQ 9
-        DQ 'immediat'   ; std1983
+        DQ 'IMMEDIAT'   ; std1983
 IMMEDIATE:
         DQ stdexe
         DQ LAST         ; (addr)

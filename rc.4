@@ -1,35 +1,35 @@
 : 2DROP   DROP DROP ;
-: \   10 parse 2DROP ; immediate         \ Now we have comments
+: \   10 parse 2DROP ; IMMEDIATE         \ Now we have comments
 
 : '
    \ Avoid using IF, which is not defined yet
    parse-word findword DUP 0= ?DUP 2DROP ;
 
-: [COMPILE]   ' , ; immediate
+: [COMPILE]   ' , ; IMMEDIATE
 
 : CHAR   parse-word DROP C@ ;
 
-: [CHAR]   CHAR [COMPILE] LITERAL ; immediate
+: [CHAR]   CHAR [COMPILE] LITERAL ; IMMEDIATE
 
-: (   [CHAR] ) parse 2DROP ; immediate
+: (   [CHAR] ) parse 2DROP ; IMMEDIATE
 
 ( Now we have round bracket comments )
 
 \ Using the definition in [FORTH1994] A.6.1.2033
    : compile   R> DUP @ , cell+ >R ;
 
-: [']   ' [COMPILE] LITERAL ; immediate
+: [']   ' [COMPILE] LITERAL ; IMMEDIATE
 
 : RECURSE
    last name>
    ,
-; immediate
+; IMMEDIATE
 
 : 2DUP  ( x x' -- x x' x x' )  OVER OVER ;
 \ CORE-EXT
 : TUCK  ( a b -- b a b )  SWAP OVER ;
 \ CORE-EXT
-: .(  [CHAR] ) parse TYPE ; immediate
+: .(  [CHAR] ) parse TYPE ; IMMEDIATE
 : S>D  ( n -- d )  DUP 0< ;
 
 \ CORE-EXT
@@ -98,20 +98,20 @@
 
 : BEGIN  ( -- token / at compile time )
    HERE
-; immediate
+; IMMEDIATE
 
 : UNTIL  ( token -- / at compile time )
    compile 0branch
    HERE         ( token here )
    -            ( byte-offset )
    ,
-; immediate
+; IMMEDIATE
 
 : WHILE  ( token -- token w-token )
    compile 0branch
    HERE         ( token w-token )
    TRUE ,
-; immediate
+; IMMEDIATE
 
 : REPEAT  ( b-token w-token -- )
    SWAP         ( w-token b-token )
@@ -121,14 +121,14 @@
    HERE         ( w-token here )
    OVER -       ( w-token offset )
    SWAP !
-; immediate
+; IMMEDIATE
 
 : IF  ( -- token    / at compile time )
    compile 0branch
    HERE         ( token )
    \ compile dummy offset
    TRUE ,
-; immediate
+; IMMEDIATE
 
 \ std1983
 : ELSE  ( token -- newtoken      / at compile time )
@@ -140,11 +140,11 @@
    HERE OVER -  ( newtoken token offset )
    SWAP         ( newtoken offset token )
    !            ( newtoken )
-; immediate
+; IMMEDIATE
 
 \ std1983
 : THEN
-   HERE OVER - SWAP ! ; immediate
+   HERE OVER - SWAP ! ; IMMEDIATE
    
 CREATE do-stack  3 cells ALLOT
 VARIABLE do-sp  0 do-sp !
@@ -158,7 +158,7 @@ VARIABLE do-sp  0 do-sp !
       ( do-stack: -- leave-token )
    compile 2>R
    0 >do  HERE  ( do-token )
-; immediate
+; IMMEDIATE
 
 \ Push the current-leave token (on the do-stack)
 \ onto the leave linked-list at HERE.
@@ -181,7 +181,7 @@ VARIABLE do-sp  0 do-sp !
    compile 0branch
    push-leave
    DROP HERE
-; immediate
+; IMMEDIATE
 
 \ Implements the test part of a DO LOOP,
 \ leaving a flag on the stack.
@@ -222,7 +222,7 @@ VARIABLE do-sp  0 do-sp !
 : LEAVE
    compile branch
    push-leave
-; immediate
+; IMMEDIATE
 
 \ Fix the leave token.
 \ Fetch the previous leave token in the linked-list,
@@ -251,14 +251,14 @@ VARIABLE do-sp  0 do-sp !
         ( C: do-token -- )
    compile looptest
    loopy
-; immediate
+; IMMEDIATE
 
 : +LOOP  ( inc -- )
          ( R: limit base -- limit base' | )
          ( C: do-token -- )
    compile +looptest
    loopy
-; immediate
+; IMMEDIATE
 
 \ std1983
 : I  ( -- index )
@@ -282,7 +282,7 @@ VARIABLE do-sp  0 do-sp !
 
 : DOES>   compile *fix-cfa codedoes     ( addr n )
    HERE OVER ALLOT                      ( from n to )
-   SWAP CMOVE ; immediate
+   SWAP CMOVE ; IMMEDIATE
 
 : CONSTANT  ( x -- / -- x )
    VARIABLE last name> >BODY ! DOES> @ ;
@@ -298,7 +298,7 @@ VARIABLE do-sp  0 do-sp !
    ELSE
       !
    THEN
-; immediate
+; IMMEDIATE
 
 : ALIGN  ( -- )
    HERE aligned  HERE  - ALLOT
@@ -418,7 +418,7 @@ VARIABLE pic
 
 : ."  ( copmile: "ccc<quote>" -- )
    [COMPILE] s" compile TYPE
-; immediate
+; IMMEDIATE
 
 \ 3-way comparison
 \ result is -1 when u1 < u2

@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c ': x [COMPILE] LITERAL ;
-: y x ; immediate
+: y x ; IMMEDIATE
 3 99 : z y ; .
 z .')
 printf "%s\n" "$out"
