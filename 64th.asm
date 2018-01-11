@@ -1592,7 +1592,7 @@ LAST:   DQ stdexe
         CtoL(LAST)
 
         DQ 5
-        DQ 'cells'      ; std1994
+        DQ 'CELLS'      ; std1994
 CELLS:  DQ stdexe
         DQ LIT, 8
         DQ star
@@ -1600,7 +1600,7 @@ CELLS:  DQ stdexe
         CtoL(CELLS)
 
         DQ 5
-        DQ 'cell+'      ; std1994
+        DQ 'CELL+'      ; std1994
 CELLplus:
         DQ stdexe
         DQ LIT, 1
@@ -1610,7 +1610,7 @@ CELLplus:
         CtoL(CELLplus)
 
         DQ 7
-        DQ 'aligned'    ; std1994
+        DQ 'ALIGNED'    ; std1994
 ALIGNED:
         DQ stdexe
         ; ALIGNED ( addr -- a-addr )

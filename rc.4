@@ -16,7 +16,7 @@
 ( Now we have round bracket comments )
 
 \ Using the definition in [FORTH1994] A.6.1.2033
-   : compile   R> DUP @ , cell+ >R ;
+   : compile   R> DUP @ , CELL+ >R ;
 
 : [']   ' [COMPILE] LITERAL ; IMMEDIATE
 
@@ -67,21 +67,21 @@
 : U>  ( u1 u2 -- flag )  SWAP U< ;
 
 : DEPTH  ( -- +n )
-   stack -  1 cells / ;
+   stack -  1 CELLS / ;
 
-: VARIABLE    CREATE 1 cells ALLOT ;
+: VARIABLE    CREATE 1 CELLS ALLOT ;
 \ DOUBLE
-: 2VARIABLE   CREATE 2 cells ALLOT ;
+: 2VARIABLE   CREATE 2 CELLS ALLOT ;
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
    >R S>D R> SM/REM DROP
 ;
 
-: 2!  ( x1 x2 addr -- )  TUCK !   cell+ ! ;
+: 2!  ( x1 x2 addr -- )  TUCK !   CELL+ ! ;
 
 : 2@  ( addr -- x1 x2 )
-   DUP cell+ @   SWAP @ ;
+   DUP CELL+ @   SWAP @ ;
 
 \ DOUBLE
 : D0=  ( xd -- flag )  OR 0= ;
@@ -146,9 +146,9 @@
 : THEN
    HERE OVER - SWAP ! ; IMMEDIATE
    
-CREATE do-stack  3 cells ALLOT
+CREATE do-stack  3 CELLS ALLOT
 VARIABLE do-sp  0 do-sp !
-   : do-addr   do-stack  do-sp @ cells  + ;
+   : do-addr   do-stack  do-sp @ CELLS  + ;
 
    : >do   do-addr !  1 do-sp +! ;
    : do>   -1 do-sp +!  do-addr @ ;
@@ -301,7 +301,7 @@ VARIABLE do-sp  0 do-sp !
 ; IMMEDIATE
 
 : ALIGN  ( -- )
-   HERE aligned  HERE  - ALLOT
+   HERE ALIGNED  HERE  - ALLOT
 ;
 
 : C,  ( char -- )
@@ -411,7 +411,7 @@ VARIABLE pic
    stack
    ?DO
       I @ .
-   1 cells  +LOOP
+   1 CELLS  +LOOP
 ;
 
 \ ## String
@@ -465,10 +465,10 @@ VARIABLE pic
       EXIT
    THEN
    DUP                  ( lfa lfa )
-   cell+                ( lfa nfa )
+   CELL+                ( lfa nfa )
    DUP @                ( lfa nfa u-bits )
    4294967295 AND       ( lfa nfa u )
-   SWAP cell+ SWAP      ( lfa c-addr u )
+   SWAP CELL+ SWAP      ( lfa c-addr u )
    HERE OVER [CHAR] ?   ( lfa c-addr u here u ? )
    FILL                 ( lfa c-addr u )
    DUP >R               ( lfa c-addr u )  ( r: u )
@@ -502,7 +502,7 @@ VARIABLE pic
 \ (in the Linux ABI).
 rsp CONSTANT argc
 : arg  ( i -- i-addr i-len )
-   1+ cells
+   1+ CELLS
    \ Following ARGC are the pointers to C strings.
    argc
    + @          ( addr )
@@ -514,10 +514,10 @@ rsp CONSTANT argc
 ;
 : arg-pop  ( -- )
    argc @ 2 < IF  EXIT  THEN
-   argc 2 cells +       ( addr-from )
-   argc cell+           ( addr-from addr-to )
+   argc 2 CELLS +       ( addr-from )
+   argc CELL+           ( addr-from addr-to )
    -1 argc +!
-   argc @ cells         ( addr-from addr-to u )
+   argc @ CELLS         ( addr-from addr-to u )
    CMOVE
 ;
 
@@ -746,7 +746,7 @@ VARIABLE hl.p
 hl.block @ hl.p !
 
 : hl.n   999 ;
-CREATE hl.array hl.n 2* cells ALLOT
+CREATE hl.array hl.n 2* CELLS ALLOT
 
 VARIABLE hl.next   0 hl.next !
 VARIABLE hl.cursor   0 hl.cursor !
@@ -778,7 +778,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 
 \ Return address of uth double-world entry in hl.array.
 : hl.a&  ( u -- addr )
-   2* cells     ( byte-offset )
+   2* CELLS     ( byte-offset )
    hl.array     ( byte-offset hl.array )
    +            ( array-address )
 ;
@@ -827,7 +827,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    THEN
    \ :todo: check lengths here
    2DUP                 ( from u h-addr u h-addr )
-   cell+ !              ( from u h-addr )
+   CELL+ !              ( from u h-addr )
    @                    ( from u to )
    \ calculate a new value for hl.p
    2DUP                 ( from u to u to )

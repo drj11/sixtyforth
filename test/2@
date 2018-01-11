@@ -6,10 +6,10 @@ out=$($FORTH -c '
 -123456789
 -1
 HERE
-3 cells ALLOT
+3 CELLS ALLOT
 TUCK !
-TUCK cell+ !
-TUCK cell+ cell+ !
+TUCK CELL+ !
+TUCK CELL+ CELL+ !
 2@
 . .
 DEPTH .

@@ -2,13 +2,13 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-0 aligned
-1 aligned
-2 aligned
-3 aligned
-5 aligned
-8 aligned
-13 aligned
+0 ALIGNED
+1 ALIGNED
+2 ALIGNED
+3 ALIGNED
+5 ALIGNED
+8 ALIGNED
+13 ALIGNED
 . . . . . . .
 ')
 printf "%s\n" "$out"
