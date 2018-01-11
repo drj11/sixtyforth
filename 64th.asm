@@ -1621,8 +1621,8 @@ ALIGNED:
         DQ EXIT
         CtoL(ALIGNED)
 
-        DQ 7 | Immediate
-        DQ 'sliteral'   ; std1994 string
+        DQ 8 | Immediate
+        DQ 'SLITERAL'   ; std1994 string
 SLITERAL:
         DQ stdexe
         ; SLITERAL ( addr u -- )
