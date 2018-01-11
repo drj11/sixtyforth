@@ -1793,7 +1793,7 @@ INplus:
         CtoL(INplus)
 
         DQ 5
-        DQ 'parse'      ; std1994
+        DQ 'PARSE'      ; std1994
 PARSE:
         DQ stdexe
         ; ( char -- c-addr u )

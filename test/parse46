@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Assumes ASCII
-out=$($FORTH -c '7 46 parse drop drop. . C@ . .')
+out=$($FORTH -c '7 46 PARSE drop drop. . C@ . .')
 printf "%s\n" "$out"
 case "$out" in
     ("9 100 7 ") exit 0;;

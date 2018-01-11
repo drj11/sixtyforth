@@ -1,5 +1,5 @@
 : 2DROP   DROP DROP ;
-: \   10 parse 2DROP ; IMMEDIATE         \ Now we have comments
+: \   10 PARSE 2DROP ; IMMEDIATE         \ Now we have comments
 
 : '
    \ Avoid using IF, which is not defined yet
@@ -11,7 +11,7 @@
 
 : [CHAR]   CHAR [COMPILE] LITERAL ; IMMEDIATE
 
-: (   [CHAR] ) parse 2DROP ; IMMEDIATE
+: (   [CHAR] ) PARSE 2DROP ; IMMEDIATE
 
 ( Now we have round bracket comments )
 
@@ -29,7 +29,7 @@
 \ CORE-EXT
 : TUCK  ( a b -- b a b )  SWAP OVER ;
 \ CORE-EXT
-: .(  [CHAR] ) parse TYPE ; IMMEDIATE
+: .(  [CHAR] ) PARSE TYPE ; IMMEDIATE
 : S>D  ( n -- d )  DUP 0< ;
 
 \ CORE-EXT
