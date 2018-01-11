@@ -1553,7 +1553,7 @@ MATCHASM:
         CtoL(MATCHASM)
 
         DQ 15
-        DQ 'search-w'   ; std1994
+        DQ 'SEARCH-W'   ; std1994
 SEARCHWORDLIST:
         DQ stdexe
         ; SEARCHWO ( c-addr u wid -- xt 1 ) found immediate
