@@ -2053,7 +2053,7 @@ aIB:
         CtoL(EORO)
 
         DQ 3
-        DQ '>in'        ; std1983
+        DQ '>IN'        ; std1983
 toIN:   DQ stdvar
 atoIN:  DQ 0
         CtoL(toIN)
