@@ -292,7 +292,7 @@ VARIABLE do-sp  0 do-sp !
 \ CORE-EXT
 : TO  ( x -- )
    ' >BODY
-   state @ IF
+   STATE @ IF
       [COMPILE] LITERAL
       compile !
    ELSE
@@ -349,7 +349,7 @@ VARIABLE pic
 ;
 
 : #  ( ud -- ud' )
-   base @
+   BASE @
    uml/mod      ( r ud )
    ROT          ( ud r )
    digit HOLD   ( ud )
@@ -402,9 +402,9 @@ VARIABLE pic
    TUCK DABS    ( n du )        \ n same sign as d
    .sign ;
 
-: DECIMAL  ( -- )  10 base ! ;
+: DECIMAL  ( -- )  10 BASE ! ;
 \ CORE-EXT
-: HEX  ( -- )  16 base ! ;
+: HEX  ( -- )  16 BASE ! ;
 
 \ TOOLS
 : .S  ( -- )
@@ -626,14 +626,14 @@ VARIABLE chbuf
 \ Fetch and print 8 hex digits.
 : @.8  ( addr -- )
    @ 4294967295 ( 2**32 - 1 ) AND       ( w )
-   base @ >R
-   16 base !
+   BASE @ >R
+   16 BASE !
    0                    ( ud )
    <# BL HOLD
       # # # # # # # #
    #>
    TYPE
-   R> base !
+   R> BASE !
 ;
 
 
@@ -1046,9 +1046,9 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
 
 \ Like #s, but always in decimal.
 : #d
-   base @ >R  10 base !
+   BASE @ >R  10 BASE !
    #S
-   R> base !
+   R> BASE !
 ;
 
 \ Emit ANSI codes to move VT cursor,

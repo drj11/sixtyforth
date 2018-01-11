@@ -2059,7 +2059,7 @@ atoIN:  DQ 0
         CtoL(toIN)
 
         DQ 4
-        DQ 'base'       ; std1983
+        DQ 'BASE'       ; std1983
 BASE:   DQ stdvar
 abase:  DQ 10
         CtoL(BASE)
@@ -2071,7 +2071,7 @@ CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution
         CtoL(CP)
 
         DQ 5
-        DQ 'state'      ; std1983
+        DQ 'STATE'      ; std1983
 STATE:  DQ stdvar
 stateaddr:
         DQ 0
