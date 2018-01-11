@@ -1659,7 +1659,7 @@ SLITERAL:
         CtoL(SLITERAL)
 
         DQ 2 | Immediate
-        DQ 's"'         ; std1994
+        DQ 'S"'         ; std1994
 Squote:
         DQ stdexe
         ; ( "ccc<quote>" -- ) runtime: ( -- addr u )
@@ -1670,7 +1670,7 @@ Squote:
         CtoL(Squote)
 
         DQ 6 | Immediate
-        DQ 'abort"'     ; std1983
+        DQ 'ABORT"'     ; std1983
 ABORTquote:
         DQ stdexe
         DQ LIT, zBRANCH, comma

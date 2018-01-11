@@ -417,7 +417,7 @@ VARIABLE pic
 \ ## String
 
 : ."  ( copmile: "ccc<quote>" -- )
-   [COMPILE] s" compile TYPE
+   [COMPILE] S" compile TYPE
 ; IMMEDIATE
 
 \ 3-way comparison
@@ -545,7 +545,7 @@ CREATE fstatbuf 144 ALLOT ALIGN
 \ Address and length of mapping are left on stack.
 : fmapr ( fd -- addr u )
    DUP file-size                        ( fd ud ior )
-   abort" File cannot be mapped"        ( fd ud )
+   ABORT" File cannot be mapped"        ( fd ud )
    D>S                                  ( fd u )
    DUP 1 < IF
       DROP DROP
@@ -823,7 +823,7 @@ VARIABLE hl.cursor   0 hl.cursor !
    hl.next @ 1-         ( from u i )
    hl&                  ( from u h-addr )
    DUP 0= IF
-      abort" hl.save problem"
+      ABORT" hl.save problem"
    THEN
    \ :todo: check lengths here
    2DUP                 ( from u h-addr u h-addr )
@@ -908,7 +908,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 : ki.insert  ( addr u -- 1 )
    DUP ki.n @ +  ki.z  >  IF
       \ buffer full
-      s" #%#" etype
+      S" #%#" etype
       0
    ELSE
       ( addr u )
@@ -934,7 +934,7 @@ VARIABLE hl.cursor   0 hl.cursor !
 \ Convert Control Chars to ^J form,
 \ and prefix everything with k:
 : ki.fix
-   s" k:" ki.fixk SWAP CMOVE
+   S" k:" ki.fixk SWAP CMOVE
    ki.k C@  32  <  IF
       [CHAR] ^ ki.fixk 2 + C!
       ki.k C@
@@ -972,7 +972,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
 : k:^J
    end-of-line
    ki.input hl.save
-   s"  " ki.insert DROP
+   S"  " ki.insert DROP
    0
 ;
 
@@ -1095,7 +1095,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
       ki.curfix
    THEN
    \ clear rest of screen
-   s" [J" etype
+   S" [J" etype
    ki.n @ ki.> @
    ki.motion
 ;
@@ -1125,7 +1125,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
    IF
       ki.curfix
    THEN
-   s" [J" etype
+   S" [J" etype
    ki.n @ ki.> @
    ki.motion
 ;
@@ -1153,7 +1153,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
             EXECUTE
             DEPTH R>            ( flag depth1 depth0 )
             - IF
-               s" stack imbalance" etype
+               S" stack imbalance" etype
             THEN
          THEN
          ki.redraw
@@ -1177,7 +1177,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
       ki.input
       ?DUP IF
          evaluate
-         s"  ok" etype 10 eemit   0
+         S"  ok" etype 10 eemit   0
       ELSE
          DROP   1
       THEN
@@ -1199,7 +1199,7 @@ VARIABLE interactive
    ['] sysexit *vreset !
 ;
 
-: -c?  ( c-addr u -- flag )  s" -c" COMPARE 0= ;
+: -c?  ( c-addr u -- flag )  S" -c" COMPARE 0= ;
 
 \ Handle command line options
 : options
@@ -1248,7 +1248,7 @@ options
    1 argc @ < IF
       disable-interactive
       1 arg openr       ( fileid ior )
-      abort" File not found
+      ABORT" File not found
 "
       fmapr             ( addr u )
       shebang

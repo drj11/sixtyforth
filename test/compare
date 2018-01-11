@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c ': a s" aa" ;  : b s" bb" ;
+out=$($FORTH -c ': a S" aa" ;  : b S" bb" ;
 a b COMPARE .
 a a COMPARE .
 b a COMPARE .
