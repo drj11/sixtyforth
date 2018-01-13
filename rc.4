@@ -321,7 +321,8 @@ VARIABLE do-sp  0 do-sp !
 
 \ ## Number Printing
 
-: SPACE BL EMIT ;
+: SPACE   BL EMIT ;
+: SPACES  ( n -- )  DUP 0> IF  0 DO  SPACE  LOOP  THEN ;
 
 300 CONSTANT pic-size
 pic-size map-anon DROP pic-size +

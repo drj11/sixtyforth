@@ -1,0 +1,18 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '64 EMIT
+1 SPACES
+64 EMIT
+0 SPACES
+64 EMIT
+-1 SPACES
+64 EMIT
+5 SPACES
+64 EMIT
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("@ @@@     @") exit 0;;
+esac
+exit 2
