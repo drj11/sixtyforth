@@ -17,22 +17,16 @@ It does not yet implement the standard.
 In this implementation a cell is 64-bits wide,
 and signed integers are represented in 2's complement.
 
-Input is mostly assumed to be in lower case.
-Due to a whimsical quirk and
-a fondness for 1980s style documentation,
-various documents will use upper case
-to refer to Forth words.
-For example, `CREATE`.
-But generally these should be
-typed in lower case
-in order to be
-recognised by the SixtyForth system
-(The standard requires that the uppercase forms are accepted,
-but this is not yet implemented).
+As per the ANSI standard,
+the required words from the standard are required to be in UPPER CASE.
+Obviously lower case is a bit more comfortable,
+and SixtyForth may accept that in the future.
+Note that you can define your own words in any case you like;
+when using them the case must be exactly as you defined it.
 
 Input is accepted from the keyboard
 (and interactively ^A ^E ^P ^N ^D ^K work);
-from the command line (`./64th -c 'source type'`);
+from the command line (`./64th -c 'SOURCE TYPE'`);
 and from files (`./64th example/hw.64th`).
 
 ## Building SixtyForth and running it
