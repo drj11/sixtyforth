@@ -3,7 +3,7 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 : seven 7 ;
-5 '\'' seven execute
+5 '\'' seven EXECUTE
 . .')
 printf "%s\n" "$out"
 case $out in

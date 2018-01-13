@@ -1,8 +1,8 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c ': x does> invert ;
-create foo
+out=$($FORTH -c ': x DOES> INVERT ;
+CREATE foo
 foo
 x
 foo

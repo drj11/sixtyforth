@@ -1,9 +1,12 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '7 5 6 TUCK . . . .')
+#
+out=$($FORTH -c ': c S" Hello" ;
+c DROP DUP COUNT
+. - .')
 printf "%s\n" "$out"
 case "$out" in
-    ("6 5 6 7 ") exit 0;;
+    ("72 -1 ") exit 0;;
 esac
 exit 2

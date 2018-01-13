@@ -1,7 +1,7 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '10 16 base ! 10 A . . .')
+out=$($FORTH -c '10 16 BASE ! 10 A . . .')
 printf '%s\n' "$out"
 case "$out" in
     ("A 10 A ") exit 0;;

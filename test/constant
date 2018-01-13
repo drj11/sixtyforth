@@ -2,8 +2,8 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-3 constant pi
-: foo pi s" foo " type ;
+3 CONSTANT pi
+: foo pi S" foo " TYPE ;
 foo .
 ')
 printf "%s\n" "$out"

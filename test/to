@@ -2,15 +2,15 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-9 value doob
+9 VALUE doob
 doob .
-99 to doob
+99 TO doob
 doob .
-: zero 0 to doob ;
+: zero 0 TO doob ;
 doob .
 zero
 doob .
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case $out in

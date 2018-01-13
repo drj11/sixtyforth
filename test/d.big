@@ -3,8 +3,8 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
--1 -1 0 2 um/mod swap drop
-d.
+-1 -1 0 2 UM/MOD SWAP DROP
+D.
 ')
 printf "%s\n" "$out"
 case "$out" in

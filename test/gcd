@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test of RECURSE.
 # From http://galileo.phys.virginia.edu/classes/551.jvn.fall01/primer.htm
 out=$($FORTH -c '
-: gcd  ?dup  if   tuck mod recurse   then  ;
+: gcd  ?DUP  IF   TUCK MOD RECURSE   THEN  ;
 784 48 gcd .
 ')
 printf "%s\n" "$out"

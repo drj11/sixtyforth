@@ -2,9 +2,9 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # (2**64-1)**2
-out=$($FORTH -c ': ud. <# bl hold #s #> type ;
--1 -1 um* ud.
-16000000000000000000 16000000000000000000 um* ud.
+out=$($FORTH -c ': ud. <# BL HOLD #S #> TYPE ;
+-1 -1 UM* ud.
+16000000000000000000 16000000000000000000 UM* ud.
 ')
 printf "%s\n" "$out"
 case "$out" in

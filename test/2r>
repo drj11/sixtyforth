@@ -1,9 +1,12 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '7 5 6 TUCK . . . .')
+out=$($FORTH -c '1 2 3
+: t >R >R 2R> ;
+t . . . 
+')
 printf "%s\n" "$out"
 case "$out" in
-    ("6 5 6 7 ") exit 0;;
+    ("2 3 1 ") exit 0;;
 esac
 exit 2

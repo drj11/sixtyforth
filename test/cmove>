@@ -1,15 +1,15 @@
 #!/bin/sh
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c 'variable v
-: c s" abcdefgh" ;
-c v swap 
-cmove>
-v 8 type
+out=$($FORTH -c 'VARIABLE v
+: c S" abcdefgh" ;
+c v SWAP 
+CMOVE>
+v 8 TYPE
 v 2 +
 v 1 +
-5 cmove>
-v 8 type' )
+5 CMOVE>
+v 8 TYPE' )
 printf "%s\n" "$out"
 case $out in
     (abcdefghaggggggh) exit 0;;

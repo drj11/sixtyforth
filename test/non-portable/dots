@@ -2,7 +2,7 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Assumes ASCII
-out=$($FORTH -c '1 2 3 .s')
+out=$($FORTH -c '1 2 3 .S')
 printf "%s\n" "$out"
 case "$out" in
     ("1 2 3 ") exit 0;;

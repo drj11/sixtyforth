@@ -5,14 +5,14 @@ out=$($FORTH -c '
 9876543210
 -123456789
 -1
-here
-3 cells allot
-tuck !
-tuck cell+ !
-tuck cell+ cell+ !
+HERE
+3 CELLS ALLOT
+TUCK !
+TUCK CELL+ !
+TUCK CELL+ CELL+ !
 2@
 . .
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case "$out" in

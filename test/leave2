@@ -2,11 +2,11 @@
 FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
-: s 0 do   if leave then   s" @" leave   loop ;
-0 4 s type
-depth .
+: s 0 DO   IF LEAVE THEN   S" @" LEAVE   LOOP ;
+0 4 s TYPE
+DEPTH .
 1 4 s
-depth .
+DEPTH .
 ')
 printf "%s\n" "$out"
 case "$out" in

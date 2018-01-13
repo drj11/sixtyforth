@@ -4,7 +4,7 @@ while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Test that PARSE-WORD (used by VARIABLE) works
 # when token is not terminated by a blank but
 # is terminated by end of record.
-out=$($FORTH -c 'variable bop
+out=$($FORTH -c 'VARIABLE bop
 97 bop !
 3 bop @ . .')
 printf "%s\n" "$out"

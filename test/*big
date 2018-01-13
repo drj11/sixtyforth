@@ -3,9 +3,9 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 # Create a product that is largest unsigned single.
 out=$($FORTH -c '65535 65537 *
-dup 2 +
+DUP 2 +
 *
-0 d.')
+0 D.')
 printf "%s\n" "$out"
 case "$out" in
     ("18446744073709551615 ") exit 0;;
