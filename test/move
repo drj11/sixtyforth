@@ -1,0 +1,17 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c 'VARIABLE v
+: c S" abcdefgh" ;
+c v SWAP 
+MOVE
+v 8 TYPE
+v 2 +
+v 1 +
+5 MOVE
+v 8 TYPE' )
+printf "%s\n" "$out"
+case $out in
+    (abcdefghacdefggh) exit 0;;
+esac
+exit 2

@@ -188,6 +188,7 @@ HEX     i
 INVERT  i
 M*      i
 M*/     i
+MOVE    i
 NIP     i
 PARSE   i
 RECURSE i

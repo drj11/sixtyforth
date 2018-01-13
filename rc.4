@@ -308,6 +308,15 @@ VARIABLE do-sp  0 do-sp !
 : C,  ( char -- )
    HERE  1 ALLOT  !  ;
 
+: MOVE  ( from to u -- )
+   >R 2DUP U< R>         ( from to up? u )
+   SWAP IF
+      CMOVE>
+   ELSE
+      CMOVE
+   THEN
+;
+
 \ Map Anonymous
 \ Request freshly allocated memory.
 : map-anon  ( sz -- addr ior )
