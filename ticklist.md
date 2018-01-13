@@ -17,7 +17,7 @@ p - partially implemented (for example, small inputs only)
 +       i
 +!      i
 -       i
-/
+/       i
 /MOD
 0<      i
 0=      i
@@ -26,7 +26,7 @@ p - partially implemented (for example, small inputs only)
 1-      i
 2+      i
 2-      i
-2/
+2/      i
 <       i
 =       i
 >       i

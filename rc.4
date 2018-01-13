@@ -42,12 +42,13 @@
 \ DOUBLE-EXT
 : 2ROT  ( p q r s t u -- r s t u p q )  2>R 2SWAP 2R> 2SWAP ;
 
-: 2*  ( x -- x' )  2 * ;
-
 : /MOD  ( n1 n2 -- rem quot )  >R S>D R> SM/REM ;
 : */MOD  ( n1 n2 n3 -- rem quot )  >R M* R> SM/REM ;
 : */  ( n1 n2 n3 -- quot )  */MOD NIP ;
 : /  ( n1 n2 -- n3 )  /MOD NIP ;
+
+: 2*  ( x -- x' )  2 * ;
+: 2/  ( x -- x' )  2 / ;
 
 \ DOUBLE
 : M*/  ( d1 n1 +n2 -- d2 )
