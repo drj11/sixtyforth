@@ -50,6 +50,9 @@
 : 2*  ( x -- x' )  2 * ;
 : 2/  ( x -- x' )  2 / ;
 
+: signum  ( x -- -1/0/1 )
+   DUP 0< SWAP 0> - ;
+
 \ DOUBLE
 : M*/  ( d1 n1 +n2 -- d2 )
    >R                   ( d1 n1 )  ( r: n2 )
@@ -274,6 +277,20 @@ VARIABLE do-sp  0 do-sp !
 \ ##
 
 : MAX   2DUP < IF SWAP THEN DROP ;
+
+: FM/MOD  ( d1 n1 -- n2 n3 )
+   DUP >R               ( r: n1 )
+   SM/REM               ( rem quot )
+   OVER signum          ( rem quot s-rem )
+   R@ signum            ( rem quot s-rem s-n1 )
+   NEGATE =             ( rem quot adjust? )
+   IF
+      1-                ( rem quot' )
+      SWAP  R> +  SWAP  ( rem' quot' )
+   ELSE
+      R> DROP
+   THEN
+;
 
 \ Fixes the CFA of the last defined word
 \ to point to address following call to *fix-cfa

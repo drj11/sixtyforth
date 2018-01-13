@@ -184,6 +184,7 @@ D>S     i
 DABS    i
 EVALUATE        i
 FALSE   i
+FM/MOD  i
 HEX     i
 INVERT  i
 M*      i
