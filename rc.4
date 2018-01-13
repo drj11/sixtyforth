@@ -390,12 +390,6 @@ VARIABLE pic
    OVER -       ( addr u )
 ;
 
-: U.  ( u -- )
-   0
-   <# BL HOLD #S #>
-   TYPE
-;
-
 \ Using <#, type out double with sign of n.
    : .sign  ( n du -- )
       <#
@@ -405,6 +399,10 @@ VARIABLE pic
       #>
       TYPE
    ;
+
+: U.  ( u -- )
+   0 TUCK       ( 0 du )
+   .sign ;
 
 : .  ( n -- )
    DUP ABS 0    ( n du )        \ du same magnitude as n
