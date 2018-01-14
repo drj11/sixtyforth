@@ -754,9 +754,12 @@ VARIABLE ki.k                   \ small buffer for key input
 VARIABLE ki.fixk                \ small buffer used for findword
 
 \ Reset key variables to create a fresh buffer
-: ki.fresh
+: ki.reset
    0 ki.> !   0 ki.n !   0 ki.>save ! ;
-ki.fresh
+ki.reset
+
+: ki.buffer
+   ki.buf TO ki.a  ki.reset ;
 
 : ki.input  ( -- addr u )  ki.a ki.n @ ;
 
@@ -1190,7 +1193,7 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
 
 : ki
    hl.new
-   ki.fresh
+   ki.buffer
    ki.edit
 ;
 
