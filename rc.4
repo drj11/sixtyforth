@@ -155,14 +155,14 @@
 : POSTPONE
    parse-word findword
    ?DUP 0= IF  ABORT" Postpone not"  THEN
+   ( xt +-1 )
    0> IF
       \ immediate case
       ,
    ELSE
       \ non-immediate case
       [ ' LITERAL , ]
-      ,
-      ' , ,
+      ['] , ,
   THEN
 ; IMMEDIATE
 
