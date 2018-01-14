@@ -28,21 +28,18 @@
 ; IMMEDIATE
 
 : 2DUP  ( x x' -- x x' x x' )  OVER OVER ;
-\ CORE-EXT
-: TUCK  ( a b -- b a b )  SWAP OVER ;
-\ CORE-EXT
-: .(  [CHAR] ) PARSE TYPE ; IMMEDIATE
+: TUCK  ( a b -- b a b )  SWAP OVER ;                   \ CORE-EXT
+: .(  [CHAR] ) PARSE TYPE ; IMMEDIATE                   \ CORE-EXT
 : S>D  ( n -- d )  DUP 0< ;
 
-\ CORE-EXT
-: 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )
+: 2R>   ( R: x1 x2 -- ) ( -- x1 x2 )                    \ CORE-EXT
    R> R> R>     ( ret x2 x1 )
    ROT >R       ( x2 x1 )
    SWAP         ( x1 x2 )
 ;
 
-\ DOUBLE-EXT
-: 2ROT  ( p q r s t u -- r s t u p q )  2>R 2SWAP 2R> 2SWAP ;
+: 2ROT  ( p q r s t u -- r s t u p q )                  \ DOUBLE-EXT
+   2>R 2SWAP 2R> 2SWAP ;
 
 : /MOD  ( n1 n2 -- rem quot )  >R S>D R> SM/REM ;
 : */MOD  ( n1 n2 n3 -- rem quot )  >R M* R> SM/REM ;
@@ -55,8 +52,7 @@
 : signum  ( x -- -1/0/1 )
    DUP 0< SWAP 0> - ;
 
-\ DOUBLE
-: M*/  ( d1 n1 +n2 -- d2 )
+: M*/  ( d1 n1 +n2 -- d2 )                              \ DOUBLE
    >R                   ( d1 n1 )  ( r: n2 )
    \ sign has correct sign, garbage mantissa
    2DUP XOR             ( d1 n1 sign )
@@ -69,15 +65,13 @@
    R> d+-               ( d )  ( r: )
 ;
 
-\ CORE-EXT
-: U>  ( u1 u2 -- flag )  SWAP U< ;
+: U>  ( u1 u2 -- flag )  SWAP U< ;                      \ CORE-EXT
 
 : DEPTH  ( -- +n )
    stack -  1 CELLS / ;
 
 : VARIABLE    CREATE 1 CELLS ALLOT ;
-\ DOUBLE
-: 2VARIABLE   CREATE 2 CELLS ALLOT ;
+: 2VARIABLE   CREATE 2 CELLS ALLOT ;                    \ DOUBLE
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
@@ -89,13 +83,11 @@
 : 2@  ( addr -- x1 x2 )
    DUP CELL+ @   SWAP @ ;
 
-\ DOUBLE
-: D0=  ( xd -- flag )  OR 0= ;
+: D0=  ( xd -- flag )  OR 0= ;                          \ DOUBLE
 
 : COUNT  ( addr -- addr' ch )  DUP 1+ SWAP C@ ;
 
-\ STRING
-: /STRING  ( addr u n -- addr' u' )
+: /STRING  ( addr u n -- addr' u' )                     \ STRING
    TUCK -               ( addr n u' )
    >R + R>              ( addr' u' )
 ;
@@ -136,7 +128,6 @@
    TRUE ,
 ; IMMEDIATE
 
-\ std1983
 : ELSE  ( token -- newtoken      / at compile time )
    compile branch
    HERE         ( token newtoken )
@@ -148,7 +139,6 @@
    !            ( newtoken )
 ; IMMEDIATE
 
-\ std1983
 : THEN
    HERE OVER - SWAP ! ; IMMEDIATE
 
@@ -193,7 +183,7 @@ VARIABLE do-sp  0 do-sp !
    , >do
 ;
 
-: ?DO  ( limit base -- )
+: ?DO  ( limit base -- )                                \ CORE-EXT
        ( C: -- do-token )
        ( do-stack: -- leave-token )
    \ Use DO to setup a DO LOOP,
@@ -284,12 +274,10 @@ VARIABLE do-sp  0 do-sp !
    loopy
 ; IMMEDIATE
 
-\ std1983
 : I  ( -- index )
    2R@ DROP
 ;
 
-\ std1994
 : J  ( -- index )  ( R: lj bj li bi ret )
    2R>  2R@ DROP  ROT ROT 2>R
 ;
@@ -325,10 +313,8 @@ VARIABLE do-sp  0 do-sp !
 : CONSTANT  ( x -- / -- x )
    VARIABLE last name> >BODY ! DOES> @ ;
 
-\ CORE-EXT
-: VALUE   CONSTANT ;
-\ CORE-EXT
-: TO  ( x -- )
+: VALUE   CONSTANT ;                                    \ CORE-EXT
+: TO  ( x -- )                                          \ CORE-EXT
    ' >BODY
    STATE @ IF
       [COMPILE] LITERAL
@@ -447,17 +433,14 @@ VARIABLE pic
    DUP ABS 0    ( n du )        \ du same magnitude as n
    .sign ;
 
-\ DOUBLE
-: D.  ( d -- )
+: D.  ( d -- )                                          \ DOUBLE
    TUCK DABS    ( n du )        \ n same sign as d
    .sign ;
 
 : DECIMAL  ( -- )  10 BASE ! ;
-\ CORE-EXT
-: HEX  ( -- )  16 BASE ! ;
+: HEX  ( -- )  16 BASE ! ;                              \ CORE-EXT
 
-\ TOOLS
-: .S  ( -- )
+: .S  ( -- )                                            \ TOOLS
    stack
    ?DO
       I @ .
@@ -481,8 +464,7 @@ VARIABLE pic
       -
    ;
 
-\ STRING
-: COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )
+: COMPARE  ( c-addr1 u1 c-addr2 u2 -- n )               \ STRING
    ROT 2DUP 2>R
    MIN          ( c-addr1 c-addr2 n )
    FALSE
@@ -530,7 +512,7 @@ VARIABLE pic
    FALSE
 ;
 
-: WORDS
+: WORDS                                                 \ TOOLS
    ['] .lfa thewl exec-wordlist
 ;
 
@@ -579,8 +561,7 @@ CREATE fstatbuf 144 ALLOT ALIGN
    \ Leaves result in `fstatbuf` which is left on stack.
    fstatbuf TUCK 0 5 syscall3 ;
 
-\ std1994 file
-: file-size  ( fileid -- ud ior )
+: file-size  ( fileid -- ud ior )                       \ FILE
    file*status
    ?DUP IF
       0 SWAP                    ( x 0 ior )
@@ -619,14 +600,12 @@ CREATE fstatbuf 144 ALLOT ALIGN
 4096 map-anon DROP
 CONSTANT openbuf        ( buffer for open pathname )
 
-\ FILE
-: R/O
+: R/O                                                   \ FILE
    \ Modelled after the `flags` argument to open()
    \ See /usr/include/asm-generic/fcntl.h defines O_RDONLY
    0 ;
 
-\ FILE
-: OPEN-FILE  ( c-addr u fam -- fileid ior )
+: OPEN-FILE  ( c-addr u fam -- fileid ior )             \ FILE
    >R >R                ( c-addr )      ( r: fam u )
    openbuf R@           ( c-addr path u )
    CMOVE                ( )
@@ -685,7 +664,6 @@ VARIABLE chbuf
    TYPE
    R> BASE !
 ;
-
 
 
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
@@ -766,19 +744,13 @@ VARIABLE tty.vbuf
 \ emit on stderr.
 : eemit  ( ch -- )  2 femit ;
 
-\ size
-: ki.z  96 ;
-\ address
-CREATE ki.a ki.z ALLOT
-\ point
-VARIABLE ki.>
-\ validity
-VARIABLE ki.n
+: ki.z  96 ;            \ size
+CREATE ki.a ki.z ALLOT  \ address
+VARIABLE ki.>           \ point, 0 <= ki.> < ki.n
+VARIABLE ki.n           \ validity
 VARIABLE ki.>save
-\ small buffer for key input
-VARIABLE ki.k
-\ small buffer used for findword
-VARIABLE ki.fixk
+VARIABLE ki.k           \ small buffer for key input
+VARIABLE ki.fixk        \ small buffer used for findword
 
 \ Reset key variables to create a fresh buffer
 : ki.fresh
