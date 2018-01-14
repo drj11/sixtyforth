@@ -1,0 +1,11 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+4 3 /MOD . .
+-4 -3 /MOD . .')
+printf "%s\n" "$out"
+case $out in
+    ("1 1 1 -1 ") exit 0;;
+esac
+exit 2
