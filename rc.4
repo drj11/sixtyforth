@@ -744,13 +744,14 @@ VARIABLE tty.vbuf
 \ emit on stderr.
 : eemit  ( ch -- )  2 femit ;
 
-: ki.z  96 ;            \ size
-CREATE ki.a ki.z ALLOT  \ address
-VARIABLE ki.>           \ point, 0 <= ki.> < ki.n
-VARIABLE ki.n           \ validity
+: ki.z  96 ;                    \ size
+CREATE ki.buf ki.z ALLOT        \ buffer
+ki.buf VALUE ki.a               \ address of buffer to use
+VARIABLE ki.>                   \ point, 0 <= ki.> < ki.n
+VARIABLE ki.n                   \ validity
 VARIABLE ki.>save
-VARIABLE ki.k           \ small buffer for key input
-VARIABLE ki.fixk        \ small buffer used for findword
+VARIABLE ki.k                   \ small buffer for key input
+VARIABLE ki.fixk                \ small buffer used for findword
 
 \ Reset key variables to create a fresh buffer
 : ki.fresh
