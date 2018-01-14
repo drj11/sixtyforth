@@ -752,7 +752,8 @@ VARIABLE tty.vbuf
 ;
 
 \ Put the TTY into keypress mode to get a single keypress.
-: getch
+\ Required by ANSI, but so ill-specified as to be useless.
+: KEY
    0 tty.store
    0 tty.keypress
    getc
