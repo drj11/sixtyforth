@@ -1,0 +1,14 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: nop : POSTPONE ; IMMEDIATE ;
+3 ALIGNED .
+nop ALIGNED
+3 ALIGNED .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("8 3 ") exit 0;;
+esac
+exit 2
