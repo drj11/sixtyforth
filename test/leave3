@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: s 1 DO 9 1 DO  I J + DUP . OVER MOD 0= IF LEAVE THEN  LOOP LOOP ;
+10 5 s
+.
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("2 3 4 5 6 7 8 9 3 4 5 6 7 8 9 10 4 5 6 7 8 9 10 5 6 7 8 9 10 10 ") exit 0;;
+esac
+exit 2
