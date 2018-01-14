@@ -345,8 +345,7 @@ VARIABLE do-sp  0 do-sp !
 : CHAR+  ( addr -- addr' )  1+ ;
 : CHARS  ( n1 -- n1 )  ;
 
-: C,  ( char -- )
-   HERE  1 ALLOT  !  ;
+: C,  ( char -- )  HERE  1 ALLOT  C!  ;
 
 : MOVE  ( from to u -- )
    >R 2DUP U< R>         ( from to up? u )
