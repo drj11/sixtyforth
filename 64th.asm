@@ -1451,6 +1451,7 @@ semicolon:
         DQ 'findword'
 FINDWORD:
         DQ stdexe
+        ; findword ( c-addr u -- 0 | xt 1 | xt -1 )
         DQ THEWL
         DQ SEARCHWORDLIST
         DQ EXIT
