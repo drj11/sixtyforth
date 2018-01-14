@@ -561,7 +561,7 @@ CREATE fstatbuf 144 ALLOT ALIGN
    \ Leaves result in `fstatbuf` which is left on stack.
    fstatbuf TUCK 0 5 syscall3 ;
 
-: file-size  ( fileid -- ud ior )                       \ FILE
+: FILE-SIZE  ( fileid -- ud ior )                       \ FILE
    file*status
    ?DUP IF
       0 SWAP                    ( x 0 ior )
@@ -575,7 +575,7 @@ CREATE fstatbuf 144 ALLOT ALIGN
 \ Map fildes fd into memory for reading.
 \ Address and length of mapping are left on stack.
 : fmapr ( fd -- addr u )
-   DUP file-size                        ( fd ud ior )
+   DUP FILE-SIZE                        ( fd ud ior )
    ABORT" File cannot be mapped"        ( fd ud )
    D>S                                  ( fd u )
    DUP 1 < IF
