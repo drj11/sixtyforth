@@ -151,7 +151,21 @@
 \ std1983
 : THEN
    HERE OVER - SWAP ! ; IMMEDIATE
-   
+
+: POSTPONE
+   parse-word findword
+   ?DUP 0= IF  ABORT" Postpone not"  THEN
+   ( xt +-1 )
+   0> IF
+      \ immediate case
+      ,
+   ELSE
+      \ non-immediate case
+      [ ' LITERAL , ]
+      ['] , ,
+  THEN
+; IMMEDIATE
+
 CREATE do-stack  3 CELLS ALLOT
 VARIABLE do-sp  0 do-sp !
    : do-addr   do-stack  do-sp @ CELLS  + ;
