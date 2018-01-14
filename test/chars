@@ -1,0 +1,12 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+
+out=$($FORTH -c '
+7 CHARS .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("7 ") exit 0;;
+esac
+exit 2

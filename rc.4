@@ -342,6 +342,9 @@ VARIABLE do-sp  0 do-sp !
    HERE ALIGNED  HERE  - ALLOT
 ;
 
+: CHAR+  ( addr -- addr' )  1+ ;
+: CHARS  ( n1 -- n1 )  ;
+
 : C,  ( char -- )
    HERE  1 ALLOT  !  ;
 
