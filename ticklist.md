@@ -200,6 +200,7 @@ TO      i
 TRUE    i
 TUCK    i
 U>      i
+UNLOOP  i
 VALUE   i
 WITHIN  i
 [CHAR]  i

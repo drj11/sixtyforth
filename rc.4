@@ -180,6 +180,10 @@ VARIABLE do-sp  0 do-sp !
    0 >do  HERE  ( do-token )
 ; IMMEDIATE
 
+: UNLOOP  ( R: limit index -- )
+   R>  2R> 2DROP  >R
+;
+
 \ Push the current-leave token (on the do-stack)
 \ onto the leave linked-list at HERE.
 \ Replace current-leave token with HERE.

@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: s 1 DO  I +  3 I = IF UNLOOP EXIT THEN  LOOP 99 . ;
+0 9 s
+.
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("6 ") exit 0;;
+esac
+exit 2
