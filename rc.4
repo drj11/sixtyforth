@@ -87,6 +87,14 @@
 
 : COUNT  ( addr -- addr' ch )  DUP 1+ SWAP C@ ;
 
+: WORD  ( char "<chars>ccc<char>" -- c-addr )
+   DUP DUP 1+ skip
+   DUP 1+ SWAP partok           ( addr u )
+   >R HERE 1+ R@ CMOVE          ( addr ) ( r: u )
+   R> HERE C!
+   HERE
+;
+
 : /STRING  ( addr u n -- addr' u' )                     \ STRING
    TUCK -               ( addr n u' )
    >R + R>              ( addr' u' )
