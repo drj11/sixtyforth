@@ -744,9 +744,10 @@ VARIABLE tty.vbuf
 \ emit on stderr.
 : eemit  ( ch -- )  2 femit ;
 
-: ki.z  96 ;                    \ size
-CREATE ki.buf ki.z ALLOT        \ buffer
+96 CONSTANT ki.buflen           \ size
+CREATE ki.buf ki.buflen ALLOT   \ buffer
 ki.buf VALUE ki.a               \ address of buffer to use
+ki.buflen VALUE ki.z            \ size of buffer in use
 VARIABLE ki.>                   \ point, 0 <= ki.> < ki.n
 VARIABLE ki.n                   \ validity
 VARIABLE ki.>save
@@ -759,7 +760,9 @@ VARIABLE ki.fixk                \ small buffer used for findword
 ki.reset
 
 : ki.buffer
-   ki.buf TO ki.a  ki.reset ;
+   ki.buf TO ki.a
+   ki.buflen TO ki.z
+   ki.reset ;
 
 : ki.input  ( -- addr u )  ki.a ki.n @ ;
 
@@ -999,7 +1002,6 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
 : k:^J
    end-of-line
    ki.input hl.save
-   S"  " ki.insert DROP
    0
 ;
 
@@ -1197,10 +1199,18 @@ ki.fix *create *stdexe HERE body> ! ] erase-backward-char 1 ; ( )
    ki.edit
 ;
 
+: ACCEPT  ( addr +n1 -- +n2 )
+   TO ki.z
+   TO ki.a
+   ki.reset
+   ki.edit
+   ki.n @
+;
+
 \ Key Input Prompt and Loop
 : kipl
    BEGIN
-      ki
+      ki BL eemit
       ki.input
       ?DUP IF
          EVALUATE
