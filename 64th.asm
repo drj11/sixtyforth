@@ -2074,12 +2074,6 @@ stateaddr:
 ALIGN 8
         CtoL(STATE)
 
-        DQ 7
-        DQ 'useless'
-USELESS:
-        DQ stdvar
-        CtoL(USELESS)
-
 ; THE Word List
         DQ 5
         DQ 'thewl'
