@@ -2074,6 +2074,22 @@ stateaddr:
 ALIGN 8
         CtoL(STATE)
 
+        DQ 7
+        DQ 'current'
+current:
+        DQ stdvar
+        DQ thewladdr
+        CtoL(current)
+
+        DQ 11
+        DQ 'GET-CURR'
+GETCURRENT:
+        DQ stdexe
+        DQ current
+        DQ fetch
+        DQ EXIT
+        CtoL(GETCURRENT)
+
 ; THE Word List
         DQ 5
         DQ 'thewl'
