@@ -72,6 +72,7 @@
 
 : VARIABLE    CREATE 1 CELLS ALLOT ;
 : 2VARIABLE   CREATE 2 CELLS ALLOT ;                    \ DOUBLE
+: WORDLIST  ( -- wid )  HERE 1 CELLS ALLOT ;            \ SEARCH
 
 : MOD  ( n1 n2 -- n3 )
    \ Implementation as per [std1994]
