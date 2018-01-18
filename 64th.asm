@@ -1302,7 +1302,7 @@ starCREATE:
         ; Link Field Address
         DQ HERE, toR    ; ( r: lfa )
         ; Compile Link Field
-        DQ THEWL, fetch
+        DQ GETCURRENT, fetch
         DQ comma
 
         ; Compile Name Field.
@@ -1324,7 +1324,7 @@ starCREATE:
         DQ comma
         ; Update Dictionary pointer
         DQ Rfrom        ; ( lfa )  ( r: )
-        DQ THEWL        ; ( lfa &dict )
+        DQ GETCURRENT   ; ( lfa &dict )
         DQ store
         DQ EXIT
         CtoL(starCREATE)
@@ -1581,7 +1581,7 @@ IMMEDIATE:
         DQ 4
         DQ 'last'       ; Acornsoft
 LAST:   DQ stdexe
-        DQ THEWL, fetch
+        DQ GETCURRENT, fetch
         DQ LIT, 8       ; L>NAME
         DQ PLUS
         DQ EXIT
