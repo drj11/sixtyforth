@@ -5,10 +5,12 @@ out=$($FORTH -c '
 : sf S" foo" ;
 sf GET-CURRENT SEARCH-WORDLIST .
 : ss S" STATE" ;
-ss GET-CURRENT SEARCH-WORDLIST 0= .
+ss GET-CURRENT SEARCH-WORDLIST . 0= .
+: ssf S" sf" ;
+ss GET-CURRENT SEARCH-WORDLIST . 0= .
 ')
 printf "%s\n" "$out"
 case "$out" in
-    ("0 0 ") exit 0;;
+    ("0 -1 0 -1 0 ") exit 0;;
 esac
 exit 2
