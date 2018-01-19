@@ -292,6 +292,16 @@ VARIABLE do-sp  0 do-sp !
 
 \ ##
 
+: FIND  ( c-addr -- c-addr 0 | xt 1 | xt -1 )
+   >R R@ COUNT          ( addr u )
+   findword             ( 0 | xt 1 | xt -1 )
+   DUP 0= IF
+      R> SWAP           ( c-addr 0 )
+   ELSE
+      R> DROP           ( xt 1 | xt -1 )
+   THEN
+;
+
 : MAX   2DUP < IF SWAP THEN DROP ;
 
 : FM/MOD  ( d1 n1 -- n2 n3 )
