@@ -3,9 +3,15 @@ FORTH=${FORTH:-./64th}
 while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
 out=$($FORTH -c '
 : cs S" /COUNTED-STRING" ENVIRONMENT? . 0> . ; cs
+: h S" /HOLD" ENVIRONMENT? . 0> . ; h
+\ : p S" /PAD" ENVIRONMENT? . 0> . ; p
+: a S" ADDRESS-UNIT-BITS" ENVIRONMENT? . . ; a
+: c S" CORE" ENVIRONMENT? . . ; c
+: ce S" CORE-EXT" ENVIRONMENT? . . ; ce
+: f S" FLOORED" ENVIRONMENT? . -1 2 / = . ; f
 ')
 printf "%s\n" "$out"
 case "$out" in
-    ("-1 -1 ") exit 0;;
+    ("-1 -1 -1 -1 -1 8 -1 -1 -1 0 -1 -1 ") exit 0;;
 esac
 exit 2
