@@ -303,6 +303,8 @@ VARIABLE do-sp  0 do-sp !
    THEN
 ;
 
+: SET-CURRENT  ( wid -- )  current ! ;
+
 : MAX   2DUP < IF SWAP THEN DROP ;
 
 : FM/MOD  ( d1 n1 -- n2 n3 )
@@ -1274,7 +1276,6 @@ VARIABLE interactive
       WHILE
    REPEAT
 ;
-options
 
 \ Adjust addr u pair to skip past an initial shebang line.
 : shebang  ( addr u -- n-addr n-u )
@@ -1311,4 +1312,6 @@ options
       EVALUATE
    THEN
 ;
+
+options
 run-args
