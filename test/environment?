@@ -1,0 +1,11 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+out=$($FORTH -c '
+: cs S" /COUNTED-STRING" ENVIRONMENT? . 0> . ; cs
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("-1 -1 ") exit 0;;
+esac
+exit 2

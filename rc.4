@@ -758,6 +758,35 @@ VARIABLE tty.vbuf
    0 tty.restore
 ;
 
+\ ## Environment
+
+GET-CURRENT CONSTANT FORTH-WORDLIST                     \ SEARCH
+WORDLIST CONSTANT environment
+
+environment SET-CURRENT
+: /COUNTED-STRING   255 ;
+: /HOLD   pic-size ;
+: /PAD ABORT" PAD not implemented" ;
+: ADDRESS-UNIT-BITS   8 ;
+: CORE   TRUE ;
+: CORE-EXT   FALSE ;
+: FLOORED   FALSE ;
+: MAX-CHAR   255 ;
+: MAX-D   -1 -1 1 RSHIFT ;
+: MAX-N   9223372036854775807 ;
+: MAX-U   -1 ;
+: MAX-UD   -1 -1 ;
+FORTH-WORDLIST SET-CURRENT
+
+: ENVIRONMENT?  ( c-addr u -- false | i*x true )
+   environment SEARCH-WORDLIST IF
+      EXECUTE
+      TRUE
+   ELSE
+      FALSE
+   THEN
+;
+
 \ ## Key Input
 
 \ type on stderr.
