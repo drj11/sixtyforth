@@ -23,7 +23,7 @@ SECTION .rodata
 ; Start of Dictionary
 ; The Dictionary is a key Forth datastructure.
 ; It is a linked list, with each element having the structure:
-; - Link Field          1 QWord
+; - Link Field          1 QWord (8 bytes)
 ; - Name Field: Length  1 QWord
 ; - Name Field: String  8 Bytes
 ; - Code Field          1 QWord
