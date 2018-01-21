@@ -776,6 +776,7 @@ environment SET-CURRENT
 : MAX-N   9223372036854775807 ;
 : MAX-U   -1 ;
 : MAX-UD   -1 -1 ;
+: STACK-CELLS   stack NIP NIP  1 CELLS / ;
 FORTH-WORDLIST SET-CURRENT
 
 : ENVIRONMENT?  ( c-addr u -- false | i*x true )
