@@ -8,11 +8,17 @@ sys_mmap EQU 9
 extern _binary_rc_4_start
 extern _binary_rc_4_size
 
+SECTION stack   nobits  alloc   noexec  write   align=8
+
+stack   RESB 1000
+stacklen EQU $ - $$
+
+SECTION rstack  nobits  alloc   noexec  write   align=8
+
+returnstack       RESB 1000
+returnstacklen EQU $ - $$
 
 SECTION .bss
-
-stack   RESB 100000
-returnstack       RESB 100000
 
 emitbuf RESB 1
 
@@ -271,9 +277,11 @@ STACK:
         DQ $+8
         ; STACK ( -- addr-stack addr-base )
         mov rax, rbp
-        add rbp, 8
-        mov [rbp-8], rax
-        mov rax, stack
+        mov rcx, stack
+        add rbp, 16
+        mov [rbp-16], rax
+        mov [rbp-8], rcx
+        mov rax, stacklen
         jmp pushrax
         CtoL(STACK)
 

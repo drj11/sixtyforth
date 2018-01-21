@@ -68,7 +68,7 @@
 : U>  ( u1 u2 -- flag )  SWAP U< ;                      \ CORE-EXT
 
 : DEPTH  ( -- +n )
-   stack -  1 CELLS / ;
+   stack DROP -  1 CELLS / ;
 
 : VARIABLE    CREATE 1 CELLS ALLOT ;
 : 2VARIABLE   CREATE 2 CELLS ALLOT ;                    \ DOUBLE
@@ -462,7 +462,7 @@ VARIABLE pic
 : HEX  ( -- )  16 BASE ! ;                              \ CORE-EXT
 
 : .S  ( -- )                                            \ TOOLS
-   stack
+   stack DROP
    ?DO
       I @ .
    1 CELLS  +LOOP
