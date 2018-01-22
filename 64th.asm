@@ -275,7 +275,7 @@ twoRfetch:
         DQ 'stack'
 STACK:
         DQ $+8
-        ; STACK ( -- addr-stack addr-base )
+        ; STACK ( -- addr-stack addr-base capacity )
         mov rax, rbp
         mov rcx, stack
         add rbp, 16
@@ -284,6 +284,20 @@ STACK:
         mov rax, stacklen
         jmp pushrax
         CtoL(STACK)
+
+        DQ 11
+        DQ 'returnst'
+RETURNSTACK:
+        DQ $+8
+        ; returnstack ( -- addr-stack addr-base capacity )
+        mov rax, r12
+        mov rcx, returnstack
+        add rbp, 16
+        mov [rbp-16], rax
+        mov [rbp-8], rcx
+        mov rax, returnstacklen
+        jmp pushrax
+        CtoL(RETURNSTACK)
 
         DQ 4
         DQ 'TRUE'       ; std1994

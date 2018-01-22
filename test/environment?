@@ -9,10 +9,11 @@ out=$($FORTH -c '
 : c S" CORE" ENVIRONMENT? . . ; c
 : ce S" CORE-EXT" ENVIRONMENT? . . ; ce
 : f S" FLOORED" ENVIRONMENT? . -1 2 / = . ; f
+: r S" RETURN-STACK-CELLS" ENVIRONMENT? . 0> . ; r
 : s S" STACK-CELLS" ENVIRONMENT? . 0> . ; s
 ')
 printf "%s\n" "$out"
 case "$out" in
-    ("-1 -1 -1 -1 -1 8 -1 -1 -1 0 -1 -1 -1 -1 ") exit 0;;
+    ("-1 -1 -1 -1 -1 8 -1 -1 -1 0 -1 -1 -1 -1 -1 -1 ") exit 0;;
 esac
 exit 2
