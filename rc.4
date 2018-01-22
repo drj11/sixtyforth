@@ -374,6 +374,11 @@ VARIABLE do-sp  0 do-sp !
    OVER AND             ( addr ior )
 ;
 
+\ ## Pad
+
+84 CONSTANT pad-size
+pad-size map-anon DROP VALUE PAD
+
 \ ## Number Printing
 
 : SPACE   BL EMIT ;
@@ -766,7 +771,7 @@ WORDLIST CONSTANT environment
 environment SET-CURRENT
 : /COUNTED-STRING   255 ;
 : /HOLD   pic-size ;
-: /PAD ABORT" PAD not implemented" ;
+: /PAD   pad-size ;
 : ADDRESS-UNIT-BITS   8 ;
 : CORE   TRUE ;
 : CORE-EXT   FALSE ;
