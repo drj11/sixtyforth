@@ -23,7 +23,7 @@ when using them the case must be exactly as you defined it.
 Input is accepted from the keyboard
 (and interactively ^A ^E ^P ^N ^D ^K work);
 from the command line (`./64th -c 'SOURCE TYPE'`);
-and from files (`./64th example/hw.64th`).
+and from files (`./64th example/hw.4`).
 
 ## Building SixtyForth and running it
 
