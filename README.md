@@ -4,15 +4,11 @@
 
 Welcome to SixtyForth, `64th` for short.
 
-SixtyForth a 64-bit implementation of FORTH
+SixtyForth is a 64-bit implementation of FORTH
 written in 64-bit Intel assembler.
 
-The SixtyForth language is
-inspired by traditional Forth implementations,
-but is also ultimately intended to
-implement the ANSI Forth standard (1994 edition).
-
-It does not yet implement the standard.
+SixtyForth implements the ANSI Forth standard (1994 edition).
+The CORE word set is present.
 
 In this implementation a cell is 64-bits wide,
 and signed integers are represented in 2's complement.
