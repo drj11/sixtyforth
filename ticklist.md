@@ -1,5 +1,0 @@
-# Words
-
-To investigate
-
-*/MOD

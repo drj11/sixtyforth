@@ -1,0 +1,13 @@
+#!/bin/sh
+FORTH=${FORTH:-./64th}
+while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
+# It's not that big.
+# Two 40 bit factors giving 80 bit product.
+out=$($FORTH -c '
+1000111000222 1000111000222 127000 */MOD . .
+')
+printf "%s\n" "$out"
+case "$out" in
+    ("7875763880039758142 15284 ") exit 0;;
+esac
+exit 2
