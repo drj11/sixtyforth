@@ -69,3 +69,30 @@ SixtyForth has a word two add two double cell
 numbers together,
 it is `D+` from the ANSI DOUBLE word set,
 even though the entire word set is not implemented.
+
+### CORE EXT
+
+None of the words marked as obsolescent are implemented:
+`#TIB` `CONVERT` `EXPECT` `QUERY` `SPAN` `TIB`.
+
+Implemented:
+`.(`
+`0>` `2>R` `2R>` `2R@`
+`<>` `?DO`
+`FALSE` `HEX`
+`NIP`
+`PAD` `PARSE`
+`TO` `TRUE` `TUCK`
+`U>`
+`VALUE` `WITHIN` `[COMPILE]` `\`
+
+Not implemented:
+`.R` `0<>`
+`:NONAME`
+`AGAIN` `C"` `CASE` `COMPILE,`
+`ENDCASE` `ENDOF` `ERASE`
+`MARKER`
+`OF`
+`PICK` `REFILL` `RESTORE-INPUT` `ROLL` `SAVE-INPUT` `SOURCE-ID`
+`U.R`
+`UNUSED`
