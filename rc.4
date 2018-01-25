@@ -175,7 +175,7 @@ VARIABLE do-sp  0 do-sp !
 : DO  ( limit base -- )
       ( C: -- do-token )
       ( do-stack: -- leave-token )
-   compile 2>R
+   POSTPONE 2>R
    0 >do  HERE  ( do-token )
 ; IMMEDIATE
 
@@ -198,10 +198,10 @@ VARIABLE do-sp  0 do-sp !
    \ Use DO to setup a DO LOOP,
    \ but adjust the do-token so that the LOOP returns
    \ to a point after the equalty test implied by ?DO .
-   compile 2DUP
+   POSTPONE 2DUP
    [COMPILE] DO
-   compile <>
-   compile 0branch
+   POSTPONE <>
+   POSTPONE 0branch
    push-leave
    DROP HERE
 ; IMMEDIATE
@@ -243,7 +243,7 @@ VARIABLE do-sp  0 do-sp !
 ;
 
 : LEAVE
-   compile branch
+   POSTPONE branch
    push-leave
 ; IMMEDIATE
 
@@ -257,7 +257,7 @@ VARIABLE do-sp  0 do-sp !
 ;
 
 : loopy
-   compile 0branch
+   POSTPONE 0branch
    HERE         ( do-token here )
    -            ( byte-offset )
    ,
@@ -272,14 +272,14 @@ VARIABLE do-sp  0 do-sp !
 
 : LOOP  ( R: limit base -- limit base+1 | )
         ( C: do-token -- )
-   compile looptest
+   POSTPONE looptest
    loopy
 ; IMMEDIATE
 
 : +LOOP  ( inc -- )
          ( R: limit base -- limit base' | )
          ( C: do-token -- )
-   compile +looptest
+   POSTPONE +looptest
    loopy
 ; IMMEDIATE
 
@@ -327,7 +327,7 @@ VARIABLE do-sp  0 do-sp !
 \ and terminate excution of calling word.
    : *fix-cfa   R> last name> ! ;
 
-: DOES>   compile *fix-cfa codedoes     ( addr n )
+: DOES>   POSTPONE *fix-cfa codedoes    ( addr n )
    HERE OVER ALLOT                      ( from n to )
    SWAP CMOVE ; IMMEDIATE
 
@@ -339,7 +339,7 @@ VARIABLE do-sp  0 do-sp !
    ' >BODY
    STATE @ IF
       [COMPILE] LITERAL
-      compile !
+      POSTPONE !
    ELSE
       !
    THEN
@@ -476,7 +476,7 @@ VARIABLE pic
 \ ## String
 
 : ."  ( compile: "ccc<quote>" -- )
-   [COMPILE] S" compile TYPE
+   [COMPILE] S" POSTPONE TYPE
 ; IMMEDIATE
 
 \ 3-way comparison
