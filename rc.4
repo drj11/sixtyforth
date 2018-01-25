@@ -5,7 +5,8 @@
    \ Avoid using IF, which is not defined yet
    parse-word findword DUP 0= ?DUP 2DROP ;
 
-: [COMPILE]   ' , ; IMMEDIATE                           \ CORE-EXT
+: COMPILE,   , ;                                        \ CORE-EXT
+: [COMPILE]   ' COMPILE, ; IMMEDIATE                    \ CORE-EXT
 
 : CHAR   parse-word DROP C@ ;
 
@@ -24,7 +25,7 @@
 
 : RECURSE
    last name>
-   ,
+   COMPILE,
 ; IMMEDIATE
 
 : 2DUP  ( x x' -- x x' x x' )  OVER OVER ;
@@ -157,11 +158,11 @@
    ( xt +-1 )
    0> IF
       \ immediate case
-      ,
+      COMPILE,
    ELSE
       \ non-immediate case
-      [ ' LITERAL , ]
-      ['] , ,
+      [ ' LITERAL COMPILE, ]
+      ['] COMPILE, COMPILE,
    THEN
 ; IMMEDIATE
 
