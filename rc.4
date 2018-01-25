@@ -645,6 +645,15 @@ CONSTANT openbuf        ( buffer for open pathname )
    DUP 0 MIN            ( fileid 0 | ior ior )
 ;
 
+: READ-FILE  ( c-addr u1 fileid -- u2 ior )             \ FILE
+   ROT ROT sysread      ( res )
+   DUP 0< IF
+      0 SWAP            ( 0 ior )
+   ELSE
+      0                 ( u2 0 )
+   THEN
+;
+
 \ Open file for reading.
 : openr  ( c-addr u -- fileid ior )
    R/O OPEN-FILE ;
@@ -661,10 +670,13 @@ VARIABLE chbuf
 
 \ Read single byte.
 : fgetc ( fd -- c/-9999999/-ve )
-   chbuf 1 sysread
-   DUP 0< IF
+   chbuf 1 ROT READ-FILE        ( u2 ior )
+   ?DUP IF
+      ( 0 ior )
+      NIP
    ELSE
-      0= IF -9999999
+      ( u2 )
+      0= IF  -9999999
       ELSE
          chbuf C@
       THEN
