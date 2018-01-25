@@ -152,8 +152,8 @@
    HERE OVER - SWAP ! ; IMMEDIATE
 
 : POSTPONE
-   parse-word findword
-   ?DUP 0= IF  ABORT" Postpone not"  THEN
+   parse-word findword          ( 0 | xt 1 | xt -1 )
+   ?DUP 0= ABORT" Postpone not"
    ( xt +-1 )
    0> IF
       \ immediate case
