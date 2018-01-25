@@ -303,8 +303,6 @@ VARIABLE do-sp  0 do-sp !
    THEN
 ;
 
-: SET-CURRENT  ( wid -- )  current ! ;
-
 : MAX   2DUP < IF SWAP THEN DROP ;
 
 : FM/MOD  ( d1 n1 -- n2 n3 )
@@ -764,6 +762,8 @@ VARIABLE tty.vbuf
 ;
 
 \ ## Environment
+
+: SET-CURRENT  ( wid -- )  current ! ;                  \ SEARCH
 
 GET-CURRENT CONSTANT FORTH-WORDLIST                     \ SEARCH
 WORDLIST CONSTANT environment
