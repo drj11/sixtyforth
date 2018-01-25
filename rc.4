@@ -1,11 +1,11 @@
 : 2DROP   DROP DROP ;
-: \   10 PARSE 2DROP ; IMMEDIATE         \ Now we have comments
+: \   10 PARSE 2DROP ; IMMEDIATE                        \ CORE-EXT
 
 : '
    \ Avoid using IF, which is not defined yet
    parse-word findword DUP 0= ?DUP 2DROP ;
 
-: [COMPILE]   ' , ; IMMEDIATE
+: [COMPILE]   ' , ; IMMEDIATE                           \ CORE-EXT
 
 : CHAR   parse-word DROP C@ ;
 
