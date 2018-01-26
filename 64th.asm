@@ -928,15 +928,6 @@ SYSCALL6:
         CtoL(SYSCALL6)
 
         DQ 7
-        DQ 'sysread'
-SYSREAD:
-        DQ stdexe
-        DQ LIT, sys_read
-        DQ SYSCALL3
-        DQ EXIT
-        CtoL(SYSREAD)
-
-        DQ 7
         DQ 'sysexit'
 sysEXIT:
         DQ $+8

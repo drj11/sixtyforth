@@ -578,6 +578,10 @@ rsp CONSTANT argc
    CMOVE
 ;
 
+: sysread  ( fd addr u )
+   0    \ number for read() syscall
+   syscall3 ;
+
 \ see note/fstat.md
 CREATE fstatbuf 144 ALLOT ALIGN
 
