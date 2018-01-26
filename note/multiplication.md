@@ -158,16 +158,15 @@ Good idea to factor it, and/or implement in Forth.
 
 `m*/` -> `um*/mod`
 
-`ud*` -> `um*/mod`
+`ud*` -> `UM*` `D+`
 
 `um*/mod` 64th primitive
 
-`um*/mod` used only by `m*/` and `ud*`
+`um*/mod` used only by `m*/`
 
 `ud*` used solely by `>number`
 
-`ud*` should be written in terms of `um*` and `d+`
-(rather than this weirdly huge `um*/mod`).
+`ud*` is now written in terms of `um*` and `d+`:
 
     : ud* ( ud u -- ud )
        ( ul um u )
