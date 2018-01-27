@@ -152,9 +152,9 @@ annoying long division and multiplication out of ASM.
 `>NUMBER` is really horrifically large.
 Good idea to factor it, and/or implement in Forth.
 
-* -> M*
+`*` -> `M*`
 
-`M*/` -> `um*/mod` (a 64th primitive, sole use)
+`M*/` -> `um*/` (a 64th primitive, sole use)
 
 `ud*` -> `UM*` `D+`
 

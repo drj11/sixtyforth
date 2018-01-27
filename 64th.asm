@@ -1034,12 +1034,12 @@ UDstar:
         DQ EXIT
         CtoL(UDstar)
 
-        DQ 7
-        DQ 'um*/mod'
-UMstarslashMOD:
+        DQ 4
+        DQ 'um*/'
+UMstarslash:
         DQ $+8
-        ; UM*/MOD ( ud1 u1 +n2 -- ud2 +n3 )
-        ; Same as M*/ but unsigned everywhere, and leaving MOD.
+        ; um*/ ( ud1 u1 +n2 -- ud2 )
+        ; Same as M*/ but unsigned everywhere.
         mov rax, [rbp-32]       ; least sig of ud1
         mov r8, [rbp-24]        ; most sig of ud1
         mov r10, [rbp-16]       ; u1
@@ -1070,12 +1070,11 @@ UMstarslashMOD:
         div r10
         mov r15, rax
         ; Deposit result
-        sub rbp, 8
-        mov [rbp-24], r15
-        mov [rbp-16], r14
-        mov [rbp-8], rdx
+        sub rbp, 16
+        mov [rbp-16], r15
+        mov [rbp-8], r14
         jmp next
-        CtoL(UMstarslashMOD)
+        CtoL(UMstarslash)
 
         DQ 3
         DQ '.x2'
