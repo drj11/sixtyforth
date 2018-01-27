@@ -147,7 +147,7 @@ annoying long division and multiplication out of ASM.
 
 `qNUMBER` (the interpreter internal) -> `>NUMBER`
 
-`>NUMBER` -> ud* (sole use)
+`>NUMBER` -> `ud*` (sole use)
 
 `>NUMBER` is really horrifically large.
 Good idea to factor it, and/or implement in Forth.
@@ -158,16 +158,16 @@ Good idea to factor it, and/or implement in Forth.
 
 `ud*` -> `UM*` `D+`
 
-`ud*` is now written in terms of `um*` and `d+`:
+`ud*` is written in terms of `UM*` and `D+` (in threaded code):
 
     : ud* ( ud u -- ud )
        ( ul um u )
-       swap over    ( ul u um u )
+       SWAP OVER    ( ul u um u )
        *            ( ul u mprod )
-       >r           ( ul u )
-       um*          ( ud )
-       0 r>         ( ud 0 mprod )
-       d+           ( udprod )
+       >R           ( ul u )
+       UM*          ( ud )
+       0 R>         ( ud 0 mprod )
+       D+           ( udprod )
     ;
 
 `M*/` not used
