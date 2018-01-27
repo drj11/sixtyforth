@@ -6,27 +6,25 @@ From ANSI [std 1994]
 
 */      ( n1 n2 n3 -- n4 )
 
-*/mod   ( n1 n2 n3 -- rem quot )
+*/MOD   ( n1 n2 n3 -- rem quot )
 
 /       ( n1 n2 -- n3 )
 
-/mod    ( n1 n2 -- rem quot )
+/MOD    ( n1 n2 -- rem quot )
 
-m*      ( n1 n2 -- d )
+M*      ( n1 n2 -- d )
 
-um*     ( u1 u2 -- ud )
+UM*     ( u1 u2 -- ud )
 
-um/mod  ( ud u1 -- rem quot )
+UM/MOD  ( ud u1 -- rem quot )
+
+M*/     ( d1 n1 +n2 -- d2 )                             \ DOUBLE
 
 The division in the above operators is ambiguous
 with respect to rounding direction.
-The standard provides `fm/mod` and `sm/rem` that have
+The standard provides `FM/MOD` and `SM/REM` that have
 unambiguous rounding directions
 (_floor_ and _symmetric_ respectively).
-
-From ANSI DOUBLE extension
-
-m*/     ( d1 n1 +n2 -- d2 )
 
 ## Polymorphism of `*`
 
@@ -46,44 +44,44 @@ Signed multiply works in that case too.
 
 Thus we can define:
 
-`: * m* drop`
+`: * M* DROP`
 
-## `fm/mod` or `sm/rem` as a primitive.
+## `FM/MOD` or `SM/REM` as a primitive.
 
 The Standard expects that
-either `sm/rem` or `fm/mod` will be a primitive,
+either `SM/REM` or `FM/MOD` will be a primitive,
 and that other operators can be defined
 in terms of that primitive.
 
 The Standard commentary provides a reasonable strategy:
 
-Define `/mod` and `*/mod`:
+Define `/MOD` and `*/MOD`:
 
-`: /mod >r s>d r> sm/rem ;`
+`: /MOD >R S>D R> SM/REM ;`
 
-`: */mod >r m* r> sm/rem ;`
+`: */MOD >R M* R> SM/REM ;`
 
 Note the similarity, both produce a double
-(either via `s>d` or `m*`), then invoke `sm/rem`.
+(either via `S>D` or `M*`), then invoke `SM/REM`.
 
 Then `/` and `*/` just drop the remainder parts:
 
-`: / /mod nip`
+`: / /MOD NIP`
 
-`: */ */mod nip`.
+`: */ */MOD NIP`.
 
 ## Primitives on Intel-64
 
-`sm/rem` is primitive.
+`SM/REM` is primitive.
 Corresponds to `idiv`
 
-`um/mod` is primitive.
+`UM/MOD` is primitive.
 Corresponds to `div`.
 
-`m*` is primitive.
+`M*` is primitive.
 Corresponds to `imul`.
 
-`um*` is primitive.
+`UM*` is primitive.
 Corresponds to `mul`.
 
 ## The problem of #
@@ -128,43 +126,37 @@ the 2 cells that make up the double cell dividend.
 
 The thrust of this proposal is the following observations:
 
-- `>number` requires double × single → double multiplication;
+- `>NUMBER` requires double × single → double multiplication;
 - `#` requires double × single → double division;
 - both of those operations are unusual (not standard);
 - `#` is not required in the ASM core;
-- may be able to reduce functionality of `>number` in ASM core.
+- may be able to reduce functionality of `>NUMBER` in ASM core.
 
 '#' and related machinery have been moved out of ASM core
 (and implemented in Forth).
 
 There remains the possibility of moving
-`>number` out of the ASM core and into Forth code.
+`>NUMBER` out of the ASM core and into Forth code.
 And in doing so, move a bunch of
 annoying long division and multiplication out of ASM.
 
 ## Dependencies
 
 
-. u. d. -> <# #s #>
+. U. D. -> <# #s #>
 
-Interpreter `qNUMBER` word -> `>number`
+`qNUMBER` (the interpreter internal) -> `>NUMBER`
 
->number -> ud*
+`>NUMBER` -> ud* (sole use)
 
-`>number` is really horrifically large.
+`>NUMBER` is really horrifically large.
 Good idea to factor it, and/or implement in Forth.
 
-* -> m*
+* -> M*
 
-`m*/` -> `um*/mod`
+`M*/` -> `um*/mod` (a 64th primitive, sole use)
 
 `ud*` -> `UM*` `D+`
-
-`um*/mod` 64th primitive
-
-`um*/mod` used only by `m*/`
-
-`ud*` used solely by `>number`
 
 `ud*` is now written in terms of `um*` and `d+`:
 
@@ -178,19 +170,17 @@ Good idea to factor it, and/or implement in Forth.
        d+           ( udprod )
     ;
 
-`m*/` not used
+`M*/` not used
 
-`um/mod` ANSI primitive
+`UM/MOD` ANSI primitive
 
-`m*` ANSI primitive
-`um*` ANSI primitive
+`M*` ANSI primitive
+`UM*` ANSI primitive
 
-`sm/rem` ANSI primitive
+`SM/REM` ANSI primitive
 
 `#` and following moved into Forth
 
-`#` -> `uml/mod`
+`#` -> `uml/mod` (sole use)
 
-`uml/mod` -> `um/mod`
-
-`uml/mod` solely used by `#`
+`uml/mod` -> `UM/MOD`
