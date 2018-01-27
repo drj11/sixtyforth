@@ -1026,8 +1026,7 @@ UDstar:
         DQ stdexe
         ; UD* ( ud u -- ud-product )
         DQ SWAP, OVER   ; ul u um u
-        DQ star         ; ul u mprod
-        DQ toR          ; ul u
+        DQ star, toR    ; ul u   r: mprod
         DQ UMstar       ; ud
         DQ z, Rfrom     ; ud 0 mprod
         DQ Dplus        ; udprod

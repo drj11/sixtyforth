@@ -162,12 +162,11 @@ Good idea to factor it, and/or implement in Forth.
 
     : ud* ( ud u -- ud )
        ( ul um u )
-       SWAP OVER    ( ul u um u )
-       *            ( ul u mprod )
-       >R           ( ul u )
-       UM*          ( ud )
-       0 R>         ( ud 0 mprod )
-       D+           ( udprod )
+       SWAP OVER        ( ul u um u )
+       * >R             ( ul u )        ( r: mprod )
+       UM*              ( ud )
+       0 R>             ( ud 0 mprod )  ( r: )
+       D+               ( udprod )
     ;
 
 `M*/` not used
