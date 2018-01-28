@@ -90,14 +90,14 @@ Corresponds to `mul`.
 None of the previously discussed division words do that.
 Making it a little problematic to implement `#`.
 
-Ideally, we'd have a word:
+I implement `#` using a word called `uml/mod`,
+implemented in Forth.
 
-`uml/mod ( ud u -- u-rem ud-quot )`
-
-We can use long division.
 
 ```
-( ud u ) is same as ( L M u )
+`: uml/mod ( ud u -- u-rem ud-quot )`
+\ We can use long division.
+( ud u ) \ is same as ( L M u )
 >r r@
 u/mod  ( L Mrem Mquot )
 \ observe L Mrem is the (double) input in next round of long division,
@@ -106,14 +106,10 @@ r> swap >r      ( L Mrem u )
 um/mod          ( Lrem Lquot )
 r>              ( Lrem Lquot Mquot )
                 ( u-rem ud-quot )
+;
 ```
 
-(Historical note: there was a TIL version of this
-in `64th.asm` called `ud/mod`,
-but we have replaced it with the above definition in Forth.)
-
-Note that I has to invent `u/mod`;
-it's `: u/mod 0 swap um/mod ;`.
+The factor `u/mod` is defined: `: u/mod 0 swap um/mod ;`.
 
 The first division leaves `L Mrem` on the stack.
 In long division,
@@ -154,8 +150,6 @@ Good idea to factor it, and/or implement in Forth.
 
 `*` -> `M*`
 
-`M*/` -> `um*/` (a 64th primitive, sole use)
-
 `ud*` -> `UM*` `D+`
 
 `ud*` is written in terms of `UM*` and `D+` (in threaded code):
@@ -168,8 +162,6 @@ Good idea to factor it, and/or implement in Forth.
        0 R>             ( ud 0 mprod )  ( r: )
        D+               ( udprod )
     ;
-
-`M*/` not used
 
 `UM/MOD` ANSI primitive
 
