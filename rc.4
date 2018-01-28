@@ -53,19 +53,6 @@
 : signum  ( x -- -1/0/1 )
    DUP 0< SWAP 0> - ;
 
-: M*/  ( d1 n1 +n2 -- d2 )                              \ DOUBLE
-   >R                   ( d1 n1 )  ( r: n2 )
-   \ sign has correct sign, garbage mantissa
-   2DUP XOR             ( d1 n1 sign )
-   R> SWAP >R           ( d1 n1 n2 )  ( r: sign )
-   2SWAP                ( n1 n2 d1 )
-   DABS                 ( n1 n2 ud1 )
-   2SWAP                ( ud1 n1 n2 )
-   SWAP ABS SWAP        ( ud1 u1 n2 )
-   um*/                 ( ud )
-   R> d+-               ( d )  ( r: )
-;
-
 : U>  ( u1 u2 -- flag )  SWAP U< ;                      \ CORE-EXT
 
 : DEPTH  ( -- +n )

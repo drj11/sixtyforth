@@ -1033,48 +1033,6 @@ UDstar:
         DQ EXIT
         CtoL(UDstar)
 
-        DQ 4
-        DQ 'um*/'
-UMstarslash:
-        DQ $+8
-        ; um*/ ( ud1 u1 +n2 -- ud2 )
-        ; Same as M*/ but unsigned everywhere.
-        mov rax, [rbp-32]       ; least sig of ud1
-        mov r8, [rbp-24]        ; most sig of ud1
-        mov r10, [rbp-16]       ; u1
-        ; Compute triple-cell intermediate result in
-        ; (most sig) r13, r14, r15 (least sig)
-        ; rax * u1 -> r14:r15
-        mul r10
-        mov r15, rax
-        mov r14, rdx
-        ; r8 * u1 added to r13:r14
-        mov rax, r8
-        mul r10
-        add r14, rax
-        adc rdx, 0
-        mov r13, rdx
-        ; triple-cell product now in r13:r14:r15
-        mov r10, [rbp-8]        ; r10 now divisor
-        ; Credit to LaFarr http://www.zyvra.org/lafarr/math/intro.htm
-        ; for this multiword division.
-        mov rdx, 0
-        mov rax, r13
-        div r10
-        mov r13, rax
-        mov rax, r14
-        div r10
-        mov r14, rax
-        mov rax, r15
-        div r10
-        mov r15, rax
-        ; Deposit result
-        sub rbp, 16
-        mov [rbp-16], r15
-        mov [rbp-8], r14
-        jmp next
-        CtoL(UMstarslash)
-
         DQ 3
         DQ '.x2'
 dotx2:
