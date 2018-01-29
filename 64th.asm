@@ -88,7 +88,7 @@ SECTION .rodata
         DQ 7
         DQ 'EXECUTE'
 EXECUTE:
-        DQ $+8          ; std1983
+        DQ $+8
         ; EXECUTE ( addr -- )
         ; execute the Forth word that has compilation address `addr`
         sub rbp, 8
@@ -98,7 +98,7 @@ EXECUTE:
         CtoL(EXECUTE)
 
         DQ 4
-        DQ 'EXIT'       ; std1983
+        DQ 'EXIT'
 EXIT:   DQ $+8
         sub r12, 8
         mov rbx, [r12]  ; Pop I from Return Stack
@@ -114,17 +114,17 @@ semic:  DQ $+8
         CtoL(semic)
 
         DQ 4
-        DQ 'QUIT'       ; std1983
+        DQ 'QUIT'
 QUIT:   DQ reset
         CtoL(QUIT)
 
         DQ 5
-        DQ 'ABORT'      ; std1983
+        DQ 'ABORT'
 ABORT:  DQ dreset
         CtoL(ABORT)
 
         DQ 3
-        DQ 'DUP'        ; std1983
+        DQ 'DUP'
 DUP:    DQ $+8
         ; DUP ( a -- a a )
         mov rax, [rbp-8]
@@ -135,7 +135,7 @@ pushrax:
         CtoL(DUP)
 
         DQ 4
-        DQ 'OVER'       ; std1983
+        DQ 'OVER'
 OVER:   DQ $+8
         ; OVER ( a b -- a b a )
         mov rax, [rbp-16]
@@ -143,7 +143,7 @@ OVER:   DQ $+8
         CtoL(OVER)
 
         DQ 4
-        DQ 'DROP'       ; std1983
+        DQ 'DROP'
 DROP:   DQ $+8
         ; DROP ( a -- )
         sub rbp, 8
@@ -151,7 +151,7 @@ DROP:   DQ $+8
         CtoL(DROP)
 
         DQ 4
-        DQ 'SWAP'       ; std1983
+        DQ 'SWAP'
 SWAP:   DQ $+8
         ; SWAP ( a b -- b a )
         mov rax, [rbp-16]
@@ -162,7 +162,7 @@ SWAP:   DQ $+8
         CtoL(SWAP)
 
         DQ 3
-        DQ 'ROT'        ; std1983
+        DQ 'ROT'
 ROT:    DQ $+8
         mov rdx, [rbp-24]
         mov rcx, [rbp-16]
@@ -174,7 +174,7 @@ ROT:    DQ $+8
         CtoL(ROT)
 
         DQ 3
-        DQ 'NIP'        ; std1994 core-ext
+        DQ 'NIP'                                        ; CORE-EXT
 NIP:    DQ $+8
         ; NIP ( a b -- b )
         mov rax, [rbp-8]
@@ -184,7 +184,7 @@ NIP:    DQ $+8
         CtoL(NIP)
 
         DQ 4
-        DQ '?DUP'       ; std1983
+        DQ '?DUP'
 qDUP:   DQ $+8
         ; ?DUP ( nz -- nz nz )  when not zero
         ;      ( 0 -- 0 )       when zero
@@ -195,7 +195,7 @@ qDUP:   DQ $+8
         CtoL(qDUP)
 
         DQ 5
-        DQ '2OVER'      ; std1994
+        DQ '2OVER'
 twoOVER:
         DQ $+8
         ; 2OVER ( p q r s -- p q r s p q )
@@ -208,7 +208,7 @@ twoOVER:
         CtoL(twoOVER)
 
         DQ 5
-        DQ '2SWAP'      ; std1994
+        DQ '2SWAP'
 twoSWAP:
         DQ stdexe
         ; 2SWAP ( p q r s -- r s p q )
@@ -221,7 +221,7 @@ twoSWAP:
         CtoL(twoSWAP)
 
         DQ 2
-        DQ '>R'         ; std1983
+        DQ '>R'
 toR:    DQ $+8
         mov rax, [rbp-8]
         mov [r12], rax
@@ -231,7 +231,7 @@ toR:    DQ $+8
         CtoL(toR)
 
         DQ 2
-        DQ 'R>'         ; std1983
+        DQ 'R>'
 Rfrom:  DQ $+8
         mov rax, [r12-8]
         sub r12, 8
@@ -239,14 +239,14 @@ Rfrom:  DQ $+8
         CtoL(Rfrom)
 
         DQ 2
-        DQ 'R@'         ; std1983
+        DQ 'R@'
 Rfetch: DQ $+8
         mov rax, [r12-8]
         jmp pushrax
         CtoL(Rfetch)
 
         DQ 3
-        DQ '2>R'        ; std1994 core-ext
+        DQ '2>R'                                        ; CORE-EXT
 twotoR:
         DQ $+8
         ; 2>R  ( x1 x2 -- )  ( r: -- x1 x2 )
@@ -260,7 +260,7 @@ twotoR:
         CtoL(twotoR)
 
         DQ 3
-        DQ '2R@'        ; std1994 core-ext
+        DQ '2R@'                                        ; CORE-EXT
 twoRfetch:
         DQ $+8
         ; 2R@  ( -- x1 x2 )  ( r: x1 x2 -- x1 x2 )
@@ -300,7 +300,7 @@ RETURNSTACK:
         CtoL(RETURNSTACK)
 
         DQ 4
-        DQ 'TRUE'       ; std1994
+        DQ 'TRUE'                                       ; CORE-EXT
 TRUE:   DQ $+8
 pushtrue:
         mov rax, -1
@@ -308,7 +308,7 @@ pushtrue:
         CtoL(TRUE)
 
         DQ 5
-        DQ 'FALSE'      ; std1994
+        DQ 'FALSE'                                      ; CORE-EXT
 z:      ; Alternate label for when 0 is intended
 FALSE:  DQ $+8
 pushfalse:
@@ -323,7 +323,7 @@ pushfalse:
 ; - propagate carry flag to entire word using SBB.
 ; It contains entry points that are also used by other definitions.
         DQ 2
-        DQ '0='         ; std1983
+        DQ '0='
 zequals:
         DQ $+8
         ; 0= (0 -- -1)
@@ -336,7 +336,7 @@ cprop:  sbb rax, rax    ; C=0 -> 0; C=1 -> -1
         CtoL(zequals)
 
         DQ 1
-        DQ '='          ; std1983
+        DQ '='
 equals: DQ $+8
         mov rax, [rbp-16]
         mov rcx, [rbp-8]
@@ -346,7 +346,7 @@ equals: DQ $+8
         CtoL(equals)
 
         DQ 2
-        DQ '<>'         ; std1994
+        DQ '<>'                                         ; CORE-EXT
 notequals:
         DQ stdexe
         ; <> (a b -- -1)
@@ -358,7 +358,7 @@ notequals:
         CtoL(notequals)
 
         DQ 2
-        DQ '0<'         ; std1983
+        DQ '0<'
 zless:  DQ $+8
         ; 0< (0|+n -- false)
         ; 0< (n -- true) when n < 0
@@ -369,7 +369,7 @@ zless:  DQ $+8
         CtoL(zless)
 
         DQ 1
-        DQ '<'          ; std1983
+        DQ '<'
 lessthan:
         DQ $+8
         mov rax, [rbp-16]
@@ -397,7 +397,7 @@ Ulessthan:
         CtoL(Ulessthan)
 
         DQ 2
-        DQ '0>'         ; std1983
+        DQ '0>'                                         ; CORE-EXT
 zgreater:
         DQ stdexe
         ; 0> (n -- b)
@@ -407,7 +407,7 @@ zgreater:
         CtoL(zgreater)
 
         DQ 1
-        DQ '>'          ; std1983
+        DQ '>'
 greaterthan:
         DQ stdexe
         DQ SWAP
@@ -442,7 +442,7 @@ zBRANCH:
         CtoL(zBRANCH)
 
         DQ 1
-        DQ '!'          ; std1983
+        DQ '!'
 store:
         DQ $+8
         ; ! ( w addr -- )
@@ -454,7 +454,7 @@ store:
         CtoL(store)
 
         DQ 2
-        DQ 'C!'         ; std1994
+        DQ 'C!'
 Cstore:
         DQ $+8
         ; C! ( ch buf -- )
@@ -466,7 +466,7 @@ Cstore:
         CtoL(Cstore)
 
         DQ 1
-        DQ '@'          ; std1983
+        DQ '@'
 fetch:  DQ $+8
         ; @ ( addr -- w )
         mov rax, [rbp-8]
@@ -476,7 +476,7 @@ fetch:  DQ $+8
         CtoL(fetch)
 
         DQ 2
-        DQ 'C@'         ; std1983
+        DQ 'C@'
 Cfetch: DQ $+8
         ; C@ ( addr -- ch )
         mov rdx, [rbp-8]
@@ -487,7 +487,7 @@ Cfetch: DQ $+8
         CtoL(Cfetch)
 
         DQ 5
-        DQ 'CMOVE'      ; std1983
+        DQ 'CMOVE'                                      ; STRING
 CMOVE:
         DQ $+8
         ; CMOVE ( from to u -- )
@@ -505,7 +505,7 @@ CMOVE:
         CtoL(CMOVE)
 
         DQ 6
-        DQ 'CMOVE>'
+        DQ 'CMOVE>'                                     ; STRING
 CMOVEup:
         DQ $+8
         ; CMOVE> ( from to u -- )
@@ -522,7 +522,7 @@ CMOVEup:
         CtoL(CMOVEup)
 
         DQ 4
-        DQ 'FILL'       ; std1983
+        DQ 'FILL'
 FILL:
         DQ $+8
         ; FILL ( c-addr u char -- )
@@ -540,7 +540,7 @@ FILL:
         CtoL(FILL)
 
         DQ 2
-        DQ '+!'         ; std1983
+        DQ '+!'
 plusstore:
         DQ stdexe
         ; +! ( n addr -- )
@@ -553,7 +553,7 @@ plusstore:
         CtoL(plusstore)
 
         DQ 2
-        DQ 'OR'         ; std1983
+        DQ 'OR'
 OR:     DQ $+8
         ; OR ( a b -- bitwise-or )
         mov rax, [rbp-16]
@@ -565,7 +565,7 @@ OR:     DQ $+8
         CtoL(OR)
 
         DQ 3
-        DQ 'AND'        ; std1983
+        DQ 'AND'
 AND:    DQ $+8
         ; AND ( a b -- bitwise-and )
         mov rax, [rbp-16]
@@ -577,7 +577,7 @@ AND:    DQ $+8
         CtoL(AND)
 
         DQ 3
-        DQ 'XOR'        ; std1983
+        DQ 'XOR'
 XOR:    DQ $+8
         ; XOR ( a b -- bitwise-xor )
         mov rax, [rbp-16]
@@ -589,7 +589,7 @@ XOR:    DQ $+8
         CtoL(XOR)
 
         DQ 6
-        DQ 'INVERT'     ; std1994
+        DQ 'INVERT'
 INVERT:
         DQ stdexe
         DQ TRUE
@@ -602,7 +602,7 @@ INVERT:
 BIC:
         DQ stdexe
         ; BIt Clear (name from Alpha Architecture)
-        ; BIC ( na nb -- nc )
+        ; bic ( na nb -- nc )
         DQ INVERT
         DQ AND
         DQ EXIT
@@ -637,7 +637,7 @@ RSHIFT:
         CtoL(RSHIFT)
 
         DQ 6
-        DQ 'NEGATE'     ; std1983
+        DQ 'NEGATE'
 NEGATE:
         DQ $+8
         mov rax, [rbp-8]
@@ -647,7 +647,7 @@ NEGATE:
         CtoL(NEGATE)
 
         DQ 3
-        DQ 'ABS'        ; std1983
+        DQ 'ABS'
 fABS:   DQ $+8
         mov rax, [rbp-8]
         ; Convert carry flag to Forth boolean in rcx
@@ -663,7 +663,7 @@ fABS:   DQ $+8
         CtoL(fABS)
 
         DQ 1
-        DQ '+'          ; std1983
+        DQ '+'
 PLUS:   DQ $+8
         ; + ( a b -- sum )
         mov rax, [rbp-16]
@@ -675,7 +675,7 @@ PLUS:   DQ $+8
         CtoL(PLUS)
 
         DQ 1
-        DQ '-'          ; std1983
+        DQ '-'
 MINUS:  DQ $+8
         ; - ( a b -- difference )
         mov rax, [rbp-16]
@@ -687,7 +687,7 @@ MINUS:  DQ $+8
         CtoL(MINUS)
 
         DQ 2
-        DQ '1-'         ; std1983
+        DQ '1-'
 oneminus:
         DQ $+8
         mov rax, [rbp-8]
@@ -697,7 +697,7 @@ oneminus:
         CtoL(oneminus)
 
         DQ 3
-        DQ 'MIN'        ; std1983
+        DQ 'MIN'
 MIN:
         DQ stdexe
         DQ OVER
@@ -712,7 +712,7 @@ MIN:
         CtoL(MIN)
 
         DQ 2
-        DQ 'M*'         ; std1994
+        DQ 'M*'
 Mstar:
         DQ $+8
         ; m* ( n1 n2 -- d )
@@ -727,7 +727,7 @@ Mstar:
         CtoL(Mstar)
 
         DQ 3
-        DQ 'UM*'        ; std1994
+        DQ 'UM*'
 UMstar:
         DQ $+8
         ; um* ( u1 u2 -- ud )
@@ -742,7 +742,7 @@ UMstar:
         CtoL(UMstar)
 
         DQ 1
-        DQ '*'          ; std1983
+        DQ '*'
 star: DQ stdexe
         ; * ( n1 n2 -- n3 )
         DQ Mstar
@@ -751,7 +751,7 @@ star: DQ stdexe
         CtoL(star)
 
         DQ 6
-        DQ 'UM/MOD'     ; std1983
+        DQ 'UM/MOD'
 UMslashMOD:
         DQ $+8
         ; UM/MOD ( ud-dividend u-divisor -- u-r u-q )
@@ -769,7 +769,7 @@ UMslashMOD:
         CtoL(UMslashMOD)
 
         DQ 6
-        DQ 'SM/REM'     ; std1994
+        DQ 'SM/REM'
 SMslashREM:
         DQ $+8
         ; SM/REM ( d-dividend n-divisor -- n-quotient n-remainder )
@@ -786,7 +786,7 @@ SMslashREM:
         CtoL(SMslashREM)
 
         DQ 2
-        DQ '1+'         ; std1983
+        DQ '1+'
 oneplus:
         DQ stdexe
         DQ LIT, 1
@@ -795,7 +795,7 @@ oneplus:
         CtoL(oneplus)
 
         DQ 2
-        DQ '2+'         ; std1983
+        DQ '2+'
 twoplus:
         DQ stdexe
         DQ LIT, 2
@@ -813,7 +813,7 @@ twominus:
         CtoL(twominus)
 
         DQ 6
-        DQ 'WITHIN'     ; std1994
+        DQ 'WITHIN'                                     ; CORE-EXT
 WITHIN:
         DQ stdexe
         ; WITHIN ( t p q -- flag )
@@ -826,7 +826,7 @@ WITHIN:
         CtoL(WITHIN)
 
         DQ 2
-        DQ 'D+'         ; std1994 double
+        DQ 'D+'                                         ; DOUBLE
 Dplus:  DQ $+8
         ; D+ ( d1 d2 -- d3 )
         mov rax, [rbp-32]       ; least significant part of augend
@@ -842,14 +842,14 @@ Dplus:  DQ $+8
         CtoL(Dplus)
 
         DQ 3
-        DQ 'D>S'        ; std1994 double
+        DQ 'D>S'                                        ; DOUBLE
 DtoS:   DQ stdexe
         DQ DROP
         DQ EXIT
         CtoL(DtoS)
 
         DQ 7
-        DQ 'DNEGATE'    ; std1994 double
+        DQ 'DNEGATE'                                    ; DOUBLE
 DNEGATE:
         DQ $+8
         ; m+- ( d -- -d )
@@ -881,7 +881,7 @@ Dplusminus:
         CtoL(Dplusminus)
 
         DQ 4
-        DQ 'DABS'       ; std1994 double
+        DQ 'DABS'                                       ; DOUBLE
 DABS:   DQ stdexe
         ; DABS ( d -- ud )
         DQ LIT, 7       ; Arbitrary, should be positive.
@@ -946,7 +946,7 @@ fRSP:
         CtoL(fRSP)
 
         DQ 7
-        DQ '>NUMBER'    ; std1994
+        DQ '>NUMBER'
 toNUMBER:
         DQ stdexe
         ; ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 )
@@ -1048,7 +1048,7 @@ dotx2:
         CtoL(dotx2)
 
         DQ 4
-        DQ 'DUMP'
+        DQ 'DUMP'                                       ; TOOLS
 DUMP:
         DQ stdexe
         ; DUMP ( addr u -- )
@@ -1148,7 +1148,7 @@ DIGIT:  DQ stdexe
         CtoL(DIGIT)
 
         DQ 2
-        DQ 'BL'         ; std1994
+        DQ 'BL'
 fBL:    DQ stdexe
         DQ LIT, ' '
         DQ EXIT
@@ -1168,7 +1168,7 @@ FTYPE:
         CtoL(FTYPE)
 
         DQ 4
-        DQ 'TYPE'       ; std1983
+        DQ 'TYPE'
 TYPE:   DQ stdexe
         ; TYPE ( addr +n -- )
         DQ LIT, 1       ; addr n 1      ; stdout
@@ -1193,7 +1193,7 @@ FEMIT:
         CtoL(FEMIT)
 
         DQ 4
-        DQ 'EMIT'       ; std1994
+        DQ 'EMIT'
 EMIT:
         DQ stdexe
         ; EMIT ( ch -- )
@@ -1203,7 +1203,7 @@ EMIT:
         CtoL(EMIT)
 
         DQ 2
-        DQ 'CR'         ; std1994
+        DQ 'CR'
 CR:
         DQ stdexe
         ; CR ( -- )
@@ -1213,7 +1213,7 @@ CR:
         CtoL(CR)
 
         DQ 4
-        DQ 'HERE'       ; std1983
+        DQ 'HERE'
 HERE:   DQ stdexe
         DQ CP
         DQ fetch
@@ -1221,7 +1221,7 @@ HERE:   DQ stdexe
         CtoL(HERE)
 
         DQ 6
-        DQ 'SOURCE'     ; std1994
+        DQ 'SOURCE'
 SOURCE:
         DQ stdexe
         ; :todo: Implement more input sources.
@@ -1233,7 +1233,7 @@ SOURCE:
         CtoL(SOURCE)
 
         DQ 5
-        DQ 'ALLOT'      ; std1983
+        DQ 'ALLOT'
 ALLOT:  DQ stdexe
         ; allot ( w -- )
         DQ CP
@@ -1242,7 +1242,7 @@ ALLOT:  DQ stdexe
         CtoL(ALLOT)
 
         DQ 1
-        DQ ','          ; std1983
+        DQ ','
 comma:  DQ stdexe
         ; , ( w -- )
         DQ HERE
@@ -1253,7 +1253,7 @@ comma:  DQ stdexe
         CtoL(comma)
 
         DQ 7 | Immediate
-        DQ 'LITERAL'    ; std1983
+        DQ 'LITERAL'
 LITERAL:
         DQ stdexe
         DQ LIT, LIT     ; haha, weird or what?
@@ -1351,7 +1351,7 @@ pushparam:
         CtoL(CODEDOES)
 
         DQ 5
-        DQ '>BODY'      ; std1983
+        DQ '>BODY'
 toBODY: DQ stdexe
 .body:  DQ LIT, (.body-toBODY)  ; 8, basically
         DQ PLUS
@@ -1378,7 +1378,7 @@ fromNAME:
         CtoL(fromNAME)
 
         DQ 1
-        DQ ']'          ; std1983
+        DQ ']'
 ket:    DQ stdexe
         DQ LIT, 1
         DQ STATE
@@ -1387,7 +1387,7 @@ ket:    DQ stdexe
         CtoL(ket)
 
         DQ 1
-        DQ ':'          ; std1983
+        DQ ':'
 colon:  DQ stdexe
         DQ CREATE
         DQ LIT, stdexe
@@ -1399,7 +1399,7 @@ colon:  DQ stdexe
         CtoL(colon)
 
         DQ 1 | Immediate
-        DQ ';'          ; std1983
+        DQ ';'
 semicolon:
         DQ stdexe
         DQ LIT, semic
@@ -1518,7 +1518,7 @@ MATCHASM:
         CtoL(MATCHASM)
 
         DQ 15
-        DQ 'SEARCH-W'   ; std1994
+        DQ 'SEARCH-W'                                   ; SEARCH
 SEARCHWORDLIST:
         DQ stdexe
         ; SEARCHWO ( c-addr u wid -- xt 1 ) found immediate
@@ -1533,7 +1533,7 @@ SEARCHWORDLIST:
         CtoL(SEARCHWORDLIST)
 
         DQ 9
-        DQ 'IMMEDIAT'   ; std1983
+        DQ 'IMMEDIAT'
 IMMEDIATE:
         DQ stdexe
         DQ LAST         ; (addr)
@@ -1557,7 +1557,7 @@ LAST:   DQ stdexe
         CtoL(LAST)
 
         DQ 5
-        DQ 'CELLS'      ; std1994
+        DQ 'CELLS'
 CELLS:  DQ stdexe
         DQ LIT, 8
         DQ star
@@ -1565,7 +1565,7 @@ CELLS:  DQ stdexe
         CtoL(CELLS)
 
         DQ 5
-        DQ 'CELL+'      ; std1994
+        DQ 'CELL+'
 CELLplus:
         DQ stdexe
         DQ LIT, 1
@@ -1575,7 +1575,7 @@ CELLplus:
         CtoL(CELLplus)
 
         DQ 7
-        DQ 'ALIGNED'    ; std1994
+        DQ 'ALIGNED'
 ALIGNED:
         DQ stdexe
         ; ALIGNED ( addr -- a-addr )
@@ -1587,7 +1587,7 @@ ALIGNED:
         CtoL(ALIGNED)
 
         DQ 8 | Immediate
-        DQ 'SLITERAL'   ; std1994 string
+        DQ 'SLITERAL'                                   ; STRING
 SLITERAL:
         DQ stdexe
         ; SLITERAL ( addr u -- )
@@ -1624,7 +1624,7 @@ SLITERAL:
         CtoL(SLITERAL)
 
         DQ 2 | Immediate
-        DQ 'S"'         ; std1994
+        DQ 'S"'
 Squote:
         DQ stdexe
         ; ( "ccc<quote>" -- ) runtime: ( -- addr u )
@@ -1635,7 +1635,7 @@ Squote:
         CtoL(Squote)
 
         DQ 6 | Immediate
-        DQ 'ABORT"'     ; std1983
+        DQ 'ABORT"'
 ABORTquote:
         DQ stdexe
         DQ LIT, zBRANCH, comma
@@ -1758,7 +1758,7 @@ INplus:
         CtoL(INplus)
 
         DQ 5
-        DQ 'PARSE'      ; std1994
+        DQ 'PARSE'
 PARSE:
         DQ stdexe
         ; ( char -- c-addr u )
@@ -2018,13 +2018,13 @@ aIB:
         CtoL(EORO)
 
         DQ 3
-        DQ '>IN'        ; std1983
+        DQ '>IN'
 toIN:   DQ stdvar
 atoIN:  DQ 0
         CtoL(toIN)
 
         DQ 4
-        DQ 'BASE'       ; std1983
+        DQ 'BASE'
 BASE:   DQ stdvar
 abase:  DQ 10
         CtoL(BASE)
@@ -2036,7 +2036,7 @@ CP:     DQ stdvar       ; https://www.forth.com/starting-forth/9-forth-execution
         CtoL(CP)
 
         DQ 5
-        DQ 'STATE'      ; std1983
+        DQ 'STATE'
 STATE:  DQ stdvar
 stateaddr:
         DQ 0
@@ -2044,14 +2044,14 @@ ALIGN 8
         CtoL(STATE)
 
         DQ 7
-        DQ 'current'
+        DQ 'current'    ; Traditional
 current:
         DQ stdvar
         DQ thewladdr
         CtoL(current)
 
         DQ 11
-        DQ 'GET-CURR'
+        DQ 'GET-CURR'                                   ; SEARCH
 GETCURRENT:
         DQ stdexe
         DQ current
