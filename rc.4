@@ -694,6 +694,27 @@ VARIABLE chbuf
 ;
 
 
+\ ioctl(fd, TCGETS, p)
+: tcgets  ( fd p -- res )
+   \ TCGETS according to /usr/include/asm-generic/ioctls.h
+   21505 SWAP           ( fd 0x5401 p )
+   16 syscall3
+;
+
+\ ioctl(fd, TCSETS, p)
+: tcsets  ( fd p -- res )
+   \ TCSETS according to /usr/include/asm-generic/ioctls.h
+   21506 SWAP           ( fd 0x5402 p )
+   16 syscall3
+;
+
+\ True if file descriptor fd refers to a TTY.
+: isatty  ( fd -- flag )
+   HERE         \ dummy-buffer
+   tcgets
+   0=           \ 0 is success; convert to true/false
+;
+
 \ Get TTY settings, from TCGETS ioctl, and dump to stdout.
 : tcgets.  ( fd -- res )
    HERE DUP tcgets       ( here res )
