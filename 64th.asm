@@ -794,24 +794,6 @@ oneplus:
         DQ EXIT
         CtoL(oneplus)
 
-        DQ 2
-        DQ '2+'
-twoplus:
-        DQ stdexe
-        DQ LIT, 2
-        DQ PLUS
-        DQ EXIT
-        CtoL(twoplus)
-
-        DQ 2
-        DQ '2-'         ; std1983
-twominus:
-        DQ stdexe
-        DQ LIT, 2
-        DQ MINUS
-        DQ EXIT
-        CtoL(twominus)
-
         DQ 6
         DQ 'WITHIN'                                     ; CORE-EXT
 WITHIN:

@@ -746,7 +746,7 @@ VARIABLE tty.vbuf
    0 tty.szbuf
    tiocgwinsz
    0= IF
-      tty.szbuf 2+      ( a+2 )
+      tty.szbuf 2 +     ( a+2 )
       DUP 1+            ( a+2 a+3 )
       C@ SWAP C@        ( b1 b0 )
       SWAP              ( b0 b1 )

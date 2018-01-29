@@ -1,9 +1,0 @@
-#!/bin/sh
-FORTH=${FORTH:-./64th}
-while ! test -x "$FORTH" && [ "$(pwd)" != / ] ; do cd .. ; done
-out=$($FORTH -c '-4 2+ DUP . 2+ DUP . 2+ DUP . 1 + 2- DUP . 2- DUP .')
-printf "%s\n" "$out"
-case $out in
-    ("-2 0 2 1 -1 ") exit 0;;
-esac
-exit 2
