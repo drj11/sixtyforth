@@ -1,9 +1,7 @@
 BITS 64
 
 
-sys_read EQU 0
 sys_write EQU 1
-sys_mmap EQU 9
 
 extern _binary_rc_4_start
 extern _binary_rc_4_size
