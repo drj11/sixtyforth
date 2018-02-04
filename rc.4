@@ -293,6 +293,8 @@ VARIABLE do-sp  0 do-sp !
 
 : MAX   2DUP < IF SWAP THEN DROP ;
 
+: ABS   DUP NEGATE MAX ;
+
 : FM/MOD  ( d1 n1 -- n2 n3 )
    DUP >R               ( r: n1 )
    SM/REM               ( rem quot )

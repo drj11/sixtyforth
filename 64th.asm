@@ -644,22 +644,6 @@ NEGATE:
         jmp next
         CtoL(NEGATE)
 
-        DQ 3
-        DQ 'ABS'
-fABS:   DQ $+8
-        mov rax, [rbp-8]
-        ; Convert carry flag to Forth boolean in rcx
-        mov rcx, rax
-        shl rcx, 1
-        sbb rcx, rcx
-        ; rcx is now 0 or -1
-        ; If rcx is -1, negate the old-school way.
-        xor rax, rcx
-        sub rax, rcx
-        mov [rbp-8], rax
-        jmp next
-        CtoL(fABS)
-
         DQ 1
         DQ '+'
 PLUS:   DQ $+8
