@@ -1353,8 +1353,7 @@ VARIABLE interactive
       OVER              ( addr l addr )
       I + C@            ( addr l ch )
       10 = IF
-         \ :todo: reimplement using `leave`
-         I MIN
+         DROP I  LEAVE
       THEN
    LOOP
    ( addr l )
