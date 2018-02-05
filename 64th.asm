@@ -1277,7 +1277,7 @@ pushparam:
         DQ 5
         DQ '>BODY'
 toBODY: DQ stdexe
-.body:  DQ LIT, (.body-toBODY)  ; 8, basically
+        DQ LIT, ($-toBODY)              ; 8, basically
         DQ PLUS
         DQ EXIT
         CtoL(toBODY)
@@ -1286,7 +1286,7 @@ toBODY: DQ stdexe
         DQ 'body>'      ; std1983[harris]
 fromBODY:
         DQ stdexe
-.body:  DQ LIT, (.body-fromBODY)        ; 8, basically
+        DQ LIT, ($-fromBODY)            ; 8, basically
         DQ MINUS
         DQ EXIT
         CtoL(fromBODY)
