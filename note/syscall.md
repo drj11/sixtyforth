@@ -11,7 +11,7 @@ Mapping a file in read-only mode looks like this:
          2 ( MAP_PRIVATE )
            4 ( fd )
              0 ( offset )
-               9 ( mmap syscall number ) 
+               9 ( mmap syscall number )
                  syscall6
 ```
 
