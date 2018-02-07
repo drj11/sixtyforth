@@ -35,10 +35,12 @@ _binary_rc_4_size
 
 These can be used from assembly by using the NASM `extern`
 directive.
-See the implementation of `rc.4` in `64th.asm`.
+See the implementation of `RC` in `64th.asm`.
 
 From a running sixtyforth, we can evaluate the
 (internal version of the) file `rc.4` with:
 
-    rc.4 evaluate
+    rc.4 EVALUATE
+
+(or we could if `rc.4` was defined in the dictionary)
 
