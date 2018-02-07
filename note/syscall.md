@@ -1,4 +1,6 @@
-# fstat
+# Fun with syscall
+
+## fstat
 
 Typical call to `fstat()` from sixtyforth:
 
