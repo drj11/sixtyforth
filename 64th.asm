@@ -853,6 +853,17 @@ DABS:   DQ stdexe
         DQ EXIT
         CtoL(DABS)
 
+        DQ 7
+        DQ 'syscall'
+SYSCALL:
+        DQ $+8
+        ; syscall ( n -- rax )
+        mov rax, [rbp-8]
+        syscall
+        mov [rbp-8], rax
+        jmp next
+        CtoL(SYSCALL)
+
         DQ 8
         DQ 'syscall3'
 SYSCALL3:

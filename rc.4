@@ -567,6 +567,8 @@ rsp CONSTANT argc
    CMOVE
 ;
 
+: getpid  ( -- u-pid )  39 syscall ;
+
 : sysread  ( fd addr u )
    0    \ number for read() syscall
    syscall3 ;
