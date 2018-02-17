@@ -65,8 +65,8 @@ has facilities that overlap with ANSI words,
 SixtyForth will implement those ANSI words.
 
 For example,
-SixtyForth has a word two add two double cell
-numbers together,
+SixtyForth has a word that
+adds two double cell numbers together,
 it is `D+` from the ANSI DOUBLE word set,
 even though the entire word set is not implemented.
 
