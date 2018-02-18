@@ -507,15 +507,15 @@ CMOVE:
 CMOVEup:
         DQ $+8
         ; CMOVE> ( from to u -- )
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
+        mov r8, [rbp-24]
+        mov r9, [rbp-16]
         mov rcx, [rbp-8]
         sub rbp, 24
 .l:     cmp rcx, 0
         jz next
         dec rcx
-        mov al, [rsi+rcx]
-        mov [rdi+rcx], al
+        mov al, [r8+rcx]
+        mov [r9+rcx], al
         jmp .l
         CtoL(CMOVEup)
 
