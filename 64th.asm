@@ -1403,18 +1403,17 @@ MATCHASM:
         DQ $+8
         ; MATCHASM ( c-addr u lfa -- c-addr u lfa 0 ) no match
         ; MATCHASM ( c-addr u lfa -- c-addr u xt 1|-1 true ) match
-        mov rcx, [rbp-24]       ; pointer
-        mov r13, [rbp-16]       ; length
+        mov rcx, [rbp-24]       ; c-addr
+        mov r13, [rbp-16]       ; u
         mov rax, [rbp-8]        ; LFA
         ; target string in (rcx, r13)
-        mov r14, [rax+8]        ; length of dict name
+        mov r8, [rax+8]         ; length of dict name
         ; mask off flags
         mov rdx, 0xffffffff
-        and r14, rdx
+        and r8, rdx
+        cmp r13, r8
+        jnz .nomatch            ; lengths don't match
         lea rdx, [rax+16]       ; pointer to dict name
-        ; dict string in (rdx, r14)
-        cmp r13, r14
-        jnz .nomatch    ; lengths don't match, try next
         ; The dictionary only holds 8 bytes of name,
         ; so we must check at most 8 bytes.
         cmp r13, 8

@@ -38,7 +38,9 @@ Some of the other registers have common uses
   architectural use
 - RDI RSI used only by SYSCALL
 - R8 R9 used by D+, MATCHASM, CMOVE, FILL
-- R13 R14 used by MATCHASM
+- R13 used by MATCHASM
+
+R11 R14 R15 appear to be unused.
 
 SYSCALL uses: RDI RSI RDX R10 R8 R9  RAX (syscall number),
 returns in RAX RCX
