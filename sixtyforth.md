@@ -25,10 +25,24 @@ Data stack, and continuation stack.
 Stacks grow upwards (TOS at numerically higher address).
 Stacks are empty (so word at TOS has address REG-8).
 
-RBP stack
-RBX codepointer
-R12 continuation stack
-RDX for THIS
+- RBP stack
+- RBX codepointer
+- R12 continuation stack
+- RDX for THIS
+
+Some of the other registers have common uses
+- RAX common workspace register
+- RCX common workspace register
+- RDX most words don't require THIS, so available as workspace,
+  especially multiplication and division where this has an
+  architectural use
+- RSI used by CMOVE
+- RDI used by CMOVE and FILL
+- R8 R9 used by D+ and MATCHASM
+- R13 R14 used by MATCHASM
+
+SYSCALL uses: RDI RSI RDX R10 R8 R9  RAX (syscall number),
+returns in RAX RCX
 
 
 ## Callable code
