@@ -36,9 +36,8 @@ Some of the other registers have common uses
 - RDX most words don't require THIS, so available as workspace,
   especially multiplication and division where this has an
   architectural use
-- RSI used by CMOVE
-- RDI used by CMOVE and FILL
-- R8 R9 used by D+ and MATCHASM
+- RDI RSI used only by SYSCALL
+- R8 R9 used by D+, MATCHASM, CMOVE, FILL
 - R13 R14 used by MATCHASM
 
 SYSCALL uses: RDI RSI RDX R10 R8 R9  RAX (syscall number),
