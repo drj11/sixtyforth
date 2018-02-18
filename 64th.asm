@@ -524,7 +524,7 @@ CMOVEup:
 FILL:
         DQ $+8
         ; FILL ( c-addr u char -- )
-        mov rdi, [rbp-24]
+        mov r9, [rbp-24]
         mov rcx, [rbp-16]
         mov rax, [rbp-8]
         sub rbp, 24
@@ -532,7 +532,7 @@ FILL:
 .l:
         cmp rcx, rdx
         jz next
-        mov [rdi+rdx], al
+        mov [r9+rdx], al
         inc rdx
         jmp .l
         CtoL(FILL)
