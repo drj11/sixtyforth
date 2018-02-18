@@ -491,14 +491,14 @@ CMOVE:
         ; CMOVE ( from to u -- )
         mov r8, [rbp-24]
         mov r9, [rbp-16]
-        mov rcx, [rbp-8]
+        mov rdx, [rbp-8]
         sub rbp, 24
-        mov rdx, 0
+        mov rcx, 0
 .l:     cmp rcx, rdx
         jz next
-        mov al, [r8+rdx]
-        mov [r9+rdx], al
-        inc rdx
+        mov al, [r8+rcx]
+        mov [r9+rcx], al
+        inc rcx
         jmp .l
         CtoL(CMOVE)
 
