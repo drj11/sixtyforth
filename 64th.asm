@@ -489,15 +489,15 @@ Cfetch: DQ $+8
 CMOVE:
         DQ $+8
         ; CMOVE ( from to u -- )
-        mov rsi, [rbp-24]
-        mov rdi, [rbp-16]
+        mov r8, [rbp-24]
+        mov r9, [rbp-16]
         mov rcx, [rbp-8]
         sub rbp, 24
         mov rdx, 0
 .l:     cmp rcx, rdx
         jz next
-        mov al, [rsi+rdx]
-        mov [rdi+rdx], al
+        mov al, [r8+rdx]
+        mov [r9+rdx], al
         inc rdx
         jmp .l
         CtoL(CMOVE)
