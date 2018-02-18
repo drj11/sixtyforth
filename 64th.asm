@@ -1403,9 +1403,9 @@ MATCHASM:
         DQ $+8
         ; MATCHASM ( c-addr u lfa -- c-addr u lfa 0 ) no match
         ; MATCHASM ( c-addr u lfa -- c-addr u xt 1|-1 true ) match
-        mov rax, [rbp-8]        ; LFA
-        mov r13, [rbp-16]       ; length
         mov rcx, [rbp-24]       ; pointer
+        mov r13, [rbp-16]       ; length
+        mov rax, [rbp-8]        ; LFA
         ; target string in (rcx, r13)
         mov r14, [rax+8]        ; length of dict name
         ; mask off flags
