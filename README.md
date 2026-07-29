@@ -1,6 +1,6 @@
 # SixtyForth
 
-[![Build Status](https://travis-ci.org/drj11/sixtyforth.svg?branch=master)](https://travis-ci.org/drj11/sixtyforth)
+# ARCHIVED: please see https://git.sr.ht/~drj/sixtyforth/
 
 Welcome to SixtyForth, `64th` for short.
 
