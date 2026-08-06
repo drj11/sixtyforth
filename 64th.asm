@@ -1,6 +1,5 @@
 BITS 64
 
-
 sys_write EQU 1
 
 extern _binary_rc_4_start
@@ -20,9 +19,9 @@ SECTION .bss
 
 emitbuf RESB 1
 
-
-SECTION .rodata
-
+;  marked as exec because some code ends up there
+SECTION .rodata exec
+platform: db PLATFORM_DEF
 
 ; Start of Dictionary
 ; The Dictionary is a key Forth datastructure.
@@ -94,6 +93,15 @@ EXECUTE:
         mov rax, [rdx]
         jmp rax
         CtoL(EXECUTE)
+
+        DQ 8
+        DQ 'PLATFORM'
+PLATFORM:
+        DQ $+8
+        ; PLATFORM (-- u)
+        mov rax, [platform]
+        jmp pushrax
+        CtoL(PLATFORM)
 
         DQ 4
         DQ 'EXIT'
@@ -1260,7 +1268,11 @@ doestarget:
         ; it is _absolute_.
         ; Meaning that it can be copied anywhere, and
         ; still has the same behaviour.
-        jmp [.n+0]
+      ;  lea  r7, [rel pushparam]
+        jmp r14
+        ;jmp [.n+0]
+       ; mov rax, strict qword pushparam
+  ;  jmp rax
 .n:
         DQ pushparam
 ALIGN 8
@@ -1924,8 +1936,8 @@ scansign:
         DQ EXIT
 
 
-
-SECTION .data
+; code ends up here too
+SECTION .data exec
 
 vRESET:
         DQ stdexe
@@ -2006,10 +2018,12 @@ dictfree TIMES 8000 DQ 0
 SECTION .text
 GLOBAL _start
 _start:
+        
 dreset: ; ABORT jumps here (data reset)
         ; Initialise the model registers.
         mov rbp, stack
 reset:  ; QUIT jumps here
+  lea  r14, [rel pushparam]
         mov rcx, 0
         mov r12, returnstack
         mov rax, stateaddr
